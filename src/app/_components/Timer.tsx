@@ -1,6 +1,6 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
+import { Pause, Play, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 
@@ -87,9 +87,8 @@ export default function Timer() {
   return (
     <div className="flex items-center justify-center">
       <div className="w-full max-w-4xl p-8">
-        <h1 className="text-center text-4xl font-bold">Pomodoro Timer</h1>
-
-        <div className="flex flex-col">
+        <h1 className="text-center text-4xl">Pomodoro Timer</h1>
+        <div className="flex flex-col font-bold">
           {/* Focus or Break */}
           <div className="mb-2 text-[20rem]">{formatTime(timeLeft)}</div>
           <div className="text-xl font-medium">
@@ -115,7 +114,9 @@ export default function Timer() {
               variant="outline"
               size="lg"
               className="h-12 w-32"
-            ></Button>
+            >
+              <RotateCcw className="h-6 w-6" />
+            </Button>
           </div>
 
           {/* <div className="flex flex-col justify-between">

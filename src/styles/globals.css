@@ -30,7 +30,7 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 20 14.3% 4.1%;
+    --background: 0, 0%, 6.3%;
     --foreground: 60 9.1% 97.8%;
     --card: 20 14.3% 4.1%;
     --card-foreground: 60 9.1% 97.8%;
@@ -70,4 +70,9 @@
   src: url("../fonts/Supreme-Variable.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+}
+
+html {
+  /* Set dark mode as default */
+  @apply dark;
 }
