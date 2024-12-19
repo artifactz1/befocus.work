@@ -12,6 +12,9 @@ export default async function Home() {
     void api.post.getLatest.prefetch();
   }
 
+  console.log("DISCORD_ID:", process.env.AUTH_DISCORD_ID);
+  console.log("DISCORD_SECRET:", process.env.AUTH_DISCORD_SECRET);
+
   return (
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
