@@ -3,6 +3,8 @@
 import { Pause, Play, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import { Settings } from "../_components/Settings";
+import { DarkModeToggle } from "./DarkModeToggle";
 
 const formatTime = (seconds: number): string => {
   const mins = Math.floor(seconds / 60);
@@ -85,59 +87,55 @@ export default function Timer() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="w-full p-8">
-        <h1 className="text-center text-6xl">Supreme </h1>
-        <div className="flex flex-col">
-          {/* Focus or Break */}
-          <div className="mb-2 text-[20rem] font-extrabold">
-            {formatTime(timeLeft)}
-          </div>
-          <div className="font-regular text-xl">
-            {isWorking ? "Work" : "Break"}
-          </div>
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
+      {/* Focus/Break */}
+      <div className="rounded-md border text-9xl font-extrabold">
+        {isWorking ? "Focus" : "Break"}
+      </div>
 
-          {/* Play / Reset  */}
-          <div className="flex justify-center space-x-4">
-            <Button
-              onClick={toggleTimer}
-              variant="outline"
-              size="lg"
-              className="h-12 w-32"
-            >
-              {isRunning ? (
-                <Pause className="h-6 w-6" />
-              ) : (
-                <Play className="h-6 w-6" />
-              )}
-            </Button>
-            <Button
-              onClick={reset}
-              variant="outline"
-              size="lg"
-              className="h-12 w-32"
-            >
-              <RotateCcw className="h-6 w-6" />
-            </Button>
-          </div>
+      {/* Time Left */}
+      <div className="text-[36rem] font-bold">{formatTime(timeLeft)}</div>
 
-          {/* <div className="flex flex-col justify-between">
-            <div>
-              <h2 className="mb-4 text-2xl font-medium">Settings</h2>
-              <Settings
-                sessions={sessions}
-                workDuration={workDuration / 60}
-                breakDuration={breakDuration / 60}
-                onSettingsChange={handleSettingsChange}
-              />
-            </div>
-            <div className="text-right">
-              <p className="text-xl font-medium">Session</p>
-              <p className="text-4xl font-light">
-                {currentSession} / {sessions}
-              </p>
-            </div>
-          </div> */}
+      {/* Buttons */}
+      <div className="flex justify-center space-x-4">
+        <Button
+          onClick={toggleTimer}
+          variant="outline"
+          size="lg"
+          className="h-12 w-32"
+        >
+          {isRunning ? (
+            <Pause className="h-6 w-6" />
+          ) : (
+            <Play className="h-6 w-6" />
+          )}
+        </Button>
+        <Button
+          onClick={reset}
+          variant="outline"
+          size="lg"
+          className="h-12 w-32"
+        >
+          <RotateCcw className="h-6 w-6" />
+        </Button>
+        <DarkModeToggle />
+      </div>
+
+      <div className="flex flex-col justify-between">
+        <div>
+          <h2 className="mb-4 text-2xl font-medium">Settings</h2>
+          <Settings
+            sessions={sessions}
+            workDuration={workDuration / 60}
+            breakDuration={breakDuration / 60}
+            onSettingsChange={handleSettingsChange}
+          />
+        </div>
+        <div className="text-right">
+          <p className="text-xl font-medium">Session</p>
+          <p className="text-4xl font-light">
+            {currentSession} / {sessions}
+          </p>
         </div>
       </div>
     </div>
