@@ -1,6 +1,8 @@
 "use client";
 
+import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "~/components/ui/button";
 
 export const DarkModeToggle = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -31,8 +33,13 @@ export const DarkModeToggle = () => {
   };
 
   return (
-    <button onClick={handleToggle} className="h-6 w-6 rounded-full">
-      {isDarkMode ? "🌙" : "☀️"} {/* This changes the icon */}
-    </button>
+    <Button
+      onClick={handleToggle}
+      variant="outline"
+      size="lg"
+      className="h-12 w-32"
+    >
+      {isDarkMode ? <Sun /> : <Moon />} {/* This changes the icon */}
+    </Button>
   );
 };

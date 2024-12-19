@@ -85,13 +85,15 @@ export default function Timer() {
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-full max-w-4xl p-8">
-        <h1 className="text-center text-4xl">Pomodoro Timer</h1>
-        <div className="flex flex-col font-bold">
+    <div className="flex h-screen items-center justify-center">
+      <div className="w-full p-8">
+        <h1 className="text-center text-6xl">Supreme </h1>
+        <div className="flex flex-col">
           {/* Focus or Break */}
-          <div className="mb-2 text-[20rem]">{formatTime(timeLeft)}</div>
-          <div className="text-xl font-medium">
+          <div className="mb-2 text-[20rem] font-extrabold">
+            {formatTime(timeLeft)}
+          </div>
+          <div className="font-regular text-xl">
             {isWorking ? "Work" : "Break"}
           </div>
 

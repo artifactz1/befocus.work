@@ -1,5 +1,4 @@
 import { type Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
   darkMode: ["class"],
@@ -7,8 +6,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-          // sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-          Supreme: ["Supreme", "sans-serif"],
+        // sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        sans: ["Supreme", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
