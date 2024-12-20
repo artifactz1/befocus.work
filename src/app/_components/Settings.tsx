@@ -15,8 +15,8 @@ export const Settings: React.FC<SettingsProps> = ({
   onSettingsChange,
 }) => {
   return (
-    <div className="grid grid-cols-3 gap-6">
-      <div className="flex flex-col">
+    <div className="flex flex-col">
+      <div className="flex flex-row">
         <Label
           htmlFor="sessions"
           className="mb-2 text-sm font-medium text-gray-600"

@@ -3,6 +3,13 @@
 import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "~/components/ui/navigation-menu";
 import { Settings } from "../_components/Settings";
 import { DarkModeToggle } from "./DarkModeToggle";
 
@@ -100,14 +107,24 @@ export default function Timer() {
   };
 
   return (
-    <div className="container flex h-screen w-screen max-w-4xl flex-col items-center justify-center">
-      {/* Focus/Break */}
-      <div className="font-regular text-9xl">
-        {isWorking ? "Focus" : "Break"}
+    <div className="container mx-auto flex h-screen w-screen flex-col items-center justify-center">
+      <div className="relative flex w-full items-center justify-between">
+        {/* Focus/Break */}
+        <div className="font-regular text-9xl">
+          {isWorking ? "Focus" : "Break"}
+        </div>
+        <div className="flex flex-col items-center justify-center text-right">
+          <p className="text-xl font-medium">Session</p>
+          <p className="text-4xl font-light">
+            {currentSession} / {sessions}
+          </p>
+        </div>
       </div>
 
       {/* Time Left */}
-      <div className="text-[36rem] font-bold">{formatTime(timeLeft)}</div>
+      <div className="-my-20 text-[36rem] font-bold">
+        {formatTime(timeLeft)}
+      </div>
 
       {/* Buttons */}
       <div className="-mt-20 flex justify-center space-x-4">
@@ -139,28 +156,28 @@ export default function Timer() {
         >
           <SkipForward className="h-6 w-6" />
         </Button>
-
         <DarkModeToggle />
       </div>
 
-      <div className="flex flex-col justify-between">
-        <div>
-          <h2 className="mb-4 text-2xl font-medium">Settings</h2>
-          <Settings
-            sessions={sessions}
-            workDuration={workDuration / 60}
-            breakDuration={breakDuration / 60}
-            onSettingsChange={handleSettingsChange}
-          />
-        </div>
-      </div>
-
-      <div className="text-right">
-        <p className="text-xl font-medium">Session</p>
-        <p className="text-4xl font-light">
-          {currentSession} / {sessions}
-        </p>
-      </div>
+      <NavigationMenu className="absolute z-0">
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>Settings</NavigationMenuTrigger>
+            <NavigationMenuContent className="h-[200px] w-[100vw] p-20">
+              {/* <NavigationMenuLink>Link</NavigationMenuLink> */}
+              <div className="flex flex-col justify-between">
+                <h2 className="text-2xl font-medium">Settings</h2>
+                <Settings
+                  sessions={sessions}
+                  workDuration={workDuration / 60}
+                  breakDuration={breakDuration / 60}
+                  onSettingsChange={handleSettingsChange}
+                />
+              </div>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
     </div>
   );
 }
