@@ -3,6 +3,7 @@
 import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import { Settings } from "../_components/Settings";
 import { DarkModeToggle } from "./DarkModeToggle";
 
 const formatTime = (seconds: number): string => {
@@ -26,6 +27,19 @@ export default function Timer() {
     setTimeLeft(workDuration);
     setIsRunning(false);
   }, [workDuration]);
+
+  const skipToNextSession = () => {
+    if (isWorking) {
+      setIsWorking(false);
+      setTimeLeft(breakDuration);
+    } else {
+      setIsWorking(true);
+      setTimeLeft(workDuration);
+      setCurrentSession((prev) => Math.min(prev + 1, sessions)); // Increment session if moving to work
+    }
+
+    setIsRunning(false);
+  };
 
   useEffect(() => {
     reset();
@@ -118,18 +132,18 @@ export default function Timer() {
           <RotateCcw className="h-6 w-6" />
         </Button>
         <Button
-          onClick={reset}
+          onClick={skipToNextSession}
           variant="outline"
           size="lg"
           className="h-12 w-32"
         >
           <SkipForward className="h-6 w-6" />
         </Button>
+
         <DarkModeToggle />
       </div>
 
-      {/* Settings */}
-      {/* <div className="flex flex-col justify-between">
+      <div className="flex flex-col justify-between">
         <div>
           <h2 className="mb-4 text-2xl font-medium">Settings</h2>
           <Settings
@@ -139,13 +153,14 @@ export default function Timer() {
             onSettingsChange={handleSettingsChange}
           />
         </div>
-        <div className="text-right">
-          <p className="text-xl font-medium">Session</p>
-          <p className="text-4xl font-light">
-            {currentSession} / {sessions}
-          </p>
-        </div>
-      </div> */}
+      </div>
+
+      <div className="text-right">
+        <p className="text-xl font-medium">Session</p>
+        <p className="text-4xl font-light">
+          {currentSession} / {sessions}
+        </p>
+      </div>
     </div>
   );
 }
