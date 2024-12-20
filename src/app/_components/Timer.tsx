@@ -1,12 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
 // import { Icons } from "@/compon../../lib/utilsents/icons"
 
-import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
+import {
+  Cog,
+  NotebookPen,
+  Pause,
+  Play,
+  RotateCcw,
+  SkipForward,
+  Volume2,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Settings } from "../_components/Settings";
@@ -19,7 +26,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
 
 const formatTime = (seconds: number): string => {
@@ -174,7 +180,7 @@ export default function Timer() {
       </div>
 
       {/* Buttons */}
-      <div className="-mt-20 flex justify-center space-x-4">
+      <div className="-mt-20 flex items-center justify-center space-x-4 opacity-0 transition-opacity duration-500 hover:opacity-100">
         <Button
           onClick={toggleTimer}
           variant="outline"
@@ -217,63 +223,25 @@ export default function Timer() {
           />
         </div>
       </div> */}
-      <div>
+      <div className="mr-10 flex w-full items-center justify-center">
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                  <li className="row-span-3">
-                    <NavigationMenuLink asChild>
-                      <Link
-                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                        href="/"
-                      >
-                        {/* <Icons.logo className="h-6 w-6" /> */}
-                        <div className="mb-2 mt-4 text-lg font-medium">
-                          shadcn/ui
-                        </div>
-                        <p className="text-sm leading-tight text-muted-foreground">
-                          Beautifully designed components built with Radix UI
-                          and Tailwind CSS.
-                        </p>
-                      </Link>
-                    </NavigationMenuLink>
-                  </li>
-                  <ListItem href="/docs" title="Introduction">
-                    Re-usable components built using Radix UI and Tailwind CSS.
-                  </ListItem>
-                  <ListItem href="/docs/installation" title="Installation">
-                    How to install dependencies and structure your app.
-                  </ListItem>
-                  <ListItem
-                    href="/docs/primitives/typography"
-                    title="Typography"
-                  >
-                    Styles for headings, paragraphs, lists...etc
-                  </ListItem>
-                </ul>
-              </NavigationMenuContent>
+              <NavigationMenuTrigger>
+                <NotebookPen />
+              </NavigationMenuTrigger>
+              <NavigationMenuContent></NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  {components.map((component) => (
-                    <ListItem
-                      key={component.title}
-                      title={component.title}
-                      href={component.href}
-                    >
-                      {component.description}
-                    </ListItem>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
+              <NavigationMenuTrigger>
+                <Volume2 />
+              </NavigationMenuTrigger>
+              <NavigationMenuContent></NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Settings</NavigationMenuTrigger>
+              <NavigationMenuTrigger>
+                <Cog></Cog>
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="grid w-[400px] gap-3 p-4 md:w-[500px] lg:w-[600px]">
                   <div className="rounded-md bg-card p-6 shadow-md">
@@ -287,14 +255,6 @@ export default function Timer() {
                   </div>
                 </div>
               </NavigationMenuContent>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <Link href="/docs" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Documentation
-                </NavigationMenuLink>
-              </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
