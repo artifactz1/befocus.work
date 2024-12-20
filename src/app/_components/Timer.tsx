@@ -1,9 +1,8 @@
 "use client";
 
-import { Pause, Play, RotateCcw } from "lucide-react";
+import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Settings } from "../_components/Settings";
 import { DarkModeToggle } from "./DarkModeToggle";
 
 const formatTime = (seconds: number): string => {
@@ -87,9 +86,9 @@ export default function Timer() {
   };
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center">
+    <div className="container flex h-screen w-screen max-w-4xl flex-col items-center justify-center">
       {/* Focus/Break */}
-      <div className="rounded-md border text-9xl font-extrabold">
+      <div className="font-regular text-9xl">
         {isWorking ? "Focus" : "Break"}
       </div>
 
@@ -97,7 +96,7 @@ export default function Timer() {
       <div className="text-[36rem] font-bold">{formatTime(timeLeft)}</div>
 
       {/* Buttons */}
-      <div className="flex justify-center space-x-4">
+      <div className="-mt-20 flex justify-center space-x-4">
         <Button
           onClick={toggleTimer}
           variant="outline"
@@ -118,10 +117,19 @@ export default function Timer() {
         >
           <RotateCcw className="h-6 w-6" />
         </Button>
+        <Button
+          onClick={reset}
+          variant="outline"
+          size="lg"
+          className="h-12 w-32"
+        >
+          <SkipForward className="h-6 w-6" />
+        </Button>
         <DarkModeToggle />
       </div>
 
-      <div className="flex flex-col justify-between">
+      {/* Settings */}
+      {/* <div className="flex flex-col justify-between">
         <div>
           <h2 className="mb-4 text-2xl font-medium">Settings</h2>
           <Settings
@@ -137,7 +145,7 @@ export default function Timer() {
             {currentSession} / {sessions}
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
