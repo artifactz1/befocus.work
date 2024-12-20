@@ -1,5 +1,6 @@
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
+import { Slider } from "../../components/ui/slider";
 
 interface SettingsProps {
   sessions: number;
@@ -16,23 +17,34 @@ export const Settings: React.FC<SettingsProps> = ({
 }) => {
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row">
+      <div className="flex flex-col">
         <Label
           htmlFor="sessions"
           className="mb-2 text-sm font-medium text-gray-600"
         >
           Sessions
         </Label>
-        <Input
-          id="sessions"
-          type="number"
-          min="1"
-          value={sessions}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            onSettingsChange("sessions", parseInt(e.target.value, 10) || 0)
-          }
-          className="border-gray-300 focus:border-black focus:ring-0"
-        />
+        <div className="flex flex-row">
+          <Input
+            id="sessions"
+            type="number"
+            min="1"
+            value={sessions}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onSettingsChange("sessions", parseInt(e.target.value, 10) || 0)
+            }
+            className="w-fit border-gray-300 focus:border-black focus:ring-0"
+          />
+          <Slider
+            defaultValue={[5]}
+            max={20}
+            step={1}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onSettingsChange("sessions", parseInt(e.target.value, 10) || 0)
+            }
+            className="w-full border-gray-300 focus:border-black focus:ring-0"
+          />
+        </div>
       </div>
       <div className="flex flex-col">
         <Label
