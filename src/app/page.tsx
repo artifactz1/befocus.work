@@ -1,6 +1,6 @@
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-import Timer from "./_components/Timer";
+import Timer from './_components/Timer/Timer';
 
 export default async function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });
