@@ -1,9 +1,18 @@
+import SessionsDisplay from "./SessionsDisplay";
+
 type TimerDisplayProps = {
   isWorking: boolean;
   timeLeft: number;
+  currentSession: number;
+  sessions: number;
 };
 
-export default function TimerDisplay({ isWorking, timeLeft }: TimerDisplayProps) {
+export default function TimerDisplay({
+  isWorking,
+  timeLeft,
+  currentSession,
+  sessions,
+}: TimerDisplayProps) {
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -11,9 +20,13 @@ export default function TimerDisplay({ isWorking, timeLeft }: TimerDisplayProps)
   };
 
   return (
-    <div>
-      <div className="text-9xl">{isWorking ? "Focus" : "Break"}</div>
-      <div className="text-[36rem] font-bold">{formatTime(timeLeft)}</div>
-    </div>
+    <main>
+      <div className="flex w-full items-center justify-between text-5xl 2xl:text-6xl">
+        <div>{isWorking ? "Focus" : "Break"}</div>
+        <SessionsDisplay currentSessions={currentSession} sessions={sessions} />
+      </div>
+
+      <div className="text-[28rem] font-bold">{formatTime(timeLeft)}</div>
+    </main>
   );
 }

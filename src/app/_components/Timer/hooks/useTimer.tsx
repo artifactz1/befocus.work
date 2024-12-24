@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 
 export const useTimer = (
@@ -31,7 +33,7 @@ export const useTimer = (
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-  
+
     if (isRunning) {
       interval = setInterval(() => {
         setTimeLeft((prevTime) => {
@@ -52,17 +54,24 @@ export const useTimer = (
         });
       }, 1000);
     }
-  
+
     return () => {
       if (interval !== null) {
         clearInterval(interval);
       }
     };
-  }, [isRunning, isWorking, currentSession, sessions, workDuration, breakDuration]);
-
+  }, [
+    isRunning,
+    isWorking,
+    currentSession,
+    sessions,
+    workDuration,
+    breakDuration,
+  ]);
 
   return {
     currentSession,
+    sessions,
     isWorking,
     timeLeft,
     isRunning,

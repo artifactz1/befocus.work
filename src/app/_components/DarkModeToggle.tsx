@@ -35,7 +35,7 @@ export const DarkModeToggle = () => {
   return (
     <Button
       onClick={handleToggle}
-      variant="outline"
+      // variant="outline"
       size="lg"
       className="h-12 w-32"
     >

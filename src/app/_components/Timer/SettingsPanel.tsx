@@ -7,8 +7,8 @@ import {
   NavigationMenuTrigger,
 } from "~/components/ui/navigation-menu";
 
-import { Settings } from "../../_components/Settings";
 import { Cog, NotebookPen, Volume2 } from "lucide-react"; // Icon library
+import { Settings } from "../../_components/Settings";
 
 type SettingsPanelProps = {
   sessions: number;
