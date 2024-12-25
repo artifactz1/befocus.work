@@ -1,8 +1,9 @@
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-import { SessionSettings } from "./_components/input/SessionSettings";
 // import { TimerDisplay } from "./_components/TimerDisplay";
-import Timer from "./_components/Timer";
+import Footer from "./_components/Footer";
+import Header from "./_components/Header";
+import Timer from "./_components/timer/Timer";
 
 export default async function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });
@@ -15,11 +16,11 @@ export default async function Home() {
   return (
     <HydrateClient>
       <main className="flex h-screen w-screen flex-col items-center justify-center">
-        {/* <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16"> */}
-        <Timer />
-        {/* </div> */}
-        <SessionSettings />
-        {/* <TimerDisplay /> */}
+        <div>
+          <Header />
+          <Timer />
+          <Footer />
+        </div>
       </main>
     </HydrateClient>
   );

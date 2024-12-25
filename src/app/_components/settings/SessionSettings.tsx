@@ -1,9 +1,9 @@
 "use client";
 
 import { useTimerStore } from "~/store/useTimerStore";
-import { BreakDurationInput } from "./BreakDurationInput";
-import { SessionsInput } from "./SessionsInput";
-import { WorkDurationInput } from "./WorkDurationInput";
+import { BreakDurationInput } from "../input/BreakDurationInput";
+import { SessionsInput } from "../input/SessionsInput";
+import { WorkDurationInput } from "../input/WorkDurationInput";
 
 export const SessionSettings: React.FC = () => {
   const { sessions, workDuration, breakDuration, reset, updateSettings } =
@@ -12,7 +12,7 @@ export const SessionSettings: React.FC = () => {
   return (
     <div className="flex flex-col space-y-4">
       <WorkDurationInput
-        value={workDuration / 60 }
+        value={workDuration / 60}
         onChange={(value) => updateSettings("workDuration", value)}
       />
       <BreakDurationInput
