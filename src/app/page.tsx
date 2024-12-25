@@ -1,6 +1,7 @@
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-import Timer from "./_components/Timer";
+// import Timer from "./_components/Timer";
+import { Time } from "./_components/input/Time";
 
 export default async function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });
@@ -14,8 +15,9 @@ export default async function Home() {
     <HydrateClient>
       <main className="flex h-screen w-screen flex-col items-center justify-center">
         {/* <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16"> */}
-        <Timer />
+        {/* <Timer /> */}
         {/* </div> */}
+        <Time />
       </main>
     </HydrateClient>
   );
