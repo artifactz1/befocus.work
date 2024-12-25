@@ -22,7 +22,7 @@ export const WorkDurationInput: React.FC<WorkDurationInputProps> = ({
       type="number"
       min="1"
       value={value}
-      onChange={(e) => onChange(parseInt(e.target.value, 10)|| 0)}
+      onChange={(e) => onChange(parseInt(e.target.value, 10) * 60 || 0)}
       className="border-gray-300 focus:border-black focus:ring-0"
     />
   </div>

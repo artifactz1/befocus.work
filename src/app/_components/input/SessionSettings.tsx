@@ -12,11 +12,11 @@ export const SessionSettings: React.FC = () => {
   return (
     <div className="flex flex-col space-y-4">
       <WorkDurationInput
-        value={workDuration}
+        value={workDuration / 60 }
         onChange={(value) => updateSettings("workDuration", value)}
       />
       <BreakDurationInput
-        value={breakDuration}
+        value={breakDuration / 60}
         onChange={(value) => updateSettings("breakDuration", value)}
       />
       <SessionsInput
