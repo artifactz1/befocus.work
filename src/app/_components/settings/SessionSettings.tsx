@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "~/components/ui/button";
 import { useTimerStore } from "~/store/useTimerStore";
 import { BreakDurationInput } from "../input/BreakDurationInput";
 import { SessionsInput } from "../input/SessionsInput";
@@ -23,12 +24,11 @@ export const SessionSettings: React.FC = () => {
         value={sessions}
         onChange={(value) => updateSettings("sessions", value)}
       />
-      <button
-        className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-        onClick={reset}
-      >
-        Save
-      </button>
+      <div className="flex w-full justify-end">
+        <Button className="rounded px-4 py-2" onClick={reset}>
+          Save
+        </Button>
+      </div>
     </div>
   );
 };
