@@ -20,7 +20,7 @@ export default function MenuSettings() {
               <NotebookPen />
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <div className="w-[400px] gap-3 md:w-[500px] lg:w-[600px]">
+              <div className="w-[400px] gap-3 md:w-[500px] lg:w-[400px]">
                 <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
                   <NotebookPen />
                   <div className="mb-2 mt-4 text-lg font-medium">
@@ -39,7 +39,7 @@ export default function MenuSettings() {
               <Volume2 />
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <div className="w-[400px] gap-3 md:w-[500px] lg:w-[600px]">
+              <div className="w-[400px] gap-3 md:w-[500px] lg:w-[400px]">
                 <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
                   <Volume2 />
                   <div className="mb-2 mt-4 text-lg font-medium">
@@ -58,11 +58,11 @@ export default function MenuSettings() {
               <Cog />
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <div className="w-[400px] gap-3 md:w-[500px] lg:w-[600px]">
+              <div className="w-[400px] gap-3 md:w-[500px] lg:w-[400px]">
                 <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
                   <Cog />
                   <div className="mb-2 mt-4 text-lg font-medium">
-                    befocus/sounds
+                    befocus/sessions-settings
                   </div>
                   <Separator className="my-4 bg-white" />
                   <SessionSettings />

@@ -1,21 +1,18 @@
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 
-interface WorkDurationInputProps {
+interface BreakDurationInputProps {
   value: number;
   onChange: (value: number) => void;
 }
 
-export const WorkDurationInput: React.FC<WorkDurationInputProps> = ({
+export const WorkDurationInput: React.FC<BreakDurationInputProps> = ({
   value,
   onChange,
 }) => (
   <div className="flex flex-col">
-    <Label
-      htmlFor="workDuration"
-      className="mb-2 text-sm font-medium text-gray-600"
-    >
-      Work (min)
+    <Label htmlFor="workDuration" className="mb-2 text-sm font-medium">
+      Break (min)
     </Label>
     <Input
       id="workDuration"

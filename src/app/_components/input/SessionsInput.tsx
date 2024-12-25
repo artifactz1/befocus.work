@@ -1,5 +1,5 @@
-import { Label } from '~/components/ui/label';
 import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 
 interface SessionsInputProps {
   value: number;
@@ -11,10 +11,7 @@ export const SessionsInput: React.FC<SessionsInputProps> = ({
   onChange,
 }) => (
   <div className="flex flex-col">
-    <Label
-      htmlFor="sessions"
-      className="mb-2 text-sm font-medium text-gray-600"
-    >
+    <Label htmlFor="sessions" className="mb-2 text-sm font-medium">
       Sessions
     </Label>
     <Input
