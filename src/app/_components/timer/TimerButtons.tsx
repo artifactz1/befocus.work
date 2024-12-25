@@ -10,7 +10,7 @@ export default function TimerButtons() {
 
   return (
     // <div className="-mt-20 flex items-center justify-center space-x-4 opacity-0 transition-opacity duration-500 hover:opacity-100">
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center space-x-1">
       <Button
         onClick={toggleTimer}
         variant="outline"

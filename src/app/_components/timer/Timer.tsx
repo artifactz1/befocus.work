@@ -25,8 +25,10 @@ export default function Timer() {
 
   return (
     // <div className="flex h-[70vh] w-screen flex-col items-center justify-center">
-    <div className="flex h-[70vh] items-center justify-center text-[25vw] font-bold">
-      {formatTime(timeLeft)}
+    <div className="relative z-0 flex h-[70vh] items-center justify-center">
+      <div className="absolute h-fit text-[25vw] font-bold">
+        {formatTime(timeLeft)}
+      </div>
     </div>
   );
 }

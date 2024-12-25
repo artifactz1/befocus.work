@@ -6,7 +6,7 @@ function Timer() {
   const { sessions, currentSession, isWorking } = useTimerStore();
 
   return (
-    <div className="flex h-[10vh] w-full items-center justify-between">
+    <div className="flex h-[15vh] w-full items-center justify-between px-[5vw]">
       <div className="font-regular text-9xl">
         {isWorking ? "Focus" : "Break"}
       </div>

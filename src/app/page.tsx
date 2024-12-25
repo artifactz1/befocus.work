@@ -16,11 +16,9 @@ export default async function Home() {
   return (
     <HydrateClient>
       <main className="flex h-screen w-screen flex-col items-center justify-center">
-        <div>
-          <Header />
-          <Timer />
-          <Footer />
-        </div>
+        <Header />
+        <Timer />
+        <Footer />
       </main>
     </HydrateClient>
   );
