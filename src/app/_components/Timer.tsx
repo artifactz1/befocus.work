@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Settings } from "../_components/Settings";
 import { DarkModeToggle } from "./DarkModeToggle";
+import { Settings } from "./sessionSettings";
 
 import {
   NavigationMenu,

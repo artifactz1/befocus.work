@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import { useTimer } from "./hooks/useTimer";
 import SettingsPanel from "./SettingsPanel";
 import TimerControls from "./TimerControls";
@@ -24,17 +25,39 @@ export default function Timer() {
     skipToNextSession,
   } = useTimer(6, 25 * 60, 5 * 60);
 
-  // Explicitly type the settings state
+  // // Explicitly type the settings state
   const [settings, setSettings] = useState<Settings>({
     sessions: 6,
     workDuration: 25 * 60, // in seconds
     breakDuration: 5 * 60, // in seconds
   });
 
-  // Update settings when changed in the SettingsPanel
-  const handleSettingsChange = (newSettings: Settings) => {
-    setSettings(newSettings);
+  const handleSettingsChange = (key: keyof Settings, value: number) => {
+    console.log("Updating", key, "to", value);
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      [key]:
+        key === "workDuration" || key === "breakDuration" ? value * 60 : value,
+    }));
   };
+
+  // const [sessions, setSessions] = useState(6);
+  // const [workDuration, setWorkDuration] = useState(25 * 60);
+  // const [breakDuration, setBreakDuration] = useState(5 * 60);
+
+  // const handleSettingsChange = (key: string, value: number) => {
+  //   switch (key) {
+  //     case "sessions":
+  //       setSessions(value);
+  //       break;
+  //     case "workDuration":
+  //       setWorkDuration(value * 60);
+  //       break;
+  //     case "breakDuration":
+  //       setBreakDuration(value * 60);
+  //       break;
+  //   }
+  // };
 
   return (
     <div className="container mx-auto flex h-screen flex-col items-center justify-center">
