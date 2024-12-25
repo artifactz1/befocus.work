@@ -5,24 +5,30 @@ import { BreakDurationInput } from "./BreakDurationInput";
 import { SessionsInput } from "./SessionsInput";
 import { WorkDurationInput } from "./WorkDurationInput";
 
-export const Time: React.FC = () => {
-  const { sessions, workDuration, breakDuration, updateTimer } =
+export const SessionSettings: React.FC = () => {
+  const { sessions, workDuration, breakDuration, reset, updateSettings } =
     useTimerStore();
 
   return (
     <div className="flex flex-col space-y-4">
       <WorkDurationInput
         value={workDuration}
-        onChange={(value) => updateTimer("workDuration", value)}
+        onChange={(value) => updateSettings("workDuration", value)}
       />
       <BreakDurationInput
         value={breakDuration}
-        onChange={(value) => updateTimer("breakDuration", value)}
+        onChange={(value) => updateSettings("breakDuration", value)}
       />
       <SessionsInput
         value={sessions}
-        onChange={(value) => updateTimer("sessions", value)}
+        onChange={(value) => updateSettings("sessions", value)}
       />
+      <button
+        className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+        onClick={reset}
+      >
+        Save
+      </button>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-// import { Time } from "./_components/input/Time";
+import { SessionSettings } from "./_components/input/SessionSettings";
 // import { TimerDisplay } from "./_components/TimerDisplay";
 import Timer from "./_components/Timer";
 
@@ -18,7 +18,7 @@ export default async function Home() {
         {/* <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16"> */}
         <Timer />
         {/* </div> */}
-        {/* <Time /> */}
+        <SessionSettings />
         {/* <TimerDisplay /> */}
       </main>
     </HydrateClient>

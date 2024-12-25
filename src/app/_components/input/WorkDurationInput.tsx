@@ -1,5 +1,5 @@
-import { Label } from '~/components/ui/label';
 import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 
 interface WorkDurationInputProps {
   value: number;
@@ -22,7 +22,7 @@ export const WorkDurationInput: React.FC<WorkDurationInputProps> = ({
       type="number"
       min="1"
       value={value}
-      onChange={(e) => onChange(parseInt(e.target.value, 10) || 0)}
+      onChange={(e) => onChange(parseInt(e.target.value, 10)|| 0)}
       className="border-gray-300 focus:border-black focus:ring-0"
     />
   </div>
