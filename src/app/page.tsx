@@ -15,6 +15,8 @@ export default async function Home() {
 
   return (
     <HydrateClient>
+      <GlobalPlayer />
+
       <main className="flex h-screen w-screen flex-col items-center justify-center">
         <Header />
         <Timer />

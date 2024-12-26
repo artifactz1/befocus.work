@@ -10,6 +10,7 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { SessionSettings } from "./SessionSettings";
 import SoundSettings from './SoundSettings';
+import SoundButton from '../SoundButton';
 
 export default function MenuSettings() {
   return (
@@ -50,7 +51,9 @@ export default function MenuSettings() {
                   {/* <p className="text-sm leading-tight text-muted-foreground">
                     &quot;FEATURE COMING SOON&quot;
                   </p> */}
-                  <SoundSettings/>
+                  {/* <SoundSettings/> */}
+                  <SoundButton soundId="sound1" url="https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm" />
+ 
                 </div>
               </div>
             </NavigationMenuContent>

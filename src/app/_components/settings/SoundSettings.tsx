@@ -25,7 +25,7 @@ const SoundSettings = () => {
         </Toggle>
       </div>
       <div className="mt-4">
-        <label className="mb-2 block text-sm font-medium">Volume</label>
+        {/* <label className="mb-2 block text-sm font-medium">Volume</label> */}
         {/* <Slider
   defaultValue={[volume * 100]} // Convert 0-1 range to 0-100 for slider
   onValueChange={(value: number[]) => {
