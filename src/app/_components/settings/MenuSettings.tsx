@@ -9,10 +9,11 @@ import {
   NavigationMenuTrigger,
 } from "~/components/ui/navigation-menu";
 import { Separator } from "~/components/ui/separator";
-import { useSoundsStore } from "~/store/useSoundStore";
+import { useSoundsStore } from "~/store/useSoundsStore";
+import AddSoundButton from "../sounds/AddSoundButton";
 import SoundSettings from "../sounds/SoundButton";
+import ToggleDeleteModeButton from "../sounds/ToggleDeleteMode";
 import { SessionSettings } from "./SessionSettings";
-import AddSoundButton from '../sounds/AddSoundButton';
 
 export default function MenuSettings() {
   const { sounds } = useSoundsStore();
@@ -89,8 +90,10 @@ export default function MenuSettings() {
                     ))}
                   </div>
 
-                  <div className="mt-4 flex w-full justify-center px-4 py-2">
+                  <div className="mt-4 flex w-full items-center justify-center space-x-5 px-4 py-2">
                     <AddSoundButton />
+                    {/* <div>:</div> */}
+                    <ToggleDeleteModeButton />
                   </div>
                 </div>
               </div>

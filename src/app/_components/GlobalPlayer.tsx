@@ -1,7 +1,7 @@
 "use client";
 // app/components/GlobalPlayer.tsx
 import ReactPlayer from "react-player";
-import { useSoundsStore } from "~/store/useSoundStore";
+import { useSoundsStore } from "~/store/useSoundsStore";
 
 const GlobalPlayer = () => {
   const { sounds } = useSoundsStore();

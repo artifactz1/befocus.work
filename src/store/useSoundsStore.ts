@@ -8,14 +8,18 @@ interface Sound {
 }
 
 interface SoundsState {
+  isDeleteMode: boolean;
   sounds: Record<string, Sound>; // Use Record instead of index signature
   toggleSound: (id: string) => void;
+  toggleDeleteMode: () => void;
   setVolume: (id: string, volume: number) => void;
   addSound: (id: string, url: string) => void;
+  deleteSound: (id: string) => void;
 }
 
 export const useSoundsStore = create<SoundsState>((set) => ({
   sounds: {},
+  isDeleteMode: false, // Initialize delete mode state
   toggleSound: (id) =>
     set((state) => {
       const sound = state.sounds[id];
@@ -38,5 +42,16 @@ export const useSoundsStore = create<SoundsState>((set) => ({
         ...state.sounds,
         [id]: { playing: false, volume: 0.5, url },
       },
+    })),
+  deleteSound: (id) =>
+    set((state) => {
+      const newSounds = { ...state.sounds };
+      delete newSounds[id];
+      return { sounds: newSounds };
+    }),
+  toggleDeleteMode: () =>
+    set((state) => ({
+      ...state,
+      isDeleteMode: !state.isDeleteMode,
     })),
 }));
