@@ -10,8 +10,9 @@ import {
 } from "~/components/ui/navigation-menu";
 import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundStore";
+import AddSoundButton from "../sounds/AddSoundButton";
+import SoundSettings from "../sounds/SoundButton";
 import { SessionSettings } from "./SessionSettings";
-import SoundSettings from "./SoundSettings";
 
 export default function MenuSettings() {
   const { sounds } = useSoundsStore();
@@ -24,7 +25,12 @@ export default function MenuSettings() {
         "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
       );
     // useSoundsStore.getState().addSound('sound2', 'https://www.youtube.com/watch?v=VPFxZw5qUwE&ab_channel=CafeRelaxingMusic');
-    useSoundsStore.getState().addSound('jazz', "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing");
+    useSoundsStore
+      .getState()
+      .addSound(
+        "jazz",
+        "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
+      );
   }
 
   return (
@@ -77,9 +83,15 @@ export default function MenuSettings() {
                   </div> */}
                   {/* <GlobalPlayer/> */}
 
-                  {Object.keys(sounds).map((soundId) => (
-                    <SoundSettings key={soundId} soundId={soundId} />
-                  ))}
+                  <div className="space-y-4">
+                    {Object.keys(sounds).map((soundId) => (
+                      <SoundSettings key={soundId} soundId={soundId} />
+                    ))}
+                  </div>
+
+                  <div className="mt-4 flex w-full justify-center px-4 py-2">
+                    <AddSoundButton />
+                  </div>
                 </div>
               </div>
             </NavigationMenuContent>
