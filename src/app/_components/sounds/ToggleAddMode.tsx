@@ -3,11 +3,15 @@ import { Button } from "~/components/ui/button";
 import { useSoundsStore } from "~/store/useSoundsStore";
 
 export default function ToggleAddMode() {
-  const { toggleAddMode, toggleDeleteMode } = useSoundsStore();
+  const { toggleAddMode, toggleDeleteMode, isDeleteMode } = useSoundsStore();
 
   const handleSubmit = () => {
-    toggleAddMode();
-    // toggleDeleteMode();
+    if (isDeleteMode === true) {
+      toggleAddMode();
+    } else {
+      toggleAddMode();
+      toggleDeleteMode();
+    }
   };
 
   return (
