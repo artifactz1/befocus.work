@@ -9,9 +9,12 @@ import {
   NavigationMenuTrigger,
 } from "~/components/ui/navigation-menu";
 import { Separator } from "~/components/ui/separator";
-import { useSoundsStore } from "~/store/useSoundStore";
+import { useSoundsStore } from "~/store/useSoundsStore";
+import AddSoundButton from "../sounds/AddSoundButton";
+import SoundSettings from "../sounds/SoundButton";
+import ToggleAddMode from "../sounds/ToggleAddMode";
+import ToggleDeleteModeButton from "../sounds/ToggleDeleteMode";
 import { SessionSettings } from "./SessionSettings";
-import SoundSettings from "./SoundSettings";
 
 export default function MenuSettings() {
   const { sounds } = useSoundsStore();
@@ -20,10 +23,16 @@ export default function MenuSettings() {
     useSoundsStore
       .getState()
       .addSound(
-        "sound1",
+        "rain",
         "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
       );
     // useSoundsStore.getState().addSound('sound2', 'https://www.youtube.com/watch?v=VPFxZw5qUwE&ab_channel=CafeRelaxingMusic');
+    useSoundsStore
+      .getState()
+      .addSound(
+        "jazz",
+        "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
+      );
   }
 
   return (
@@ -61,24 +70,18 @@ export default function MenuSettings() {
                     befocus/sounds
                   </div>
                   <Separator className="my-4 bg-white" />
-                  {/* <p className="text-sm leading-tight text-muted-foreground">
-                    &quot;FEATURE COMING SOON&quot;
-                  </p> */}
-                  {/* <SoundSettings/> */}
-                  {/* <SoundButton
-                    soundId="sound1"
-                    url="https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm"
-                  />
-                  <div>
-                    <GlobalPlayer soundId="sound1" />
-                    <SoundSettings soundId="sound1" />
-                    
-                  </div> */}
-                  {/* <GlobalPlayer/> */}
+                  <div className="space-y-4">
+                    {Object.keys(sounds).map((soundId) => (
+                      <SoundSettings key={soundId} soundId={soundId} />
+                    ))}
+                  </div>
 
-                  {Object.keys(sounds).map((soundId) => (
-                    <SoundSettings key={soundId} soundId={soundId} />
-                  ))}
+                  <AddSoundButton />
+                  <div className="mt-4 flex w-full items-center justify-center space-x-5 px-4 py-2">
+                    <ToggleAddMode />
+                    {/* <div>:</div> */}
+                    <ToggleDeleteModeButton />
+                  </div>
                 </div>
               </div>
             </NavigationMenuContent>
