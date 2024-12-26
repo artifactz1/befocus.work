@@ -1,17 +1,18 @@
-import { Minus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { useSoundsStore } from "~/store/useSoundsStore";
 
-export default function ToggleDeleteModeButton() {
-  const { toggleDeleteMode } = useSoundsStore();
+export default function ToggleAddMode() {
+  const { toggleAddMode, toggleDeleteMode } = useSoundsStore();
 
   const handleSubmit = () => {
-    toggleDeleteMode();
+    toggleAddMode();
+    // toggleDeleteMode();
   };
 
   return (
     <Button onClick={handleSubmit}>
-      <Minus />
+      <Plus />
     </Button>
   );
 }
