@@ -20,10 +20,11 @@ export default function MenuSettings() {
     useSoundsStore
       .getState()
       .addSound(
-        "sound1",
+        "rain",
         "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
       );
     // useSoundsStore.getState().addSound('sound2', 'https://www.youtube.com/watch?v=VPFxZw5qUwE&ab_channel=CafeRelaxingMusic');
+    useSoundsStore.getState().addSound('jazz', "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing");
   }
 
   return (
