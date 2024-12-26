@@ -1,21 +1,33 @@
-// Example usage of ReactPlayer in a parent component, such as MenuSettings.tsx
+"use client";
+// app/components/GlobalPlayer.tsx
 import ReactPlayer from "react-player";
-import { useSoundStore } from "~/store/useSoundStore"; // Adjust the import path as needed
+import { useSoundsStore } from "~/store/useSoundStore";
 
 const GlobalPlayer = () => {
-  const { playing, volume } = useSoundStore();
+  const { sounds } = useSoundsStore();
+  const soundKeys = Object.keys(sounds);
 
   return (
-    <ReactPlayer
-      url="https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm"
-      playing={playing}
-      volume={volume}
-      config={{
-        youtube: { playerVars: { modestbranding: 1, showinfo: 0 } },
-      }}
-      width="0"
-      height="0"
-    />
+    <>
+      {soundKeys.map((key) => {
+        const sound = sounds[key];
+
+        // Check if sound exists before rendering the ReactPlayer
+        if (!sound) return null;
+
+        return (
+          <ReactPlayer
+            key={key}
+            url={sound.url}
+            playing={sound.playing}
+            volume={sound.volume}
+            controls={false} // Don't show controls as it's controlled globally
+            width="0"
+            height="0"
+          />
+        );
+      })}
+    </>
   );
 };
 

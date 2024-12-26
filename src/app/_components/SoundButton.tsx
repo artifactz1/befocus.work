@@ -2,7 +2,7 @@
 // src/components/SoundButton.tsx
 import { useState } from "react";
 import ReactPlayer from "react-player";
-import { useSoundStore } from "~/store/useSoundStore";
+import { useSoundsStore } from "~/store/useSoundStore";
 
 interface SoundButtonProps {
   soundId: string;
@@ -10,7 +10,7 @@ interface SoundButtonProps {
 }
 
 const SoundButton = ({ soundId, url }: SoundButtonProps) => {
-  const { sounds, toggleSound, setVolume } = useSoundStore();
+  const { sounds, toggleSound, setVolume } = useSoundsStore();
   const [localVolume, setLocalVolume] = useState(
     sounds[soundId]?.volume ?? 0.8,
   );
