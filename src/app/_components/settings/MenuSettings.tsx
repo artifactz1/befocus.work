@@ -10,9 +10,9 @@ import {
 } from "~/components/ui/navigation-menu";
 import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundStore";
-import AddSoundButton from "../sounds/AddSoundButton";
 import SoundSettings from "../sounds/SoundButton";
 import { SessionSettings } from "./SessionSettings";
+import AddSoundButton from '../sounds/AddSoundButton';
 
 export default function MenuSettings() {
   const { sounds } = useSoundsStore();

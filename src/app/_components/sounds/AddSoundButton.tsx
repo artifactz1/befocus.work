@@ -25,6 +25,13 @@ export default function AddSoundButton() {
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
 
+  const handleSubmit = () => {
+    addSound(name, link)
+    setName("")
+    setLink("")
+  } 
+
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -48,7 +55,7 @@ export default function AddSoundButton() {
             </Label>
             <Input
               id="name"
-              onChange={(value) => setName(value)}
+              onChange={(e) => setName(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -58,13 +65,15 @@ export default function AddSoundButton() {
             </Label>
             <Input
               id="username"
-              onChange={(value) => setLink(value)}
+              onChange={(e) => setLink(e.target.value)}
               className="col-span-3"
             />
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={addSound()}>Add</Button>
+          <Button type="submit" onClick={handleSubmit}>
+            Add
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
