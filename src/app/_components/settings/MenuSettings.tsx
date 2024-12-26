@@ -1,3 +1,4 @@
+"use client";
 import { Cog, NotebookPen, Volume2 } from "lucide-react";
 
 import {
@@ -8,9 +9,23 @@ import {
   NavigationMenuTrigger,
 } from "~/components/ui/navigation-menu";
 import { Separator } from "~/components/ui/separator";
+import { useSoundsStore } from "~/store/useSoundStore";
 import { SessionSettings } from "./SessionSettings";
+import SoundSettings from "./SoundSettings";
 
 export default function MenuSettings() {
+  const { sounds } = useSoundsStore();
+
+  if (Object.keys(sounds).length === 0) {
+    useSoundsStore
+      .getState()
+      .addSound(
+        "sound1",
+        "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
+      );
+    // useSoundsStore.getState().addSound('sound2', 'https://www.youtube.com/watch?v=VPFxZw5qUwE&ab_channel=CafeRelaxingMusic');
+  }
+
   return (
     <div className="flex items-center justify-center">
       <NavigationMenu>
@@ -46,9 +61,24 @@ export default function MenuSettings() {
                     befocus/sounds
                   </div>
                   <Separator className="my-4 bg-white" />
-                  <p className="text-sm leading-tight text-muted-foreground">
+                  {/* <p className="text-sm leading-tight text-muted-foreground">
                     &quot;FEATURE COMING SOON&quot;
-                  </p>
+                  </p> */}
+                  {/* <SoundSettings/> */}
+                  {/* <SoundButton
+                    soundId="sound1"
+                    url="https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm"
+                  />
+                  <div>
+                    <GlobalPlayer soundId="sound1" />
+                    <SoundSettings soundId="sound1" />
+                    
+                  </div> */}
+                  {/* <GlobalPlayer/> */}
+
+                  {Object.keys(sounds).map((soundId) => (
+                    <SoundSettings key={soundId} soundId={soundId} />
+                  ))}
                 </div>
               </div>
             </NavigationMenuContent>
