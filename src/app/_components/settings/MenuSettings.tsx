@@ -70,6 +70,7 @@ export default function MenuSettings() {
                     befocus/sounds
                   </div>
                   <Separator className="my-4 bg-white" />
+                  {}
                   <div className="space-y-4">
                     {Object.keys(sounds).map((soundId) => (
                       <SoundSettings key={soundId} soundId={soundId} />
