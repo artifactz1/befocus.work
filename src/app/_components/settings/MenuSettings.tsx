@@ -9,6 +9,7 @@ import {
 } from "~/components/ui/navigation-menu";
 import { Separator } from "~/components/ui/separator";
 import { SessionSettings } from "./SessionSettings";
+import SoundSettings from './SoundSettings';
 
 export default function MenuSettings() {
   return (
@@ -46,9 +47,10 @@ export default function MenuSettings() {
                     befocus/sounds
                   </div>
                   <Separator className="my-4 bg-white" />
-                  <p className="text-sm leading-tight text-muted-foreground">
+                  {/* <p className="text-sm leading-tight text-muted-foreground">
                     &quot;FEATURE COMING SOON&quot;
-                  </p>
+                  </p> */}
+                  <SoundSettings/>
                 </div>
               </div>
             </NavigationMenuContent>
