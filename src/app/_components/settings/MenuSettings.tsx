@@ -79,7 +79,6 @@ export default function MenuSettings() {
                   <AddSoundButton />
                   <div className="mt-4 flex w-full items-center justify-center space-x-5 px-4 py-2">
                     <ToggleAddMode />
-                    {/* <div>:</div> */}
                     <ToggleDeleteModeButton />
                   </div>
                 </div>
