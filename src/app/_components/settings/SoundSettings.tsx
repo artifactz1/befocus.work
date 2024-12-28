@@ -1,6 +1,10 @@
+"use client";
+
 import { Separator } from "@radix-ui/react-separator";
 import { Volume2 } from "lucide-react";
+import { useEffect } from "react";
 import { useSoundsStore } from "~/store/useSoundsStore";
+import GlobalPlayer from "../GlobalPlayer";
 import AddSoundButton from "../sounds/AddSoundButton";
 import SoundButton from "../sounds/SoundButton";
 import ToggleAddMode from "../sounds/ToggleAddMode";
@@ -9,24 +13,27 @@ import ToggleDeleteModeButton from "../sounds/ToggleDeleteMode";
 export default function SoundSettings() {
   const { sounds } = useSoundsStore();
 
-  if (Object.keys(sounds).length === 0) {
-    useSoundsStore
-      .getState()
-      .addSound(
-        "rain",
-        "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
-      );
-    // useSoundsStore.getState().addSound('sound2', 'https://www.youtube.com/watch?v=VPFxZw5qUwE&ab_channel=CafeRelaxingMusic');
-    useSoundsStore
-      .getState()
-      .addSound(
-        "jazz",
-        "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
-      );
-  }
+  useEffect(() => {
+    if (Object.keys(sounds).length === 0) {
+      useSoundsStore
+        .getState()
+        .addSound(
+          "rain",
+          "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
+        );
+      useSoundsStore
+        .getState()
+        .addSound(
+          "jazz",
+          "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
+        );
+    }
+  });
 
+  // useSoundsStore.getState().addSound('sound2', 'https://www.youtube.com/watch?v=VPFxZw5qUwE&ab_channel=CafeRelaxingMusic');
   return (
     <div className="w-[400px] gap-3 md:w-[500px] lg:w-[400px]">
+      <GlobalPlayer />
       <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
         <Volume2 />
         <div className="mb-2 mt-4 text-lg font-medium">befocus/sounds</div>
