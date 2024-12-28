@@ -15,7 +15,7 @@ interface SoundsState {
   toggleDeleteMode: () => void;
   toggleAddMode: () => void;
   setVolume: (id: string, volume: number) => void;
-  addSound: (id: string, url: string) => void;
+  addSound: (id: string, url: string, isCustom: boolean) => void;
   deleteSound: (id: string) => void;
 }
 
@@ -43,7 +43,7 @@ export const useSoundsStore = create<SoundsState>((set) => ({
     set((state) => ({
       sounds: {
         ...state.sounds,
-        [id]: { playing: false, volume: 0.5, url },
+        [id]: { playing: false, volume: 0.5, url, isCustom: true },
       },
     })),
   deleteSound: (id) =>

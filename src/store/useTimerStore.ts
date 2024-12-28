@@ -12,30 +12,24 @@ interface TimerState {
   skipToNextSession: () => void;
   toggleTimer: () => void;
   decrementTime: () => void;
+  isAlarmOn: boolean;
   updateSettings: (
     key: "sessions" | "workDuration" | "breakDuration",
     value: number,
   ) => void;
+  toggleAlarm: () => void;
 }
-
-// export const useTimerStore = create<TimerState>((set) => ({
-//   sessions: 4,
-//   workDuration: 25,
-//   breakDuration: 5,
-//   updateTimer: (key, value) =>
-//     set((state) => ({
-//       ...state,
-//       [key]: value,
-//     })),
-// }));
 
 export const useTimerStore = create<TimerState>((set, get) => ({
   sessions: 6,
   workDuration: 25 * 60,
-  breakDuration: 5 * 60,
+  // breakDuration: 5 * 60,
+  breakDuration: 2,
   currentSession: 1,
   isWorking: true,
-  timeLeft: 25 * 60,
+  isAlarmOn: false,
+  // timeLeft: 25 * 60,
+  timeLeft: 2,
   isRunning: false,
   reset: () =>
     set({
@@ -43,6 +37,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       isWorking: true,
       timeLeft: get().workDuration,
       isRunning: false,
+      isAlarmOn: false, // Resetting isAlarmOn to false
     }),
   skipToNextSession: () => {
     const { isWorking, breakDuration, workDuration, sessions, currentSession } =
@@ -59,37 +54,36 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     set({ isRunning: false });
   },
   toggleTimer: () => set((state) => ({ isRunning: !state.isRunning })),
+
   decrementTime: () =>
     set((state) => {
       if (state.timeLeft === 0) {
-        if (state.isWorking && state.currentSession < state.sessions) {
-          return { isWorking: false, timeLeft: state.breakDuration };
-        } else if (!state.isWorking) {
-          return {
-            isWorking: true,
-            currentSession: state.currentSession + 1,
-            timeLeft: state.workDuration,
-          };
-        } else {
-          return { isRunning: false, timeLeft: 0 };
+        state.isRunning = false;
+        state.timeLeft = 0;
+        if (state.isAlarmOn === false) {
+          if (state.isWorking && state.currentSession < state.sessions) {
+            return { isWorking: false, timeLeft: state.breakDuration };
+          } else if (!state.isWorking) {
+            return {
+              isWorking: true,
+              currentSession: state.currentSession + 1,
+              timeLeft: state.workDuration,
+            };
+          } else {
+            return { isRunning: false, timeLeft: 0 };
+          }
         }
       }
       return { timeLeft: state.timeLeft - 1 };
     }),
-  // updateSettings: (key, value) => {
-  //   set((state) => {
-  //     const newState = { ...state };
-  //     if (key === 'workDuration' || key === 'breakDuration') {
-  //       newState[key] = value * 60;
-  //     } else {
-  //       newState[key] = value;
-  //     }
-  //     return newState;
-  //   });
-  // },
+
   updateSettings: (key, value) =>
     set((state) => ({
       ...state,
       [key]: value,
+    })),
+  toggleAlarm: () =>
+    set((state) => ({
+      isAlarmOn: !state.isAlarmOn, // Toggling the isAlarmOn state
     })),
 }));

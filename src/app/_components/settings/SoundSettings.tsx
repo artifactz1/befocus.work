@@ -20,15 +20,17 @@ export default function SoundSettings() {
         .addSound(
           "rain",
           "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
+          false,
         );
       useSoundsStore
         .getState()
         .addSound(
           "jazz",
           "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
+          false,
         );
     }
-  });
+  },[sounds]);
 
   // useSoundsStore.getState().addSound('sound2', 'https://www.youtube.com/watch?v=VPFxZw5qUwE&ab_channel=CafeRelaxingMusic');
   return (
