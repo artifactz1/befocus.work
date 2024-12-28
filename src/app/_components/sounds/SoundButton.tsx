@@ -20,7 +20,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
 
   return (
     <main>
-      {isDeleteMode ? (
+      {!isDeleteMode ? (
         <div className="flex-row space-y-2">
           <label className="p-1">{soundId}</label>
           <div className="flex space-x-2">

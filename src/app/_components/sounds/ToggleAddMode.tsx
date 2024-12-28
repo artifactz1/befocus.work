@@ -6,11 +6,18 @@ export default function ToggleAddMode() {
   const { toggleAddMode, toggleDeleteMode, isDeleteMode } = useSoundsStore();
 
   const handleSubmit = () => {
+    // if (isDeleteMode === true) {
+    //   toggleAddMode();
+    // } else {
+    //   toggleAddMode();
+    //   toggleDeleteMode();
+    // }
+
     if (isDeleteMode === true) {
+      toggleDeleteMode();
       toggleAddMode();
     } else {
       toggleAddMode();
-      toggleDeleteMode();
     }
   };
 
