@@ -3,9 +3,10 @@
 import ReactPlayer from "react-player";
 import { useSoundsStore } from "~/store/useSoundsStore";
 
-const GlobalPlayer = () => {
+const AlarmPlayer = () => {
   const { sounds } = useSoundsStore();
   const soundKeys = Object.keys(sounds);
+  
 
   return (
     <>
@@ -33,4 +34,4 @@ const GlobalPlayer = () => {
   );
 };
 
-export default GlobalPlayer;
+export default AlarmPlayer;

@@ -21,6 +21,11 @@ export default function Timer() {
       toggleAlarm();
       toggleSound("localSound");
     }
+    else
+    {
+
+    }
+
   }, [timeLeft, toggleSound, addSound, toggleAlarm]);
 
   useEffect(() => {
