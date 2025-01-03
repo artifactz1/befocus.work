@@ -14,12 +14,12 @@ export default function Timer() {
     const fileUrl = "/sounds/lofi-alarm-clock-243766.mp3";
 
     // Add the sound directly using the URL
-    // useSoundsStore.getState().addSound("localSound", fileUrl, false);
+    useSoundsStore.getState().addSound("localSound", fileUrl, false);
     // addSound("localSound1", fileUrl, true);
 
     if (timeLeft === 0) {
       toggleAlarm();
-      // toggleSound("localSound1");
+      toggleSound("localSound");
     }
   }, [timeLeft, toggleSound, addSound, toggleAlarm]);
 

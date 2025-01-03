@@ -14,23 +14,23 @@ export default function SoundSettings() {
   const { sounds } = useSoundsStore();
 
   useEffect(() => {
-    if (Object.keys(sounds).length === 0) {
+    if (Object.keys(sounds).length <= 1) {
       useSoundsStore
         .getState()
         .addSound(
           "rain",
           "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
-          false,
+          true,
         );
       useSoundsStore
         .getState()
         .addSound(
           "jazz",
           "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
-          false,
+          true,
         );
     }
-  },[sounds]);
+  }, [sounds]);
 
   // useSoundsStore.getState().addSound('sound2', 'https://www.youtube.com/watch?v=VPFxZw5qUwE&ab_channel=CafeRelaxingMusic');
   return (
@@ -41,9 +41,11 @@ export default function SoundSettings() {
         <div className="mb-2 mt-4 text-lg font-medium">befocus/sounds</div>
         <Separator className="my-4 bg-white" />
         <div className="space-y-4">
-          {Object.keys(sounds).map((soundId) => (
-            <SoundButton key={soundId} soundId={soundId} />
-          ))}
+          {Object.keys(sounds)
+            .filter((soundId) => sounds[soundId]?.isCustom)
+            .map((soundId) => (
+              <SoundButton key={soundId} soundId={soundId} />
+            ))}
         </div>
 
         <AddSoundButton />

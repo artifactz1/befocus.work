@@ -5,6 +5,7 @@ interface Sound {
   playing: boolean;
   volume: number;
   url: string; // URL for the sound
+  isCustom: boolean;
 }
 
 interface SoundsState {
@@ -39,11 +40,11 @@ export const useSoundsStore = create<SoundsState>((set) => ({
       }
       return { sounds: { ...state.sounds } };
     }),
-  addSound: (id, url) =>
+  addSound: (id, url, isCustom = true) =>
     set((state) => ({
       sounds: {
         ...state.sounds,
-        [id]: { playing: false, volume: 0.5, url, isCustom: true },
+        [id]: { playing: false, volume: 0.5, url, isCustom: isCustom },
       },
     })),
   deleteSound: (id) =>
