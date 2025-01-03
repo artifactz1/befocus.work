@@ -9,7 +9,9 @@ const GlobalPlayer = () => {
 
   return (
     <>
-      {soundKeys.map((key) => {
+      {soundKeys
+        .filter((key)=> !sounds[key]?.isCustom)
+        .map((key) => {
         const sound = sounds[key];
 
         // Check if sound exists before rendering the ReactPlayer

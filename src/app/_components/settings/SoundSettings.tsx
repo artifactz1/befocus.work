@@ -1,10 +1,10 @@
 "use client";
 
-import { Separator } from "@radix-ui/react-separator";
 import { Volume2 } from "lucide-react";
 import { useEffect } from "react";
+import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
-import GlobalPlayer from "../GlobalPlayer";
+import GlobalPlayer from "../GlobalSoundsPlayer";
 import AddSoundButton from "../sounds/AddSoundButton";
 import SoundButton from "../sounds/SoundButton";
 import ToggleAddMode from "../sounds/ToggleAddMode";
@@ -40,6 +40,7 @@ export default function SoundSettings() {
         <Volume2 />
         <div className="mb-2 mt-4 text-lg font-medium">befocus/sounds</div>
         <Separator className="my-4 bg-white" />
+        <h3 className="text-center"> Ambient Sounds</h3>
         <div className="space-y-4">
           {Object.keys(sounds)
             .filter((soundId) => sounds[soundId]?.isCustom)
@@ -47,7 +48,6 @@ export default function SoundSettings() {
               <SoundButton key={soundId} soundId={soundId} />
             ))}
         </div>
-
         <AddSoundButton />
         <div className="mt-4 flex w-full items-center justify-center space-x-5 px-4 py-2">
           <ToggleAddMode />
