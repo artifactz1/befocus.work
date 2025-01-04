@@ -7,17 +7,17 @@ import { formatTime } from "~/utils/formatTime";
 
 export default function Timer() {
   const { toggleSound, addSound } = useSoundsStore();
-  const { timeLeft, isRunning, decrementTime, toggleAlarm } = useTimerStore();
+  const { timeLeft, isRunning, decrementTime } = useTimerStore();
   const audioRef = useRef(new Audio("/sounds/lofi-alarm-clock.mp3"));
 
-  const play = useCallback(() => {
+  const playAlarm = useCallback(() => {
     const audio = audioRef.current;
     audio.play().catch((error) => {
       console.error("Error playing audio:", error);
     });
   }, []);
 
-  const stop = useCallback(() => {
+  const stopAlarm = useCallback(() => {
     const audio = audioRef.current;
     if (audio) {
       audio.pause();
@@ -34,13 +34,11 @@ export default function Timer() {
     // addSound("localSound1", fileUrl, true);
 
     if (timeLeft === 0) {
-      toggleAlarm();
-      // toggleSound("ALARM-1");
-      play();
+      playAlarm();
     } else {
-      stop();
+      stopAlarm();
     }
-  }, [timeLeft, toggleSound, addSound, toggleAlarm, play, stop]);
+  }, [timeLeft, toggleSound, addSound, playAlarm, stopAlarm]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
