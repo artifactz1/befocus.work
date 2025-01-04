@@ -1,5 +1,6 @@
 "use client";
 
+
 // app/components/SoundSettings.tsx
 import { Volume2, VolumeX } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -20,7 +21,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
 
   return (
     <main>
-      {isDeleteMode ? (
+      {!isDeleteMode ? (
         <div className="flex-row space-y-2">
           <label className="p-1">{soundId}</label>
           <div className="flex space-x-2">
