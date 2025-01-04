@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { useTimerStore } from "~/store/useTimerStore";
 import { formatTime } from "~/utils/formatTime";
@@ -8,25 +8,39 @@ import { formatTime } from "~/utils/formatTime";
 export default function Timer() {
   const { toggleSound, addSound } = useSoundsStore();
   const { timeLeft, isRunning, decrementTime, toggleAlarm } = useTimerStore();
+  const audioRef = useRef(new Audio("/sounds/lofi-alarm-clock.mp3"));
+
+  const play = useCallback(() => {
+    const audio = audioRef.current;
+    audio.play().catch((error) => {
+      console.error("Error playing audio:", error);
+    });
+  }, []);
+
+  const stop = useCallback(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }, []);
 
   useEffect(() => {
     // Add the sound directly using the URL
     const fileUrl = "/sounds/lofi-alarm-clock-243766.mp3";
 
     // Add the sound directly using the URL
-    useSoundsStore.getState().addSound("localSound", fileUrl, false);
+    useSoundsStore.getState().addSound("ALARM-1", fileUrl, false);
     // addSound("localSound1", fileUrl, true);
 
     if (timeLeft === 0) {
       toggleAlarm();
-      toggleSound("localSound");
+      // toggleSound("ALARM-1");
+      play();
+    } else {
+      stop();
     }
-    else
-    {
-
-    }
-
-  }, [timeLeft, toggleSound, addSound, toggleAlarm]);
+  }, [timeLeft, toggleSound, addSound, toggleAlarm, play, stop]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
