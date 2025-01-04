@@ -17,19 +17,16 @@ interface TimerState {
     key: "sessions" | "workDuration" | "breakDuration",
     value: number,
   ) => void;
-  toggleAlarm: () => void;
 }
 
 export const useTimerStore = create<TimerState>((set, get) => ({
   sessions: 6,
   workDuration: 25 * 60,
-  // breakDuration: 5 * 60,
-  breakDuration: 2,
+  breakDuration: 5 * 60,
   currentSession: 1,
   isWorking: true,
   isAlarmOn: false,
-  // timeLeft: 25 * 60,
-  timeLeft: 2,
+  timeLeft: 25 * 60,
   isRunning: false,
   reset: () =>
     set({
@@ -81,9 +78,5 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     set((state) => ({
       ...state,
       [key]: value,
-    })),
-  toggleAlarm: () =>
-    set((state) => ({
-      isAlarmOn: !state.isAlarmOn, // Toggling the isAlarmOn state
     })),
 }));
