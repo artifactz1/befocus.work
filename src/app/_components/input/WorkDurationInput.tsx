@@ -12,7 +12,7 @@ export const WorkDurationInput: React.FC<BreakDurationInputProps> = ({
 }) => (
   <div className="flex flex-col">
     <Label htmlFor="workDuration" className="mb-2 text-sm font-medium">
-      Work (min)
+      Work Duration (min)
     </Label>
     <Input
       id="workDuration"

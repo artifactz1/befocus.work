@@ -11,11 +11,8 @@ export const BreakDurationInput: React.FC<BreakDurationInputProps> = ({
   onChange,
 }) => (
   <div className="flex flex-col">
-    <Label
-      htmlFor="breakDuration"
-      className="mb-2 text-sm font-medium "
-    >
-      Break (min)
+    <Label htmlFor="breakDuration" className="mb-2 text-sm font-medium">
+      Break Duration (min)
     </Label>
     <Input
       id="breakDuration"
