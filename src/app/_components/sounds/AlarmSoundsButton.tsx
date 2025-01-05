@@ -1,7 +1,6 @@
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -18,7 +17,7 @@ const alarmList: Alarm[] = [
   { name: "alarm2", filePath: "/public/sounds/alarm2.mp3" },
   { name: "alarm3", filePath: "/public/sounds/alarm3.mp3" },
   { name: "alarm4", filePath: "/public/sounds/alarm4.mp3" },
-  { name: "alarm5", filePath: "/public/sounds/alarm1.mp3" },
+  { name: "alarm5", filePath: "/public/sounds/alarm5.mp3" },
 ];
 
 export default function AlarmSoundsButton() {
@@ -28,18 +27,16 @@ export default function AlarmSoundsButton() {
       <h3 className="text-center"> Alarm</h3>
       <div className="flex-row space-y-2">
         <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select a fruit" />
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a alarm" />
           </SelectTrigger>
           <SelectContent>
-            <SelectGroup>
-              {/* <SelectLabel>Fruits</SelectLabel> */}
-              <SelectItem value="apple">Apple</SelectItem>
-              <SelectItem value="banana">Banana</SelectItem>
-              <SelectItem value="blueberry">Blueberry</SelectItem>
-              <SelectItem value="grapes">Grapes</SelectItem>
-              <SelectItem value="pineapple">Pineapple</SelectItem>
-            </SelectGroup>
+            {/* <SelectLabel>Fruits</SelectLabel> */}
+            {alarmList.map((alarm, index) => (
+              <SelectItem key={index} value={alarm.filePath}>
+                {alarm.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
