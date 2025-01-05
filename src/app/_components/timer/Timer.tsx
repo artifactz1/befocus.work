@@ -6,9 +6,21 @@ import { useTimerStore } from "~/store/useTimerStore";
 import { formatTime } from "~/utils/formatTime";
 
 export default function Timer() {
-  const { toggleSound, addSound } = useSoundsStore();
+  const { sounds, alarmId } = useSoundsStore();
   const { timeLeft, isRunning, decrementTime } = useTimerStore();
   const audioRef = useRef(new Audio("/sounds/alarm1.mp3"));
+
+  useEffect(() => {
+    const selectedAlarm = sounds[alarmId];
+    if (selectedAlarm) {
+      if (audioRef.current) {
+        audioRef.current.src = selectedAlarm.url;
+        audioRef.current.load(); // Reload the audio element with the new source
+      } else {
+        audioRef.current = new Audio(selectedAlarm.url);
+      }
+    }
+  }, [alarmId, sounds]);
 
   const playAlarm = useCallback(() => {
     const audio = audioRef.current;
@@ -38,7 +50,7 @@ export default function Timer() {
     } else {
       stopAlarm();
     }
-  }, [timeLeft, toggleSound, addSound, playAlarm, stopAlarm]);
+  }, [timeLeft, playAlarm, stopAlarm]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
