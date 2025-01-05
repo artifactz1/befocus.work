@@ -5,7 +5,6 @@ import Footer from "./_components/Footer";
 import GlobalSoundsPlayer from "./_components/GlobalSoundsPlayer";
 import Header from "./_components/Header";
 import Timer from "./_components/timer/Timer";
-import AlarmPlayer from './_components/AlarmPlayer';
 
 export default async function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });
@@ -18,7 +17,6 @@ export default async function Home() {
   return (
     <HydrateClient>
       <GlobalSoundsPlayer />
-      <AlarmPlayer/>
       <main className="flex h-screen w-screen flex-col items-center justify-center">
         <Header />
         <Timer />

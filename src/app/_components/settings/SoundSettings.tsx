@@ -6,6 +6,7 @@ import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import GlobalPlayer from "../GlobalSoundsPlayer";
 import AddSoundButton from "../sounds/AddSoundButton";
+import AlarmSoundsButton from "../sounds/AlarmSoundsButton";
 import SoundButton from "../sounds/SoundButton";
 import ToggleAddMode from "../sounds/ToggleAddMode";
 import ToggleDeleteModeButton from "../sounds/ToggleDeleteMode";
@@ -39,15 +40,7 @@ export default function SoundSettings() {
       <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
         <Volume2 />
         <div className="mb-2 mt-4 text-lg font-medium">befocus/sounds</div>
-        {/* <Separator className="my-4 bg-white" />
-        <h3 className="text-center"> Alarm Sounds</h3>
-        <div className="space-y-4">
-          {Object.keys(sounds)
-            .filter((soundId) => sounds[soundId]?.isCustom === false)
-            .map((soundId) => (
-              <SoundButton key={soundId} soundId={soundId} />
-            ))}
-        </div> */}
+        <AlarmSoundsButton />
         <Separator className="my-4 bg-white" />
         <h3 className="text-center"> Ambient Sounds</h3>
 

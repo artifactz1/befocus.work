@@ -8,7 +8,7 @@ import { formatTime } from "~/utils/formatTime";
 export default function Timer() {
   const { toggleSound, addSound } = useSoundsStore();
   const { timeLeft, isRunning, decrementTime } = useTimerStore();
-  const audioRef = useRef(new Audio("/sounds/lofi-alarm-clock.mp3"));
+  const audioRef = useRef(new Audio("/sounds/alarm1.mp3"));
 
   const playAlarm = useCallback(() => {
     const audio = audioRef.current;
@@ -27,10 +27,10 @@ export default function Timer() {
 
   useEffect(() => {
     // Add the sound directly using the URL
-    const fileUrl = "/sounds/lofi-alarm-clock-243766.mp3";
+    // const fileUrl = "/sounds/lofi-alarm-clock-243766.mp3";
 
     // Add the sound directly using the URL
-    useSoundsStore.getState().addSound("ALARM-1", fileUrl, false);
+    // useSoundsStore.getState().addSound("ALARM-1", fileUrl, false);
     // addSound("localSound1", fileUrl, true);
 
     if (timeLeft === 0) {
