@@ -26,8 +26,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
   currentSession: 1,
   isWorking: true,
   isAlarmOn: false,
-  // timeLeft: 25 * 60,
-  timeLeft: 2,
+  timeLeft: 25 * 60,
   isRunning: false,
   reset: () =>
     set({
