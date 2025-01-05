@@ -62,7 +62,6 @@ export default function Timer() {
   }, [isRunning, decrementTime, timeLeft]);
 
   return (
-    // <div className="flex h-[70vh] w-screen flex-col items-center justify-center">
 
     <div className="relative z-0 flex h-[70vh] items-center justify-center">
       <div className="absolute h-fit text-[25vw] font-bold">
