@@ -4,7 +4,6 @@ import { Volume2 } from "lucide-react";
 // import { useEffect } from "react";
 import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
-import GlobalPlayer from "../GlobalSoundsPlayer";
 import AddSoundButton from "../sounds/AddSoundButton";
 import AlarmSoundsButton from "../sounds/AlarmSoundsButton";
 import SoundButton from "../sounds/SoundButton";
@@ -16,7 +15,6 @@ export default function SoundSettings() {
 
   return (
     <div className="w-[400px] gap-3 md:w-[500px] lg:w-[400px]">
-      <GlobalPlayer />
       <div className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
         <Volume2 />
         <div className="mb-2 mt-4 text-lg font-medium">befocus/sounds</div>
