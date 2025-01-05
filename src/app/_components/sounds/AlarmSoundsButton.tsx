@@ -6,59 +6,34 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
-
-interface Alarm {
-  name: string;
-  filePath: string;
-}
-
-const alarmList: Alarm[] = [
-  { name: "alarm1", filePath: "/public/sounds/alarm1.mp3" },
-  { name: "alarm2", filePath: "/public/sounds/alarm2.mp3" },
-  { name: "alarm3", filePath: "/public/sounds/alarm3.mp3" },
-  { name: "alarm4", filePath: "/public/sounds/alarm4.mp3" },
-  { name: "alarm5", filePath: "/public/sounds/alarm5.mp3" },
-];
+import { useSoundsStore } from "~/store/useSoundsStore";
 
 export default function AlarmSoundsButton() {
+  const { sounds, alarmId, setAlarmId } = useSoundsStore();
+  
   return (
     <div>
       <Separator className="my-4 bg-white" />
-      <h3 className="text-center"> Alarm</h3>
+      <h3 className="text-center">Alarm</h3>
       <div className="flex-row space-y-2">
-        <Select>
+        <Select
+          value={alarmId} // Bind the selected alarm to the current state
+          onValueChange={(value) => setAlarmId(value)} // Update the alarmId on selection
+        >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a alarm" />
+            <SelectValue placeholder="Select an alarm" />
           </SelectTrigger>
           <SelectContent>
-            {/* <SelectLabel>Fruits</SelectLabel> */}
-            {alarmList.map((alarm, index) => (
-              <SelectItem key={index} value={alarm.filePath}>
-                {alarm.name}
-              </SelectItem>
-            ))}
+            {Object.keys(sounds)
+              .filter((soundId) => !sounds[soundId]?.isCustom) // Only include non-custom sounds
+              .map((soundId) => (
+                <SelectItem key={soundId} value={soundId}>
+                  {soundId}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
-      {/* <Toggle
-              pressed={sound.playing}
-              onPressedChange={() => toggleSound(soundId)} // Toggle sound globally
-              // className={`${sound.playing ? "text-blue" : "bg-gray-200 text-gray-800"}`}
-              className={"border border-white"}
-            >
-              {sound.playing ? <Volume2 /> : <VolumeX />}
-            </Toggle>
-
-            <Slider
-              value={[sound.volume * 100]} // Default to the current volume (range 0-100)
-              onValueChange={(value) => {
-                const newVolume = value[0] ?? 80; // Default to 80 if value is undefined
-                setVolume(soundId, newVolume / 100); // Set volume globally (range 0-1)
-              }}
-              max={100}
-              step={1}
-              className="w-full"
-            /> */}
     </div>
   );
 }

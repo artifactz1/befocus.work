@@ -89,6 +89,8 @@ interface SoundsState {
   setVolume: (id: string, volume: number) => void;
   addSound: (id: string, url: string, isCustom: boolean) => void;
   deleteSound: (id: string) => void;
+  alarmId: string;
+  setAlarmId: (id: string) => void;
 }
 
 const alarmList: Alarm[] = [
@@ -101,15 +103,18 @@ const alarmList: Alarm[] = [
 
 export const useSoundsStore = create<SoundsState>((set) => {
   // Prepopulate sounds with alarms
-  const initialSounds = alarmList.reduce<Record<string, Sound>>((acc, alarm) => {
-    acc[alarm.name] = {
-      playing: false,
-      volume: 0.5,
-      url: alarm.filePath,
-      isCustom: false,
-    };
-    return acc;
-  }, {});
+  const initialSounds = alarmList.reduce<Record<string, Sound>>(
+    (acc, alarm) => {
+      acc[alarm.name] = {
+        playing: false,
+        volume: 0.5,
+        url: alarm.filePath,
+        isCustom: false,
+      };
+      return acc;
+    },
+    {},
+  );
 
   return {
     sounds: {
@@ -117,6 +122,8 @@ export const useSoundsStore = create<SoundsState>((set) => {
     },
     isDeleteMode: false, // Initialize delete mode state
     isAddMode: false, // Initialize add mode state
+    alarmId: "alarm1",
+    setAlarmId: (id) => set(() => ({ alarmId: id })),
     toggleSound: (id) =>
       set((state) => {
         const sound = state.sounds[id];
