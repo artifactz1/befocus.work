@@ -8,7 +8,7 @@ import { formatTime } from "~/utils/formatTime";
 export default function Timer() {
   const { toggleSound, addSound } = useSoundsStore();
   const { timeLeft, isRunning, decrementTime } = useTimerStore();
-  const audioRef = useRef(new Audio("/sounds/lofi-alarm-clock.mp3"));
+  const audioRef = useRef(new Audio("/sounds/alarm1.mp3"));
 
   const playAlarm = useCallback(() => {
     const audio = audioRef.current;
