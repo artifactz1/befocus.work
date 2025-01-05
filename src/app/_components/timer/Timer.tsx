@@ -38,13 +38,6 @@ export default function Timer() {
   }, []);
 
   useEffect(() => {
-    // Add the sound directly using the URL
-    // const fileUrl = "/sounds/lofi-alarm-clock-243766.mp3";
-
-    // Add the sound directly using the URL
-    // useSoundsStore.getState().addSound("ALARM-1", fileUrl, false);
-    // addSound("localSound1", fileUrl, true);
-
     if (timeLeft === 0) {
       playAlarm();
     } else {
