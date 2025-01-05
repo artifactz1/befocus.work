@@ -40,15 +40,6 @@ export default function SoundSettings() {
         <Volume2 />
         <div className="mb-2 mt-4 text-lg font-medium">befocus/sounds</div>
         <Separator className="my-4 bg-white" />
-        <h3 className="text-center"> Alarm Sounds</h3>
-        <div className="space-y-4">
-          {Object.keys(sounds)
-            .filter((soundId) => sounds[soundId]?.isCustom === false)
-            .map((soundId) => (
-              <SoundButton key={soundId} soundId={soundId} />
-            ))}
-        </div>
-        <Separator className="my-4 bg-white" />
         <h3 className="text-center"> Ambient Sounds</h3>
 
         <div className="space-y-4">
