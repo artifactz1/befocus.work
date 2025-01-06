@@ -18,7 +18,10 @@ export default function MenuSettings() {
             <NotebookPen />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="h-full w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[400px]">
+        <PopoverContent
+          align="start"
+          className="h-full w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[400px]"
+        >
           <div className="flex h-full w-full select-none flex-col justify-end">
             <NotebookPen />
             <div className="mb-2 mt-4 text-lg font-medium">
@@ -47,7 +50,10 @@ export default function MenuSettings() {
             <Cog />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="h-full w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[400px]">
+        <PopoverContent
+          align="end"
+          className="h-full w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[400px]"
+        >
           <div className="flex h-full w-full select-none flex-col justify-end">
             <Cog />
             <div className="mb-2 mt-4 text-lg font-medium">
