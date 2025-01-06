@@ -34,7 +34,7 @@ BeFocused is a productivity and self-improvement app designed to help users defi
 
 ## Key Features
 
-### 1. Onboarding Flow
+### 1. Onboarding Flow (COMING SOON)
 - Guided questions about future goals and identity.
 - **Vision Board** for visualizing your future self.
 - **Manifesto Creation** to articulate and manifest your aspirations.
@@ -44,7 +44,7 @@ BeFocused is a productivity and self-improvement app designed to help users defi
 - Set specific goals and create systems to achieve them.
 - Track habits and monitor progress (e.g., coding for one hour daily, posting one video a day).
 
-### 3. Bullet Journal Implementation
+### 3. Bullet Journal Implementation (COMING SOON)
 - Minimalist design with intuitive symbols:
   - **Random Task:** △ (Triangle)
   - **Habits:** ❤️ (Heart)
@@ -54,7 +54,7 @@ BeFocused is a productivity and self-improvement app designed to help users defi
 - Filter and organize notes effortlessly.
 - User interface mimics a physical notebook with dotted, lined, and other style options.
 
-### 4. Widgets
+### 4. Widgets (COMING SOON)
 - **Pomodoro Timer** and general Timer for focused work.
 - **Schedule Widget** showing full-day time blocks.
 - **Stats Widget** with visual progress bars.
