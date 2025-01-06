@@ -7,14 +7,14 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "~/components/ui/navigation-menu";
-import { Separator } from "~/components/ui/separator";
-import { SessionSettings } from "./SessionSettings";
-import SoundSettings from "./SoundSettings";
+// import { Separator } from "~/components/ui/separator";
+// import { SessionSettings } from "./SessionSettings";
+// import SoundSettings from "./SoundSettings";
 
 export default function MenuSettings() {
   return (
     <div className="flex items-center justify-center">
-      <NavigationMenu>
+      {/* <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuTrigger>
@@ -61,7 +61,7 @@ export default function MenuSettings() {
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
-      </NavigationMenu>
+      </NavigationMenu> */}
     </div>
   );
 }
