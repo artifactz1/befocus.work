@@ -25,10 +25,18 @@ interface SoundsState {
   toggleDeleteMode: () => void;
   toggleAddMode: () => void;
   setVolume: (id: string, volume: number) => void;
-  addSound: (id: string, url: string, isCustom: boolean, soundType: SoundType) => void; // Updated
+  addSound: (
+    id: string,
+    url: string,
+    isCustom: boolean,
+    soundType: SoundType,
+  ) => void; // Updated
   deleteSound: (id: string) => void;
   alarmId: string;
   setAlarmId: (id: string) => void;
+  alarmVolume: number;
+  setAlarmVolume: (id: number) => void;
+  // setAlarmSound: (id: string, url: string) => void; // New function
 }
 
 const alarmList: Alarm[] = [
@@ -62,7 +70,9 @@ export const useSoundsStore = create<SoundsState>((set) => {
     isDeleteMode: false, // Initialize delete mode state
     isAddMode: false, // Initialize add mode state
     alarmId: "",
+    alarmVolume: 0.5,
     setAlarmId: (id) => set({ alarmId: id }),
+    setAlarmVolume: (volume: number) => set({ alarmVolume: volume }),
     toggleSound: (id) =>
       set((state) => {
         const sound = state.sounds[id];
@@ -106,19 +116,15 @@ export const useSoundsStore = create<SoundsState>((set) => {
 });
 
 // Add "rain" and "jazz" sounds after initialization
-useSoundsStore
-  .getState()
-  .addSound(
-    "rain",
-    "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
-    true,
-    "ambient", // Specify the sound type
-  );
-useSoundsStore
-  .getState()
-  .addSound(
-    "jazz",
-    "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
-    true,
-    "bgMusic", // Specify the sound type
-  );
+useSoundsStore.getState().addSound(
+  "rain",
+  "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
+  true,
+  "ambient", // Specify the sound type
+);
+useSoundsStore.getState().addSound(
+  "jazz",
+  "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
+  true,
+  "bgMusic", // Specify the sound type
+);

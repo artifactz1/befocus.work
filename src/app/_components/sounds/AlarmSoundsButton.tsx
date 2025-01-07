@@ -18,7 +18,10 @@ export default function AlarmSoundsButton() {
   const audioRef = useRef(audio); // Use a ref to persist the audio element across renders
 
   // Provide a default value for alarmId if it's undefined or null
-  const currentAlarm = alarmId || "";
+  const currentAlarm = alarmId || "alarm1";
+
+    const [volume, setVolumeState] = useState(0.5); // Default volume to 0.5
+
 
   // Play the selected sound when the alarmId changes
   useEffect(() => {
