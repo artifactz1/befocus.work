@@ -1,10 +1,15 @@
 import { create } from "zustand";
 
+// Define sound types
+const soundTypes = ["alarm", "ambient", "bgMusic"] as const;
+type SoundType = (typeof soundTypes)[number];
+
 interface Sound {
   playing: boolean;
   volume: number;
   url: string; // URL for the sound
   isCustom: boolean;
+  soundType: SoundType; // New field for sound type
 }
 
 interface Alarm {
@@ -20,7 +25,7 @@ interface SoundsState {
   toggleDeleteMode: () => void;
   toggleAddMode: () => void;
   setVolume: (id: string, volume: number) => void;
-  addSound: (id: string, url: string, isCustom: boolean) => void;
+  addSound: (id: string, url: string, isCustom: boolean, soundType: SoundType) => void; // Updated
   deleteSound: (id: string) => void;
   alarmId: string;
   setAlarmId: (id: string) => void;
@@ -43,6 +48,7 @@ export const useSoundsStore = create<SoundsState>((set) => {
         volume: 0.5,
         url: alarm.filePath,
         isCustom: false,
+        soundType: "alarm", // Set sound type for alarms
       };
       return acc;
     },
@@ -73,11 +79,11 @@ export const useSoundsStore = create<SoundsState>((set) => {
         }
         return { sounds: { ...state.sounds } };
       }),
-    addSound: (id, url, isCustom = true) =>
+    addSound: (id, url, isCustom = true, soundType: SoundType) =>
       set((state) => ({
         sounds: {
           ...state.sounds,
-          [id]: { playing: false, volume: 0.5, url, isCustom: isCustom },
+          [id]: { playing: false, volume: 0.5, url, isCustom, soundType },
         },
       })),
     deleteSound: (id) =>
@@ -106,6 +112,7 @@ useSoundsStore
     "rain",
     "https://www.youtube.com/watch?v=yIQd2Ya0Ziw&ab_channel=Calm",
     true,
+    "ambient", // Specify the sound type
   );
 useSoundsStore
   .getState()
@@ -113,4 +120,5 @@ useSoundsStore
     "jazz",
     "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
     true,
+    "bgMusic", // Specify the sound type
   );
