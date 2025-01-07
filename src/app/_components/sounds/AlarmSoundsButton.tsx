@@ -94,7 +94,7 @@ export default function AlarmSoundsButton() {
   const audioRef = useRef(audio); // Use a ref to persist the audio element across renders
 
   // Provide a default value for alarmId if it's undefined or null
-  const currentAlarm = alarmId || "alarm1";
+  const currentAlarm = alarmId || "";
 
   // Play the selected sound when the alarmId changes
   useEffect(() => {
