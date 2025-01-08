@@ -1,6 +1,5 @@
 "use client";
 
-
 // app/components/SoundSettings.tsx
 import { Volume2, VolumeX } from "lucide-react";
 import { Button } from "~/components/ui/button";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import {
   Select,
@@ -20,56 +20,44 @@ export default function AlarmSoundsButton() {
     alarmId,
     setAlarmId,
     setVolume,
-    alarmVolume,
-    setAlarmVolume,
     toggleSound,
+    isSoundSettingsOpen,
   } = useSoundsStore();
 
   const sound = sounds[alarmId];
 
-  const [playedOnce, setPlayedOnce] = useState(false); // Track if the video has played once
+  const [isPlaying, setIsPlaying] = useState(false); // Local state to manage ReactPlayer's playing state
 
-  const handleEnded = () => {
-    setPlayedOnce(true); // Mark as played once
-  };
+  // Set ReactPlayer to not play when popover is open
+  useEffect(() => {
+    if (isSoundSettingsOpen) {
+      setIsPlaying(false); // Stop sound when the popover is open
+    }
+  }, [isSoundSettingsOpen]);
 
-  if (!sound) return null;
-
-  // const handleSelectChange = (value: string) => {
-  //   if (value) {
-  //     setAlarmId(value); // Safely update alarmId
-  //     toggleSound(value);
-  //   } else {
-  //     console.warn("Invalid value selected:", value);
-  //   }
-  // };
-
+  // Update ReactPlayer's playing state when a new sound is selected
   const handleSelectChange = (value: string) => {
-    if (value && value !== alarmId) {
-      // Only update if the value is different
-      setAlarmId(value); // Update alarmId
+    if (value) {
+      setAlarmId(value); // Safely update alarmId
       toggleSound(value); // Trigger sound toggle
-      
-    } else if (value === alarmId) {
-      console.log("Same alarm selected, no action taken.");
+      setIsPlaying(true); // Start playing the sound when a new alarm is selected
     } else {
       console.warn("Invalid value selected:", value);
     }
   };
 
+  if (!sound) return null;
+
   return (
     <div>
-      {!playedOnce && (
-        <ReactPlayer
-          url={sound.url} // Replace with your media URL
-          playing={sound.playing} // Start playing the video
-          volume={sound.volume}
-          controls={false}
-          // onEnded={handleEnded} // Triggered when video ends
-          width="0"
-          height="0"
-        />
-      )}
+      <ReactPlayer
+        url={sound.url} // Replace with your media URL
+        playing={isPlaying} // Controlled by state
+        volume={sound.volume}
+        controls={false}
+        width="0"
+        height="0"
+      />
 
       <Separator className="my-4 bg-white" />
       <h3 className="text-center">Alarm Sound</h3>
@@ -110,4 +98,3 @@ export default function AlarmSoundsButton() {
     </div>
   );
 }
-
