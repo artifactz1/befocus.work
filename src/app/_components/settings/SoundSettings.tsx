@@ -27,7 +27,7 @@ export default function SoundSettings() {
           .map((soundId) => (
             <SoundButton key={soundId} soundId={soundId} />
           ))}
-        
+
         {Object.keys(sounds)
           .filter((soundId) => sounds[soundId]?.soundType === "bgMusic")
           .map((soundId) => (

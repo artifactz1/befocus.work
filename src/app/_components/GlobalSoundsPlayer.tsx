@@ -10,7 +10,7 @@ const GlobalPlayer = () => {
   return (
     <>
       {soundKeys
-        .filter((key) => sounds[key]?.isCustom === true)
+        .filter((key) => sounds[key]?.soundType === "bgMusic" || "ambient")
         .map((key) => {
           const sound = sounds[key];
 
