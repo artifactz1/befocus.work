@@ -49,6 +49,7 @@ export default function AlarmSoundsButton() {
       // Only update if the value is different
       setAlarmId(value); // Update alarmId
       toggleSound(value); // Trigger sound toggle
+      
     } else if (value === alarmId) {
       console.log("Same alarm selected, no action taken.");
     } else {
@@ -109,3 +110,4 @@ export default function AlarmSoundsButton() {
     </div>
   );
 }
+

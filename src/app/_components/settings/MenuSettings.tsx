@@ -1,4 +1,7 @@
+"use client";
+
 import { Cog, NotebookPen, Volume2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
   Popover,
@@ -10,6 +13,8 @@ import { SessionSettings } from "./SessionSettings";
 import SoundSettings from "./SoundSettings";
 
 export default function MenuSettings() {
+  const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
+
   return (
     <div className="flex items-center justify-center space-x-1">
       <Popover>
@@ -34,9 +39,13 @@ export default function MenuSettings() {
           </div>
         </PopoverContent>
       </Popover>
-      <Popover>
+      <Popover open={isSoundOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="h-12 w-32">
+          <Button
+            variant="outline"
+            className="h-12 w-32"
+            onClick={() => setIsSoundOpen(!isSoundOpen)}
+          >
             <Volume2 />
           </Button>
         </PopoverTrigger>
