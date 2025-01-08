@@ -69,7 +69,7 @@ export const useSoundsStore = create<SoundsState>((set) => {
     },
     isDeleteMode: false, // Initialize delete mode state
     isAddMode: false, // Initialize add mode state
-    alarmId: "",
+    alarmId: "alarm1",
     alarmVolume: 0.5,
     setAlarmId: (id) => set({ alarmId: id }),
     setAlarmVolume: (volume: number) => set({ alarmVolume: volume }),

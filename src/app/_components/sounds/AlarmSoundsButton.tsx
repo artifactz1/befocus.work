@@ -171,7 +171,6 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -181,44 +180,71 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
+import { Slider } from "~/components/ui/slider";
 import { useSoundsStore } from "~/store/useSoundsStore";
-import SoundButton from './SoundButton';
 
 export default function AlarmSoundsButton() {
-  const { sounds, alarmId, setAlarmId } = useSoundsStore();
-  const [audio] = useState(new Audio()); // Create an audio element
-  const audioRef = useRef(audio); // Use a ref to persist the audio element across renders
+  const {
+    sounds,
+    alarmId,
+    setAlarmId,
+    setVolume,
+    alarmVolume,
+    setAlarmVolume,
+    toggleSound,
+  } = useSoundsStore();
+  // const [audio] = useState(new Audio()); // Create an audio element
+  // const audioRef = useRef(audio); // Use a ref to persist the audio element across renders
 
   // Provide a default value for alarmId if it's undefined or null
-  const currentAlarm = alarmId || "alarm1";
+  // const currentAlarm = alarmId || "";
+
+  const sound = sounds[alarmId];
+
+  if (!sound) return null;
 
   // Play the selected sound when the alarmId changes
-  useEffect(() => {
-    const selectedSound = sounds[alarmId];
-    if (selectedSound && audioRef.current) {
-      audioRef.current.src = selectedSound.url; // Update the audio source
-      audioRef.current.load(); // Reload audio element with the new source
-      audioRef.current.play().catch((error) => {
-        console.error("Error playing audio:", error);
-      });
-    }
-  }, [alarmId, sounds]); // Re-run effect whenever alarmId or sounds change
+  // useEffect(() => {
+  //   const selectedSound = sounds[alarmId];
+  //   if (selectedSound) {
+  //     if (audioRef.current) {
+  //       audioRef.current.src = selectedSound.url; // Update the audio source
+  //       audioRef.current.volume = alarmVolume; // Sync with the global alarmVolume
+  //       audioRef.current.load(); // Reload audio element with the new source
+  //       audioRef.current.play().catch((error) => {
+  //         console.error("Error playing audio:", error);
+  //       });
+  //     }
+  //   }
+  // }, [alarmId, alarmVolume, sounds]); // Re-run effect whenever alarmId, alarmVolume, or sounds change
 
   const handleSelectChange = (value: string) => {
     if (value) {
       setAlarmId(value); // Safely update alarmId
+      toggleSound(value);
     } else {
       console.warn("Invalid value selected:", value);
     }
   };
 
+  // const handleVolumeChange = (newVolume: number[]) => {
+  //   const volumeValue = newVolume[0]; // Correct index to access the first value
+  //   if (volumeValue !== undefined) {
+  //     // Ensure the value exists
+  //     setAlarmVolume(volumeValue); // Update the global `alarmVolume` state
+  //     audioRef.current.volume = volumeValue; // Update the audio element's volume
+  //   } else {
+  //     console.warn("Volume value is undefined");
+  //   }
+  // };
+
   return (
     <div>
       <Separator className="my-4 bg-white" />
       <h3 className="text-center">Alarm Sound</h3>
-      <div className="flex-row space-y-2">
+      <div className="flex-row space-y-4">
         <Select
-          value={currentAlarm} // Ensure value is a string
+          value={alarmId} // Ensure value is a string
           onValueChange={handleSelectChange}
         >
           <SelectTrigger className="w-1/3">
@@ -227,7 +253,7 @@ export default function AlarmSoundsButton() {
           <SelectContent>
             <SelectGroup>
               {Object.keys(sounds)
-                .filter((soundId) => !sounds[soundId]?.isCustom) // Only non-custom sounds
+                .filter((soundId) => sounds[soundId]?.soundType === "alarm") // Only alarm sounds
                 .map((soundId) => (
                   <SelectItem key={soundId} value={soundId}>
                     {soundId}
@@ -236,8 +262,26 @@ export default function AlarmSoundsButton() {
             </SelectGroup>
           </SelectContent>
         </Select>
-        <SoundButton soundId={currentAlarm}/>
-        
+        <div className="space-y-2">
+          <label className="block text-center text-sm">Volume</label>
+          {/* <Slider
+            value={[alarmVolume]} // Current global alarm volume
+            onValueChange={handleVolumeChange} // Handle slider change
+            step={0.1}
+            min={0}
+            max={1}
+          /> */}
+          <Slider
+            value={[sound.volume * 100]} // Default to the current volume (range 0-100)
+            onValueChange={(value) => {
+              const newVolume = value[0] ?? 80; // Default to 80 if value is undefined
+              setVolume(alarmId, newVolume / 100); // Set volume globally (range 0-1)
+            }}
+            max={100}
+            step={1}
+            className="w-full"
+          />
+        </div>
       </div>
     </div>
   );
