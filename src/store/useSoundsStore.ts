@@ -36,7 +36,8 @@ interface SoundsState {
   setAlarmId: (id: string) => void;
   alarmVolume: number;
   setAlarmVolume: (id: number) => void;
-  setSoundSettingsOpen: boolean;
+  isSoundSettingsOpen: boolean;
+  setSoundSettingsOpen: (state: boolean) => void;
   // setAlarmSound: (id: string, url: string) => void; // New function
 }
 
@@ -72,7 +73,8 @@ export const useSoundsStore = create<SoundsState>((set) => {
     isAddMode: false, // Initialize add mode state
     alarmId: "alarm1",
     alarmVolume: 0.5,
-    setSoundSettingsOpen: false,
+    isSoundSettingsOpen: false,
+    setSoundSettingsOpen: (state) => set({ isSoundSettingsOpen: state }),
     setAlarmId: (id) => set({ alarmId: id }),
     setAlarmVolume: (volume: number) => set({ alarmVolume: volume }),
     toggleSound: (id) =>
