@@ -16,6 +16,7 @@ export default function Timer() {
       if (audioRef.current) {
         audioRef.current.src = selectedAlarm.url;
         audioRef.current.load(); // Reload the audio element with the new source
+        audioRef.current.volume = selectedAlarm.volume 
       } else {
         audioRef.current = new Audio(selectedAlarm.url);
       }

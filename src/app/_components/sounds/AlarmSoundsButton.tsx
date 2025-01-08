@@ -20,8 +20,6 @@ export default function AlarmSoundsButton() {
     alarmId,
     setAlarmId,
     setVolume,
-    alarmVolume,
-    setAlarmVolume,
     toggleSound,
     isSoundSettingsOpen,
   } = useSoundsStore();

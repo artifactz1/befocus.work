@@ -34,11 +34,8 @@ interface SoundsState {
   deleteSound: (id: string) => void;
   alarmId: string;
   setAlarmId: (id: string) => void;
-  alarmVolume: number;
-  setAlarmVolume: (id: number) => void;
   isSoundSettingsOpen: boolean;
   setSoundSettingsOpen: (state: boolean) => void;
-  // setAlarmSound: (id: string, url: string) => void; // New function
 }
 
 const alarmList: Alarm[] = [
@@ -72,11 +69,9 @@ export const useSoundsStore = create<SoundsState>((set) => {
     isDeleteMode: false, // Initialize delete mode state
     isAddMode: false, // Initialize add mode state
     alarmId: "alarm1",
-    alarmVolume: 0.5,
     isSoundSettingsOpen: false,
     setSoundSettingsOpen: (state) => set({ isSoundSettingsOpen: state }),
     setAlarmId: (id) => set({ alarmId: id }),
-    setAlarmVolume: (volume: number) => set({ alarmVolume: volume }),
     toggleSound: (id) =>
       set((state) => {
         const sound = state.sounds[id];
