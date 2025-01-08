@@ -36,6 +36,7 @@ interface SoundsState {
   setAlarmId: (id: string) => void;
   alarmVolume: number;
   setAlarmVolume: (id: number) => void;
+  setSoundSettingsOpen: boolean;
   // setAlarmSound: (id: string, url: string) => void; // New function
 }
 
