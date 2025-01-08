@@ -41,7 +41,7 @@ export default function AddSoundButton() {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
 
-    addSound(name, link, false);
+    addSound(name, link, false, "ambient" );
 
     setName("");
     setLink("");

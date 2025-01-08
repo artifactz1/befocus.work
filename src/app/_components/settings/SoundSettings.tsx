@@ -23,7 +23,13 @@ export default function SoundSettings() {
 
       <div className="space-y-4">
         {Object.keys(sounds)
-          .filter((soundId) => sounds[soundId]?.isCustom)
+          .filter((soundId) => sounds[soundId]?.soundType === "ambient")
+          .map((soundId) => (
+            <SoundButton key={soundId} soundId={soundId} />
+          ))}
+
+        {Object.keys(sounds)
+          .filter((soundId) => sounds[soundId]?.soundType === "bgMusic")
           .map((soundId) => (
             <SoundButton key={soundId} soundId={soundId} />
           ))}
