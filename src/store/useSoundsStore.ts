@@ -72,6 +72,7 @@ export const useSoundsStore = create<SoundsState>((set) => {
     isAddMode: false, // Initialize add mode state
     alarmId: "alarm1",
     alarmVolume: 0.5,
+    setSoundSettingsOpen: false,
     setAlarmId: (id) => set({ alarmId: id }),
     setAlarmVolume: (volume: number) => set({ alarmVolume: volume }),
     toggleSound: (id) =>
