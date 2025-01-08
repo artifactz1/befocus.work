@@ -16,7 +16,8 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <GlobalSoundsPlayer type={["bgMusic", "ambient"]}/>
+      {/* <GlobalSoundsPlayer type={["bgMusic", "ambient"]}/> */}
+      <GlobalSoundsPlayer />
       <main className="flex h-screen w-screen flex-col items-center justify-center">
         <Header />
         <Timer />
