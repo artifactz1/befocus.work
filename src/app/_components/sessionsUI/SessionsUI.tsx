@@ -13,25 +13,8 @@
 //       </div>
 //       <div>
 //         <div className="flex">
-//           {Array.from({ length: totalSessions / 2 })
+//           {Array.from({ length: totalSessions })
 //             .filter((_, index) => index % 2 === 0)
-//             .map((_, index) => (
-//               <div
-//                 key={`work-${index}`}
-//                 className={cn(
-//                   "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
-//                   index < currentSession ? activeColor : "bg-transparent",
-//                 )}
-//                 role="progressbar"
-//                 aria-valuenow={currentSession}
-//                 aria-valuemin={1}
-//                 aria-valuemax={totalSessions}
-//               />
-//             ))}
-//         </div>
-//         <div className="flex">
-//           {Array.from({ length: totalSessions / 2 })
-//             .filter((_, index) => index % 2 !== 0)
 //             .map((_, index) => (
 //               <div
 //                 key={`work-${index}`}
@@ -92,8 +75,8 @@ export default function SessionsUI() {
               key={`break-${index}`}
               className={cn(
                 "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
-                index < Math.floor((currentSession - 1) / 2) &&
-                  isWorking === true // Completed break sessions
+                // index <= Math.floor((currentSession - 1) / 2) &&
+                index < currentSession - 1 && isWorking === true // Completed break sessions
                   ? completedColor
                   : !isWorking && currentSession - 1 === index // Current break session
                     ? activeColor
