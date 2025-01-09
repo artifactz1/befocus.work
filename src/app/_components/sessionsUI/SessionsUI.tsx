@@ -56,8 +56,8 @@ import { useTimerStore } from "~/store/useTimerStore";
 
 export default function SessionsUI() {
   const { sessions, currentSession, isWorking } = useTimerStore();
-  const activeColor = "bg-pink-500";
-  const totalSessions = sessions * 2;
+  const activeColor = "bg-pink-500"; // Current session
+  const completedColor = "bg-green-500"; // Completed sessions
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-6 p-6">
@@ -72,7 +72,11 @@ export default function SessionsUI() {
               key={`work-${index}`}
               className={cn(
                 "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
-                isWorking && currentSession - 1 === index ? activeColor : "bg-transparent"
+                index < currentSession - 1 // Completed work sessions
+                  ? completedColor
+                  : isWorking && currentSession - 1 === index // Current work session
+                    ? activeColor
+                    : "bg-transparent",
               )}
               role="progressbar"
               aria-valuenow={currentSession}
@@ -88,7 +92,11 @@ export default function SessionsUI() {
               key={`break-${index}`}
               className={cn(
                 "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
-                !isWorking && currentSession - 1 === index ? activeColor : "bg-transparent"
+                index < Math.floor((currentSession - 1) / 2) // Completed break sessions
+                  ? completedColor
+                  : !isWorking && currentSession - 1 === index // Current break session
+                    ? activeColor
+                    : "bg-transparent",
               )}
               role="progressbar"
               aria-valuenow={currentSession}
