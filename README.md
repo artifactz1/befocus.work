@@ -74,7 +74,7 @@ BeFocused is a productivity and self-improvement app designed to help users defi
 - Maintaining a minimalist bullet journal for tasks, habits, events, notes, and memories.
 - Staying focused with Pomodoro timers and tracking progress with widgets.
 
-## User Interface and User Experience (UI/UX)
+<!-- ## User Interface and User Experience (UI/UX)
 
 ### Onboarding Flow
 - Guided questions to understand goals and identity.
@@ -95,7 +95,7 @@ BeFocused is a productivity and self-improvement app designed to help users defi
 - Pomodoro Timer with start, stop, and reset functionalities.
 - Schedule Widget displaying time blocks for better planning.
 - Stats Widget showing daily progress visually.
-- Bullet Journal Widget for quick entries.
+- Bullet Journal Widget for quick entries. -->
 
 ## Built With
 - [Next.js](https://nextjs.org)
