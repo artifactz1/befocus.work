@@ -72,7 +72,7 @@ export default function SessionsUI() {
               key={`work-${index}`}
               className={cn(
                 "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
-                index < currentSession - 1 // Completed work sessions
+                index <= currentSession - 1 && isWorking === false // Completed work sessions
                   ? completedColor
                   : isWorking && currentSession - 1 === index // Current work session
                     ? activeColor
@@ -92,7 +92,8 @@ export default function SessionsUI() {
               key={`break-${index}`}
               className={cn(
                 "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
-                index < Math.floor((currentSession - 1) / 2) // Completed break sessions
+                index < Math.floor((currentSession - 1) / 2) &&
+                  isWorking === true // Completed break sessions
                   ? completedColor
                   : !isWorking && currentSession - 1 === index // Current break session
                     ? activeColor
