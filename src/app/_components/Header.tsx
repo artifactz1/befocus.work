@@ -1,7 +1,7 @@
 "use client";
 
 import { useTimerStore } from "~/store/useTimerStore";
-import SessionsUI from "./sessionsUI/SessionsUI";
+import SessionsUI from "./SessionsUI";
 
 function Timer() {
   const { isWorking, isRunning } = useTimerStore();
