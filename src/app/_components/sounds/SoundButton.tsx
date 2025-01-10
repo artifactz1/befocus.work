@@ -22,7 +22,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
     <main>
       {!isDeleteMode ? (
         <div className="flex-row space-y-2">
-          <label className="p-1">{soundId}</label>
+          <label className="p-1 font-medium">{soundId}</label>
           <div className="flex space-x-2">
             <Toggle
               pressed={sound.playing}

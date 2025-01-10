@@ -11,8 +11,8 @@ export const SessionsInput: React.FC<SessionsInputProps> = ({
   onChange,
 }) => (
   <div className="flex flex-col">
-    <Label htmlFor="sessions" className="mb-2 text-sm font-medium">
-      Sessions
+    <Label htmlFor="sessions" className="mb-2 text-sm font-semibold">
+      Rounds
     </Label>
     <Input
       id="sessions"

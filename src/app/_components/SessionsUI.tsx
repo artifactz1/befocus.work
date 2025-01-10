@@ -44,7 +44,7 @@ export default function SessionsUI() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-3 p-6">
-      <p className="text-2xl font-light">
+      <p className="text-2xl font-semibold">
         {currentSession} / {sessions}
       </p>
       <div className="space-y-1">

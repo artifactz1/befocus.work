@@ -60,7 +60,7 @@ export default function AlarmSoundsButton() {
       />
 
       <Separator className="my-4 bg-white" />
-      <h3 className="text-center">Alarm Sound</h3>
+      <h3 className="text-center font-semibold">Alarm Sound</h3>
       <div className="flex-row space-y-4">
         <Select
           value={alarmId} // Ensure value is a string

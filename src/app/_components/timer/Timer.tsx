@@ -8,33 +8,38 @@ import { formatTime } from "~/utils/formatTime";
 export default function Timer() {
   const { sounds, alarmId } = useSoundsStore();
   const { timeLeft, isRunning, decrementTime } = useTimerStore();
-  const audioRef = useRef(new Audio("/sounds/alarm1.mp3"));
+
+  // Initialize the ref with `null` for SSR compatibility
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Create the audio element only on the client side
+      audioRef.current = new Audio("sounds/alarm1.mp3");
+    }
+  }, []);
 
   useEffect(() => {
     const selectedAlarm = sounds[alarmId];
-    if (selectedAlarm) {
-      if (audioRef.current) {
-        audioRef.current.src = selectedAlarm.url;
-        audioRef.current.load(); // Reload the audio element with the new source
-        audioRef.current.volume = selectedAlarm.volume 
-      } else {
-        audioRef.current = new Audio(selectedAlarm.url);
-      }
+    if (selectedAlarm && audioRef.current) {
+      audioRef.current.src = selectedAlarm.url;
+      audioRef.current.load(); // Reload the audio element with the new source
+      audioRef.current.volume = selectedAlarm.volume;
     }
   }, [alarmId, sounds]);
 
   const playAlarm = useCallback(() => {
-    const audio = audioRef.current;
-    audio.play().catch((error) => {
-      console.error("Error playing audio:", error);
-    });
+    if (audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
+    }
   }, []);
 
   const stopAlarm = useCallback(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
     }
   }, []);
 
@@ -63,7 +68,6 @@ export default function Timer() {
   }, [isRunning, decrementTime, timeLeft]);
 
   return (
-
     <div className="relative z-0 flex h-[70vh] items-center justify-center">
       <div className="absolute h-fit text-[25vw] font-bold">
         {formatTime(timeLeft)}

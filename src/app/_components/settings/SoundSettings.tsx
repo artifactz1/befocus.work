@@ -16,10 +16,10 @@ export default function SoundSettings() {
   return (
     <div className="flex h-full w-full select-none flex-col justify-end rounded-md no-underline outline-none">
       <Volume2 />
-      <div className="mb-2 mt-4 text-lg font-medium">befocus/sounds</div>
+      <div className="mb-2 mt-4 text-lg font-bold">befocus/sounds</div>
       <AlarmSoundsButton />
       <Separator className="my-4 bg-white" />
-      <h3 className="text-center"> Ambient Sounds</h3>
+      <h3 className="font-semibold text-center"> Ambient Sounds</h3>
 
       <div className="space-y-4">
         {Object.keys(sounds)

@@ -1,6 +1,6 @@
 "use client";
 
-import { Cog, NotebookPen, Volume2 } from "lucide-react";
+import { NotebookPen, Timer, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -17,11 +17,9 @@ export default function MenuSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
   const { setSoundSettingsOpen } = useSoundsStore();
 
-  useEffect (() => {
-
+  useEffect(() => {
     setSoundSettingsOpen(isSoundOpen);
-
-  },[isSoundOpen,setSoundSettingsOpen]); 
+  }, [isSoundOpen, setSoundSettingsOpen]);
 
   return (
     <div className="flex items-center justify-center space-x-1">
@@ -37,9 +35,7 @@ export default function MenuSettings() {
         >
           <div className="flex h-full w-full select-none flex-col justify-end">
             <NotebookPen />
-            <div className="mb-2 mt-4 text-lg font-medium">
-              befocus/todolist
-            </div>
+            <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>
             <Separator className="my-4 bg-white" />
             <p className="text-sm leading-tight text-muted-foreground">
               &quot;FEATURE COMING SOON&quot;
@@ -64,7 +60,7 @@ export default function MenuSettings() {
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" className="h-12 w-32">
-            <Cog />
+            <Timer />
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -72,8 +68,7 @@ export default function MenuSettings() {
           className="h-full w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
         >
           <div className="flex h-full w-full select-none flex-col justify-end">
-            <Cog />
-            <div className="mb-2 mt-4 text-lg font-medium">
+            <div className="mb-2 mt-4 text-lg font-bold">
               befocus/sessions-settings
             </div>
             <Separator className="my-4 bg-white" />
