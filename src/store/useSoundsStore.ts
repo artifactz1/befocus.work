@@ -127,3 +127,10 @@ useSoundsStore.getState().addSound(
   true,
   "bgMusic", // Specify the sound type
 );
+
+useSoundsStore.getState().addSound(
+  "jazz",
+  "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
+  true,
+  "bgMusic", // Specify the sound type
+);
