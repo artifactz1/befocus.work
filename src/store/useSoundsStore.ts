@@ -149,4 +149,16 @@ useSoundsStore.getState().addSound(
   "bgMusic", // Specify the sound type
 );
 
+useSoundsStore.getState().addSound(
+  "libary",
+  "https://www.youtube.com/watch?v=4vIQON2fDWM&ab_channel=TheGuildofAmbience",
+  true,
+  "ambient", // Specify the sound type
+);
 
+useSoundsStore.getState().addSound(
+  "fireplace",
+  "https://www.youtube.com/watch?v=UgHKb_7884o&ab_channel=CatTrumpet",
+  true,
+  "ambient", // Specify the sound type
+);
