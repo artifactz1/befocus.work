@@ -129,8 +129,24 @@ useSoundsStore.getState().addSound(
 );
 
 useSoundsStore.getState().addSound(
-  "jazz",
+  "howls moving castle",
   "https://www.youtube.com/watch?v=VwR3LBbL6Jk&ab_channel=SolaceCrossing",
   true,
   "bgMusic", // Specify the sound type
 );
+
+useSoundsStore.getState().addSound(
+  "howls moving castle",
+  "https://www.youtube.com/watch?v=z3aS5AwhJSU&ab_channel=YES24",
+  true,
+  "bgMusic", // Specify the sound type
+);
+
+useSoundsStore.getState().addSound(
+  "howls moving castle",
+  "https://www.youtube.com/watch?v=3UV6vbUlNTY&ab_channel=MelodyBox",
+  true,
+  "bgMusic", // Specify the sound type
+);
+
+
