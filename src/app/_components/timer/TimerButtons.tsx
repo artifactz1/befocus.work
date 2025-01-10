@@ -9,7 +9,6 @@ export default function TimerButtons() {
   const { isRunning, reset, skipToNextSession, toggleTimer } = useTimerStore();
 
   return (
-    // <div className="-mt-20 flex items-center justify-center space-x-4 opacity-0 transition-opacity duration-500 hover:opacity-100">
     <div className="flex items-center justify-center space-x-1">
       <Button
         onClick={toggleTimer}
@@ -18,13 +17,13 @@ export default function TimerButtons() {
         className="h-12 w-32"
       >
         {isRunning ? (
-          <Pause className="h-6 w-6" />
+          <Pause className="h-6 w-6" strokeWidth={3} />
         ) : (
-          <Play className="h-6 w-6" />
+          <Play className="h-6 w-6" strokeWidth={3} />
         )}
       </Button>
       <Button onClick={reset} variant="outline" size="lg" className="h-12 w-32">
-        <RotateCcw className="h-6 w-6" />
+        <RotateCcw className="h-6 w-6" strokeWidth={3} />
       </Button>
       <Button
         onClick={skipToNextSession}
@@ -32,7 +31,7 @@ export default function TimerButtons() {
         size="lg"
         className="h-12 w-32"
       >
-        <SkipForward className="h-6 w-6" />
+        <SkipForward className="h-6 w-6" strokeWidth={3} />
       </Button>
       <DarkModeToggle />
     </div>

@@ -39,7 +39,8 @@ export const DarkModeToggle = () => {
       size="lg"
       className="h-12 w-32"
     >
-      {isDarkMode ? <Sun /> : <Moon />} {/* This changes the icon */}
+      {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{" "}
+      {/* This changes the icon */}
     </Button>
   );
 };
