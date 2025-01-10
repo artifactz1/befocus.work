@@ -44,7 +44,7 @@ export default function SessionsUI() {
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-3 p-6">
-      <p className="text-3xl font-light">
+      <p className="text-2xl font-light">
         {currentSession} / {sessions}
       </p>
       <div className="space-y-1">
@@ -54,7 +54,7 @@ export default function SessionsUI() {
             <div
               key={`work-${index}`}
               className={cn(
-                "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
+                "h-10 w-10 rounded-lg border-2 border-white/80 transition-all duration-300",
                 index <= currentSession - 1 // Completed work sessions
                   ? isWorking && currentSession - 1 === index
                     ? activeColor
@@ -74,7 +74,7 @@ export default function SessionsUI() {
             <div
               key={`break-${index}`}
               className={cn(
-                "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
+                "h-10 w-10 rounded-lg border-2 border-white/80 transition-all duration-300",
                 index < currentSession - 1 // Completed break sessions
                   ? completedColor
                   : !isWorking && currentSession - 1 === index // Current break session
