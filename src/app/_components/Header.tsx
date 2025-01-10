@@ -13,7 +13,6 @@ function Timer() {
         <SessionsUI />
       </div>
       <div className="flex flex-col items-center justify-center text-right">
-        <p className="text-xl font-medium">Session</p>
         <p className="font-regualr text-5xl">
           {isRunning ? (isWorking ? "Focus" : "Break") : "BeFoucsed"}
         </p>
