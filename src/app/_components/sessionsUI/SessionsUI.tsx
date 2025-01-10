@@ -43,13 +43,13 @@ export default function SessionsUI() {
   const completedColor = "bg-green-500"; // Completed sessions
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-6 p-6">
-      <div className="text-2xl">
+    <main className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-3 p-6">
+      <p className="text-3xl font-light">
         {currentSession} / {sessions}
-      </div>
-      <div>
+      </p>
+      <div className="space-y-1">
         {/* Work Sessions */}
-        <div className="flex">
+        <div className="flex space-x-1">
           {Array.from({ length: sessions }).map((_, index) => (
             <div
               key={`work-${index}`}
@@ -69,7 +69,7 @@ export default function SessionsUI() {
           ))}
         </div>
         {/* Break Sessions */}
-        <div className="flex">
+        <div className="flex space-x-1">
           {Array.from({ length: sessions }).map((_, index) => (
             <div
               key={`break-${index}`}
