@@ -34,13 +34,24 @@
 //   );
 // }
 
+import { useEffect } from "react";
 import { cn } from "~/lib/utils";
 import { useTimerStore } from "~/store/useTimerStore";
 
 export default function SessionsUI() {
   const { sessions, currentSession, isWorking } = useTimerStore();
-  const activeColor = "bg-pink-500"; // Current session
-  const completedColor = "bg-green-500"; // Completed sessions
+
+  useEffect(() => {
+    // Sync with localStorage or set default mode
+    const darkModeFromLocalStorage =
+      localStorage.getItem("darkMode") === "true";
+
+    if (darkModeFromLocalStorage) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
 
   return (
     <main className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-3 p-6">
@@ -54,17 +65,14 @@ export default function SessionsUI() {
             <div
               key={`work-${index}`}
               className={cn(
-                "h-10 w-10 rounded-lg border-2 border-white/80 transition-all duration-300",
+                "h-10 w-10 rounded-lg border-2 transition-all duration-300",
+                "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                 index <= currentSession - 1 // Completed work sessions
                   ? isWorking && currentSession - 1 === index
-                    ? activeColor
-                    : completedColor
-                  : "", // No color if it's not a completed session
+                    ? "bg-pink-500"
+                    : "bg-green-500"
+                  : "", // No color if not completed
               )}
-              role="progressbar"
-              aria-valuenow={currentSession}
-              aria-valuemin={1}
-              aria-valuemax={sessions}
             />
           ))}
         </div>
@@ -74,17 +82,14 @@ export default function SessionsUI() {
             <div
               key={`break-${index}`}
               className={cn(
-                "h-10 w-10 rounded-lg border-2 border-white/80 transition-all duration-300",
+                "h-10 w-10 rounded-lg border-2 transition-all duration-300",
+                "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                 index < currentSession - 1 // Completed break sessions
-                  ? completedColor
+                  ? "bg-green-500"
                   : !isWorking && currentSession - 1 === index // Current break session
-                    ? activeColor
+                    ? "bg-pink-500"
                     : "bg-transparent",
               )}
-              role="progressbar"
-              aria-valuenow={currentSession}
-              aria-valuemin={1}
-              aria-valuemax={sessions}
             />
           ))}
         </div>
