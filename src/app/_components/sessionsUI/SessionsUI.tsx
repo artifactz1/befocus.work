@@ -75,7 +75,6 @@ export default function SessionsUI() {
               key={`break-${index}`}
               className={cn(
                 "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
-                // index <= Math.floor((currentSession - 1) / 2) &&
                 index < currentSession - 1 // Completed break sessions
                   ? completedColor
                   : !isWorking && currentSession - 1 === index // Current break session
