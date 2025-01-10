@@ -32,7 +32,9 @@ export default function TimerButtons() {
               )}
             </Button>
           </TooltipTrigger>
-          <TooltipContent>{isRunning ? "Pause" : "Play"}</TooltipContent>
+          <TooltipContent className="font-bold">
+            {isRunning ? "Pause" : "Play"}
+          </TooltipContent>
         </Tooltip>
       </TooltipProvider>
       <TooltipProvider>
@@ -48,7 +50,7 @@ export default function TimerButtons() {
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Reset Time</p>
+            <TooltipContent className="font-bold"> Reset Time</TooltipContent>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -65,7 +67,8 @@ export default function TimerButtons() {
               <SkipForward className="h-6 w-6" strokeWidth={3} />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Skip To Next</TooltipContent>
+
+          <TooltipContent className="font-bold">Skip To Next</TooltipContent>
         </Tooltip>
       </TooltipProvider>
       <DarkModeToggle />

@@ -3,6 +3,12 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 export const DarkModeToggle = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -33,14 +39,23 @@ export const DarkModeToggle = () => {
   };
 
   return (
-    <Button
-      onClick={handleToggle}
-      variant="outline"
-      size="lg"
-      className="h-12 w-32"
-    >
-      {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{" "}
-      {/* This changes the icon */}
-    </Button>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            onClick={handleToggle}
+            variant="outline"
+            size="lg"
+            className="h-12 w-32"
+          >
+            {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{" "}
+            {/* This changes the icon */}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent className="font-bold">
+          Toggle {isDarkMode ? " Light Mode" : " Dark Mode"}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 };
