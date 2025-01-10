@@ -81,11 +81,11 @@ export default function SessionsUI() {
                 "h-[24px] w-[24px] rounded-lg border-2 border-white/80 transition-all duration-300",
                 // index <= Math.floor((currentSession - 1) / 2) &&
                 // index < currentSession - 1 && isWorking === true // Completed break sessions
-                index < currentSession - 1 // Completed break sessions
-                  ? completedColor
-                  : !isWorking && currentSession - 1 === index // Current break session
-                    ? activeColor
-                    : "bg-transparent",
+                index <= currentSession - 1 // Completed work sessions
+                ? isWorking && currentSession - 1 === index
+                  ? activeColor
+                  : completedColor
+                : "", // No color if it's not a completed session
               )}
               role="progressbar"
               aria-valuenow={currentSession}
