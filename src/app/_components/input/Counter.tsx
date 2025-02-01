@@ -9,10 +9,10 @@ function Counter({ value }: { value: number }) {
   return (
     <div
       style={{ fontSize }}
-      className="flex space-x-3 overflow-hidden rounded bg-white px-2 leading-none text-gray-900"
+      className="flex space-x-3 overflow-hidden rounded px-2 leading-none"
     >
-      <Digit place={100} value={value} />
-      <Digit place={10} value={value} />
+      {value >= 100 && <Digit place={100} value={value} />}
+      {value >= 10 && <Digit place={10} value={value} />}
       <Digit place={1} value={value} />
     </div>
   );
