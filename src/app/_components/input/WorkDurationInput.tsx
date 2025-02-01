@@ -52,7 +52,6 @@ export const WorkDurationInput: React.FC<WorkDurationInputProps> = ({
       onChange(300);
     }
   };
-  console.log("VALUE:", value);
 
   return (
     <div className="flex items-center">
