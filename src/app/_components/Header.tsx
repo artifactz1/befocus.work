@@ -24,9 +24,9 @@
 
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { useTimerStore } from "~/store/useTimerStore";
 import SessionsUI from "./SessionsUI";
-import { motion, AnimatePresence } from "framer-motion";
 
 function Timer() {
   const { isWorking, isRunning } = useTimerStore();
@@ -41,10 +41,10 @@ function Timer() {
         <AnimatePresence mode="wait">
           <motion.p
             key={text} // Forces re-render when text changes
-            initial={{ opacity: 0, y: 10 }} // Starts faded out and moves up
+            initial={{ opacity: 0, y: 0 }} // Starts faded out and moves up
             animate={{ opacity: 1, y: 0 }} // Fades in and moves into place
-            exit={{ opacity: 0, y: -10 }} // Moves up slightly when fading out
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            exit={{ opacity: 0, y: 0 }} // Moves up slightly when fading out
+            transition={{ duration: 0.25, ease: "easeInOut" }}
             className="text-5xl font-bold"
           >
             {text}
