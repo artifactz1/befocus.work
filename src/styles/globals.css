@@ -62,8 +62,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* @apply transition-colors duration-500 ease-in-out; */
     @apply transition-colors duration-500 ease-in-out;
-
   }
 }
 
