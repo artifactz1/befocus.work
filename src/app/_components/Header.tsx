@@ -29,8 +29,8 @@ import { useTimerStore } from "~/store/useTimerStore";
 import SessionsUI from "./SessionsUI";
 
 function Timer() {
-  const { isWorking, isRunning } = useTimerStore();
-  const text = isRunning ? (isWorking ? "Focus" : "Break") : "BeFocused";
+  const { isWorking, isRunning, workDuration, timeLeft } = useTimerStore();
+  const text = isRunning ? (isWorking ? "Focus" : "Break") : (workDuration === timeLeft) ? "BeFocused" : "Paused";
 
   return (
     <div className="flex h-[15vh] w-full items-center justify-between px-[5vw] pt-6">
