@@ -36,7 +36,7 @@ function Timer() {
       : "Break"
     : workDuration === timeLeft
       ? "BeFocused"
-      : "Paused";
+      : "Break";
 
   return (
     <div className="flex h-[15vh] w-full items-center justify-between px-[5vw] pt-6">
