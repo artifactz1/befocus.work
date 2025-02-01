@@ -30,22 +30,28 @@ import SessionsUI from "./SessionsUI";
 
 function Timer() {
   const { isWorking, isRunning, workDuration, timeLeft } = useTimerStore();
-  const text = isRunning ? (isWorking ? "Focus" : "Break") : (workDuration === timeLeft) ? "BeFocused" : "Paused";
+  const text = isRunning
+    ? isWorking
+      ? "Focus"
+      : "Break"
+    : workDuration === timeLeft
+      ? "BeFocused"
+      : "Paused";
 
   return (
     <div className="flex h-[15vh] w-full items-center justify-between px-[5vw] pt-6">
-      <div className="font-regular text-9xl">
+      <div>
         <SessionsUI />
       </div>
       <div className="flex flex-col items-center justify-center text-right">
         <AnimatePresence mode="wait">
           <motion.p
             key={text} // Forces re-render when text changes
-            initial={{ opacity: 0, y: 0 }} // Starts faded out and moves up
+            // initial={{ opacity: 0, y: 0 }} // Starts faded out and moves up
             animate={{ opacity: 1, y: 0 }} // Fades in and moves into place
             exit={{ opacity: 0, y: 0 }} // Moves up slightly when fading out
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="text-5xl font-bold"
+            className="text-7xl font-bold"
           >
             {text}
           </motion.p>
