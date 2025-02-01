@@ -9,7 +9,7 @@ function Counter({ value }: { value: number }) {
   return (
     <div
       style={{ fontSize }}
-      className="flex space-x-3 overflow-hidden rounded px-2 leading-none"
+      className="flex overflow-hidden rounded px-2 leading-none font-bold"
     >
       {value >= 100 && <Digit place={100} value={value} />}
       {value >= 10 && <Digit place={10} value={value} />}
