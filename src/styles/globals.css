@@ -3,7 +3,7 @@
 @tailwind utilities;
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 60 55% 91%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
     --card-foreground: 20 14.3% 4.1%;
@@ -76,95 +76,107 @@
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Regular.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Regular.otf")
+    format("opentype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Bold.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Bold.otf")
+    format("opentype");
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-BoldItalic.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-BoldItalic.otf")
+    format("opentype");
   font-weight: bold;
   font-style: italic;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Extrabold.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Extrabold.otf")
+    format("opentype");
   font-weight: 800; /* For ExtraBold */
   font-style: normal;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-ExtraboldItalic.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-ExtraboldItalic.otf")
+    format("opentype");
   font-weight: 800; /* For ExtraBold */
   font-style: italic;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Extralight.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Extralight.otf")
+    format("opentype");
   font-weight: 200; /* For ExtraLight */
   font-style: normal;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-ExtralightItalic.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-ExtralightItalic.otf")
+    format("opentype");
   font-weight: 200; /* For ExtraLight */
   font-style: italic;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Italic.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Italic.otf")
+    format("opentype");
   font-weight: normal;
   font-style: italic;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Light.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Light.otf")
+    format("opentype");
   font-weight: 300; /* For Light */
   font-style: normal;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-LightItalic.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-LightItalic.otf")
+    format("opentype");
   font-weight: 300; /* For Light */
   font-style: italic;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Medium.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-Medium.otf")
+    format("opentype");
   font-weight: 500; /* For Medium */
   font-style: normal;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-MediumItalic.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-MediumItalic.otf")
+    format("opentype");
   font-weight: 500; /* For Medium */
   font-style: italic;
 }
 
 @font-face {
   font-family: "Supreme";
-  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-ThinItalic.otf") format("opentype");
+  src: url("/public/Supreme_Complete/Fonts/OTF/Supreme-ThinItalic.otf")
+    format("opentype");
   font-weight: 100; /* For Thin */
   font-style: italic;
 }
-
 
 html {
   /* Set dark mode as default */
