@@ -27,6 +27,7 @@
 //   </div>
 // );
 
+import { Minus, Plus } from "lucide-react";
 import { Label } from "~/components/ui/label";
 import Counter from "./Counter";
 
@@ -54,24 +55,27 @@ export const WorkDurationInput: React.FC<WorkDurationInputProps> = ({
   };
 
   return (
-    <div className="flex items-center">
-      <Label htmlFor="workDuration" className="text-md font-bold">
-        Work Duration:
-      </Label>
-      <Counter value={value} />
-      <div>(min)</div>
-      <div className="flex items-center opacity-0 hover:opacity-100">
+    <div className="flex justify-between">
+      <div className="flex items-end">
+        <Label htmlFor="workDuration" className="text-md pb-2 font-bold">
+          Work Duration :
+        </Label>
+        <Counter value={value} />
+        <div className="pb-2">(min)</div>
+      </div>
+
+      <div className="flex items-end space-x-2 pb-2">
         <button
           onClick={decrement}
-          className="rounded border bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300"
+          className="rounded border bg-gray-200 p-1 px-3 py-1 text-sm hover:bg-gray-300"
         >
-          -
+          <Minus height={12} width={12} />
         </button>
         <button
           onClick={increment}
-          className="rounded border bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300"
+          className="rounded border bg-gray-200 p-1 px-3 py-1 text-sm hover:bg-gray-300"
         >
-          +
+          <Plus height={12} width={12} />
         </button>
       </div>
     </div>
