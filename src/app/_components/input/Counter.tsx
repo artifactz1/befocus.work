@@ -9,7 +9,7 @@ function Counter({ value }: { value: number }) {
   return (
     <div
       style={{ fontSize }}
-      className="flex overflow-hidden rounded px-2 font-bold leading-none"
+      className="flex overflow-hidden rounded pl-2 pr-1 font-bold leading-none"
     >
       {value >= 100 && <Digit place={100} value={value} />}
       {value >= 10 && <Digit place={10} value={value} />}
@@ -27,7 +27,7 @@ function Digit({ place, value }: { place: number; value: number }) {
   }, [animatedValue, valueRoundedToPlace]);
 
   return (
-    <div style={{ height }} className="relative w-[1ch] tabular-nums">
+    <div style={{ height }} className="relative w-[0.95ch] tabular-nums">
       {[...Array(10).keys()].map((i) => (
         <Number key={i} mv={animatedValue} number={i} />
       ))}
