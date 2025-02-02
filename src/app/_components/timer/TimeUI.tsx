@@ -5,14 +5,13 @@ const fontSize = 50;
 const padding = 15;
 const height = fontSize + padding;
 
-function Counter({ value }: { value: number }) {
+function TimerUI({ value }: { value: number }) {
   return (
     <div
       style={{ fontSize }}
-      className="flex overflow-hidden rounded pl-2 pr-1 font-bold leading-none"
+      className="flex overflow-hidden rounded px-2 font-bold leading-none"
     >
-      {value >= 100 && <Digit place={100} value={value} />}
-      {value >= 10 && <Digit place={10} value={value} />}
+      <Digit place={10} value={value} />
       <Digit place={1} value={value} />
     </div>
   );
@@ -59,4 +58,4 @@ function Number({ mv, number }: { mv: MotionValue<number>; number: number }) {
   );
 }
 
-export default Counter;
+export default TimerUI;

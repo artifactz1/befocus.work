@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { useTimerStore } from "~/store/useTimerStore";
-import Counter from "../input/Counter";
+import TimerUI from "./TimeUI";
 
 export default function Timer() {
   const { sounds, alarmId } = useSoundsStore();
@@ -80,10 +80,9 @@ export default function Timer() {
   return (
     <div className="relative z-0 flex h-[70vh] items-center justify-center">
       <div className="absolute flex items-center text-[50px] font-bold">
-        {/* <div className="absolute flex flex-col text-[25vw] font-bold"> */}
-        <Counter value={minutes} type={"timer"} />
+        <TimerUI value={minutes} />
         <>:</>
-        <Counter value={seconds} type={"timer"} />
+        <TimerUI value={seconds} />
       </div>
     </div>
   );
