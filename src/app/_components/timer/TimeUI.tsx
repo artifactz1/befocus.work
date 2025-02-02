@@ -1,11 +1,11 @@
 import { motion, MotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
 
-const fontSize = 50;
+const fontSize = 500;
 const padding = 15;
 const height = fontSize + padding;
 
-function TimerUI({ value }: { value: number }) {
+function TimerUI({ value, fontSize }: { value: number; fontSize?: string }) {
   return (
     <div
       style={{ fontSize }}
