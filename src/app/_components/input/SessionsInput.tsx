@@ -32,7 +32,7 @@ export const SessionsInput: React.FC<SessionsInputProps> = ({
         <Label htmlFor="workDuration" className="text-md pb-2 font-bold">
           Rounds :
         </Label>
-        <Counter value={value} type={"settings"} />
+        <Counter value={value} />
         <div className="pb-2">(sessions)</div>
       </div>
       <div className="flex items-end space-x-2 pb-2">

@@ -1,7 +1,7 @@
 import { Minus, Plus } from "lucide-react";
+import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import Counter from "./Counter";
-import { Button } from '~/components/ui/button';
 
 interface BreakDurationInputProps {
   value: number;
@@ -32,7 +32,7 @@ export const BreakDurationInput: React.FC<BreakDurationInputProps> = ({
         <Label htmlFor="workDuration" className="text-md pb-2 font-bold">
           Break Duration :
         </Label>
-        <Counter value={value} type={"settings"} />
+        <Counter value={value} />
         <div className="pb-2">(min)</div>
       </div>
       <div className="flex items-end space-x-2 pb-2">
