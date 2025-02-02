@@ -61,7 +61,7 @@ export const WorkDurationInput: React.FC<WorkDurationInputProps> = ({
         <Label htmlFor="workDuration" className="text-md pb-2 font-bold">
           Work Duration :
         </Label>
-        <Counter value={value} />
+        <Counter value={value} type={"settings"} />
         <div className="pb-2">(min)</div>
       </div>
 

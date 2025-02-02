@@ -32,7 +32,7 @@ export const BreakDurationInput: React.FC<BreakDurationInputProps> = ({
         <Label htmlFor="workDuration" className="text-md pb-2 font-bold">
           Break Duration :
         </Label>
-        <Counter value={value} />
+        <Counter value={value} type={"settings"} />
         <div className="pb-2">(min)</div>
       </div>
       <div className="flex items-end space-x-2 pb-2">

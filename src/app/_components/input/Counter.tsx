@@ -5,15 +5,28 @@ const fontSize = 50;
 const padding = 15;
 const height = fontSize + padding;
 
-function Counter({ value }: { value: number }) {
+const types = ["settings", "timer"] as const;
+type Types = (typeof types)[number];
+
+function Counter({ value, type, fontSize}: { value: number; type: Types,}) {
   return (
     <div
       style={{ fontSize }}
       className="flex overflow-hidden rounded pl-2 pr-1 font-bold leading-none"
     >
-      {value >= 100 && <Digit place={100} value={value} />}
-      {value >= 10 && <Digit place={10} value={value} />}
-      <Digit place={1} value={value} />
+      {type === "settings" && (
+        <>
+          {value >= 100 && <Digit place={100} value={value} />}
+          {value >= 10 && <Digit place={10} value={value} />}
+          <Digit place={1} value={value} />
+        </>
+      )}
+      {type === "timer" && (
+        <>
+          <Digit place={10} value={value} />
+          <Digit place={1} value={value} />
+        </>
+      )}
     </div>
   );
 }
