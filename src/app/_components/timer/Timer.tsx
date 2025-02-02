@@ -1,13 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { useTimerStore } from "~/store/useTimerStore";
-import { formatTime } from "~/utils/formatTime";
+import TimerUI from "./TimeUI";
 
 export default function Timer() {
   const { sounds, alarmId } = useSoundsStore();
   const { timeLeft, isRunning, decrementTime } = useTimerStore();
+
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
 
   // Initialize the ref with `null` for SSR compatibility
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -67,10 +70,19 @@ export default function Timer() {
     };
   }, [isRunning, decrementTime, timeLeft]);
 
+  useEffect(() => {
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    setMinutes(mins);
+    setSeconds(secs);
+  }, [timeLeft]);
+
   return (
     <div className="relative z-0 flex h-[70vh] items-center justify-center">
-      <div className="absolute h-fit text-[25vw] font-bold">
-        {formatTime(timeLeft)}
+      <div className="absolute flex items-center text-[25vw] font-bold">
+        <TimerUI value={minutes} fontSize={"25vw"} />
+        <p className="mb-5">:</p>
+        <TimerUI value={seconds} fontSize={"25vw"} />
       </div>
     </div>
   );

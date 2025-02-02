@@ -1,7 +1,7 @@
 import { Minus, Plus } from "lucide-react";
+import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import Counter from "./Counter";
-import { Button } from '~/components/ui/button';
 
 interface BreakDurationInputProps {
   value: number;
