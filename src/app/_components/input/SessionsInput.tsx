@@ -1,7 +1,7 @@
 import { Minus, Plus } from "lucide-react";
+import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import Counter from "./Counter";
-import { Button } from '~/components/ui/button';
 
 interface SessionsInputProps {
   value: number;
@@ -36,7 +36,12 @@ export const SessionsInput: React.FC<SessionsInputProps> = ({
         <div className="pb-2">(sessions)</div>
       </div>
       <div className="flex items-end space-x-2 pb-2">
-        <Button onClick={decrement} variant="secondary" size="icon">
+        <Button
+          onClick={decrement}
+          variant="secondary"
+          size="icon"
+          // className="border-[0.25px] border-white"
+        >
           <Minus height={12} width={12} />
         </Button>
         <Button onClick={increment} variant="secondary" size="icon">
