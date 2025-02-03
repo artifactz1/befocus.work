@@ -1,23 +1,32 @@
 import { motion, MotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
 
-const fontSize = 500;
-const padding = 15;
-const height = fontSize + padding;
-
 function TimerUI({ value, fontSize }: { value: number; fontSize?: string }) {
+  // Change padding and fontsize to change view 
+  // const fontSize = 500;
+  const padding = 200;
+  const height = 500 + padding;
+
   return (
     <div
       style={{ fontSize }}
       className="flex overflow-hidden rounded px-2 font-bold leading-none"
     >
-      <Digit place={10} value={value} />
-      <Digit place={1} value={value} />
+      <Digit place={10} value={value} height={height} />
+      <Digit place={1} value={value} height={height} />
     </div>
   );
 }
 
-function Digit({ place, value }: { place: number; value: number }) {
+function Digit({
+  place,
+  value,
+  height,
+}: {
+  place: number;
+  value: number;
+  height: number;
+}) {
   const valueRoundedToPlace = Math.floor(value / place);
   const animatedValue = useSpring(valueRoundedToPlace);
 
@@ -28,13 +37,21 @@ function Digit({ place, value }: { place: number; value: number }) {
   return (
     <div style={{ height }} className="relative w-[0.95ch] tabular-nums">
       {[...Array(10).keys()].map((i) => (
-        <Number key={i} mv={animatedValue} number={i} />
+        <Number key={i} mv={animatedValue} number={i} height={height} />
       ))}
     </div>
   );
 }
 
-function Number({ mv, number }: { mv: MotionValue<number>; number: number }) {
+function Number({
+  mv,
+  number,
+  height,
+}: {
+  mv: MotionValue<number>;
+  number: number;
+  height: number;
+}) {
   const y = useTransform(mv, (latest) => {
     const placeValue = latest % 10;
     const offset = (10 + number - placeValue) % 10;
