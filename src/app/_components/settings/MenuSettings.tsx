@@ -12,6 +12,7 @@ import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { SessionSettings } from "./SessionSettings";
 import SoundSettings from "./SoundSettings";
+import ToDoList from './ToDoList';
 
 export default function MenuSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
@@ -31,15 +32,17 @@ export default function MenuSettings() {
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="h-full w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
+          className="min-h-[500px] w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
         >
           <div className="flex h-full w-full select-none flex-col justify-end">
             <NotebookPen />
             <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>
             <Separator className="my-4 bg-white" />
-            <p className="text-sm leading-tight text-muted-foreground">
+            {/* <p className="text-sm leading-tight text-muted-foreground">
               &quot;FEATURE COMING SOON&quot;
-            </p>
+            </p> */}
+            <ToDoList/>
+
           </div>
         </PopoverContent>
       </Popover>
