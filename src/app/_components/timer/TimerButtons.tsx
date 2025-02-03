@@ -12,7 +12,8 @@ import { useTimerStore } from "~/store/useTimerStore";
 import { DarkModeToggle } from "../DarkModeToggle";
 
 export default function TimerButtons() {
-  const { isRunning, reset, skipToNextSession, toggleTimer } = useTimerStore();
+  const { isRunning, resetCurrentTime, skipToNextSession, toggleTimer } =
+    useTimerStore();
 
   return (
     <div className="flex items-center justify-center space-x-1">
@@ -41,7 +42,7 @@ export default function TimerButtons() {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              onClick={reset}
+              onClick={() => resetCurrentTime()}
               variant="outline"
               size="lg"
               className="h-12 w-32"

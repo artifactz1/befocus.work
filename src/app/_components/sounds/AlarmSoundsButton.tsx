@@ -60,8 +60,8 @@ export default function AlarmSoundsButton() {
       />
 
       <Separator className="my-4 bg-white" />
-      <h3 className="text-center font-semibold">Alarm Sound</h3>
-      <div className="flex-row space-y-4">
+      <h3 className="mb-3 text-left font-semibold">Alarm Sound</h3>
+      <div className="flex flex-row space-x-2">
         <Select
           value={alarmId} // Ensure value is a string
           onValueChange={handleSelectChange}
@@ -81,8 +81,8 @@ export default function AlarmSoundsButton() {
             </SelectGroup>
           </SelectContent>
         </Select>
-        <div className="space-y-2">
-          <label className="block text-center text-sm">Volume</label>
+        <div className="flex w-full items-center space-y-2">
+          {/* <label className="block text-center text-sm">Volume</label> */}
           <Slider
             value={[sound.volume * 100]} // Default to the current volume (range 0-100)
             onValueChange={(value) => {

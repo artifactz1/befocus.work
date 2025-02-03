@@ -9,6 +9,7 @@ interface TimerState {
   timeLeft: number;
   isRunning: boolean;
   reset: () => void;
+  resetCurrentTime: () => void;
   skipToNextSession: () => void;
   toggleTimer: () => void;
   decrementTime: () => void;
@@ -33,6 +34,14 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       currentSession: 1,
       isWorking: true,
       timeLeft: get().workDuration,
+      isRunning: false,
+      isAlarmOn: false, // Resetting isAlarmOn to false
+    }),
+  resetCurrentTime: () =>
+    set({
+      isWorking: get().isWorking,
+      currentSession: get().currentSession,
+      timeLeft: get().isWorking ? get().workDuration : get().breakDuration,
       isRunning: false,
       isAlarmOn: false, // Resetting isAlarmOn to false
     }),

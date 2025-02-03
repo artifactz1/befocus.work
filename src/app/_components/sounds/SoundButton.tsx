@@ -28,7 +28,6 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
               pressed={sound.playing}
               onPressedChange={() => toggleSound(soundId)} // Toggle sound globally
               // className={`${sound.playing ? "text-blue" : "bg-gray-200 text-gray-800"}`}
-              className={"border border-white"}
             >
               {sound.playing ? <Volume2 /> : <VolumeX />}
             </Toggle>
