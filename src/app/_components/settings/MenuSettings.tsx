@@ -38,9 +38,6 @@ export default function MenuSettings() {
             <NotebookPen />
             <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>
             <Separator className="my-4 bg-white" />
-            {/* <p className="text-sm leading-tight text-muted-foreground">
-              &quot;FEATURE COMING SOON&quot;
-            </p> */}
             <ToDoList/>
 
           </div>
