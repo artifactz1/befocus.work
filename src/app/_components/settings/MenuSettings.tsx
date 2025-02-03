@@ -53,7 +53,7 @@ export default function MenuSettings() {
             <Volume2 />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="max-h-[500px] w-[400px] gap-3 overflow-y-hidden rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 transition-transform delay-1000 hover:overflow-y-auto md:w-[500px] lg:w-[392px]">
+        <PopoverContent className="max-h-[500px] w-[400px] gap-3 overflow-y-hidden rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 hover:overflow-y-auto md:w-[500px] lg:w-[392px]">
           <SoundSettings />
         </PopoverContent>
       </Popover>
