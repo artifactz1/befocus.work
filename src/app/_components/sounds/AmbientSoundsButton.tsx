@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ReactPlayer from "react-player";
 import {
   Select,
   SelectContent,
@@ -13,18 +12,19 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { Slider } from "~/components/ui/slider";
 import { useSoundsStore } from "~/store/useSoundsStore";
+import SoundButton from "./SoundButton";
 
-export default function AlarmSoundsButton() {
+export default function AmbientSoundsButton() {
   const {
     sounds,
-    alarmId,
-    setAlarmId,
+    ambientId,
+    setAmbientId,
     setVolume,
     toggleSound,
     isSoundSettingsOpen,
   } = useSoundsStore();
 
-  const sound = sounds[alarmId];
+  const sound = sounds[ambientId];
 
   const [isPlaying, setIsPlaying] = useState(false); // Local state to manage ReactPlayer's playing state
 
@@ -38,7 +38,7 @@ export default function AlarmSoundsButton() {
   // Update ReactPlayer's playing state when a new sound is selected
   const handleSelectChange = (value: string) => {
     if (value) {
-      setAlarmId(value); // Safely update alarmId
+      setAmbientId(value); // Safely update alarmId
       toggleSound(value); // Trigger sound toggle
       setIsPlaying(true); // Start playing the sound when a new alarm is selected
     } else {
@@ -50,29 +50,20 @@ export default function AlarmSoundsButton() {
 
   return (
     <div>
-      <ReactPlayer
-        url={sound.url} // Replace with your media URL
-        playing={isPlaying} // Controlled by state
-        volume={sound.volume}
-        controls={false}
-        width="0"
-        height="0"
-      />
-
       <Separator className="my-4 bg-white" />
-      <h3 className="text-left font-semibold">Alarm Sound</h3>
-      <div className="flex items-center space-y-4">
+      <h3 className="text-center font-semibold">Ambient Sounds</h3>
+      <div className="flex-row space-y-4">
         <Select
-          value={alarmId} // Ensure value is a string
+          value={ambientId} // Ensure value is a string
           onValueChange={handleSelectChange}
         >
           <SelectTrigger className="w-1/3">
-            <SelectValue placeholder="Select an alarm" />
+            <SelectValue placeholder="Select an ambient " />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               {Object.keys(sounds)
-                .filter((soundId) => sounds[soundId]?.soundType === "alarm") // Only alarm sounds
+                .filter((soundId) => sounds[soundId]?.soundType === "ambient") // Only alarm sounds
                 .map((soundId) => (
                   <SelectItem key={soundId} value={soundId}>
                     {soundId}
@@ -87,7 +78,7 @@ export default function AlarmSoundsButton() {
             value={[sound.volume * 100]} // Default to the current volume (range 0-100)
             onValueChange={(value) => {
               const newVolume = value[0] ?? 80; // Default to 80 if value is undefined
-              setVolume(alarmId, newVolume / 100); // Set volume globally (range 0-1)
+              setVolume(ambientId, newVolume / 100); // Set volume globally (range 0-1)
             }}
             max={100}
             step={1}
@@ -95,6 +86,8 @@ export default function AlarmSoundsButton() {
           />
         </div>
       </div>
+
+      {/* <SoundButton key={ambientId} soundId={ambientId} /> */}
     </div>
   );
 }
