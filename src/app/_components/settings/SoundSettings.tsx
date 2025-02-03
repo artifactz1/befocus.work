@@ -10,7 +10,7 @@ import ToggleDeleteModeButton from "../sounds/ToggleDeleteMode";
 
 export default function SoundSettings() {
   return (
-    <div className="flex h-full w-full select-none flex-col justify-end rounded-md no-underline outline-none">
+    <div className="flex w-full select-none flex-col justify-end rounded-md no-underline outline-none">
       <Volume2 />
       <div className="mb-2 mt-4 text-lg font-bold">befocus/sounds</div>
       <AlarmSoundsButton />
@@ -18,7 +18,7 @@ export default function SoundSettings() {
       <BgMusicSoundsButton />
 
       <AddSoundButton />
-      <div className="mt-4 flex w-full items-center justify-center space-x-5 px-4 py-2">
+      <div className="mt-4 flex w-full items-center justify-center space-x-2">
         <ToggleAddMode />
         <ToggleDeleteModeButton />
       </div>
