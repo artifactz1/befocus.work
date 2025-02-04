@@ -56,10 +56,9 @@ export const useTodoStore = create<TodoStore>((set) => ({
   ) =>
     set((state) => ({
       tasks: state.tasks.map((task) =>
-        task.id === id ? { ...task, text: newText, editMode: false } : task,
+        task.id === id ? { ...task, text: newText } : task,
       ),
     })),
-
   removeTask: (id) =>
     set((state) => ({
       tasks: state.tasks.filter((task) => task.id !== id),
