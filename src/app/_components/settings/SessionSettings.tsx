@@ -28,7 +28,7 @@ export const SessionSettings: React.FC = () => {
   const [session, setSession] = useState(sessions);
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-6">
       <WorkDurationInput
         value={workTime / 60}
         onChange={(value) => setWorkTime(value)}
@@ -47,8 +47,9 @@ export const SessionSettings: React.FC = () => {
             <AlertDialogHeader>
               <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your 
-                current session! Make sure to change your sessions settings before starting.
+                This action cannot be undone. This will permanently delete your
+                current session! Make sure to change your sessions settings
+                before starting.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

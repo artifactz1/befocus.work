@@ -11,7 +11,7 @@ export default function TodoList() {
   const { tasks, toggleTask } = useTodoStore();
   const [ref, animate] = useAnimate();
   const [newTask, setNewTask] = useState("");
-  const { addMode, addTask, toggleAdd } = useTodoStore();
+  const { addMode, addTask, toggleAdd, } = useTodoStore();
 
   function handleChange(id: number) {
     toggleTask(id);
@@ -88,9 +88,15 @@ export default function TodoList() {
             )}
           </div>
           <div ref={ref}>
-            {tasks.map((task) => (
-              <TaskItem key={task.id} task={task} handleChange={handleChange} />
-            ))}
+            {tasks
+              .filter((task) => !task.archived)
+              .map((task) => (
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  handleChange={handleChange}
+                />
+              ))}
           </div>
         </div>
       </div>

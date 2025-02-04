@@ -29,13 +29,13 @@ export const BreakDurationInput: React.FC<BreakDurationInputProps> = ({
   return (
     <div className="flex justify-between">
       <div className="flex items-end">
-        <Label htmlFor="workDuration" className="text-md pb-2 font-bold">
+        <Label htmlFor="workDuration" className="text-md pb-3 font-bold">
           Break Duration :
         </Label>
         <Counter value={value} />
-        <div className="pb-2">(min)</div>
+        <div className="pb-3">(min)</div>
       </div>
-      <div className="flex items-end space-x-2 pb-2">
+      <div className="flex items-end space-x-2 pb-3">
         <Button onClick={decrement} variant="secondary" size="icon">
           <Minus height={12} width={12} />
         </Button>

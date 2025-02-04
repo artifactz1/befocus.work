@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import { Archive } from "lucide-react";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
+
 import { useTodoStore } from "~/store/useToDoStore";
 
 interface TaskItemProps {
@@ -9,12 +11,13 @@ interface TaskItemProps {
     text: string;
     completed: boolean;
     editMode: boolean;
+    archived: boolean;
   };
   handleChange: (id: number) => void;
 }
 
 export default function TaskItem({ task, handleChange }: TaskItemProps) {
-  const { editTask, toggleEditMode } = useTodoStore();
+  const { editTask, toggleEditMode, archiveTask } = useTodoStore();
 
   return (
     <div className="items-top flex space-x-2 border-b-2 py-2">
@@ -31,7 +34,7 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
       </motion.div>
       <motion.div
         animate={{ x: task.completed ? [5, 5, 0] : 0 }}
-        transition={{ type: "spring", stiffness: 50, duration: 5 }}
+        transition={{ type: "spring", stiffness: 100 }}
         className={`group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-1000 ${
           task.completed ? "text-stone-500" : "font-semibold"
         }`}
@@ -58,27 +61,14 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
               style={{ transform: "translateY(-50%)" }}
             ></span>
           </span>
-
-          // <motion.span
-          //   className="relative inline-block"
-          //   initial={{ color: "white" }}
-          //   animate={{ color: task.completed ? "#78716c" : "white" }}
-          //   transition={{ delay: 1, duration: 1 }} // Delayed transition to match the line animation
-          // >
-          //   {task.text}
-          //   <motion.span
-          //     className="absolute left-0 top-1/2 h-[2px]"
-          //     style={{ transform: "translateY(-50%)" }}
-          //     initial={{ width: "0%", backgroundColor: "white" }}
-          //     animate={{
-          //       width: task.completed ? "100%" : "0%",
-          //       backgroundColor: task.completed ? "#78716c" : "white",
-          //     }}
-          //     transition={{ duration: 1, ease: "easeInOut" }} // Smooth transition
-          //   />
-          // </motion.span>
         )}
       </motion.div>
+
+      <div className="flex items-center opacity-0 transition-opacity hover:opacity-100">
+        <button onClick={() => archiveTask(task.id)}>
+          <Archive />
+        </button>
+      </div>
     </div>
   );
 }
