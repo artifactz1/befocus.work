@@ -28,7 +28,7 @@ export const useTodoStore = create<TodoStore>((set) => ({
   ],
   addTask: (text) =>
     set((state) => ({
-      tasks: [...state.tasks, { id: Date.now(), text, completed: false }],
+      tasks: [{ id: Date.now(), text, completed: false }, ...state.tasks],
     })),
   toggleTask: (id) =>
     set((state) => ({

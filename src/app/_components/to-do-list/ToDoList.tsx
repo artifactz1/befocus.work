@@ -1,6 +1,7 @@
 import { stagger, useAnimate } from "framer-motion";
 import { NotebookPen } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import { useTodoStore } from "~/store/useToDoStore"; // Zustand store
@@ -10,7 +11,7 @@ export default function TodoList() {
   const { tasks, toggleTask } = useTodoStore();
   const [ref, animate] = useAnimate();
   const [newTask, setNewTask] = useState("");
-  const { addMode } = useTodoStore();
+  const { addMode, addTask, toggleAdd} = useTodoStore();
 
   function handleChange(id: number) {
     toggleTask(id);
@@ -44,6 +45,13 @@ export default function TodoList() {
     }
   }, [tasks, animate]); // Runs whenever `tasks` changes
 
+  function handleAddTask() {
+    if (newTask.trim() !== "") {
+      addTask(newTask);
+      setNewTask("");
+    }
+  }
+
   return (
     <div className="h-fill">
       <NotebookPen />
@@ -53,12 +61,22 @@ export default function TodoList() {
         <div className="flex w-full max-w-sm flex-col">
           <div>
             {addMode && (
-              <Input
-                type="text"
-                placeholder="Add a task..."
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-              />
+              <div className="flex items-center border-b-2 pb-2">
+                <Checkbox
+                  // checked={task.completed}
+                  // onCheckedChange={() => handleChange(task.id)}
+                  className="peer mr-2"
+                />
+                <Input
+                  type="text"
+                  placeholder="Add a task..."
+                  value={newTask}
+                  onChange={(e) => setNewTask(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
+                  onBlur={() => {handleAddTask(); toggleAdd();}}
+                  className="rounded-0 border-input-0 border-0 px-4 focus-visible:ring-0"
+                />
+              </div>
             )}
           </div>
           <div ref={ref}>
