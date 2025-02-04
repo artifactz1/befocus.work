@@ -28,7 +28,11 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
       >
         {task.archived ? (
           <button onClick={() => archiveTask(task.id)}>
-            {task.archived ? <ArchiveRestore /> : <Archive />}
+            {task.archived ? (
+              <ArchiveRestore strokeWidth={1.5} />
+            ) : (
+              <Archive strokeWidth={1.5} />
+            )}
           </button>
         ) : (
           <Checkbox
@@ -72,7 +76,7 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
 
       <div className="flex items-center opacity-0 transition-opacity hover:opacity-100">
         <button onClick={() => archiveTask(task.id)}>
-          {task.archived ? "" : <Archive />}
+          {!task.archived && <Archive strokeWidth={1.5} />}
         </button>
       </div>
     </div>

@@ -25,7 +25,7 @@ export default function BgMusicSoundsButton() {
           <AccordionContent>
             <div className="space-y-4">
               {Object.keys(sounds)
-                .filter((soundId) => sounds[soundId]?.soundType === "ambient")
+                .filter((soundId) => sounds[soundId]?.soundType === "bgMusic")
                 .map((soundId) => (
                   <SoundButton key={soundId} soundId={soundId} />
                 ))}
