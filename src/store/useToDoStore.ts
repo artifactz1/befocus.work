@@ -90,11 +90,9 @@ export const useTodoStore = create<TodoStore>((set) => ({
       tasks: state.tasks.filter((task) => task.id !== id),
     })),
   archiveTask: (id: number) =>
-    set(
-      (state) => 
-        ({
+    set((state) => ({
       tasks: state.tasks.map((task) =>
-        task.id === id ? { ...task, archived: true } : task,
+        task.id === id ? { ...task, archived: !task.archived } : task,
       ),
     })),
 }));

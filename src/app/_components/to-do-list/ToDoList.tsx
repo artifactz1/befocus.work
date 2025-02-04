@@ -1,6 +1,12 @@
 import { stagger, useAnimate } from "framer-motion";
 import { NotebookPen } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
@@ -11,7 +17,7 @@ export default function TodoList() {
   const { tasks, toggleTask } = useTodoStore();
   const [ref, animate] = useAnimate();
   const [newTask, setNewTask] = useState("");
-  const { addMode, addTask, toggleAdd, } = useTodoStore();
+  const { addMode, addTask, toggleAdd } = useTodoStore();
 
   function handleChange(id: number) {
     toggleTask(id);
@@ -98,6 +104,26 @@ export default function TodoList() {
                 />
               ))}
           </div>
+          {tasks.some((task) => task.archived) && (
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-1" className="border-0">
+                <AccordionTrigger className="font-bold">Archived</AccordionTrigger>
+                <AccordionContent className="pl-2">
+                  <div ref={ref}>
+                    {tasks
+                      .filter((task) => task.archived)
+                      .map((task) => (
+                        <TaskItem
+                          key={task.id}
+                          task={task}
+                          handleChange={handleChange}
+                        />
+                      ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
         </div>
       </div>
     </div>

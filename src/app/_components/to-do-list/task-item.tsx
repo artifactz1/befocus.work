@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Archive } from "lucide-react";
+import { Archive, ArchiveRestore } from "lucide-react";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 
@@ -66,7 +66,7 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
 
       <div className="flex items-center opacity-0 transition-opacity hover:opacity-100">
         <button onClick={() => archiveTask(task.id)}>
-          <Archive />
+          {task.archived ? <ArchiveRestore /> : <Archive />}
         </button>
       </div>
     </div>
