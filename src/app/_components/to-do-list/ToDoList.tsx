@@ -1,7 +1,8 @@
 import { stagger, useAnimate } from "framer-motion";
-import { Plus } from "lucide-react";
+import { NotebookPen, Plus } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
 import { useTodoStore } from "~/store/useToDoStore"; // Zustand store
 import TaskItem from "./task-item";
 
@@ -42,17 +43,20 @@ export default function TodoList() {
   }, [tasks, animate]); // Runs whenever `tasks` changes
 
   return (
-    <div className="flex min-h-full flex-col items-center justify-center">
-      <div className="flex w-full max-w-sm flex-col">
-        <div ref={ref}>
-          {tasks.map((task) => (
-            <TaskItem key={task.id} task={task} handleChange={handleChange} />
-          ))}
+    <div className="relative min-h-full">
+      <NotebookPen />
+      <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>
+      <Separator className="my-4 bg-white" />
+      <div className="flex min-h-full flex-col items-center justify-center">
+        <div className="flex w-full max-w-sm flex-col">
+          <div ref={ref}>
+            {tasks.map((task) => (
+              <TaskItem key={task.id} task={task} handleChange={handleChange} />
+            ))}
+          </div>
         </div>
       </div>
-      <Button variant="secondary">
-        <Plus />
-      </Button>
+      
     </div>
   );
 }

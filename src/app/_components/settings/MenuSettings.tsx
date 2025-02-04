@@ -1,6 +1,6 @@
 "use client";
 
-import { NotebookPen, Timer, Volume2 } from "lucide-react";
+import { NotebookPen, Plus, Timer, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -10,9 +10,9 @@ import {
 } from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
+import ToDoList from "../to-do-list/ToDoList";
 import { SessionSettings } from "./SessionSettings";
 import SoundSettings from "./SoundSettings";
-import ToDoList from '../to-do-list/ToDoList';
 
 export default function MenuSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
@@ -32,15 +32,12 @@ export default function MenuSettings() {
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="min-h-[500px] w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
+          className="relative min-h-[500px] w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
         >
-          <div className="flex h-full w-full select-none flex-col justify-end">
-            <NotebookPen />
-            <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>
-            <Separator className="my-4 bg-white" />
-            <ToDoList/>
-
-          </div>
+          <ToDoList />
+          <Button className="absolute bottom-6 right-6">
+            <Plus />
+          </Button>
         </PopoverContent>
       </Popover>
       <Popover open={isSoundOpen} onOpenChange={setIsSoundOpen}>
