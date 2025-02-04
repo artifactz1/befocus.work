@@ -28,8 +28,8 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information. -->
 
-# BeFocused
-
+ <h1><a href="https://befocus.artifactz.dev//">Be Focused</a></h1>
+ 
 BeFocused is a productivity and self-improvement app designed to help users define their future identity, track habits, and stay organized with a minimalist bullet journal system. Built with the [T3 Stack](https://create.t3.gg/), BeFocused provides tools and features to support personal growth and goal achievement.
 
  ![Alt text](https://raw.githubusercontent.com/artifactz1/befocus-t3/refs/heads/main/Pomodoro.png)
