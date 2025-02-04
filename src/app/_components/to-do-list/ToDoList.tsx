@@ -11,7 +11,7 @@ export default function TodoList() {
   const { tasks, toggleTask } = useTodoStore();
   const [ref, animate] = useAnimate();
   const [newTask, setNewTask] = useState("");
-  const { addMode, addTask, toggleAdd} = useTodoStore();
+  const { addMode, addTask, toggleAdd } = useTodoStore();
 
   function handleChange(id: number) {
     toggleTask(id);
@@ -61,7 +61,7 @@ export default function TodoList() {
         <div className="flex w-full max-w-sm flex-col">
           <div>
             {addMode && (
-              <div className="flex items-center border-b-2 pb-2">
+              <div className="flex items-center border-b-2 py-2">
                 <Checkbox
                   // checked={task.completed}
                   // onCheckedChange={() => handleChange(task.id)}
@@ -72,8 +72,16 @@ export default function TodoList() {
                   placeholder="Add a task..."
                   value={newTask}
                   onChange={(e) => setNewTask(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
-                  onBlur={() => {handleAddTask(); toggleAdd();}}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddTask();
+                      toggleAdd();
+                    }
+                  }}
+                  onBlur={() => {
+                    handleAddTask();
+                    toggleAdd();
+                  }}
                   className="rounded-0 border-input-0 border-0 px-4 focus-visible:ring-0"
                 />
               </div>
