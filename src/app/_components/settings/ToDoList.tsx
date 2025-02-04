@@ -1,4 +1,4 @@
-import { stagger, useAnimate } from "framer-motion";
+import { motion, stagger, useAnimate } from "framer-motion";
 import { useState } from "react";
 import { Checkbox } from "~/components/ui/checkbox";
 // import { ListBulletIcon } from "@heroicons/react/20/solid";
@@ -45,7 +45,7 @@ export default function ToDoList() {
           the index of the last completed item.
         */
         animate(
-          "input",
+          ".peer",
           { scale: [1, 1.25, 1] },
           {
             duration: 0.35,
@@ -58,7 +58,7 @@ export default function ToDoList() {
           a "shimmy" effect, achieved by keyframing the `x` prop.
         */
         animate(
-          "input",
+          ".peer",
           { x: [0, 2, -2, 0] },
           {
             duration: 0.4,
@@ -71,7 +71,7 @@ export default function ToDoList() {
           One of the three effects are randomly selected each time the list is completed.
         */
         animate(
-          "input",
+          ".peer",
           { rotate: [0, 10, -10, 0] },
           {
             duration: 0.5,
@@ -90,25 +90,35 @@ export default function ToDoList() {
         */}
         <div ref={ref} className="mt-4">
           {items.map((item) => (
-            <label
-              key={item.id}
-              className={`group flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 checked:text-gray-300 hover:bg-gray-200 ${
-                item.checked ? "text-gray-400 line-through" : "text-gray-400"
-              }`}
-            >
-              <Checkbox
-                id="terms"
-                checked={item.checked}
-                onCheckedChange={() => handleChange(item.id)}
-              />
-              {/* <input
+            <div key={item.id} className="items-top flex space-x-2">
+              <motion.div
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.8 }}
+                className="flex items-center"
+                ref={ref}
+              >
+                <Checkbox
+                  id="terms"
+                  checked={item.checked}
+                  onCheckedChange={() => handleChange(item.id)}
+                  className="mr-2"
+                />
+              </motion.div>
+              <label
+                key={item.id}
+                className={`group flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 checked:text-gray-300 hover:bg-gray-600 ${
+                  item.checked ? "text-gray-400 line-through" : "text-gray-400"
+                }`}
+              >
+                {/* <input
                 onChange={() => handleChange(item.id)}
                 checked={item.checked}
                 type="checkbox"
                 className="mr-4 h-4 w-4 rounded-sm border-2 border-gray-300 text-sky-600 transition-colors duration-300 focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-sky-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-100 group-active:border-sky-600 group-active:checked:text-sky-600/25"
               /> */}
-              {item.text}
-            </label>
+                {item.text}
+              </label>
+            </div>
           ))}
         </div>
       </div>
