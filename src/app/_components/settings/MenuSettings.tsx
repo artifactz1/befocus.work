@@ -34,7 +34,7 @@ export default function MenuSettings() {
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="relative min-h-[500px] w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
+          className="max-h-screen min-h-[500px] w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
         >
           <ToDoList />
           <Button

@@ -26,11 +26,17 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
         whileTap={{ scale: 0.8 }}
         className="flex items-center"
       >
-        <Checkbox
-          checked={task.completed}
-          onCheckedChange={() => handleChange(task.id)}
-          className="peer mr-2"
-        />
+        {task.archived ? (
+          <button onClick={() => archiveTask(task.id)}>
+            {task.archived ? <ArchiveRestore /> : <Archive />}
+          </button>
+        ) : (
+          <Checkbox
+            checked={task.completed}
+            onCheckedChange={() => handleChange(task.id)}
+            className="peer mr-2"
+          />
+        )}
       </motion.div>
       <motion.div
         animate={{ x: task.completed ? [5, 5, 0] : 0 }}
@@ -66,7 +72,7 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
 
       <div className="flex items-center opacity-0 transition-opacity hover:opacity-100">
         <button onClick={() => archiveTask(task.id)}>
-          {task.archived ? <ArchiveRestore /> : <Archive />}
+          {task.archived ? "" : <Archive />}
         </button>
       </div>
     </div>
