@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
 import { useTodoStore } from "~/store/useToDoStore"; // Zustand store
+import TaskItem from './task-item';
 
 export default function TodoList() {
   const { tasks, toggleTask } = useTodoStore();
@@ -43,31 +44,9 @@ export default function TodoList() {
   return (
     <div className="flex min-h-full flex-col items-center justify-center">
       <div className="flex w-full max-w-sm flex-col rounded px-3 py-4">
-        <div ref={ref} className="mt-4">
+      <div ref={ref} className="mt-4">
           {tasks.map((task) => (
-            <div key={task.id} className="items-top flex space-x-2">
-              <motion.div
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.8 }}
-                className="flex items-center"
-                ref={ref}
-              >
-                <Checkbox
-                  checked={task.completed}
-                  onCheckedChange={() => handleChange(task.id)}
-                  className="peer mr-2"
-                />
-              </motion.div>
-              <Label
-                className={`group flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 ${
-                  task.completed
-                    ? "text-gray-500 line-through"
-                    : "font-semibold"
-                }`}
-              >
-                {task.text}
-              </Label>
-            </div>
+            <TaskItem key={task.id} task={task} handleChange={handleChange} />
           ))}
         </div>
       </div>
