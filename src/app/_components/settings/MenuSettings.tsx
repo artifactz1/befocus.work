@@ -12,7 +12,7 @@ import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { SessionSettings } from "./SessionSettings";
 import SoundSettings from "./SoundSettings";
-import ToDoList from './ToDoList';
+import ToDoList from '../to-do-list/ToDoList';
 
 export default function MenuSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
