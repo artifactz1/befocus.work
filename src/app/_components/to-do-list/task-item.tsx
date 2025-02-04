@@ -58,6 +58,25 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
               style={{ transform: "translateY(-50%)" }}
             ></span>
           </span>
+
+          // <motion.span
+          //   className="relative inline-block"
+          //   initial={{ color: "white" }}
+          //   animate={{ color: task.completed ? "#78716c" : "white" }}
+          //   transition={{ delay: 1, duration: 1 }} // Delayed transition to match the line animation
+          // >
+          //   {task.text}
+          //   <motion.span
+          //     className="absolute left-0 top-1/2 h-[2px]"
+          //     style={{ transform: "translateY(-50%)" }}
+          //     initial={{ width: "0%", backgroundColor: "white" }}
+          //     animate={{
+          //       width: task.completed ? "100%" : "0%",
+          //       backgroundColor: task.completed ? "#78716c" : "white",
+          //     }}
+          //     transition={{ duration: 1, ease: "easeInOut" }} // Smooth transition
+          //   />
+          // </motion.span>
         )}
       </motion.div>
     </div>
