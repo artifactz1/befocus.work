@@ -1,9 +1,7 @@
-import { motion, stagger, useAnimate } from "framer-motion";
+import { stagger, useAnimate } from "framer-motion";
 import { useEffect } from "react";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Label } from "~/components/ui/label";
 import { useTodoStore } from "~/store/useToDoStore"; // Zustand store
-import TaskItem from './task-item';
+import TaskItem from "./task-item";
 
 export default function TodoList() {
   const { tasks, toggleTask } = useTodoStore();
@@ -44,7 +42,7 @@ export default function TodoList() {
   return (
     <div className="flex min-h-full flex-col items-center justify-center">
       <div className="flex w-full max-w-sm flex-col rounded px-3 py-4">
-      <div ref={ref} className="mt-4">
+        <div ref={ref} className="mt-4">
           {tasks.map((task) => (
             <TaskItem key={task.id} task={task} handleChange={handleChange} />
           ))}
