@@ -1,5 +1,7 @@
 import { stagger, useAnimate } from "framer-motion";
+import { Plus } from "lucide-react";
 import { useEffect } from "react";
+import { Button } from "~/components/ui/button";
 import { useTodoStore } from "~/store/useToDoStore"; // Zustand store
 import TaskItem from "./task-item";
 
@@ -41,13 +43,16 @@ export default function TodoList() {
 
   return (
     <div className="flex min-h-full flex-col items-center justify-center">
-      <div className="flex w-full max-w-sm flex-col rounded px-3 py-4">
-        <div ref={ref} className="mt-4">
+      <div className="flex w-full max-w-sm flex-col">
+        <div ref={ref}>
           {tasks.map((task) => (
             <TaskItem key={task.id} task={task} handleChange={handleChange} />
           ))}
         </div>
       </div>
+      <Button variant="secondary">
+        <Plus />
+      </Button>
     </div>
   );
 }
