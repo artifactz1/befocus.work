@@ -29,8 +29,10 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
           className="peer mr-2"
         />
       </motion.div>
-      <div
-        className={`group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 ${
+      <motion.div
+        animate={{ x: task.completed ? [5, 5, 0] : 0 }}
+        transition={{ type: "spring", stiffness: 50, duration: 5 }}
+        className={`group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-1000 ${
           task.completed ? "text-stone-500" : "font-semibold"
         }`}
         onClick={() => toggleEditMode(task.id)}
@@ -57,7 +59,7 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
             ></span>
           </span>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }
