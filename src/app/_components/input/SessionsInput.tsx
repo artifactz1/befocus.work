@@ -29,13 +29,13 @@ export const SessionsInput: React.FC<SessionsInputProps> = ({
   return (
     <div className="flex justify-between">
       <div className="flex items-end">
-        <Label htmlFor="workDuration" className="text-md pb-2 font-bold">
+        <Label htmlFor="workDuration" className="text-md pb-3 font-bold">
           Rounds :
         </Label>
         <Counter value={value} />
-        <div className="pb-2">(sessions)</div>
+        <div className="pb-3">(sessions)</div>
       </div>
-      <div className="flex items-end space-x-2 pb-2">
+      <div className="flex items-end space-x-2 pb-3">
         <Button
           onClick={decrement}
           variant="secondary"

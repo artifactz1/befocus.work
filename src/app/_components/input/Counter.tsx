@@ -2,7 +2,7 @@ import { motion, MotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
 
 const fontSize = 50;
-const padding = 15;
+const padding = 20;
 const height = fontSize + padding;
 
 function Counter({ value }: { value: number }) {
