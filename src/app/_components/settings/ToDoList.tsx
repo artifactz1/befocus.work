@@ -264,7 +264,7 @@ export default function ToDoList() {
           {
             duration: 0.35,
             delay: stagger(0.075, { from: lastCompletedItem }),
-          }
+          },
         );
       } else if (random < 2 / 3) {
         /*
@@ -277,7 +277,7 @@ export default function ToDoList() {
           {
             duration: 0.4,
             delay: stagger(0.1, { from: lastCompletedItem }),
-          }
+          },
         );
       } else {
         /*
@@ -290,7 +290,7 @@ export default function ToDoList() {
           {
             duration: 0.5,
             delay: stagger(0.1, { from: lastCompletedItem }),
-          }
+          },
         );
       }
     }
@@ -298,9 +298,7 @@ export default function ToDoList() {
 
   return (
     <div className="flex min-h-full flex-col items-center justify-center">
-      <div className="flex w-full max-w-sm flex-col rounded bg-gray-100 px-3 py-4 shadow-xl">
-      
-
+      <div className="flex w-full max-w-sm flex-col rounded px-3 py-4">
         {/*
            🟢 Attach the ref from `useAnimate()` to scope the animate() function to this subtree.
         */}
@@ -309,9 +307,7 @@ export default function ToDoList() {
             <label
               key={item.id}
               className={`group flex w-full cursor-pointer select-none items-center rounded p-2 text-sm font-medium transition-colors duration-300 checked:text-gray-300 hover:bg-gray-200 ${
-                item.checked
-                  ? "text-gray-400 line-through"
-                  : "text-gray-800"
+                item.checked ? "text-gray-400 line-through" : "text-gray-400"
               }`}
             >
               <input
