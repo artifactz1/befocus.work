@@ -34,6 +34,7 @@ BeFocused is a productivity and self-improvement app designed to help users defi
 
  ![Alt text](https://raw.githubusercontent.com/artifactz1/befocus-t3/refs/heads/main/Pomodoro.png)
 
+https://befocus.artifactz.dev/
 
 ## Key Features
 
