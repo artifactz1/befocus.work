@@ -10,6 +10,7 @@ import {
 } from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
+import { useTodoStore } from "~/store/useToDoStore";
 import ToDoList from "../to-do-list/ToDoList";
 import { SessionSettings } from "./SessionSettings";
 import SoundSettings from "./SoundSettings";
@@ -17,6 +18,7 @@ import SoundSettings from "./SoundSettings";
 export default function MenuSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
   const { setSoundSettingsOpen } = useSoundsStore();
+  const { toggleAdd } = useTodoStore();
 
   useEffect(() => {
     setSoundSettingsOpen(isSoundOpen);
@@ -35,7 +37,10 @@ export default function MenuSettings() {
           className="relative min-h-[500px] w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
         >
           <ToDoList />
-          <Button className="absolute bottom-6 right-6">
+          <Button
+            onClick={() => toggleAdd()}
+            className="absolute bottom-6 right-6"
+          >
             <Plus />
           </Button>
         </PopoverContent>

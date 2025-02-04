@@ -7,6 +7,8 @@ interface Task {
 }
 
 interface TodoStore {
+  addMode: boolean;
+  toggleAdd: () => void;
   tasks: Task[];
   addTask: (text: string) => void;
   toggleTask: (id: number) => void;
@@ -14,6 +16,11 @@ interface TodoStore {
 }
 
 export const useTodoStore = create<TodoStore>((set) => ({
+  addMode: false,
+  toggleAdd: () =>
+    set((state) => ({
+      addMode: !state.addMode,
+    })),
   tasks: [
     { id: 1, text: "Buy groceries", completed: true },
     { id: 2, text: "Finish project", completed: false },

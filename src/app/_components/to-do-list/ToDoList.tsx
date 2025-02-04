@@ -1,7 +1,7 @@
 import { stagger, useAnimate } from "framer-motion";
-import { NotebookPen, Plus } from "lucide-react";
-import { useEffect } from "react";
-import { Button } from "~/components/ui/button";
+import { NotebookPen } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import { useTodoStore } from "~/store/useToDoStore"; // Zustand store
 import TaskItem from "./task-item";
@@ -9,6 +9,8 @@ import TaskItem from "./task-item";
 export default function TodoList() {
   const { tasks, toggleTask } = useTodoStore();
   const [ref, animate] = useAnimate();
+  const [newTask, setNewTask] = useState("");
+  const { addMode } = useTodoStore();
 
   function handleChange(id: number) {
     toggleTask(id);
@@ -43,12 +45,22 @@ export default function TodoList() {
   }, [tasks, animate]); // Runs whenever `tasks` changes
 
   return (
-    <div className="relative min-h-full">
+    <div className="h-fill">
       <NotebookPen />
       <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>
       <Separator className="my-4 bg-white" />
       <div className="flex min-h-full flex-col items-center justify-center">
         <div className="flex w-full max-w-sm flex-col">
+          <div>
+            {addMode && (
+              <Input
+                type="text"
+                placeholder="Add a task..."
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+              />
+            )}
+          </div>
           <div ref={ref}>
             {tasks.map((task) => (
               <TaskItem key={task.id} task={task} handleChange={handleChange} />
@@ -56,7 +68,6 @@ export default function TodoList() {
           </div>
         </div>
       </div>
-      
     </div>
   );
 }
