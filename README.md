@@ -30,76 +30,12 @@ Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
  <h1><a href="https://befocus.artifactz.dev//">Be Focused</a></h1>
  
-BeFocused is a productivity and self-improvement app designed to help users define their future identity, track habits, and stay organized with a minimalist bullet journal system. Built with the [T3 Stack](https://create.t3.gg/), BeFocused provides tools and features to support personal growth and goal achievement.
+BeFocused is a productivity and self-improvement app integrating a Pomodoro timer, task management system, and ambient soundscapes to enhance user focus and efficiency. Built with the [T3 Stack](https://create.t3.gg/), BeFocused provides tools and features to support personal growth and goal achievement.
 
  ![Alt text](https://raw.githubusercontent.com/artifactz1/befocus-t3/refs/heads/main/Pomodoro.png)
 
 https://befocus.artifactz.dev/
 
-## Key Features
-
-### 1. Onboarding Flow (COMING SOON)
-- Guided questions about future goals and identity.
-- **Vision Board** for visualizing your future self.
-- **Manifesto Creation** to articulate and manifest your aspirations.
-- A system for implementing small, incremental changes based on your goals.
-
-### 2. Habit Tracking
-- Set specific goals and create systems to achieve them.
-- Track habits and monitor progress (e.g., coding for one hour daily, posting one video a day).
-
-### 3. Bullet Journal Implementation (COMING SOON)
-- Minimalist design with intuitive symbols:
-  - **Random Task:** △ (Triangle)
-  - **Habits:** ❤️ (Heart)
-  - **Events:** ☆ (Star)
-  - **Notes:** □ (Square)
-  - **Memories:** ○ (Circle)
-- Filter and organize notes effortlessly.
-- User interface mimics a physical notebook with dotted, lined, and other style options.
-
-### 4. Widgets (COMING SOON)
-- **Pomodoro Timer** and general Timer for focused work.
-- **Schedule Widget** showing full-day time blocks.
-- **Stats Widget** with visual progress bars.
-- **Bullet Journal Widget** for quick and minimal note-taking.
-
-## Target Audience and Use Cases
-
-### Target Audience
-- Individuals feeling uncertain about their future.
-- Self-improvement enthusiasts and habit builders.
-- Minimalist note-takers and Bullet Journal enthusiasts.
-- People aiming to visualize and plan their future selves.
-
-### Use Cases
-- Defining future identity and setting actionable steps.
-- Tracking daily habits to build towards larger goals (e.g., becoming a software engineer).
-- Maintaining a minimalist bullet journal for tasks, habits, events, notes, and memories.
-- Staying focused with Pomodoro timers and tracking progress with widgets.
-
-<!-- ## User Interface and User Experience (UI/UX)
-
-### Onboarding Flow
-- Guided questions to understand goals and identity.
-- Engaging visuals for vision boards and manifesto creation.
-
-### Habit Tracking System
-- Intuitive interface for setting and tracking habits.
-- Visual progress indicators like progress bars and streak counters.
-
-### Bullet Journal
-- Clean, minimalistic design resembling a physical journal.
-- Options for dotted, lined, or other journal styles.
-- Symbols for quick task categorization and note-taking.
-- Filtering and organizing tools for efficient management.
-
-### Widgets
-- Customizable widget interface for easy access to features.
-- Pomodoro Timer with start, stop, and reset functionalities.
-- Schedule Widget displaying time blocks for better planning.
-- Stats Widget showing daily progress visually.
-- Bullet Journal Widget for quick entries. -->
 
 ## Built With
 - [Next.js](https://nextjs.org)
