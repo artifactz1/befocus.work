@@ -9,7 +9,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 export const metadata: Metadata = {
   title: "░ ►▬ Be Focused ▬◄ ░",
   description: "artifactz - Art Punsalang ",
-  // icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/avatar-cropped.webp" }],
 };
 
 export default function RootLayout({
