@@ -93,7 +93,7 @@ export default function SessionsUI() {
       </div>
 
       <div className="block md:hidden">
-        <div className="flex w-full flex-col items-center justify-center space-y-3 md:mx-auto md:p-6">
+        <div className="flex w-full flex-col items-center justify-center space-y-1 md:mx-auto md:p-6">
           <div
             className="grid w-full gap-1"
             style={{
