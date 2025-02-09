@@ -5,7 +5,6 @@ import Footer from "./_components/Footer";
 import GlobalSoundsPlayer from "./_components/GlobalSoundsPlayer";
 import Header from "./_components/Header";
 import Timer from "./_components/timer/Timer";
-import AnimateInput from './_components/input/Counter';
 
 export default async function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });

@@ -46,7 +46,7 @@ export default function SessionsUI() {
   const opacityClassBrk = getOpacityClass(opacitySessionBrk);
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col items-center justify-center space-y-3 p-6">
+    <main className="mx-auto flex w-full flex-col items-center justify-center space-y-3 p-6">
       <p className="text-2xl font-semibold">
         {currentSession} / {sessions}
       </p>
@@ -89,4 +89,3 @@ export default function SessionsUI() {
     </main>
   );
 }
-
