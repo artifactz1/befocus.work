@@ -48,7 +48,7 @@ export default function SessionsUI() {
   return (
     <main>
       <div className="hidden sm:block">
-        <div className="flex w-full flex-col items-center justify-center space-y-3 sm:mx-auto sm:p-6">
+        <div className="-6 flex w-full flex-col items-center justify-center space-y-3 sm:mx-auto">
           <p className="hidden text-2xl font-semibold sm:block">
             {currentSession} / {sessions}
           </p>

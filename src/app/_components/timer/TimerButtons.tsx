@@ -106,6 +106,21 @@ export default function TimerButtons() {
 
   const buttonVariant = isSmallScreen ? "ghost" : "outline";
 
+  const [buttonSize, setButtonSize] = useState<
+    "lg" | "sm" | "default" | "icon"
+  >("lg");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setButtonSize(window.innerWidth < 640 ? "lg" : "lg");
+    };
+
+    handleResize(); // Set initial size
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="flex items-center justify-center space-x-1">
       <TooltipProvider>
@@ -114,8 +129,9 @@ export default function TimerButtons() {
             <Button
               onClick={toggleTimer}
               variant={buttonVariant}
-              size="lg"
-              className="h-12 sm:w-32"
+              // size={window.length < 640 ? "sm" : "lg"}
+              size={buttonSize}
+              className="lg:h-12 lg:w-32"
             >
               {isRunning ? (
                 <Pause className="h-6 w-6" strokeWidth={3} />
@@ -136,8 +152,8 @@ export default function TimerButtons() {
             <Button
               onClick={resetCurrentTime}
               variant={buttonVariant}
-              size="lg"
-              className="h-12 sm:w-32"
+              size={buttonSize}
+              className="lg:h-12 lg:w-32"
             >
               <RotateCcw className="h-6 w-6" strokeWidth={3} />
             </Button>
@@ -152,8 +168,9 @@ export default function TimerButtons() {
             <Button
               onClick={skipToNextSession}
               variant={buttonVariant}
-              size="lg"
-              className="h-12 sm:w-32"
+              // size={window.length < 640 ? "sm" : "lg"}
+              size={buttonSize}
+              className="lg:h-12 lg:w-32"
             >
               <SkipForward className="h-6 w-6" strokeWidth={3} />
             </Button>
@@ -161,7 +178,6 @@ export default function TimerButtons() {
           <TooltipContent className="font-bold">Skip To Next</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      
     </div>
   );
 }

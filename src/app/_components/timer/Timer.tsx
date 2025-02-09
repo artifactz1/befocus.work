@@ -77,17 +77,36 @@ export default function Timer() {
     setSeconds(secs);
   }, [timeLeft]);
 
+  const [widthSize, setWidthSize] = useState("");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidthSize(
+        window.innerWidth < 640
+          ? "50vw"
+          : window.innerWidth < 1024
+            ? "10vh"
+            : "25vw",
+      );
+    };
+
+    handleResize(); // Set initial size
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="relative z-0 flex h-[70vh] items-center justify-center">
       <div className="absolute hidden items-center text-[25vw] font-bold sm:flex">
-        <TimerUI value={minutes} fontSize={"25vw"} />
+        <TimerUI value={minutes} fontSize={widthSize} />
         <p className="mb-5">:</p>
-        <TimerUI value={seconds} fontSize={"25vw"} />
+        <TimerUI value={seconds} fontSize={widthSize} />
       </div>
       <div className="absolute flex-row items-center text-[25vw] font-bold sm:hidden">
-        <TimerUI value={minutes} fontSize={"25vh"} />
+        <TimerUI value={minutes} fontSize={widthSize} />
         {/* <p className="mb-5">:</p> */}
-        <TimerUI value={seconds} fontSize={"25vh"} />
+        <TimerUI value={seconds} fontSize={widthSize} />
       </div>
     </div>
   );
