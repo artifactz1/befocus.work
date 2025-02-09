@@ -79,10 +79,15 @@ export default function Timer() {
 
   return (
     <div className="relative z-0 flex h-[70vh] items-center justify-center">
-      <div className="absolute flex items-center text-[25vw] font-bold">
+      <div className="absolute hidden items-center text-[25vw] font-bold sm:flex">
         <TimerUI value={minutes} fontSize={"25vw"} />
         <p className="mb-5">:</p>
         <TimerUI value={seconds} fontSize={"25vw"} />
+      </div>
+      <div className="absolute flex-row items-center text-[25vw] font-bold sm:hidden">
+        <TimerUI value={minutes} fontSize={"25vh"} />
+        {/* <p className="mb-5">:</p> */}
+        <TimerUI value={seconds} fontSize={"25vh"} />
       </div>
     </div>
   );

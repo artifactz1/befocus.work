@@ -47,9 +47,9 @@ export default function SessionsUI() {
 
   return (
     <main>
-      <div className="hidden md:block">
-        <div className="flex w-full flex-col items-center justify-center space-y-3 md:mx-auto md:p-6">
-          <p className="hidden text-2xl font-semibold md:block">
+      <div className="hidden sm:block">
+        <div className="flex w-full flex-col items-center justify-center space-y-3 sm:mx-auto sm:p-6">
+          <p className="hidden text-2xl font-semibold sm:block">
             {currentSession} / {sessions}
           </p>
           <div className="space-y-1">
@@ -59,7 +59,7 @@ export default function SessionsUI() {
                   key={`work-${index}`}
                   className={cn(
                     // "xs:h-13 xs:-1 h-12 w-12 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "h-12 flex-1 rounded-lg border-2 transition-all duration-300 md:h-10",
+                    "h-12 flex-1 rounded-lg border-2 transition-all duration-300 sm:h-10",
 
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index <= currentSession - 1 // Completed work sessions
@@ -77,7 +77,7 @@ export default function SessionsUI() {
                   key={`break-${index}`}
                   className={cn(
                     // "xs:h-12 xs:-12 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "xs:h-13 xs:h-13 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
+                    "xs:h-13 xs:h-13 h-11 w-11 rounded-lg border-2 transition-all duration-300 sm:h-10 sm:w-10",
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index < currentSession - 1 // Completed break sessions
                       ? "bg-green-500"
@@ -92,8 +92,8 @@ export default function SessionsUI() {
         </div>
       </div>
 
-      <div className="block md:hidden">
-        <div className="flex w-full flex-col items-center justify-center space-y-1 md:mx-auto md:p-6">
+      <div className="block sm:hidden">
+        <div className="flex w-full flex-col items-center justify-center space-y-1 sm:mx-auto sm:p-6">
           <div
             className="grid w-full gap-1"
             style={{

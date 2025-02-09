@@ -35,7 +35,7 @@ export default function MenuSettings() {
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="max-h-screen min-h-[500px] w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
+          className="max-h-screen min-h-[500px] w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 sm:w-[500px] lg:w-[392px]"
         >
           <ToDoList />
           <Button
@@ -56,7 +56,7 @@ export default function MenuSettings() {
             <Volume2 />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="max-h-[500px] w-[400px] gap-3 overflow-y-hidden rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 hover:overflow-y-auto md:w-[500px] lg:w-[392px]">
+        <PopoverContent className="max-h-[500px] w-[400px] gap-3 overflow-y-hidden rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 hover:overflow-y-auto sm:w-[500px] lg:w-[392px]">
           <SoundSettings />
         </PopoverContent>
       </Popover>
@@ -68,7 +68,7 @@ export default function MenuSettings() {
         </PopoverTrigger>
         <PopoverContent
           align="end"
-          className="h-full w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 md:w-[500px] lg:w-[392px]"
+          className="h-full w-[400px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 sm:w-[500px] lg:w-[392px]"
         >
           <div className="flex h-full w-full select-none flex-col justify-end">
             <div className="mb-2 mt-4 text-lg font-bold">
