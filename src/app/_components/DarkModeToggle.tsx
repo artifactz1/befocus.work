@@ -45,7 +45,6 @@ export const DarkModeToggle = () => {
           <Button
             onClick={handleToggle}
             variant="outline"
-            size="lg"
             className="h-12 w-32"
           >
             {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{" "}
