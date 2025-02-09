@@ -36,13 +36,13 @@ function Timer() {
       : "Break"
     : workDuration === timeLeft
       ? "BeFocused"
-      : isWorking ? "Paused" : "Break";
+      : isWorking
+        ? "Paused"
+        : "Break";
 
   return (
-    <div className="flex h-[15vh] w-full items-center justify-between px-[5vw] pt-6">
-      <div>
-        <SessionsUI />
-      </div>
+    <div className="flex w-full flex-col-reverse items-center justify-between px-[5vw] md:h-[15vh] md:flex-row md:pt-6">
+      <SessionsUI />
       <div className="flex flex-col items-center justify-center text-right">
         <AnimatePresence mode="wait">
           <motion.p
