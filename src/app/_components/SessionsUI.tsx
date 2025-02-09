@@ -47,39 +47,92 @@ export default function SessionsUI() {
 
   return (
     <main>
-      <div className="mx-auto flex w-full flex-col items-center justify-center space-y-3 p-6">
-        <p className="text-2xl font-semibold">
-          {currentSession} / {sessions}
-        </p>
-        <div className="space-y-1">
-          {/* Work Sessions */}
-          <div className="flex space-x-1">
+      <div className="hidden md:block">
+        <div className="flex w-full flex-col items-center justify-center space-y-3 md:mx-auto md:p-6">
+          <p className="hidden text-2xl font-semibold md:block">
+            {currentSession} / {sessions}
+          </p>
+          <div className="space-y-1">
+            <div className="flex space-x-1">
+              {Array.from({ length: sessions }).map((_, index) => (
+                <div
+                  key={`work-${index}`}
+                  className={cn(
+                    // "xs:h-13 xs:-1 h-12 w-12 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
+                    "h-12 flex-1 rounded-lg border-2 transition-all duration-300 md:h-10",
+
+                    "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
+                    index <= currentSession - 1 // Completed work sessions
+                      ? isWorking && currentSession - 1 === index
+                        ? `${opacityClass}`
+                        : "bg-green-500"
+                      : "", // No color if not completed
+                  )}
+                />
+              ))}
+            </div>
+            <div className="flex space-x-1">
+              {Array.from({ length: sessions }).map((_, index) => (
+                <div
+                  key={`break-${index}`}
+                  className={cn(
+                    // "xs:h-12 xs:-12 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
+                    "xs:h-13 xs:h-13 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
+                    "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
+                    index < currentSession - 1 // Completed break sessions
+                      ? "bg-green-500"
+                      : !isWorking && currentSession - 1 === index // Current break session
+                        ? `${opacityClassBrk}`
+                        : "bg-transparent",
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="block md:hidden">
+        <div className="flex w-full flex-col items-center justify-center space-y-3 md:mx-auto md:p-6">
+          <div
+            className="grid w-full gap-1"
+            style={{
+              gridTemplateColumns: `repeat(${sessions}, minmax(0, 1fr))`,
+              gridAutoRows: "1fr",
+            }}
+          >
             {Array.from({ length: sessions }).map((_, index) => (
               <div
                 key={`work-${index}`}
                 className={cn(
-                  "h-10 w-10 rounded-lg border-2 transition-all duration-300",
-                  "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
-                  index <= currentSession - 1 // Completed work sessions
+                  "aspect-square rounded-lg border-2 transition-all duration-300",
+                  "border-gray-300 dark:border-white/80",
+                  index <= currentSession - 1
                     ? isWorking && currentSession - 1 === index
                       ? `${opacityClass}`
                       : "bg-green-500"
-                    : "", // No color if not completed
+                    : "",
                 )}
               />
             ))}
           </div>
-          {/* Break Sessions */}
-          <div className="flex space-x-1">
+
+          <div
+            className="grid w-full gap-1"
+            style={{
+              gridTemplateColumns: `repeat(${sessions}, minmax(0, 1fr))`,
+              gridAutoRows: "1fr",
+            }}
+          >
             {Array.from({ length: sessions }).map((_, index) => (
               <div
                 key={`break-${index}`}
                 className={cn(
-                  "h-10 w-10 rounded-lg border-2 transition-all duration-300",
-                  "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
-                  index < currentSession - 1 // Completed break sessions
+                  "aspect-square rounded-lg border-2 transition-all duration-300",
+                  "border-gray-300 dark:border-white/80",
+                  index < currentSession - 1
                     ? "bg-green-500"
-                    : !isWorking && currentSession - 1 === index // Current break session
+                    : !isWorking && currentSession - 1 === index
                       ? `${opacityClassBrk}`
                       : "bg-transparent",
                 )}

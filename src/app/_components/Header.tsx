@@ -39,11 +39,12 @@ function Timer() {
       : isWorking
         ? "Paused"
         : "Break";
+  const { sessions, currentSession } = useTimerStore();
 
   return (
-    <div className="flex w-full flex-col-reverse items-center justify-between px-[5vw] md:h-[15vh] md:flex-row md:pt-6">
+    <div className="flex w-screen flex-col-reverse px-10 pt-10 md:h-[15vh] md:w-full md:flex-row md:items-center md:justify-between md:px-[5vw] md:pt-10">
       <SessionsUI />
-      <div className="flex flex-col items-center justify-center text-right">
+      <div className="mb-4 flex items-center justify-between md:mb-0">
         <AnimatePresence mode="wait">
           <motion.p
             key={text} // Forces re-render when text changes
@@ -51,11 +52,16 @@ function Timer() {
             animate={{ opacity: 1, y: 0 }} // Fades in and moves into place
             exit={{ opacity: 0, y: 0 }} // Moves up slightly when fading out
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="text-7xl font-bold"
+            className="xs:text-5xl text-right text-3xl font-bold md:text-7xl"
           >
             {text}
           </motion.p>
         </AnimatePresence>
+        <div className="block md:hidden">
+          <p className="xs:text-3xl text-2xl font-bold">
+            {currentSession} / {sessions}
+          </p>
+        </div>
       </div>
     </div>
   );
