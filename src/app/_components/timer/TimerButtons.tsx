@@ -161,6 +161,7 @@ export default function TimerButtons() {
           <TooltipContent className="font-bold">Skip To Next</TooltipContent>
         </Tooltip>
       </TooltipProvider>
+      
     </div>
   );
 }

@@ -11,10 +11,10 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { useTodoStore } from "~/store/useToDoStore";
+import { DarkModeToggle } from "../DarkModeToggle";
 import ToDoList from "../to-do-list/ToDoList";
 import { SessionSettings } from "./SessionSettings";
 import SoundSettings from "./SoundSettings";
-import { DarkModeToggle } from '../DarkModeToggle';
 
 export default function MenuSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
