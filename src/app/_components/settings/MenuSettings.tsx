@@ -14,6 +14,7 @@ import { useTodoStore } from "~/store/useToDoStore";
 import ToDoList from "../to-do-list/ToDoList";
 import { SessionSettings } from "./SessionSettings";
 import SoundSettings from "./SoundSettings";
+import { DarkModeToggle } from '../DarkModeToggle';
 
 export default function MenuSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
@@ -78,6 +79,7 @@ export default function MenuSettings() {
           </div>
         </PopoverContent>
       </Popover>
+      <DarkModeToggle />
     </div>
   );
 }

@@ -20,10 +20,8 @@ export default async function Home() {
       <GlobalSoundsPlayer />
       <main className="flex h-screen w-screen flex-col items-center justify-center">
         <Header />
-        <div className="hidden md:block">
-          <Timer />
-          <Footer />
-        </div>
+        <Timer />
+        <Footer />
       </main>
     </HydrateClient>
   );

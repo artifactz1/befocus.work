@@ -9,7 +9,6 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useTimerStore } from "~/store/useTimerStore";
-import { DarkModeToggle } from "../DarkModeToggle";
 
 export default function TimerButtons() {
   const { isRunning, resetCurrentTime, skipToNextSession, toggleTimer } =
@@ -72,7 +71,6 @@ export default function TimerButtons() {
           <TooltipContent className="font-bold">Skip To Next</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <DarkModeToggle />
     </div>
   );
 }
