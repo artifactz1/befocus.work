@@ -81,13 +81,7 @@ export default function Timer() {
 
   useEffect(() => {
     const handleResize = () => {
-      setWidthSize(
-        window.innerWidth < 640
-          ? "50vw"
-          : window.innerWidth < 1024
-            ? "10vh"
-            : "25vw",
-      );
+      setWidthSize(window.innerWidth < 640 ? "50vw" : "25vw");
     };
 
     handleResize(); // Set initial size
