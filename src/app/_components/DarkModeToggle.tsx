@@ -45,7 +45,8 @@ export const DarkModeToggle = () => {
           <Button
             onClick={handleToggle}
             variant="outline"
-            className="h-12 w-32"
+            size="lg"
+            className="lg:h-12 lg:w-32"
           >
             {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{" "}
             {/* This changes the icon */}

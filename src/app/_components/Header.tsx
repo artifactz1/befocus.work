@@ -24,44 +24,17 @@
 
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { useTimerStore } from "~/store/useTimerStore";
+import SessionMobileCount from "./SessionMobileCount";
 import SessionsUI from "./SessionsUI";
+import SessionTitleDisplay from "./SessionTitleDisplay";
 
 function Timer() {
-  const { isWorking, isRunning, workDuration, timeLeft } = useTimerStore();
-  const text = isRunning
-    ? isWorking
-      ? "Focus"
-      : "Break"
-    : workDuration === timeLeft
-      ? "BeFocused"
-      : isWorking
-        ? "Paused"
-        : "Break";
-  const { sessions, currentSession } = useTimerStore();
-
   return (
-    <div className="flex w-screen flex-col-reverse px-10 pt-10 md:h-[15vh] md:w-full md:flex-row md:items-center md:justify-between md:px-[5vw] md:pt-10">
+    <div className="flex w-screen flex-col-reverse px-10 pt-10 sm:mt-0 sm:h-[15vh] sm:w-full sm:flex-row sm:items-center sm:justify-between sm:px-[5vw]">
       <SessionsUI />
-      <div className="mb-4 flex items-end justify-between md:mb-1">
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={text} // Forces re-render when text changes
-            // initial={{ opacity: 0, y: 0 }} // Starts faded out and moves up
-            animate={{ opacity: 1, y: 0 }} // Fades in and moves into place
-            exit={{ opacity: 0, y: 0 }} // Moves up slightly when fading out
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="xs:text-5xl text-right text-4xl font-bold md:text-7xl"
-          >
-            {text}
-          </motion.p>
-        </AnimatePresence>
-        <div className="block md:hidden">
-          <p className="xs:text-3xl mr-1 text-2xl font-extrabold">
-            {currentSession} / {sessions}
-          </p>
-        </div>
+      <div className="mb-4 flex items-end justify-between sm:mb-1">
+        <SessionTitleDisplay />
+        <SessionMobileCount />
       </div>
     </div>
   );

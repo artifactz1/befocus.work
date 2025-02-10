@@ -19,6 +19,7 @@ export default async function Home() {
       {/* <GlobalSoundsPlayer type={["bgMusic", "ambient"]}/> */}
       <GlobalSoundsPlayer />
       <main className="flex h-screen w-screen flex-col items-center justify-center">
+        {/* <main className=" mx-auto flex h-screen w-screen flex-col items-center justify-center lg:mx-0 lg:max-w-full"> */}
         <Header />
         <Timer />
         <Footer />

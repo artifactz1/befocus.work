@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useDeviceStore } from "~/store/useDeviceStore";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { useTimerStore } from "~/store/useTimerStore";
 import TimerUI from "./TimeUI";
@@ -11,6 +12,8 @@ export default function Timer() {
 
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
+
+  const { isLandscape } = useDeviceStore(); // Get Zustand state & function
 
   // Initialize the ref with `null` for SSR compatibility
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -77,12 +80,36 @@ export default function Timer() {
     setSeconds(secs);
   }, [timeLeft]);
 
+  const [widthSize, setWidthSize] = useState("");
+  const [textSize, setTextSize] = useState("");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWidthSize(window.innerWidth < 640 ? "50vw" : "25vw");
+      setTextSize(window.innerWidth < 640 ? "text-[50vw]" : "text-[25vw]");
+    };
+
+    handleResize(); // Set initial size
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="relative z-0 flex h-[70vh] items-center justify-center">
-      <div className="absolute flex items-center text-[25vw] font-bold">
-        <TimerUI value={minutes} fontSize={"25vw"} />
-        <p className="mb-5">:</p>
-        <TimerUI value={seconds} fontSize={"25vw"} />
+      <div className="absolute hidden h-[70vh] items-center justify-center font-bold sm:flex">
+        <TimerUI value={minutes} fontSize={isLandscape ? "30vh" : widthSize} />
+        <p
+          className={`flex h-full items-center ${isLandscape ? "text-[30vh]" : textSize}`}
+        >
+          :
+        </p>
+        <TimerUI value={seconds} fontSize={isLandscape ? "30vh" : widthSize} />
+      </div>
+      <div className="absolute flex-row items-center text-[25vw] font-bold sm:hidden">
+        <TimerUI value={minutes} fontSize={widthSize} />
+        {/* <p className="mb-5">:</p> */}
+        <TimerUI value={seconds} fontSize={widthSize} />
       </div>
     </div>
   );

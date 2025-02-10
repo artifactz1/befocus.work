@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import { cn } from "~/lib/utils";
+import { useDeviceStore } from "~/store/useDeviceStore"; // Import the Zustand store
 import { useTimerStore } from "~/store/useTimerStore";
 
 export default function SessionsUI() {
@@ -12,17 +12,7 @@ export default function SessionsUI() {
     breakDuration,
   } = useTimerStore();
 
-  useEffect(() => {
-    // Sync with localStorage or set default mode
-    const darkModeFromLocalStorage =
-      localStorage.getItem("darkMode") === "true";
-
-    if (darkModeFromLocalStorage) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
+  const { isLandscape } = useDeviceStore(); // Get Zustand state & function
 
   const opacitySession = Math.round((1 - timeLeft / workDuration) * 100); // Clamp between 0 and 1
   const opacitySessionBrk = Math.round((1 - timeLeft / breakDuration) * 100); // Clamp between 0 and 1
@@ -47,9 +37,14 @@ export default function SessionsUI() {
 
   return (
     <main>
-      <div className="hidden md:block">
-        <div className="flex w-full flex-col items-center justify-center space-y-3 md:mx-auto md:p-6">
-          <p className="hidden text-2xl font-semibold md:block">
+      <div className="hidden h-[15vh] sm:block">
+        {/* <div className="mx-auto flex w-full flex-col items-center justify-center space-y-3"> */}
+        <div
+          className={`mx-auto flex w-full flex-col items-center justify-center ${isLandscape ? "space-y-1" : "space-y-3"}`}
+        >
+          <p
+            className={`${isLandscape ? "text-lg" : "text-2xl"} font-semibold`}
+          >
             {currentSession} / {sessions}
           </p>
           <div className="space-y-1">
@@ -58,9 +53,7 @@ export default function SessionsUI() {
                 <div
                   key={`work-${index}`}
                   className={cn(
-                    // "xs:h-13 xs:-1 h-12 w-12 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "h-12 flex-1 rounded-lg border-2 transition-all duration-300 md:h-10",
-
+                    `${isLandscape ? "h-6 w-6" : "h-12 w-12"} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index <= currentSession - 1 // Completed work sessions
                       ? isWorking && currentSession - 1 === index
@@ -76,8 +69,7 @@ export default function SessionsUI() {
                 <div
                   key={`break-${index}`}
                   className={cn(
-                    // "xs:h-12 xs:-12 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "xs:h-13 xs:h-13 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
+                    `${isLandscape ? "h-6 w-6" : "h-12 w-12"} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index < currentSession - 1 // Completed break sessions
                       ? "bg-green-500"
@@ -92,8 +84,8 @@ export default function SessionsUI() {
         </div>
       </div>
 
-      <div className="block md:hidden">
-        <div className="flex w-full flex-col items-center justify-center space-y-1 md:mx-auto md:p-6">
+      <div className="block sm:hidden">
+        <div className="flex w-full flex-col items-center justify-center space-y-1 sm:mx-auto sm:p-6">
           <div
             className="grid w-full gap-1"
             style={{
