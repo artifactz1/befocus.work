@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
 export default function useIsLandscape() {
-  const [isLandscape, setIsLandscape] = useState(
-    window.innerWidth > window.innerHeight && window.innerWidth <= 1024,
+  const [isLandscape, setIsLandscape] = useState(() =>
+    typeof window !== "undefined"
+      ? window.innerWidth > window.innerHeight && window.innerWidth <= 1024
+      : false,
   );
 
   useEffect(() => {
