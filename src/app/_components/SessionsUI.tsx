@@ -48,8 +48,7 @@ export default function SessionsUI() {
                 <div
                   key={`work-${index}`}
                   className={cn(
-                    // "xs:h-13 xs:-1 h-12 w-12 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "h-7 w-7 flex-1 rounded-lg border-2 transition-all duration-300 md:h-14 md:w-14",
+                    `${isLandscape ? "h-6 w-6" : "h-12 w-12"} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index <= currentSession - 1 // Completed work sessions
                       ? isWorking && currentSession - 1 === index
@@ -65,8 +64,7 @@ export default function SessionsUI() {
                 <div
                   key={`break-${index}`}
                   className={cn(
-                    // "xs:h-12 xs:-12 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "h-7 w-7 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14",
+                    `${isLandscape ? "h-6 w-6" : "h-12 w-12"} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index < currentSession - 1 // Completed break sessions
                       ? "bg-green-500"
