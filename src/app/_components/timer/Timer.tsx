@@ -5,6 +5,7 @@ import { useDeviceStore } from "~/store/useDeviceStore";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { useTimerStore } from "~/store/useTimerStore";
 import TimerUI from "./TimeUI";
+import useIsLandscape from '../useIsMobileLandscape';
 
 export default function Timer() {
   const { sounds, alarmId } = useSoundsStore();
@@ -13,7 +14,8 @@ export default function Timer() {
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
 
-  const { isLandscape } = useDeviceStore(); // Get Zustand state & function
+  const isLandscape = useIsLandscape();
+
 
   // Initialize the ref with `null` for SSR compatibility
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -80,8 +82,8 @@ export default function Timer() {
     setSeconds(secs);
   }, [timeLeft]);
 
-  const [widthSize, setWidthSize] = useState("");
-  const [textSize, setTextSize] = useState("");
+  const [widthSize, setWidthSize] = useState("25vw");
+  const [textSize, setTextSize] = useState("text-[25vw]");
 
   useEffect(() => {
     const handleResize = () => {
@@ -108,7 +110,6 @@ export default function Timer() {
       </div>
       <div className="absolute flex-row items-center text-[25vw] font-bold sm:hidden">
         <TimerUI value={minutes} fontSize={widthSize} />
-        {/* <p className="mb-5">:</p> */}
         <TimerUI value={seconds} fontSize={widthSize} />
       </div>
     </div>

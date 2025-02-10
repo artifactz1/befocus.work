@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useDeviceStore } from "~/store/useDeviceStore";
 import { useTimerStore } from "~/store/useTimerStore";
+import useIsLandscape from './useIsMobileLandscape';
 
 export default function SessionTitleDisplay() {
   const { isWorking, isRunning, workDuration, timeLeft } = useTimerStore();
@@ -17,7 +18,7 @@ export default function SessionTitleDisplay() {
         ? "Paused"
         : "Break";
 
-  const { isLandscape } = useDeviceStore();
+  const  isLandscape  = useIsLandscape();
 
   return (
     <AnimatePresence mode="wait">
