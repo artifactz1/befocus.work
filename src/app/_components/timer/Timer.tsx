@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useDeviceStore } from "~/store/useDeviceStore";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { useTimerStore } from "~/store/useTimerStore";
 import TimerUI from "./TimeUI";
