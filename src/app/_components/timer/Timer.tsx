@@ -80,8 +80,8 @@ export default function Timer() {
     setSeconds(secs);
   }, [timeLeft]);
 
-  const [widthSize, setWidthSize] = useState("25vw");
-  const [textSize, setTextSize] = useState("25vw");
+  const [widthSize, setWidthSize] = useState("");
+  const [textSize, setTextSize] = useState("");
 
   useEffect(() => {
     const handleResize = () => {
