@@ -95,7 +95,7 @@ export default function TimerButtons() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 640); // 'sm' breakpoint is 640px
+      setIsSmallScreen(window.innerWidth < 768); // 'sm' breakpoint is 640px
     };
 
     handleResize(); // Set initial state
