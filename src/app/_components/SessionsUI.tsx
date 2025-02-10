@@ -38,8 +38,13 @@ export default function SessionsUI() {
   return (
     <main>
       <div className="hidden h-[15vh] sm:block">
-        <div className="mx-auto flex w-full flex-col items-center justify-center space-y-3">
-          <p className="text-2xl font-semibold">
+        {/* <div className="mx-auto flex w-full flex-col items-center justify-center space-y-3"> */}
+        <div
+          className={`mx-auto flex w-full flex-col items-center justify-center ${isLandscape ? "space-y-1" : "space-y-3"}`}
+        >
+          <p
+            className={`${isLandscape ? "text-lg" : "text-2xl"} font-semibold`}
+          >
             {currentSession} / {sessions}
           </p>
           <div className="space-y-1">

@@ -7,8 +7,11 @@ interface DeviceState {
 
 export const useDeviceStore = create<DeviceState>((set) => ({
   isLandscape:
-    window.innerWidth > window.innerHeight && window.innerWidth < 1024, // Initial state
+    window.innerWidth >= window.innerHeight && window.innerWidth <= 1024, // Initial state
   checkOrientation: () => {
-    set({ isLandscape: window.innerWidth > window.innerHeight && window.innerWidth < 1024 });
+    set({
+      isLandscape:
+        window.innerWidth >= window.innerHeight && window.innerWidth <= 1024,
+    });
   },
 }));
