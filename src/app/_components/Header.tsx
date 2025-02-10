@@ -41,6 +41,19 @@ function Timer() {
         : "Break";
   const { sessions, currentSession } = useTimerStore();
 
+  // const [heightSize, setHeightSize] = useState("");
+
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setHeightSize(window.innerWidth < 640 ? "25vh" : "15vh");
+  //   };
+
+  //   handleResize(); // Set initial size
+  //   window.addEventListener("resize", handleResize);
+
+  //   return () => window.removeEventListener("resize", handleResize);
+  // }, []);
+
   return (
     <div className="flex w-screen flex-col-reverse px-10 pt-10 sm:h-[15vh] sm:w-full sm:flex-row sm:items-center sm:justify-between sm:px-[5vw] sm:pt-10">
       <SessionsUI />

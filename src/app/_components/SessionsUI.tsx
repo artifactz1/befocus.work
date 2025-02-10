@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
 import { useTimerStore } from "~/store/useTimerStore";
 
@@ -45,10 +45,23 @@ export default function SessionsUI() {
   const opacityClass = getOpacityClass(opacitySession);
   const opacityClassBrk = getOpacityClass(opacitySessionBrk);
 
+  const [heightSize, setHeightSize] = useState("");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setHeightSize(window.innerWidth < 640 ? "25vh" : "15vh");
+    };
+
+    handleResize(); // Set initial size
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <main>
       <div className="hidden sm:block">
-        <div className="-6 flex w-full flex-col items-center justify-center space-y-3 sm:mx-auto">
+        <div className="flex w-full flex-col items-center justify-center space-y-3 sm:mx-auto">
           <p className="hidden text-2xl font-semibold sm:block">
             {currentSession} / {sessions}
           </p>
@@ -59,8 +72,7 @@ export default function SessionsUI() {
                   key={`work-${index}`}
                   className={cn(
                     // "xs:h-13 xs:-1 h-12 w-12 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "h-12 flex-1 rounded-lg border-2 transition-all duration-300 sm:h-10",
-
+                    "h-12 w-12 flex-1 rounded-lg border-2 transition-all duration-300",
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index <= currentSession - 1 // Completed work sessions
                       ? isWorking && currentSession - 1 === index
@@ -77,7 +89,7 @@ export default function SessionsUI() {
                   key={`break-${index}`}
                   className={cn(
                     // "xs:h-12 xs:-12 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "xs:h-13 xs:h-13 h-11 w-11 rounded-lg border-2 transition-all duration-300 sm:h-10 sm:w-10",
+                    "h-12 w-12 rounded-lg border-2 transition-all duration-300",
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index < currentSession - 1 // Completed break sessions
                       ? "bg-green-500"
