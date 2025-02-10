@@ -1,59 +1,42 @@
-<!-- # Create T3 App
-
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
-
-## What's next? How do I make an app with this?
-
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
-
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information. -->
-
- <h1><a href="https://befocus.artifactz.dev//">Be Focused</a></h1>
+<h1><a href="https://befocus.artifactz.dev//">Be Focused</a></h1>
  
-BeFocused is a productivity and self-improvement app integrating a Pomodoro timer, task management system, and ambient soundscapes to enhance user focus and efficiency. Built with the [T3 Stack](https://create.t3.gg/), BeFocused provides tools and features to support personal growth and goal achievement.
+<p>BeFocused is a productivity and self-improvement app integrating a Pomodoro timer, task management system, and ambient soundscapes to enhance user focus and efficiency. Built with the <a href="https://create.t3.gg/">T3 Stack</a>, BeFocused provides tools and features to support personal growth and goal achievement.</p>
 
- ![Alt text](https://raw.githubusercontent.com/artifactz1/befocus-t3/refs/heads/main/Pomodoro.png)
+<img src="https://raw.githubusercontent.com/artifactz1/befocus-t3/refs/heads/main/Pomodoro.png" alt="Be Focused Screenshot" />
 
-https://befocus.artifactz.dev/
+<p><a href="https://befocus.artifactz.dev/">Visit BeFocused</a></p>
 
+<h2>🚀 Future Features</h2>
 
-## Built With
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+<ul>
+  <li><strong>Habit Tracker:</strong> Track and manage your daily habits to build positive routines and stay on top of your goals.</li>
+  <li><strong>Daily Journaling:</strong> Reflect on your day, thoughts, and progress with daily journal entries.</li>
+  <li><strong>User Profile Page:</strong> Save and manage your personal data, tasks, and preferences in a dedicated profile page.</li>
+  <li><strong>Authentication:</strong> Secure login and account management to personalize your experience.</li>
+</ul>
 
-## Deployment
-Follow our guides to deploy the app on:
-- [Vercel](https://create.t3.gg/en/deployment/vercel)
-- [Netlify](https://create.t3.gg/en/deployment/netlify)
-- [Docker](https://create.t3.gg/en/deployment/docker)
+<h2>Built With</h2>
+<ul>
+  <li><a href="https://nextjs.org">Next.js</a></li>
+  <li><a href="https://next-auth.js.org">NextAuth.js</a></li>
+  <li><a href="https://prisma.io">Prisma</a></li>
+  <li><a href="https://orm.drizzle.team">Drizzle</a></li>
+  <li><a href="https://tailwindcss.com">Tailwind CSS</a></li>
+  <li><a href="https://trpc.io">tRPC</a></li>
+</ul>
 
-## Learn More
-For more information about the T3 Stack and BeFocused:
-- [T3 Stack Documentation](https://create.t3.gg/)
-- [Create T3 App GitHub Repository](https://github.com/t3-oss/create-t3-app)
-- [Join the T3 Community on Discord](https://t3.gg/discord)
+<h2>Deployment</h2>
+<p>Follow our guides to deploy the app on:</p>
+<ul>
+  <li><a href="https://create.t3.gg/en/deployment/vercel">Vercel</a></li>
+  <li><a href="https://create.t3.gg/en/deployment/netlify">Netlify</a></li>
+  <li><a href="https://create.t3.gg/en/deployment/docker">Docker</a></li>
+</ul>
 
+<h2>Learn More</h2>
+<p>For more information about the T3 Stack and BeFocused:</p>
+<ul>
+  <li><a href="https://create.t3.gg/">T3 Stack Documentation</a></li>
+  <li><a href="https://github.com/t3-oss/create-t3-app">Create T3 App GitHub Repository</a></li>
+  <li><a href="https://t3.gg/discord">Join the T3 Community on Discord</a></li>
+</ul>
