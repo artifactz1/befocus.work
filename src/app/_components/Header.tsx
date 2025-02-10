@@ -24,23 +24,17 @@
 
 "use client";
 
-import { useTimerStore } from "~/store/useTimerStore";
+import SessionMobileCount from "./SessionMobileCount";
 import SessionsUI from "./SessionsUI";
-import SessionTitleDisplay from "./SessiontitleDisplay";
+import SessionTitleDisplay from "./SessionTitleDisplay";
 
 function Timer() {
-  const { sessions, currentSession } = useTimerStore();
-
   return (
     <div className="flex w-screen flex-col-reverse px-10 pt-10 sm:mt-0 sm:h-[15vh] sm:w-full sm:flex-row sm:items-center sm:justify-between sm:px-[5vw]">
       <SessionsUI />
       <div className="mb-4 flex items-end justify-between sm:mb-1">
         <SessionTitleDisplay />
-        <div className="block sm:hidden">
-          <p className="xs:text-3xl mr-1 text-2xl font-extrabold">
-            {currentSession} / {sessions}
-          </p>
-        </div>
+        <SessionMobileCount />
       </div>
     </div>
   );

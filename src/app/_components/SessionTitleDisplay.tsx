@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useDeviceStore } from "~/store/useDeviceStore";
 import { useTimerStore } from "~/store/useTimerStore";
 
 export default function SessionTitleDisplay() {
@@ -11,10 +12,12 @@ export default function SessionTitleDisplay() {
       ? "Focus"
       : "Break"
     : workDuration === timeLeft
-    ? "BeFocused"
-    : isWorking
-    ? "Paused"
-    : "Break";
+      ? "BeFocused"
+      : isWorking
+        ? "Paused"
+        : "Break";
+
+  const { isLandscape } = useDeviceStore();
 
   return (
     <AnimatePresence mode="wait">
@@ -23,7 +26,7 @@ export default function SessionTitleDisplay() {
         animate={{ opacity: 1, y: 0 }} // Fades in and moves into place
         exit={{ opacity: 0, y: 0 }} // Moves up slightly when fading out
         transition={{ duration: 0.25, ease: "easeInOut" }}
-        className="text-right text-4xl font-bold sm:text-7xl md:text-5xl lg:text-7xl"
+        className="text-right text-4xl font-bold sm:text-5xl md:text-5xl lg:text-7xl"
       >
         {text}
       </motion.p>
