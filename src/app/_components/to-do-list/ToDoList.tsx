@@ -59,7 +59,7 @@ export default function TodoList() {
   }
 
   return (
-    <div className="h-fill ">
+    <div className="h-fill">
       <NotebookPen />
       <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>
       <Separator className="my-4 bg-white" />
@@ -68,11 +68,7 @@ export default function TodoList() {
           <div>
             {addMode && (
               <div className="flex items-center border-b-2 py-2">
-                <Checkbox
-                  // checked={task.completed}
-                  // onCheckedChange={() => handleChange(task.id)}
-                  className="peer mr-2"
-                />
+                <Checkbox className="peer mr-2" />
                 <Input
                   type="text"
                   placeholder="Add a task..."
@@ -107,7 +103,9 @@ export default function TodoList() {
           {tasks.some((task) => task.archived) && (
             <Accordion type="single" collapsible>
               <AccordionItem value="item-1" className="border-0">
-                <AccordionTrigger className="font-bold">Archived</AccordionTrigger>
+                <AccordionTrigger className="font-bold">
+                  Archived
+                </AccordionTrigger>
                 <AccordionContent className="pl-2">
                   <div ref={ref}>
                     {tasks

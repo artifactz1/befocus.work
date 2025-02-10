@@ -1,6 +1,5 @@
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-// import { TimerDisplay } from "./_components/TimerDisplay";
 import Footer from "./_components/Footer";
 import GlobalSoundsPlayer from "./_components/GlobalSoundsPlayer";
 import Header from "./_components/Header";
@@ -16,10 +15,8 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      {/* <GlobalSoundsPlayer type={["bgMusic", "ambient"]}/> */}
       <GlobalSoundsPlayer />
       <main className="flex h-screen w-screen flex-col items-center justify-center">
-        {/* <main className=" mx-auto flex h-screen w-screen flex-col items-center justify-center lg:mx-0 lg:max-w-full"> */}
         <Header />
         <Timer />
         <Footer />

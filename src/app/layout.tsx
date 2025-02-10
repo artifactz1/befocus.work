@@ -5,7 +5,6 @@ import { type Metadata } from "next";
 
 import { Toaster } from "~/components/ui/sonner";
 import { TRPCReactProvider } from "~/trpc/react";
-import GlobalListener from './_components/GlobalListener';
 
 export const metadata: Metadata = {
   title: "░ ►▬ Be Focused ▬◄ ░",
@@ -20,7 +19,6 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
         <Toaster />
-        <GlobalListener />
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>
