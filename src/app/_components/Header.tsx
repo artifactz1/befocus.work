@@ -41,21 +41,8 @@ function Timer() {
         : "Break";
   const { sessions, currentSession } = useTimerStore();
 
-  // const [heightSize, setHeightSize] = useState("");
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setHeightSize(window.innerWidth < 640 ? "25vh" : "15vh");
-  //   };
-
-  //   handleResize(); // Set initial size
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
-
   return (
-    <div className="flex w-screen flex-col-reverse px-10 pt-10 sm:h-[15vh] sm:w-full sm:flex-row sm:items-center sm:justify-between sm:px-[5vw] sm:pt-10">
+    <div className="flex w-screen flex-col-reverse px-10 pt-10 sm:mt-0 sm:h-[15vh] sm:w-full sm:flex-row sm:items-center sm:justify-between sm:px-[5vw]">
       <SessionsUI />
       <div className="mb-4 flex items-end justify-between sm:mb-1">
         <AnimatePresence mode="wait">
@@ -65,7 +52,7 @@ function Timer() {
             animate={{ opacity: 1, y: 0 }} // Fades in and moves into place
             exit={{ opacity: 0, y: 0 }} // Moves up slightly when fading out
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="xs:text-5xl text-right text-4xl font-bold sm:text-7xl"
+            className="text-right text-4xl font-bold sm:text-7xl md:text-5xl lg:text-7xl"
           >
             {text}
           </motion.p>

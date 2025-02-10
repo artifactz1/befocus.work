@@ -60,9 +60,9 @@ export default function SessionsUI() {
 
   return (
     <main>
-      <div className="hidden sm:block">
-        <div className="flex w-full flex-col items-center justify-center space-y-3 sm:mx-auto">
-          <p className="hidden text-2xl font-semibold sm:block">
+      <div className="hidden h-[15vh] sm:block">
+        <div className="mx-auto flex w-full flex-col items-center justify-center space-y-3">
+          <p className="text-2xl font-semibold">
             {currentSession} / {sessions}
           </p>
           <div className="space-y-1">
@@ -72,7 +72,7 @@ export default function SessionsUI() {
                   key={`work-${index}`}
                   className={cn(
                     // "xs:h-13 xs:-1 h-12 w-12 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "h-12 w-12 flex-1 rounded-lg border-2 transition-all duration-300",
+                    "h-7 w-7 flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14",
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index <= currentSession - 1 // Completed work sessions
                       ? isWorking && currentSession - 1 === index
@@ -89,7 +89,7 @@ export default function SessionsUI() {
                   key={`break-${index}`}
                   className={cn(
                     // "xs:h-12 xs:-12 h-11 w-11 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "h-12 w-12 rounded-lg border-2 transition-all duration-300",
+                    "h-7 w-7 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14",
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index < currentSession - 1 // Completed break sessions
                       ? "bg-green-500"
