@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
+import { useDeviceStore } from "~/store/useDeviceStore"; // Import the Zustand store
 import { useTimerStore } from "~/store/useTimerStore";
 
 export default function SessionsUI() {
@@ -12,17 +12,7 @@ export default function SessionsUI() {
     breakDuration,
   } = useTimerStore();
 
-  useEffect(() => {
-    // Sync with localStorage or set default mode
-    const darkModeFromLocalStorage =
-      localStorage.getItem("darkMode") === "true";
-
-    if (darkModeFromLocalStorage) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
+  const { isLandscape } = useDeviceStore(); // Get Zustand state & function
 
   const opacitySession = Math.round((1 - timeLeft / workDuration) * 100); // Clamp between 0 and 1
   const opacitySessionBrk = Math.round((1 - timeLeft / breakDuration) * 100); // Clamp between 0 and 1
@@ -45,19 +35,6 @@ export default function SessionsUI() {
   const opacityClass = getOpacityClass(opacitySession);
   const opacityClassBrk = getOpacityClass(opacitySessionBrk);
 
-  const [heightSize, setHeightSize] = useState("");
-
-  useEffect(() => {
-    const handleResize = () => {
-      setHeightSize(window.innerWidth < 640 ? "25vh" : "15vh");
-    };
-
-    handleResize(); // Set initial size
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   return (
     <main>
       <div className="hidden h-[15vh] sm:block">
@@ -72,7 +49,7 @@ export default function SessionsUI() {
                   key={`work-${index}`}
                   className={cn(
                     // "xs:h-13 xs:-1 h-12 w-12 rounded-lg border-2 transition-all duration-300 md:h-10 md:w-10",
-                    "h-7 w-7 flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14",
+                    "h-7 w-7 flex-1 rounded-lg border-2 transition-all duration-300 md:h-14 md:w-14",
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index <= currentSession - 1 // Completed work sessions
                       ? isWorking && currentSession - 1 === index
