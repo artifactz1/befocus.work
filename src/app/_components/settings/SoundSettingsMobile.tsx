@@ -33,7 +33,7 @@ export default function SoundSettingsMobile() {
         <DrawerTrigger>
           <Volume2 onClick={() => setIsSoundOpen(!isSoundOpen)} />
         </DrawerTrigger>
-        <DrawerContent className="px-2">
+        <DrawerContent className="max-h-screen px-2">
           <DrawerHeader>
             <DrawerTitle className="mx-1">
               <Volume2 />
@@ -45,7 +45,7 @@ export default function SoundSettingsMobile() {
             {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
           </DrawerHeader>
 
-          <div className="px-6 pb-12">
+          <div className="overflow-y-auto px-5 pb-12">
             <AlarmSoundsButton />
             <AmbientSoundsButton />
             <BgMusicSoundsButton />
