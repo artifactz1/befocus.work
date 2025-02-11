@@ -45,7 +45,7 @@ export default function SoundSettingsMobile() {
             {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
           </DrawerHeader>
 
-          <div className="overflow-y-auto px-5 pb-12">
+          <div className="overflow-y-auto px-5">
             <AlarmSoundsButton />
             <AmbientSoundsButton />
             <BgMusicSoundsButton />
