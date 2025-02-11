@@ -7,7 +7,7 @@ import SoundSettingsMobile from "./SoundSettingsMobile";
 
 export default function MenuSettingsMobile() {
   return (
-    <main className="flex h-fit flex-row items-center justify-center sm:hidden">
+    <main className="flex h-fit flex-row items-center justify-center sm:hidden gap-1">
       <ToDoListMobile />
       <SoundSettingsMobile />
       <SessionSettingsMobile />

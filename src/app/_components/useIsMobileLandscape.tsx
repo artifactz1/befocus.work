@@ -11,8 +11,8 @@ export default function useIsLandscape() {
     const updateOrientation = () => {
       requestAnimationFrame(() => {
         setIsLandscape(
-          window.innerWidth > window.innerHeight && window.innerWidth <= 1024
-          // window.innerWidth > window.innerHeight && window.innerWidth <= 1024 && window.innerHeight <= 640,
+          // window.innerWidth > window.innerHeight && window.innerWidth <= 1024
+          window.innerWidth > window.innerHeight && window.innerWidth <= 1024 && window.innerHeight <= 640,
         );
       });
     };
