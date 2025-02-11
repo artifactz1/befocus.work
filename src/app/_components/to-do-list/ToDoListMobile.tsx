@@ -1,5 +1,19 @@
+"use client";
+import { NotebookPen, Plus } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer";
+import { Separator } from "~/components/ui/separator";
+import { useTodoStore } from "~/store/useToDoStore";
+import ToDoList from "../to-do-list/ToDoList";
+
 import { stagger, useAnimate } from "framer-motion";
-import { NotebookPen } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   Accordion,
@@ -9,11 +23,10 @@ import {
 } from "~/components/ui/accordion";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
-import { Separator } from "~/components/ui/separator";
-import { useTodoStore } from "~/store/useToDoStore"; // Zustand store
 import TaskItem from "./task-item";
 
-export default function TodoList() {
+export default function ToDoListMobile() {
+
   const { tasks, toggleTask } = useTodoStore();
   const [ref, animate] = useAnimate();
   const [newTask, setNewTask] = useState("");
@@ -57,9 +70,27 @@ export default function TodoList() {
       setNewTask("");
     }
   }
-
+  
   return (
-    <div className="h-fill">
+    <main className="block sm:hidden">
+    <div className="flex- flex">
+      <Drawer>
+        <DrawerTrigger>
+          <NotebookPen />
+        </DrawerTrigger>
+        {/* <DrawerContent className="px-10"> */}
+        <DrawerContent className="p-">
+          <DrawerHeader>
+            <DrawerTitle className="mx-1">
+              <NotebookPen />
+              <div className="mb-2 mt-4 text-left text-lg font-bold">
+                befocus/todolist
+              </div>
+              <Separator className="mt-4 bg-white" />
+            </DrawerTitle>
+            {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
+          </DrawerHeader>
+          <div className="h-fill">
       <div className="hidden sm:block">
         <NotebookPen />
         <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>
@@ -128,5 +159,23 @@ export default function TodoList() {
         </div>
       </div>
     </div>
-  );
+
+
+          <DrawerFooter>
+            <Button
+              onClick={() => toggleAdd()}
+              className="absolute bottom-6 right-6"
+            >
+              <Plus />
+            </Button>
+
+            {/* <DrawerClose>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose> */}
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </div>
+  </main>
+  )
 }
