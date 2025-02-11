@@ -1,6 +1,6 @@
 "use client";
 
-import { NotebookPen, Plus, Timer, Volume2 } from "lucide-react";
+import { Timer, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -28,25 +28,7 @@ export default function MenuSettings() {
   return (
     <main className="hidden sm:block">
       <div className="flex items-center justify-center space-x-1">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="lg" className="lg:h-12 lg:w-32">
-              <NotebookPen />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            className="min-h-[50vh] w-[90vw] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 lg:min-h-[500px] lg:w-[392px]"
-          >
-            <ToDoList />
-            <Button
-              onClick={() => toggleAdd()}
-              className="absolute bottom-6 right-6"
-            >
-              <Plus />
-            </Button>
-          </PopoverContent>
-        </Popover>
+        <ToDoList />
         <Popover open={isSoundOpen} onOpenChange={setIsSoundOpen}>
           <PopoverTrigger asChild>
             <Button
