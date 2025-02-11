@@ -22,7 +22,7 @@ export default function ToDoListMobile() {
         <DrawerTrigger>
           <NotebookPen />
         </DrawerTrigger>
-        <DrawerContent className="px-4">
+        <DrawerContent className="px-2">
           <DrawerHeader>
             <DrawerTitle className="mx-1">
               <NotebookPen />
