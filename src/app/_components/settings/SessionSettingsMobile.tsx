@@ -40,7 +40,9 @@ export default function SessionSettingsMobile() {
   return (
     <Drawer>
       <DrawerTrigger>
-        <Timer />
+        <Button variant="outline" size="lg" className="lg:h-12 lg:w-32">
+          <Timer />
+        </Button>
       </DrawerTrigger>
       <DrawerContent className="max-h-screen px-2">
         <DrawerHeader>

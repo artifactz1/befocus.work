@@ -2,6 +2,7 @@
 
 import { Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "~/components/ui/button";
 import {
   Drawer,
   DrawerContent,
@@ -31,7 +32,14 @@ export default function SoundSettingsMobile() {
     <main>
       <Drawer>
         <DrawerTrigger>
-          <Volume2 onClick={() => setIsSoundOpen(!isSoundOpen)} />
+          <Button
+            variant="outline"
+            size="lg"
+            className="lg:h-12 lg:w-32"
+            onClick={() => setIsSoundOpen(!isSoundOpen)}
+          >
+            <Volume2 />
+          </Button>
         </DrawerTrigger>
         <DrawerContent className="max-h-screen px-2">
           <DrawerHeader>
