@@ -59,7 +59,7 @@ export default function TaskList() {
   }
 
   return (
-    <div className="h-fill">
+    <div className="h-fill w-full">
       <div className="hidden sm:block">
         <NotebookPen />
         <div className="mb-2 mt-4 text-lg font-bold">befocus/todolist</div>

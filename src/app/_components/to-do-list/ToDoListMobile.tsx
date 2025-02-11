@@ -34,7 +34,7 @@ export default function ToDoListMobile() {
             {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
           </DrawerHeader>
 
-          <div className="px-6 pb-12">
+          <div className="px-5 pb-12">
             <TaskList />
           </div>
 

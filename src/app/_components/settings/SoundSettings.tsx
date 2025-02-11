@@ -1,7 +1,7 @@
 "use client";
 
-import { Volume2 } from "lucide-react";
-import AddSoundButton from "../sounds/AddSoundButton";
+  import { Volume2 } from "lucide-react";
+  import AddSoundButton from "../sounds/AddSoundButton";
 import AlarmSoundsButton from "../sounds/AlarmSoundsButton";
 import AmbientSoundsButton from "../sounds/AmbientSoundsButton";
 import BgMusicSoundsButton from "../sounds/BgMusicSoundsButton";
