@@ -37,7 +37,7 @@ export default function SoundSettings() {
       </PopoverTrigger>
       <PopoverContent
         align="center"
-        className="max-h-[500px] w-[90vw] gap-3 overflow-y-hidden rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 hover:overflow-y-auto sm:ml-[82px] sm:w-[392px] lg:translate-x-0"
+        className="max-h-[500px] w-[90vw] gap-3 overflow-y-hidden rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 hover:overflow-y-auto sm:ml-[82px] sm:w-[392px] md:mx-10 lg:mx-0"
       >
         <div className="flex w-full select-none flex-col justify-end rounded-md no-underline outline-none">
           <Volume2 />
