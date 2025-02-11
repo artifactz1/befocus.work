@@ -1,7 +1,6 @@
 "use client";
 
-import { Timer, Volume2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Timer } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
   Popover,
@@ -9,38 +8,16 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
-import { useSoundsStore } from "~/store/useSoundsStore";
 import { DarkModeToggle } from "../DarkModeToggle";
 import ToDoList from "../to-do-list/ToDoList";
 import { SessionSettings } from "./SessionSettings";
 import SoundSettings from "./SoundSettings";
 
 export default function MenuSettings() {
-  const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
-  const { setSoundSettingsOpen } = useSoundsStore();
-
-  useEffect(() => {
-    setSoundSettingsOpen(isSoundOpen);
-  }, [isSoundOpen, setSoundSettingsOpen]);
-
   return (
     <main className="hidden sm:flex sm:items-center sm:justify-center sm:space-x-1">
       <ToDoList />
-      <Popover open={isSoundOpen} onOpenChange={setIsSoundOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            size="lg"
-            className="lg:h-12 lg:w-32"
-            onClick={() => setIsSoundOpen(!isSoundOpen)}
-          >
-            <Volume2 />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="max-h-[500px] w-[90vw] gap-3 overflow-y-hidden rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 hover:overflow-y-auto sm:w-[500px] lg:w-[392px]">
-          <SoundSettings />
-        </PopoverContent>
-      </Popover>
+      <SoundSettings />
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" size="lg" className="lg:h-12 lg:w-32">
