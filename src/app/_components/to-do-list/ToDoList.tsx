@@ -21,7 +21,7 @@ export default function ToDoList() {
           </PopoverTrigger>
           <PopoverContent
             align="start"
-            className="min-h-[50vh] w-[90vw] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 lg:min-h-[500px] lg:w-[392px]"
+            className="min-h-[50vh] w-[390px] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 lg:min-h-[500px] lg:w-[392px]"
           >
             <TaskList />
             <Button
