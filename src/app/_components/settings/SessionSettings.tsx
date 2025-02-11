@@ -44,7 +44,7 @@ export const SessionSettings: React.FC = () => {
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="h-full w-[90vw] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 sm:w-[500px] lg:w-[392px]"
+        className="h-full w-[90vw] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 sm:ml-[179px] sm:w-[392px] lg:translate-x-0"
       >
         <div className="flex h-full w-full select-none flex-col justify-end">
           <div className="mb-2 mt-4 text-lg font-bold">
