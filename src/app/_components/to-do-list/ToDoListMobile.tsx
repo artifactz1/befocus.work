@@ -19,7 +19,7 @@ export default function ToDoListMobile() {
   return (
     <main className="block sm:hidden">
       <Drawer>
-        <DrawerTrigger>
+        <DrawerTrigger asChild>
           <Button variant="outline" size="lg" className="lg:h-12 lg:w-32">
             <NotebookPen />
           </Button>

@@ -39,7 +39,7 @@ export default function SessionSettingsMobile() {
 
   return (
     <Drawer>
-      <DrawerTrigger>
+      <DrawerTrigger asChild>
         <Button variant="outline" size="lg" className="lg:h-12 lg:w-32">
           <Timer />
         </Button>

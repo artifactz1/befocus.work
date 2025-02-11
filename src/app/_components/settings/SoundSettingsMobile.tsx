@@ -31,7 +31,7 @@ export default function SoundSettingsMobile() {
   return (
     <main>
       <Drawer>
-        <DrawerTrigger>
+        <DrawerTrigger asChild>
           <Button
             variant="outline"
             size="lg"
