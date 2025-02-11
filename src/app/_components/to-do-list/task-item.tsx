@@ -20,7 +20,7 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
   const { editTask, toggleEditMode, archiveTask } = useTodoStore();
 
   return (
-    <div className="items-top flex space-x-2 border-b-2 py-2">
+    <div className="items-bottom flex space-x-2 border-b-2 py-2">
       <motion.div
         whileHover={{ scale: 1.2 }}
         whileTap={{ scale: 0.8 }}
