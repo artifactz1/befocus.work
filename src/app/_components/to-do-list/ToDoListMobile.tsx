@@ -10,12 +10,11 @@ import {
   DrawerTrigger,
 } from "~/components/ui/drawer";
 import { Separator } from "~/components/ui/separator";
-import TaskList from './task-list';
-import { useTodoStore } from '~/store/useToDoStore';
+import { useTodoStore } from "~/store/useToDoStore";
+import TaskList from "./task-list";
 
 export default function ToDoListMobile() {
-
-  const {toggleAdd } = useTodoStore();
+  const { toggleAdd } = useTodoStore();
 
   return (
     <main className="block sm:hidden">
@@ -23,7 +22,7 @@ export default function ToDoListMobile() {
         <DrawerTrigger>
           <NotebookPen />
         </DrawerTrigger>
-        <DrawerContent className="p-">
+        <DrawerContent className="px-4">
           <DrawerHeader>
             <DrawerTitle className="mx-1">
               <NotebookPen />
@@ -34,9 +33,9 @@ export default function ToDoListMobile() {
             </DrawerTitle>
             {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
           </DrawerHeader>
-          
-          <div>
-            <TaskList/>
+
+          <div className="px-6 pb-12">
+            <TaskList />
           </div>
 
           <DrawerFooter>
