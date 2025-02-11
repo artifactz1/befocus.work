@@ -19,10 +19,12 @@ export default function ToDoListMobile() {
   return (
     <main className="block sm:hidden">
       <Drawer>
-        <DrawerTrigger>
-          <NotebookPen />
+        <DrawerTrigger asChild>
+          <Button variant="outline" size="lg" className="lg:h-12 lg:w-32">
+            <NotebookPen />
+          </Button>
         </DrawerTrigger>
-        <DrawerContent className="px-4">
+        <DrawerContent className="px-2">
           <DrawerHeader>
             <DrawerTitle className="mx-1">
               <NotebookPen />
@@ -34,7 +36,7 @@ export default function ToDoListMobile() {
             {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
           </DrawerHeader>
 
-          <div className="px-6 pb-12">
+          <div className="px-5 pb-12">
             <TaskList />
           </div>
 

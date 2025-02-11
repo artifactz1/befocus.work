@@ -59,7 +59,7 @@ export default function AlarmSoundsButton() {
         height="0"
       />
 
-      <Separator className="my-4 bg-white" />
+      <Separator className="my-4 hidden bg-white md:block" />
       <h3 className="mb-3 text-left font-semibold">Alarm Sound</h3>
       <div className="flex flex-row space-x-2">
         <Select

@@ -66,11 +66,11 @@ export default function TaskList() {
         <Separator className="my-4 bg-white" />
       </div>
 
-      <div className="flex min-h-full flex-col items-center justify-center">
-        <div className="flex w-full max-w-sm flex-col">
+      <div className="sm:flex sm:min-h-full sm:flex-col sm:items-center sm:justify-center">
+        <div className="flex w-full flex-col md:max-w-sm">
           <div>
             {addMode && (
-              <div className="flex items-center border-b-2 py-2">
+              <div className="flex w-full items-center border-b-2 py-2">
                 <Checkbox className="peer mr-2" />
                 <Input
                   type="text"
@@ -92,7 +92,7 @@ export default function TaskList() {
               </div>
             )}
           </div>
-          <div ref={ref}>
+          <div ref={ref} className="w-full">
             {tasks
               .filter((task) => !task.archived)
               .map((task) => (
