@@ -25,7 +25,8 @@ const GlobalPlayer = () => {
               playing={sound.playing}
               volume={sound.volume}
               controls={false} // Don't show controls as it's controlled globally
-              muted={!sound.playing}
+              // muted={!sound.playing}
+              muted={false}
               width="0"
               height="0"
               onReady={() => console.log("Ready")}
