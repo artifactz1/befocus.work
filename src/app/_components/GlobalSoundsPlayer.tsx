@@ -20,6 +20,7 @@ const GlobalPlayer = () => {
           return (
             <ReactPlayer
               key={key}
+              light={true}
               url={sound.url}
               playing={sound.playing}
               volume={sound.volume}
