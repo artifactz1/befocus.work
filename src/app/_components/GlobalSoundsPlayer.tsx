@@ -20,16 +20,13 @@ const GlobalPlayer = () => {
           return (
             <ReactPlayer
               key={key}
-              // light={true}
               url={sound.url}
               playing={sound.playing}
               volume={sound.volume}
               controls={false} // Don't show controls as it's controlled globally
-              // muted={!sound.playing}
-              muted={false}
+              muted={!sound.playing}
               width="0"
               height="0"
-              onReady={() => console.log("Ready")}
             />
           );
         })}

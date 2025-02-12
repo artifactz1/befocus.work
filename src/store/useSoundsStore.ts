@@ -84,12 +84,9 @@ export const useSoundsStore = create<SoundsState>((set) => {
       set((state) => {
         const sound = state.sounds[id];
         if (sound) {
-          // sound.playing = !sound.playing;
-          return { sounds: { ...state.sounds, [id]: { ...sound, playing: !sound.playing } } };
-
+          sound.playing = !sound.playing;
         }
-        return state
-        // return { sounds: { ...state.sounds } };
+        return { sounds: { ...state.sounds } };
       }),
     setVolume: (id, volume) =>
       set((state) => {
