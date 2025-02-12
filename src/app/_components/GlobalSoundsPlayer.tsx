@@ -20,7 +20,7 @@ const GlobalPlayer = () => {
           return (
             <ReactPlayer
               key={key}
-              light={true}
+              // light={true}
               url={sound.url}
               playing={sound.playing}
               volume={sound.volume}
@@ -28,6 +28,7 @@ const GlobalPlayer = () => {
               muted={!sound.playing}
               width="0"
               height="0"
+              onReady={() => console.log("Ready")}
             />
           );
         })}

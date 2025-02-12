@@ -24,13 +24,13 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
         <div className="flex-row space-y-2">
           <label className="p-1 font-medium">{soundId}</label>
           <div className="flex space-x-2">
-            <Toggle
-              pressed={sound.playing}
+            <button
+              // pressed={sound.playing}
               onClick={() => toggleSound(soundId)} // Toggle sound globally
               // className={`${sound.playing ? "text-blue" : "bg-gray-200 text-gray-800"}`}
             >
               {sound.playing ? <Volume2 /> : <VolumeX />}
-            </Toggle>
+            </button>
 
             <Slider
               value={[sound.volume * 100]} // Default to the current volume (range 0-100)
