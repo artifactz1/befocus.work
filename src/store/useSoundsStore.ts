@@ -100,7 +100,7 @@ export const useSoundsStore = create<SoundsState>((set) => {
       set((state) => ({
         sounds: {
           ...state.sounds,
-          [id]: { playing: false, volume: 0.5, url, isCustom, soundType },
+          [id]: { playing: false, volume: 0, url, isCustom, soundType },
         },
       })),
     deleteSound: (id) =>

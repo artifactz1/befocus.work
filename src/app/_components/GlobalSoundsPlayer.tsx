@@ -27,7 +27,6 @@ const GlobalPlayer = () => {
               muted={!sound.playing}
               width="0"
               height="0"
-              playsinline
             />
           );
         })}
