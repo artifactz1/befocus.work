@@ -1,42 +1,159 @@
-<h1><a href="https://befocus.artifactz.dev//">Be Focused</a></h1>
- 
-<p>BeFocused is a productivity and self-improvement app integrating a Pomodoro timer, task management system, and ambient soundscapes to enhance user focus and efficiency. Built with the <a href="https://create.t3.gg/">T3 Stack</a>, BeFocused provides tools and features to support personal growth and goal achievement.</p>
+# Monorepo Documentation
 
-<img src="https://raw.githubusercontent.com/artifactz1/befocus-t3/refs/heads/main/Pomodoro.png" alt="Be Focused Screenshot" />
+## Tech Stack
 
-<p><a href="https://befocus.artifactz.dev/">Visit BeFocused</a></p>
+### Frontend
 
-<h2>🚀 Future Features</h2>
+- **Next.js**
+- **Expo** (TODO)
+- **ShadCN UI**
 
-<ul>
-  <li><strong>Habit Tracker:</strong> Track and manage your daily habits to build positive routines and stay on top of your goals.</li>
-  <li><strong>Daily Journaling:</strong> Reflect on your day, thoughts, and progress with daily journal entries.</li>
-  <li><strong>User Profile Page:</strong> Save and manage your personal data, tasks, and preferences in a dedicated profile page.</li>
-  <li><strong>Authentication:</strong> Secure login and account management to personalize your experience.</li>
-</ul>
+### Backend
 
-<h2>Built With</h2>
-<ul>
-  <li><a href="https://nextjs.org">Next.js</a></li>
-  <li><a href="https://next-auth.js.org">NextAuth.js</a></li>
-  <li><a href="https://prisma.io">Prisma</a></li>
-  <li><a href="https://orm.drizzle.team">Drizzle</a></li>
-  <li><a href="https://tailwindcss.com">Tailwind CSS</a></li>
-  <li><a href="https://trpc.io">tRPC</a></li>
-</ul>
+- **Hono.js** (deployed with Cloudflare Workers)
+- **Neon** (database)
 
-<h2>Deployment</h2>
-<p>Follow our guides to deploy the app on:</p>
-<ul>
-  <li><a href="https://create.t3.gg/en/deployment/vercel">Vercel</a></li>
-  <li><a href="https://create.t3.gg/en/deployment/netlify">Netlify</a></li>
-  <li><a href="https://create.t3.gg/en/deployment/docker">Docker</a></li>
-</ul>
+### Tooling
 
-<h2>Learn More</h2>
-<p>For more information about the T3 Stack and BeFocused:</p>
-<ul>
-  <li><a href="https://create.t3.gg/">T3 Stack Documentation</a></li>
-  <li><a href="https://github.com/t3-oss/create-t3-app">Create T3 App GitHub Repository</a></li>
-  <li><a href="https://t3.gg/discord">Join the T3 Community on Discord</a></li>
-</ul>
+- **Biome** (linter & formatter)
+- **Bun** (package manager & runtime)
+- **Turbo Repo** (monorepo management)
+
+## Prerequisites
+
+Before starting, ensure you have the following installed:
+
+- **Bun** (preferred package manager)
+- **Git**
+- **Docker** (if applicable)
+- **System dependencies** (varies per package; see specific package README files)
+
+### Install Required Tools
+
+```sh
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
+
+# Verify installation
+bun --version
+```
+
+## Repository Setup
+
+1. **Clone the repository:**
+   ```sh
+   git clone git@github.com:your-org/monorepo.git
+   cd monorepo
+   ```
+2. **Install dependencies:**
+   ```sh
+   bun install
+   ```
+3. **Verify the setup:**
+   ```sh
+   bun run check-deps
+   ```
+
+### Running the Project
+
+To start development, run the appropriate package:
+
+```sh
+bun run <script>
+```
+
+Example:
+
+```sh
+bun run web
+```
+
+### Useful Scripts
+
+```json
+"scripts": {
+    "ui": "bun run --cwd packages/ui ui",
+    "web": "bun run --cwd ./apps/next dev",
+    "api": "bun run --cwd ./packages/api dev",
+    "format": "bun x @biomejs/biome format --write ./packages ./apps",
+    "lint": "bun x @biomejs/biome lint ./packages ./apps",
+    "fix": "bun x @biomejs/biome check --write --unsafe ./packages ./apps",
+    "turbo:dev": "turbo dev",
+    "turbo:lint": "turbo lint",
+    "turbo:format": "turbo format",
+    "turbo:build": "turbo build",
+    "check-deps": "check-dependency-version-consistency ."
+}
+```
+
+### Building Packages
+
+```sh
+bun run turbo:build
+```
+
+## Code Conventions
+
+### Linting & Formatting
+
+We use Biome to enforce consistent code style.
+
+```sh
+bun run lint
+bun run format
+```
+
+## Environment Variables
+
+Each package requires specific environment variables. Ensure these are set up correctly.
+
+### Essential Environment Variables
+
+#### `packages/api/.dev.vars.example`
+
+```
+DATABASE_URL=
+ENV=
+JWT_SECRET=
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+DISCORD_CLIENT_ID=
+DISCORD_CLIENT_SECRET=
+APPLE_CLIENT_ID=
+APPLE_WEB_CLIENT_ID=
+APPLE_PRIVATE_KEY=
+APPLE_TEAM_ID=
+APPLE_KEY_ID=
+API_DOMAIN=
+WEB_DOMAIN=
+BETTER_AUTH_SECRET=
+API_VERSION=v1
+RATE_LIMITER=5
+```
+
+#### `apps/next/.env.example`
+
+```
+NEXT_PUBLIC_APP_URL=
+NEXT_PUBLIC_API_URL=
+
+API_URL=
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue:** Dependency installation fails.
+
+- **Solution:** Try running:
+  ```sh
+  rm -rf node_modules && bun install
+  ```
+
+---
+
+*Last updated: 2025-02-09*
+

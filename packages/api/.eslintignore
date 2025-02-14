@@ -1,0 +1,13 @@
+/**/*.js
+
+node_modules
+out
+!.storybook
+
+serverless.ts
+
+tsconfig.json
+
+src/scripts/*
+
+scripts/*
