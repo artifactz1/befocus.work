@@ -24,19 +24,3 @@
   <li><a href="https://tailwindcss.com">Tailwind CSS</a></li>
   <li><a href="https://trpc.io">tRPC</a></li>
 </ul>
-
-<h2>Deployment</h2>
-<p>Follow our guides to deploy the app on:</p>
-<ul>
-  <li><a href="https://create.t3.gg/en/deployment/vercel">Vercel</a></li>
-  <li><a href="https://create.t3.gg/en/deployment/netlify">Netlify</a></li>
-  <li><a href="https://create.t3.gg/en/deployment/docker">Docker</a></li>
-</ul>
-
-<h2>Learn More</h2>
-<p>For more information about the T3 Stack and BeFocused:</p>
-<ul>
-  <li><a href="https://create.t3.gg/">T3 Stack Documentation</a></li>
-  <li><a href="https://github.com/t3-oss/create-t3-app">Create T3 App GitHub Repository</a></li>
-  <li><a href="https://t3.gg/discord">Join the T3 Community on Discord</a></li>
-</ul>
