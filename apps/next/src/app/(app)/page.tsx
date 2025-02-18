@@ -70,7 +70,6 @@ export default function page() {
   }
 
   return (
-    // <HydrateClient>
     <>
       <GlobalSoundsPlayer />
       <main className="flex h-screen w-screen flex-col items-center justify-center">
@@ -80,7 +79,5 @@ export default function page() {
         <Button onClick={handleSignOut}>Sign Out</Button>
       </main>
     </>
-
-    // </HydrateClient>
   );
 }
