@@ -1,3 +1,5 @@
+"use client"
+
 import MenuSettings from "./settings/MenuSettings";
 import TimerButtons from "./timer/TimerButtons";
 
