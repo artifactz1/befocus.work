@@ -1,9 +1,9 @@
-import { Checkbox } from "@repo/ui/checkbox";
-import { Input } from "@repo/ui/input";
+import { Checkbox } from '@repo/ui/checkbox';
+import { Input } from '@repo/ui/input';
 import { motion } from "framer-motion";
 import { Archive, ArchiveRestore } from "lucide-react";
 
-import { useTodoStore } from "../../store/useToDoStore";
+import { useTodoStore } from "~/store/useToDoStore";
 
 interface TaskItemProps {
   task: {
@@ -20,7 +20,7 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
   const { editTask, toggleEditMode, archiveTask } = useTodoStore();
 
   return (
-    <div className="items-top flex space-x-2 border-b-2 py-2">
+    <div className="items-bottom flex space-x-2 border-b-2 py-2">
       <motion.div
         whileHover={{ scale: 1.2 }}
         whileTap={{ scale: 0.8 }}
