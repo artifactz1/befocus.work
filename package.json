@@ -32,5 +32,8 @@
 		"hono-pino": "^0.7.2",
 		"pino": "^9.6.0",
 		"wrangler": "3.107.3"
+	},
+	"prisma": {
+		"schema": "./packages/api/src/db/schemas.ts"
 	}
 }
