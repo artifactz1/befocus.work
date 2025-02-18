@@ -52,7 +52,8 @@
 import { Button } from '@repo/ui/button';
 import { useRouter } from 'next/navigation';
 import Footer from '~/_components/Footer';
-import { default as Header, default as Timer } from '~/_components/Header';
+import Header from '~/_components/Header';
+import Timer from '~/_components/timer/Timer';
 import { signOut } from '~/lib/auth.client';
 
 export default function page() {
