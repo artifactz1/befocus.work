@@ -52,6 +52,7 @@
 import { Button } from '@repo/ui/button';
 import { useRouter } from 'next/navigation';
 import Footer from '~/_components/Footer';
+import GlobalSoundsPlayer from '~/_components/GlobalSoundsPlayer';
 import Header from '~/_components/Header';
 import Timer from '~/_components/timer/Timer';
 import { signOut } from '~/lib/auth.client';
@@ -67,13 +68,19 @@ export default function page() {
       console.error('Sign out failed', error)
     }
   }
+
   return (
-    <main className="flex h-screen w-screen flex-col items-center justify-center">
-      {/* <main className=" mx-auto flex h-screen w-screen flex-col items-center justify-center lg:mx-0 lg:max-w-full"> */}
-      <Header />
-      <Timer />
-      <Footer />
-      <Button onClick={handleSignOut}>Sign Out</Button>
-    </main>
-  )
+    // <HydrateClient>
+    <>
+      <GlobalSoundsPlayer />
+      <main className="flex h-screen w-screen flex-col items-center justify-center">
+        <Header />
+        <Timer />
+        <Footer />
+        <Button onClick={handleSignOut}>Sign Out</Button>
+      </main>
+    </>
+
+    // </HydrateClient>
+  );
 }
