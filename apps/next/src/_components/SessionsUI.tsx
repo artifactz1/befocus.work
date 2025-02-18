@@ -1,6 +1,6 @@
 import { cn } from "~/lib/utils";
-import { useDeviceStore } from "~/store/useDeviceStore"; // Import the Zustand store
 import { useTimerStore } from "../store/useTimerStore";
+import useIsLandscape from './useIsMobileLandscape';
 
 export default function SessionsUI() {
   const {
@@ -12,7 +12,7 @@ export default function SessionsUI() {
     breakDuration,
   } = useTimerStore();
 
-  const { isLandscape } = useDeviceStore(); // Get Zustand state & function
+  const isLandscape = useIsLandscape(); // Get Zustand state & function
 
   const opacitySession = Math.round((1 - timeLeft / workDuration) * 100); // Clamp between 0 and 1
   const opacitySessionBrk = Math.round((1 - timeLeft / breakDuration) * 100); // Clamp between 0 and 1
