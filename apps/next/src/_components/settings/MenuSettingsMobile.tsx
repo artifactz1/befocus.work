@@ -1,6 +1,9 @@
 "use client";
 
 import { DarkModeToggle } from '../DarkModeToggle';
+import ToDoListMobile from "../to-do-list/ToDoListMobile";
+import SessionSettingsMobile from "./SessionSettingsMobile";
+import SoundSettingsMobile from "./SoundSettingsMobile";
 
 export default function MenuSettingsMobile() {
   return (
