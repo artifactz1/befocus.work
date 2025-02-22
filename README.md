@@ -1,6 +1,6 @@
 <h1><a href="https://befocus.artifactz.dev//">Be Focused</a></h1>
  
-<p>BeFocused is a productivity and self-improvement app integrating a Pomodoro timer, task management system, and ambient soundscapes to enhance user focus and efficiency. Built with the <a href="https://create.t3.gg/">T3 Stack</a>, BeFocused provides tools and features to support personal growth and goal achievement.</p>
+<p>BeFocused is mono repo productivity and self-improvement app integrating a Pomodoro timer, task management system, and ambient soundscapes to enhance user focus and efficiency. Built with the <a href="https://create.t3.gg/">T3 Stack</a>, BeFocused provides tools and features to support personal growth and goal achievement.</p>
 
 <img src="https://raw.githubusercontent.com/artifactz1/befocus-t3/refs/heads/main/Pomodoro.png" alt="Be Focused Screenshot" />
 
