@@ -43,6 +43,8 @@ export default function App() {
       <p>Logged in as: {user.email}</p>
       <Button onClick={handleSignOut}>Sign Out</Button>
       {test && <p>Providers: {test.map(provider => provider.providerId).join(', ')}</p>}
+
+
     </div>
   )
 }
