@@ -62,6 +62,7 @@
         "http-status": "^2.0.0",
         "lucia": "^3.2.2",
         "postgres": "^3.4.5",
+        "tldts": "^6.1.78",
         "zod": "^3.24.1",
         "zod-error": "^1.5.0",
       },
@@ -1411,6 +1412,10 @@
     "tinygradient": ["tinygradient@1.1.5", "", { "dependencies": { "@types/tinycolor2": "^1.4.0", "tinycolor2": "^1.0.0" } }, ""],
 
     "title-case": ["title-case@2.1.1", "", { "dependencies": { "no-case": "^2.2.0", "upper-case": "^1.0.3" } }, ""],
+
+    "tldts": ["tldts@6.1.78", "", { "dependencies": { "tldts-core": "^6.1.78" }, "bin": { "tldts": "bin/cli.js" } }, "sha512-fSgYrW0ITH0SR/CqKMXIruYIPpNu5aDgUp22UhYoSrnUQwc7SBqifEBFNce7AAcygUPBo6a/gbtcguWdmko4RQ=="],
+
+    "tldts-core": ["tldts-core@6.1.78", "", {}, "sha512-jS0svNsB99jR6AJBmfmEWuKIgz91Haya91Z43PATaeHJ24BkMoNRb/jlaD37VYjb0mYf6gRL/HOnvS1zEnYBiw=="],
 
     "tmp": ["tmp@0.0.33", "", { "dependencies": { "os-tmpdir": "~1.0.2" } }, ""],
 
