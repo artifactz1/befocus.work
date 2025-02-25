@@ -1,13 +1,13 @@
 
 import { NotebookPen, Plus } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover";
+} from "@repo/ui/popover";
 import { useTodoStore } from "~/store/useToDoStore";
-import TaskList from "./task-list";
+import TaskList from "../to-do-list/TaskList";
 
 export default function ToDoList() {
   const { toggleAdd } = useTodoStore();

@@ -2,9 +2,9 @@
 
 // app/components/SoundSettings.tsx
 import { Volume2, VolumeX } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { Slider } from "~/components/ui/slider";
-import { Toggle } from "~/components/ui/toggle";
+import { Button } from "@repo/ui/button";
+import { Slider } from "@repo/ui/slider";
+import { Toggle } from "@repo/ui/toggle";
 import { useSoundsStore } from "~/store/useSoundsStore";
 
 const SoundSettings = ({ soundId }: { soundId: string }) => {

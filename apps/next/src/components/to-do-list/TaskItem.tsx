@@ -1,8 +1,8 @@
 
+import { Checkbox } from "@repo/ui/checkbox";
+import { Input } from "@repo/ui/input";
 import { motion } from "framer-motion";
 import { Archive, ArchiveRestore } from "lucide-react";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Input } from "~/components/ui/input";
 
 import { useTodoStore } from "~/store/useToDoStore";
 

@@ -1,5 +1,5 @@
 import { Minus } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Button } from "@repo/ui/button";
 import { useSoundsStore } from "~/store/useSoundsStore";
 
 export default function ToggleDeleteModeButton() {

@@ -29,8 +29,10 @@
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
     "better-auth": "^1.1.18",
+    "framer-motion": "^12.4.7",
     "hono-pino": "^0.7.2",
     "pino": "^9.6.0",
+    "react-player": "^2.16.0",
     "wrangler": "^3.109.2"
   }
 }

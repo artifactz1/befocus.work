@@ -5,8 +5,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "~/components/ui/accordion";
-import { Separator } from "~/components/ui/separator";
+} from "@repo/ui/accordion";
+import { Separator } from "@repo/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import SoundButton from "./SoundButton";
 

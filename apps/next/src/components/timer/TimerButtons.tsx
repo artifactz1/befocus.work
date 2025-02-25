@@ -1,14 +1,14 @@
 "use client";
 
-import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "~/components/ui/tooltip";
+} from "@repo/ui/tooltip";
+import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTimerStore } from "~/store/useTimerStore";
 
 export default function TimerButtons() {

@@ -9,9 +9,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select";
-import { Separator } from "~/components/ui/separator";
-import { Slider } from "~/components/ui/slider";
+} from "@repo/ui/select";
+import { Separator } from "@repo/ui/separator";
+import { Slider } from "@repo/ui/slider";
 import { useSoundsStore } from "~/store/useSoundsStore";
 
 export default function AlarmSoundsButton() {

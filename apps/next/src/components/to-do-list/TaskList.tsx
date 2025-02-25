@@ -6,12 +6,12 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "~/components/ui/accordion";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Input } from "~/components/ui/input";
-import { Separator } from "~/components/ui/separator";
+} from "@repo/ui/accordion";
+import { Checkbox } from "@repo/ui/checkbox";
+import { Input } from "@repo/ui/input";
+import { Separator } from "@repo/ui/separator";
 import { useTodoStore } from "~/store/useToDoStore"; // Zustand store
-import TaskItem from "./task-item";
+import TaskItem from "../to-do-list/TaskItem";
 
 export default function TaskList() {
   const { tasks, toggleTask } = useTodoStore();

@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@repo/ui/button";
 import { Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
 import {
   Drawer,
   DrawerContent,
@@ -10,8 +10,8 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "~/components/ui/drawer";
-import { Separator } from "~/components/ui/separator";
+} from "@repo/ui/drawer";
+import { Separator } from "@repo/ui/separator";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import AddSoundButton from "../sounds/AddSoundButton";
 import AlarmSoundsButton from "../sounds/AlarmSoundsButton";

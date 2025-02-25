@@ -1,13 +1,13 @@
 "use client";
 
 import { Timer } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover";
-import { Separator } from "~/components/ui/separator";
+} from "@repo/ui/popover";
+import { Separator } from "@repo/ui/separator";
 
 import { useState } from "react";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "~/components/ui/alert-dialog";
+} from "@repo/ui/alert-dialog";
 import { useTimerStore } from "~/store/useTimerStore";
 import { BreakDurationInput } from "../input/BreakDurationInput";
 import { SessionsInput } from "../input/SessionsInput";

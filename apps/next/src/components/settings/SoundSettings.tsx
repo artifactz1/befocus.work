@@ -2,12 +2,12 @@
 
 import { Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
+import { Button } from "@repo/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover";
+} from "@repo/ui/popover";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import AddSoundButton from "../sounds/AddSoundButton";
 import AlarmSoundsButton from "../sounds/AlarmSoundsButton";
