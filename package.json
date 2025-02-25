@@ -18,6 +18,7 @@
     "clean": "git clean -xdf node_modules && rm -f bun.lockb && rm -rf ./apps/next/.next && rm -rf && rm -rf ./apps/next/node_modules && rm -rf ./packages/ui/dist && rm -rf ./packages/api/node_modules"
   },
   "devDependencies": {
+    "@types/uuid": "^10.0.0",
     "turbo": "^2.3.3",
     "typescript": "5.5.4"
   },

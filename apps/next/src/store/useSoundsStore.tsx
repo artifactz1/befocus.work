@@ -97,11 +97,11 @@ export const useSoundsStore = create<SoundsState>((set) => {
         }
         return { sounds: { ...state.sounds } };
       }),
-    addSound: (id, url, isCustom = true, soundType: SoundType) =>
+    addSound: (id, url, isCustom, soundType: SoundType) =>
       set((state) => ({
         sounds: {
           ...state.sounds,
-          [id]: { playing: false, volume: 0, url, isCustom, soundType },
+          [id]: { playing: false, volume: 0, url, isCustom: isCustom, soundType },
         },
       })),
     deleteSound: (id) =>

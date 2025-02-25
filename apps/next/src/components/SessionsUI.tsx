@@ -3,6 +3,8 @@
 import { cn } from "~/lib/utils";
 import { useTimerStore } from "~/store/useTimerStore";
 import useIsLandscape from "./useIsMobileLandscape";
+import { useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function SessionsUI() {
   const {
@@ -37,6 +39,9 @@ export default function SessionsUI() {
   const opacityClass = getOpacityClass(opacitySession);
   const opacityClassBrk = getOpacityClass(opacitySessionBrk);
 
+  const sessionKeys = useMemo(() => Array.from({ length: sessions }, () => uuidv4()), [sessions]);
+
+
   return (
     <main>
       <div className="hidden h-[15vh] sm:block">
@@ -51,9 +56,9 @@ export default function SessionsUI() {
           </p>
           <div className="space-y-1">
             <div className="flex space-x-1">
-              {Array.from({ length: sessions }).map((_, index) => (
+              {sessionKeys.map((key, index) => (
                 <div
-                  key={`work-${index}`}
+                  key={key}
                   className={cn(
                     `${isLandscape ? "h-6 w-6" : "h-12 w-12"} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
@@ -67,9 +72,9 @@ export default function SessionsUI() {
               ))}
             </div>
             <div className="flex space-x-1">
-              {Array.from({ length: sessions }).map((_, index) => (
+              {sessionKeys.map((key,index) => (
                 <div
-                  key={`break-${index}`}
+                  key={key}
                   className={cn(
                     `${isLandscape ? "h-6 w-6" : "h-12 w-12"} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
@@ -95,9 +100,9 @@ export default function SessionsUI() {
               gridAutoRows: "1fr",
             }}
           >
-            {Array.from({ length: sessions }).map((_, index) => (
+            {sessionKeys.map((key,index) => (
               <div
-                key={`work-${index}`}
+                key={key}
                 className={cn(
                   "aspect-square rounded-lg border-2 transition-all duration-300",
                   "border-gray-300 dark:border-white/80",
@@ -118,9 +123,9 @@ export default function SessionsUI() {
               gridAutoRows: "1fr",
             }}
           >
-            {Array.from({ length: sessions }).map((_, index) => (
+            {sessionKeys.map((key, index) => (
               <div
-                key={`break-${index}`}
+                key={key}
                 className={cn(
                   "aspect-square rounded-lg border-2 transition-all duration-300",
                   "border-gray-300 dark:border-white/80",

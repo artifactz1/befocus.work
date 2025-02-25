@@ -33,13 +33,13 @@ function Digit({ place, value }: { place: number; value: number }) {
       className="relative w-[0.95ch] tabular-nums"
     >
       {[...Array(10).keys()].map((i) => (
-        <Number key={i} mv={animatedValue} number={i} />
+        <DigitNumber key={i} mv={animatedValue} number={i} />
       ))}
     </div>
   );
 }
 
-function Number({ mv, number }: { mv: MotionValue<number>; number: number }) {
+function DigitNumber({ mv, number }: { mv: MotionValue<number>; number: number }) {
   const y = useTransform(mv, (latest) => {
     const placeValue = latest % 10;
     const offset = (10 + number - placeValue) % 10;

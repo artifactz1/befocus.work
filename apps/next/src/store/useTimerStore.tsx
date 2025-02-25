@@ -70,15 +70,15 @@ export const useTimerStore = create<TimerState>((set, get) => ({
         if (state.isAlarmOn === false) {
           if (state.isWorking && state.currentSession < state.sessions) {
             return { isWorking: false, timeLeft: state.breakDuration };
-          } else if (!state.isWorking) {
+          }  
+          if (!state.isWorking) {
             return {
               isWorking: true,
               currentSession: state.currentSession + 1,
               timeLeft: state.workDuration,
             };
-          } else {
+          } 
             return { isRunning: false, timeLeft: 0 };
-          }
         }
       }
       return { timeLeft: state.timeLeft - 1 };

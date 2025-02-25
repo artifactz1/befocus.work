@@ -1,4 +1,5 @@
 
+import { Button } from '@repo/ui/button';
 import { Checkbox } from "@repo/ui/checkbox";
 import { Input } from "@repo/ui/input";
 import { motion } from "framer-motion";
@@ -28,13 +29,13 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
         className="flex items-center"
       >
         {task.archived ? (
-          <button onClick={() => archiveTask(task.id)}>
+          <Button onClick={() => archiveTask(task.id)}>
             {task.archived ? (
               <ArchiveRestore strokeWidth={1.5} />
             ) : (
               <Archive strokeWidth={1.5} />
             )}
-          </button>
+          </Button>
         ) : (
           <Checkbox
             checked={task.completed}
@@ -68,15 +69,15 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
               className={`absolute left-0 top-1/2 h-[2px] transition-all duration-500 ${task.completed ? "w-full bg-stone-500" : "w-0 bg-white"
                 }`}
               style={{ transform: "translateY(-50%)" }}
-            ></span>
+            />
           </span>
         )}
       </motion.div>
 
       <div className="flex items-center opacity-0 transition-opacity hover:opacity-100">
-        <button onClick={() => archiveTask(task.id)}>
+        <Button onClick={() => archiveTask(task.id)}>
           {!task.archived && <Archive strokeWidth={1.5} />}
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
 "use client";
 
-// app/components/SoundSettings.tsx
-import { Volume2, VolumeX } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import { Slider } from "@repo/ui/slider";
 import { Toggle } from "@repo/ui/toggle";
+// app/components/SoundSettings.tsx
+import { Volume2, VolumeX } from "lucide-react";
 import { useSoundsStore } from "~/store/useSoundsStore";
 
 const SoundSettings = ({ soundId }: { soundId: string }) => {
@@ -22,7 +22,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
     <main>
       {!isDeleteMode ? (
         <div className="flex-row space-y-2">
-          <label className="p-1 font-medium">{soundId}</label>
+          <span className="p-1 font-medium">{soundId}</span>
           <div className="flex space-x-2">
             <Toggle
               pressed={sound.playing}
