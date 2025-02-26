@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { signIn } from '~/lib/auth.client'
 
 export default function SignIn() {
-  const homePageUrl = process.env.NEXT_PUBLIC_APP_URL
+  const homePageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`
 
   return (
     <div className='flex flex-col items-center flex-1 m-8'>
