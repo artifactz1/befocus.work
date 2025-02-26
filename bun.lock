@@ -9,14 +9,16 @@
         "framer-motion": "^12.4.7",
         "hono-pino": "^0.7.2",
         "pino": "^9.6.0",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
         "react-player": "^2.16.0",
-        "wrangler": "^3.109.2"
+        "wrangler": "^3.109.2",
       },
       "devDependencies": {
         "@types/uuid": "^10.0.0",
         "turbo": "^2.3.3",
-        "typescript": "5.5.4"
-      }
+        "typescript": "5.5.4",
+      },
     },
     "apps/next": {
       "name": "web",
@@ -29,7 +31,7 @@
         "next-auth": "^4.24.11",
         "react": "18.3.1",
         "react-dom": "18.3.1",
-        "zustand": "^5.0.2"
+        "zustand": "^5.0.2",
       },
       "devDependencies": {
         "@repo/app": "*",
@@ -40,8 +42,8 @@
         "autoprefixer": "^10.4.20",
         "postcss": "^8.4.47",
         "tailwind": "^4.0.0",
-        "typescript": "^5"
-      }
+        "typescript": "^5",
+      },
     },
     "packages/api": {
       "name": "@repo/api",
@@ -67,24 +69,24 @@
         "postgres": "^3.4.5",
         "tldts": "^6.1.78",
         "zod": "^3.24.1",
-        "zod-error": "^1.5.0"
+        "zod-error": "^1.5.0",
       },
       "devDependencies": {
         "@cloudflare/workers-types": "^4.20241218.0",
-        "wrangler": "^3.109.2"
-      }
+        "wrangler": "^3.109.2",
+      },
     },
     "packages/app": {
       "name": "@repo/app",
       "version": "0.0.0",
       "dependencies": {
         "@t3-oss/env-nextjs": "^0.12.0",
-        "zustand": "^5.0.3"
-      }
+        "zustand": "^5.0.3",
+      },
     },
     "packages/typescript-config": {
       "name": "@repo/typescript-config",
-      "version": "0.0.0"
+      "version": "0.0.0",
     },
     "packages/ui": {
       "name": "@repo/ui",
@@ -114,7 +116,7 @@
         "sonner": "^2.0.1",
         "tailwind-merge": "^2.5.3",
         "tailwindcss-animate": "^1.0.7",
-        "vaul": "^1.1.2"
+        "vaul": "^1.1.2",
       },
       "devDependencies": {
         "@repo/typescript-config": "*",
@@ -125,9 +127,9 @@
         "autoprefixer": "^10.4.20",
         "postcss": "^8.4.47",
         "tailwindcss": "^3.4.13",
-        "typescript": "^5.3.3"
-      }
-    }
+        "typescript": "^5.3.3",
+      },
+    },
   },
   "packages": {
     "@alloc/quick-lru": ["@alloc/quick-lru@5.2.0", "", {}, ""],
@@ -1270,9 +1272,9 @@
 
     "rc": ["rc@1.2.8", "", { "dependencies": { "deep-extend": "^0.6.0", "ini": "~1.3.0", "minimist": "^1.2.0", "strip-json-comments": "~2.0.1" }, "bin": "cli.js" }, ""],
 
-    "react": ["react@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0" } }, ""],
+    "react": ["react@18.2.0", "", { "dependencies": { "loose-envify": "^1.1.0" } }, "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="],
 
-    "react-dom": ["react-dom@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0", "scheduler": "^0.23.2" }, "peerDependencies": { "react": "^18.3.1" } }, ""],
+    "react-dom": ["react-dom@18.2.0", "", { "dependencies": { "loose-envify": "^1.1.0", "scheduler": "^0.23.0" }, "peerDependencies": { "react": "^18.2.0" } }, "sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g=="],
 
     "react-fast-compare": ["react-fast-compare@3.2.2", "", {}, "sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ=="],
 
@@ -1622,6 +1624,8 @@
 
     "@oslojs/jwt/@oslojs/encoding": ["@oslojs/encoding@0.4.1", "", {}, ""],
 
+    "@repo/ui/react": ["react@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0" } }, ""],
+
     "@types/inquirer/rxjs": ["rxjs@6.6.7", "", { "dependencies": { "tslib": "^1.9.0" } }, ""],
 
     "amqplib/readable-stream": ["readable-stream@1.1.14", "", { "dependencies": { "core-util-is": "~1.0.0", "inherits": "~2.0.1", "isarray": "0.0.1", "string_decoder": "~0.10.x" } }, ""],
@@ -1740,6 +1744,10 @@
 
     "uuidv4/uuid": ["uuid@3.3.2", "", { "bin": "bin/uuid" }, ""],
 
+    "web/react": ["react@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0" } }, ""],
+
+    "web/react-dom": ["react-dom@18.3.1", "", { "dependencies": { "loose-envify": "^1.1.0", "scheduler": "^0.23.2" }, "peerDependencies": { "react": "^18.3.1" } }, ""],
+
     "which-builtin-type/isarray": ["isarray@2.0.5", "", {}, ""],
 
     "wrap-ansi/ansi-styles": ["ansi-styles@4.3.0", "", { "dependencies": { "color-convert": "^2.0.1" } }, ""],
@@ -1826,6 +1834,6 @@
 
     "rimraf/glob/minimatch/brace-expansion": ["brace-expansion@1.1.11", "", { "dependencies": { "balanced-match": "^1.0.0", "concat-map": "0.0.1" } }, ""],
 
-    "node-plop/inquirer/chalk/supports-color/has-flag": ["has-flag@4.0.0", "", {}, ""]
+    "node-plop/inquirer/chalk/supports-color/has-flag": ["has-flag@4.0.0", "", {}, ""],
   }
 }
