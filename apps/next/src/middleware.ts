@@ -48,6 +48,6 @@ export const config = {
      * Feel free to modify this pattern to include more paths.
      */
     // '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-    '/',
+    '/dashboard',
   ],
 }
