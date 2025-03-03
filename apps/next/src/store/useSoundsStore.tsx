@@ -44,11 +44,11 @@ interface SoundsState {
 }
 
 const alarmList: Alarm[] = [
-  { name: "alarm1", filePath: "/sounds/alarm1.mp3" },
-  { name: "alarm2", filePath: "/sounds/alarm2.mp3" },
-  { name: "alarm3", filePath: "/sounds/alarm3.mp3" },
-  { name: "alarm4", filePath: "/sounds/alarm4.mp3" },
-  { name: "alarm5", filePath: "/sounds/alarm5.mp3" },
+  { name: "alarm1", filePath: "/sounds/public_sounds_alarm1.mp3" },
+  { name: "alarm2", filePath: "/sounds/public_sounds_alarm2.mp3" },
+  { name: "alarm3", filePath: "/sounds/public_sounds_alarm3.mp3" },
+  { name: "alarm4", filePath: "/sounds/public_sounds_alarm4.mp3" },
+  { name: "alarm5", filePath: "/sounds/public_sounds_alarm5.mp3" },
 ];
 
 export const useSoundsStore = create<SoundsState>((set) => {
