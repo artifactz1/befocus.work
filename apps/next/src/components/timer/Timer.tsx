@@ -51,13 +51,13 @@ export default function Timer() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (timeLeft === 0) {
-  //     playAlarm();
-  //   } else {
-  //     stopAlarm();
-  //   }
-  // }, [timeLeft, playAlarm, stopAlarm]);
+  useEffect(() => {
+    if (timeLeft === 0) {
+      playAlarm();
+    } else {
+      stopAlarm();
+    }
+  }, [timeLeft, playAlarm, stopAlarm]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -68,11 +68,11 @@ export default function Timer() {
         if (command === 'done') {
           playAlarm();
         } else {
+          stopAlarm();
           const mins = Math.floor(timeLeft / 60);
           const secs = timeLeft % 60;
           setMinutes(mins);
           setSeconds(secs);
-          stopAlarm();
         }
       };
     }
