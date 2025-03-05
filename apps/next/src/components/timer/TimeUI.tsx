@@ -21,7 +21,11 @@ function TimerUI({
 
 function Digit({ place, value }: { place: number; value: number }) {
   const valueRoundedToPlace = Math.floor(value / place);
-  const animatedValue = useSpring(valueRoundedToPlace);
+  const animatedValue = useSpring(valueRoundedToPlace, {
+    stiffness: 500, // Further increase stiffness for faster response
+    damping: 30,    // Adjust damping to reduce overshoot
+    mass: 0.5,      // Adjust mass to make the spring more responsive
+  });
 
   useEffect(() => {
     animatedValue.set(valueRoundedToPlace);
