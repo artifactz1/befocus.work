@@ -1,4 +1,5 @@
 "use client";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSoundsStore } from "~/store/useSoundsStore";
 import { useTimerStore } from "~/store/useTimerStore";
@@ -17,7 +18,9 @@ export default function Timer() {
   const workerRef = useRef<Worker | null>(null);
 
   useEffect(() => {
+
     if (typeof window !== "undefined") {
+      audioRef.current = new Audio("sounds/alarm1.mp3");
       workerRef.current = new Worker(new URL('../../lib/timerWorker', import.meta.url));
       workerRef.current.onmessage = (e) => {
         if (e.data === "decrement") {
@@ -65,7 +68,8 @@ export default function Timer() {
     }
   }, []);
 
-  useEffect(() => { if (timeLeft === 0) {
+  useEffect(() => {
+    if (timeLeft === 0) {
       console.log("Time is up, attempting to play alarm");
       playAlarm();
     } else {
