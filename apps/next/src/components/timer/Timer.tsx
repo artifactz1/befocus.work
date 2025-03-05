@@ -1,4 +1,3 @@
-// apps/next/src/components/timer/Timer.tsx
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -86,11 +85,18 @@ export default function Timer() {
 
   useEffect(() => {
     if (isRunning && workerRef.current) {
-      workerRef.current.postMessage({ command: 'start', duration: timeLeft || 1500 }); // Ensure duration is set
+      workerRef.current.postMessage({ command: 'start', duration: timeLeft }); // Ensure duration is set
     } else if (workerRef.current) {
       workerRef.current.postMessage({ command: 'stop' });
     }
   }, [isRunning, timeLeft]);
+
+  useEffect(() => {
+    const mins = Math.floor(timeLeft / 60);
+    const secs = timeLeft % 60;
+    setMinutes(mins);
+    setSeconds(secs);
+  }, [timeLeft]);
 
   const [widthSize, setWidthSize] = useState("25vw");
   const [textSize, setTextSize] = useState("text-[25vw]");
