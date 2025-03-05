@@ -1,3 +1,4 @@
+// apps/next/src/components/timer/Timer.tsx
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -7,14 +8,15 @@ import useIsLandscape from '../useIsMobileLandscape';
 import TimerUI from "./TimeUI";
 
 export default function Timer() {
-  const { sounds, alarmId } = useSoundsStore();
-  const { timeLeft, isRunning, decrementTime } = useTimerStore();
+  const workerRef = useRef<Worker | null>(null);
 
-  const [minutes, setMinutes] = useState<number>(0);
+  const { sounds, alarmId } = useSoundsStore();
+  const { timeLeft, isRunning } = useTimerStore();
+
+  const [minutes, setMinutes] = useState<number>(25); // Set initial minutes to 25
   const [seconds, setSeconds] = useState<number>(0);
 
   const isLandscape = useIsLandscape();
-
 
   // Initialize the ref with `null` for SSR compatibility
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -59,27 +61,36 @@ export default function Timer() {
   }, [timeLeft, playAlarm, stopAlarm]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
+    if (typeof window !== "undefined") {
+      workerRef.current = new Worker(new URL('../../lib/timerWorker', import.meta.url));
 
-    if (isRunning && timeLeft > 0) {
-      interval = setInterval(() => {
-        decrementTime();
-      }, 1000);
-    } else if (interval) {
-      clearInterval(interval);
+      workerRef.current.onmessage = (e) => {
+        const { timeLeft, command } = e.data;
+        if (command === 'done') {
+          playAlarm();
+        } else {
+          const mins = Math.floor(timeLeft / 60);
+          const secs = timeLeft % 60;
+          setMinutes(mins);
+          setSeconds(secs);
+        }
+      };
     }
 
     return () => {
-      if (interval) clearInterval(interval);
+      if (workerRef.current) {
+        workerRef.current.terminate();
+      }
     };
-  }, [isRunning, decrementTime, timeLeft]);
+  }, [playAlarm]);
 
   useEffect(() => {
-    const mins = Math.floor(timeLeft / 60);
-    const secs = timeLeft % 60;
-    setMinutes(mins);
-    setSeconds(secs);
-  }, [timeLeft]);
+    if (isRunning && workerRef.current) {
+      workerRef.current.postMessage({ command: 'start', duration: timeLeft || 1500 }); // Ensure duration is set
+    } else if (workerRef.current) {
+      workerRef.current.postMessage({ command: 'stop' });
+    }
+  }, [isRunning, timeLeft]);
 
   const [widthSize, setWidthSize] = useState("25vw");
   const [textSize, setTextSize] = useState("text-[25vw]");
