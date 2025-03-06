@@ -70,7 +70,6 @@ export default function Timer() {
 
   useEffect(() => {
     if (timeLeft === 0) {
-      console.log("Time is up, attempting to play alarm");
       playAlarm();
     } else {
       stopAlarm();
