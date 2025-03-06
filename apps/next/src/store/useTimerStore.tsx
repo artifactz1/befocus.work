@@ -23,15 +23,15 @@ interface TimerState {
 
 export const useTimerStore = create<TimerState>((set, get) => ({
   sessions: 6,
-  // workDuration: 25 * 60,
-  workDuration: 10,
-  // breakDuration: 5 * 60,
-  breakDuration: 5,
+  workDuration: 25 * 60,
+  // workDuration: 10,
+  breakDuration: 5 * 60,
+  // breakDuration: 5,
   currentSession: 1,
   isWorking: true,
   isAlarmOn: false,
-  // timeLeft: 25 * 60,
-  timeLeft: 10,
+  timeLeft: 25 * 60,
+  // timeLeft: 10,
   isRunning: false,
   reset: () =>
     set({
