@@ -27,6 +27,8 @@ const GlobalPlayer = () => {
               muted={!sound.playing}
               width="0"
               height="0"
+                  onReady = {() => console.log('Player is ready')}
+      onStart={() => console.log('Video started')}
             />
           );
         })}

@@ -1,10 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { cn } from "~/lib/utils";
 import { useTimerStore } from "~/store/useTimerStore";
 import useIsLandscape from "./useIsMobileLandscape";
-import { useMemo } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 export default function SessionsUI() {
   const {
@@ -22,22 +22,22 @@ export default function SessionsUI() {
   const opacitySessionBrk = Math.round((1 - timeLeft / breakDuration) * 100); // Clamp between 0 and 1
 
   // Map opacitySession to Tailwind opacity classes
-  const getOpacityClass = (opacity: number) => {
-    if (opacity <= 0) return "";
-    if (opacity <= 10) return "bg-pink-500/10 ";
-    if (opacity <= 20) return "bg-pink-500/20 ";
-    if (opacity <= 30) return "bg-pink-500/30 ";
-    if (opacity <= 40) return "bg-pink-500/40 ";
-    if (opacity <= 50) return "bg-pink-500/50 ";
-    if (opacity <= 60) return "bg-pink-500/60 ";
-    if (opacity <= 70) return "bg-pink-500/70 ";
-    if (opacity <= 80) return "bg-pink-500/80 ";
-    if (opacity <= 90) return "bg-pink-500/90 ";
-    return "bg-pink-500 ";
-  };
+  // const getOpacityClass = (opacity: number) => {
+  //   if (opacity <= 0) return "";
+  //   if (opacity <= 10) return "bg-pink-500/10 ";
+  //   if (opacity <= 20) return "bg-pink-500/20 ";
+  //   if (opacity <= 30) return "bg-pink-500/30 ";
+  //   if (opacity <= 40) return "bg-pink-500/40 ";
+  //   if (opacity <= 50) return "bg-pink-500/50 ";
+  //   if (opacity <= 60) return "bg-pink-500/60 ";
+  //   if (opacity <= 70) return "bg-pink-500/70 ";
+  //   if (opacity <= 80) return "bg-pink-500/80 ";
+  //   if (opacity <= 90) return "bg-pink-500/90 ";
+  //   return "bg-pink-500 ";
+  // };
 
-  const opacityClass = getOpacityClass(opacitySession);
-  const opacityClassBrk = getOpacityClass(opacitySessionBrk);
+  // const opacityClass = getOpacityClass(opacitySession);
+  // const opacityClassBrk = getOpacityClass(opacitySessionBrk);
 
   const sessionKeys = useMemo(() => Array.from({ length: sessions }, () => uuidv4()), [sessions]);
 
@@ -64,7 +64,8 @@ export default function SessionsUI() {
                     "border-gray-300 dark:border-white/80", // Light mode: black, Dark mode: white
                     index <= currentSession - 1 // Completed work sessions
                       ? isWorking && currentSession - 1 === index
-                        ? `${opacityClass}`
+                        // ? `${opacityClass}`
+                        ? "bg-pink-500"
                         : "bg-green-500"
                       : "", // No color if not completed
                   )}
@@ -72,7 +73,7 @@ export default function SessionsUI() {
               ))}
             </div>
             <div className="flex space-x-1">
-              {sessionKeys.map((key,index) => (
+              {sessionKeys.map((key, index) => (
                 <div
                   key={key}
                   className={cn(
@@ -81,7 +82,8 @@ export default function SessionsUI() {
                     index < currentSession - 1 // Completed break sessions
                       ? "bg-green-500"
                       : !isWorking && currentSession - 1 === index // Current break session
-                        ? `${opacityClassBrk}`
+                        // ? `${opacityClassBrk}`
+                        ? "bg-pink-500"
                         : "bg-transparent",
                   )}
                 />
@@ -100,7 +102,7 @@ export default function SessionsUI() {
               gridAutoRows: "1fr",
             }}
           >
-            {sessionKeys.map((key,index) => (
+            {sessionKeys.map((key, index) => (
               <div
                 key={key}
                 className={cn(
@@ -108,7 +110,8 @@ export default function SessionsUI() {
                   "border-gray-300 dark:border-white/80",
                   index <= currentSession - 1
                     ? isWorking && currentSession - 1 === index
-                      ? `${opacityClass}`
+                      // ? `${opacityClass}`
+                      ? "bg-pink-500"
                       : "bg-green-500"
                     : "",
                 )}
@@ -132,7 +135,8 @@ export default function SessionsUI() {
                   index < currentSession - 1
                     ? "bg-green-500"
                     : !isWorking && currentSession - 1 === index
-                      ? `${opacityClassBrk}`
+                      // ? `${opacityClassBrk}`
+                      ? "bg-pink-500"
                       : "bg-transparent",
                 )}
               />

@@ -12,25 +12,43 @@ export default function Timer() {
 
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
-
   const isLandscape = useIsLandscape();
-
-
-  // Initialize the ref with `null` for SSR compatibility
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const workerRef = useRef<Worker | null>(null);
+
   useEffect(() => {
+
     if (typeof window !== "undefined") {
-      // Create the audio element only on the client side
-      audioRef.current = new Audio("sounds/alarm1.mp3");
+      audioRef.current = new Audio("sounds/public_sounds_alarm1.mp3");
+      workerRef.current = new Worker(new URL('../../lib/timerWorker', import.meta.url));
+      workerRef.current.onmessage = (e) => {
+        if (e.data === "decrement") {
+          decrementTime();
+        }
+      };
     }
-  }, []);
+
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.terminate();
+      }
+    };
+  }, [decrementTime]);
+
+  useEffect(() => {
+    if (isRunning && timeLeft > 0) {
+      workerRef.current?.postMessage({ command: "start", interval: 1000 });
+    } else {
+      workerRef.current?.postMessage({ command: "stop" });
+    }
+  }, [isRunning, timeLeft]);
 
   useEffect(() => {
     const selectedAlarm = sounds[alarmId];
     if (selectedAlarm && audioRef.current) {
       audioRef.current.src = selectedAlarm.url;
-      audioRef.current.load(); // Reload the audio element with the new source
+      audioRef.current.load();
       audioRef.current.volume = selectedAlarm.volume;
     }
   }, [alarmId, sounds]);
@@ -89,10 +107,8 @@ export default function Timer() {
       setWidthSize(window.innerWidth < 640 ? "50vw" : "25vw");
       setTextSize(window.innerWidth < 640 ? "text-[50vw]" : "text-[25vw]");
     };
-
-    handleResize(); // Set initial size
+    handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -100,9 +116,7 @@ export default function Timer() {
     <div className="relative z-0 flex h-[70vh] items-center justify-center">
       <div className="absolute hidden h-[70vh] items-center justify-center font-bold sm:flex">
         <TimerUI value={minutes} fontSize={isLandscape ? "30vh" : widthSize} />
-        <p
-          className={`flex h-full items-center ${isLandscape ? "text-[30vh]" : textSize}`}
-        >
+        <p className={`flex h-full items-center ${isLandscape ? "text-[30vh]" : textSize}`}>
           :
         </p>
         <TimerUI value={seconds} fontSize={isLandscape ? "30vh" : widthSize} />

@@ -57,6 +57,8 @@ export default function AlarmSoundsButton() {
         controls={false}
         width="0"
         height="0"
+      onReady={() => console.log('Player is ready')}
+      onStart={() => console.log('Video started')}
       />
 
       <Separator className="my-4 hidden bg-white md:block" />

@@ -45,8 +45,8 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
         )}
       </motion.div>
       <motion.div
-        animate={{ x: task.completed ? [5, 5, 0] : 0 }}
-        transition={{ type: "spring", stiffness: 100 }}
+        animate={{ x: task.completed ? [5, 0, 0] : 0 }}
+        transition={{ type: "tween", duration: 1.2, ease: "easeInOut" }}
         className={`group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-1000 ${task.completed ? "text-stone-500" : "font-semibold"
           }`}
         onClick={() => toggleEditMode(task.id)}

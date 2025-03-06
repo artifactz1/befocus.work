@@ -24,11 +24,14 @@ interface TimerState {
 export const useTimerStore = create<TimerState>((set, get) => ({
   sessions: 6,
   workDuration: 25 * 60,
+  // workDuration: 10,
   breakDuration: 5 * 60,
+  // breakDuration: 5,
   currentSession: 1,
   isWorking: true,
   isAlarmOn: false,
   timeLeft: 25 * 60,
+  // timeLeft: 10,
   isRunning: false,
   reset: () =>
     set({
@@ -70,15 +73,15 @@ export const useTimerStore = create<TimerState>((set, get) => ({
         if (state.isAlarmOn === false) {
           if (state.isWorking && state.currentSession < state.sessions) {
             return { isWorking: false, timeLeft: state.breakDuration };
-          }  
+          }
           if (!state.isWorking) {
             return {
               isWorking: true,
               currentSession: state.currentSession + 1,
               timeLeft: state.workDuration,
             };
-          } 
-            return { isRunning: false, timeLeft: 0 };
+          }
+          return { isRunning: false, timeLeft: 0 };
         }
       }
       return { timeLeft: state.timeLeft - 1 };
