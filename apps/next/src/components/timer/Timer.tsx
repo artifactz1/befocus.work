@@ -20,7 +20,7 @@ export default function Timer() {
   useEffect(() => {
 
     if (typeof window !== "undefined") {
-      audioRef.current = new Audio("sounds/alarm1.mp3");
+      audioRef.current = new Audio("sounds/public_sounds_alarm1.mp3");
       workerRef.current = new Worker(new URL('../../lib/timerWorker', import.meta.url));
       workerRef.current.onmessage = (e) => {
         if (e.data === "decrement") {
