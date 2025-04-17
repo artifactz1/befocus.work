@@ -39,6 +39,46 @@ export const getUserAccounts = createRoute({
   },
 })
 
+export const getUserSettings = createRoute({
+  path: '/user/settings',
+  method: 'get',
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      z.array(getUserAccountsSchema.pick({ providerId: true })),
+      'The requested accounts',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
+export const postUserSettings = createRoute({
+  path: '/user/settings',
+  method: 'post',
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      z.array(getUserAccountsSchema.pick({ providerId: true })),
+      'The requested accounts',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
+export const putUserSettings = createRoute({
+  path: '/user/settings',
+  method: 'put',
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      z.array(getUserAccountsSchema.pick({ providerId: true })),
+      'The requested accounts',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
 export type GetUserRoute = typeof getUser
 export type GetUserSessionRoute = typeof getUserSession
 export type GetUserAccountsRoute = typeof getUserAccounts
+export type PostUserSettings = typeof postUserSettings
