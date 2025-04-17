@@ -47,6 +47,8 @@ export const account = pgTable('account', {
   updatedAt: timestamp('updated_at').notNull(),
 })
 
+export type Account = InferSelectModel<typeof account>
+
 export const verification = pgTable('verification', {
   id: text('id').primaryKey(),
   identifier: text('identifier').notNull(),
@@ -55,6 +57,8 @@ export const verification = pgTable('verification', {
   createdAt: timestamp('created_at'),
   updatedAt: timestamp('updated_at'),
 })
+
+export type Verification = InferSelectModel<typeof verification>
 
 // Schemas
 export const getUserSchema = createSelectSchema(user)
