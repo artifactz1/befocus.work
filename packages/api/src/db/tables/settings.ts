@@ -1,6 +1,6 @@
 import type { InferSelectModel } from 'drizzle-orm'
 import { integer, pgTable, text } from 'drizzle-orm/pg-core'
-import { createSelectSchema } from 'drizzle-zod'
+import { createSelectSchema, createUpdateSchema } from 'drizzle-zod'
 import { user } from './auth'
 
 export const sessionSettings = pgTable('sessionSettings', {
@@ -14,5 +14,10 @@ export const sessionSettings = pgTable('sessionSettings', {
 })
 
 export type Settings = InferSelectModel<typeof sessionSettings>
+
+export const updateUserSettingsSchema = createUpdateSchema(sessionSettings).omit({
+  id: true,
+  userId: true,
+})
 
 export const getUserSettingsSchema = createSelectSchema(sessionSettings)
