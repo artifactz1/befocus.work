@@ -11,9 +11,14 @@ import { useEffect, useState } from "react";
 import { useTimerStore } from "~/store/useTimerStore";
 import MenuButton from '../MenuButtons';
 
+import { useRouter } from 'next/navigation';
+
 const iconSize = "md:h-5 xl:h-6 ";
 
 export default function TimerButtons() {
+
+  const router = useRouter()
+
   const { isRunning, resetCurrentTime, skipToNextSession, toggleTimer } =
     useTimerStore();
 
@@ -89,7 +94,7 @@ export default function TimerButtons() {
         <Tooltip>
           <TooltipTrigger asChild>
             <MenuButton
-              onClick={skipToNextSession}
+              onClick={() => router.push('/sign-in')}
               variant={buttonVariant}
               className="xl:h-12 xl:w-32"
             >
