@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@repo/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -46,8 +45,7 @@ export const DarkModeToggle = () => {
           <MenuButton
             onClick={handleToggle}
             variant="outline"
-            size="lg"
-            className="lg:h-10 lg:w-20 xl:h-12 xl:w-32"
+            className=" lg:w-24 lg:h-12 xl:h-12 xl:w-32"
           >
             {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{" "}
             {/* This changes the icon */}
