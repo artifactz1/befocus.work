@@ -1,17 +1,24 @@
 "use client";
 
-import { Button } from "@repo/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/tooltip";
-import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
+import { Pause, Play, RotateCcw, SkipForward, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTimerStore } from "~/store/useTimerStore";
+import MenuButton from '../MenuButtons';
+
+import { useRouter } from 'next/navigation';
+
+const iconSize = "md:h-5 xl:h-6 ";
 
 export default function TimerButtons() {
+
+  const router = useRouter()
+
   const { isRunning, resetCurrentTime, skipToNextSession, toggleTimer } =
     useTimerStore();
 
@@ -30,26 +37,22 @@ export default function TimerButtons() {
 
   const buttonVariant = isSmallScreen ? "ghost" : "outline";
 
-
-
   return (
     <div className="flex items-center justify-center space-x-1">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
+            <MenuButton
               onClick={toggleTimer}
               variant={buttonVariant}
-              // size={window.length < 640 ? "sm" : "lg"}
-              size={"lg"}
-              className="lg:h-12 lg:w-32"
+            // size={window.length < 640 ? "sm" : "lg"}
             >
               {isRunning ? (
-                <Pause className="h-6 w-6" strokeWidth={3} />
+                <Pause className={`${iconSize}`} strokeWidth={3} />
               ) : (
-                <Play className="h-6 w-6" strokeWidth={3} />
+                <Play className={`${iconSize}`} strokeWidth={3} />
               )}
-            </Button>
+            </MenuButton>
           </TooltipTrigger>
           <TooltipContent className="font-bold">
             {isRunning ? "Pause" : "Play"}
@@ -60,14 +63,13 @@ export default function TimerButtons() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
+            <MenuButton
               onClick={resetCurrentTime}
               variant={buttonVariant}
-              size={"lg"}
-              className="lg:h-12 lg:w-32"
+              className="xl:h-12 xl:w-32"
             >
-              <RotateCcw className="h-6 w-6" strokeWidth={3} />
-            </Button>
+              <RotateCcw className={`${iconSize}`} strokeWidth={3} />
+            </MenuButton>
           </TooltipTrigger>
           <TooltipContent className="font-bold">Reset Time</TooltipContent>
         </Tooltip>
@@ -76,14 +78,28 @@ export default function TimerButtons() {
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
+            <MenuButton
               onClick={skipToNextSession}
               variant={buttonVariant}
-              size={"lg"}
-              className="lg:h-12 lg:w-32"
+              className="xl:h-12 xl:w-32"
             >
-              <SkipForward className="h-6 w-6" strokeWidth={3} />
-            </Button>
+              <SkipForward className={`${iconSize}`} strokeWidth={3} />
+            </MenuButton>
+          </TooltipTrigger>
+          <TooltipContent className="font-bold">Skip To Next</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <MenuButton
+              onClick={() => router.push('/sign-in')}
+              variant={buttonVariant}
+              className="xl:h-12 xl:w-32"
+            >
+              <User className={`${iconSize}`} strokeWidth={3} />
+            </MenuButton>
           </TooltipTrigger>
           <TooltipContent className="font-bold">Skip To Next</TooltipContent>
         </Tooltip>

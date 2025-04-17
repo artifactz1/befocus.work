@@ -1,7 +1,15 @@
 import * as HttpStatusCodes from '@repo/api/lib/http-status-codes'
 import * as HttpStatusPhrases from '@repo/api/lib/http-status-phrases'
 import type { AppRouteHandler } from '@repo/api/types/app-context'
-import type { GetUserAccountsRoute, GetUserRoute, GetUserSessionRoute, PostUserSettings } from './user.route'
+import { sessionSettings } from './../../db/tables/settings';
+import type {
+  GetUserAccountsRoute,
+  GetUserRoute,
+  GetUserSessionRoute,
+  GetUserSettings,
+  PutUserSettings,
+} from './user.route'
+import { eq } from 'drizzle-orm';
 
 export const getUser: AppRouteHandler<GetUserRoute> = async c => {
   const user = c.get('user')
@@ -55,14 +63,55 @@ export const getUserAccounts: AppRouteHandler<GetUserAccountsRoute> = async c =>
   return c.json(accounts, HttpStatusCodes.OK)
 }
 
+export const getUserSettings: AppRouteHandler<GetUserSettings> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const session = c.get('session')
 
-export const postUserSettings: AppRouteHandler<GetUserAccountsRoute> = async c => {
-    const db = c.get('db')
-    const user = c.get('user')
-    const session = c.get('session')
+  if (!user || !session) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
 
-    if (!user || !session) {
-      return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
-    }
+const settings = await db.query.sessionSettings.findFirst({
+    where: (sessionSettings, { eq }) => eq(sessionSettings.userId, user.id),
+  })
 
+  if (!settings) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  return c.json(settings, HttpStatusCodes.OK)
+
+}
+
+export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const session = c.get('session')
+  const data = await c.req.json()
+
+  if (!user || !session) {
+    return c.json({ message: 'User or session not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const existingSettings = await db.query.sessionSettings.findFirst({
+    where: (sessionSettings, { eq }) => eq(sessionSettings.userId, user.id),
+  })
+  
+  if (!existingSettings) {
+    return c.json({ message: 'Settings not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+ const updated = await db
+    .update(sessionSettings)
+    .set({
+      workDuration: data.workDuration,
+      breakDuration: data.breakDuration,
+      numberOfSessions: data.numberOfSessions,
+    })
+    // .where((sessionSettings, { eq }) => eq(sessionSettings.id, user.id))
+    .where(eq(sessionSettings.id, user.id))
+    .returning()
+
+  return c.json(updated[0], HttpStatusCodes.OK)
 }

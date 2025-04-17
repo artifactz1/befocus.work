@@ -26,6 +26,7 @@ import { useTimerStore } from "~/store/useTimerStore";
 import { BreakDurationInput } from "../input/BreakDurationInput";
 import { SessionsInput } from "../input/SessionsInput";
 import { WorkDurationInput } from "../input/WorkDurationInput";
+import MenuButton from '../MenuButtons';
 
 export const SessionSettings: React.FC = () => {
   const { sessions, workDuration, breakDuration, reset, updateSettings } =
@@ -38,9 +39,9 @@ export const SessionSettings: React.FC = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="lg" className="lg:h-12 lg:w-32">
+        <MenuButton>
           <Timer />
-        </Button>
+        </MenuButton>
       </PopoverTrigger>
       <PopoverContent
         align="end"

@@ -15,6 +15,7 @@ import AmbientSoundsButton from "../sounds/AmbientSoundsButton";
 import BgMusicSoundsButton from "../sounds/BgMusicSoundsButton";
 import ToggleAddMode from "../sounds/ToggleAddMode";
 import ToggleDeleteModeButton from "../sounds/ToggleDeleteMode";
+import MenuButton from '../MenuButtons';
 
 export default function SoundSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false);
@@ -26,14 +27,10 @@ export default function SoundSettings() {
   return (
     <Popover open={isSoundOpen} onOpenChange={setIsSoundOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="lg"
-          className="lg:h-12 lg:w-32"
-          onClick={() => setIsSoundOpen(!isSoundOpen)}
+        <MenuButton
         >
           <Volume2 />
-        </Button>
+        </MenuButton>
       </PopoverTrigger>
       <PopoverContent
         align="center"
