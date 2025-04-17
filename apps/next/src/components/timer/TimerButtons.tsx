@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/tooltip";
-import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
+import { Pause, Play, RotateCcw, SkipForward, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTimerStore } from "~/store/useTimerStore";
 
@@ -30,8 +30,6 @@ export default function TimerButtons() {
 
   const buttonVariant = isSmallScreen ? "ghost" : "outline";
 
-
-
   return (
     <div className="flex items-center justify-center space-x-1">
       <TooltipProvider>
@@ -42,7 +40,7 @@ export default function TimerButtons() {
               variant={buttonVariant}
               // size={window.length < 640 ? "sm" : "lg"}
               size={"lg"}
-              className="lg:h-12 lg:w-32"
+              className="xl:h-12 xl:w-32"
             >
               {isRunning ? (
                 <Pause className="h-6 w-6" strokeWidth={3} />
@@ -64,7 +62,7 @@ export default function TimerButtons() {
               onClick={resetCurrentTime}
               variant={buttonVariant}
               size={"lg"}
-              className="lg:h-12 lg:w-32"
+              className="xl:h-12 xl:w-32"
             >
               <RotateCcw className="h-6 w-6" strokeWidth={3} />
             </Button>
@@ -80,9 +78,25 @@ export default function TimerButtons() {
               onClick={skipToNextSession}
               variant={buttonVariant}
               size={"lg"}
-              className="lg:h-12 lg:w-32"
+              className="xl:h-12 xl:w-32"
             >
               <SkipForward className="h-6 w-6" strokeWidth={3} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="font-bold">Skip To Next</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              onClick={skipToNextSession}
+              variant={buttonVariant}
+              size={"lg"}
+              className="xl:h-12 xl:w-32"
+            >
+              <User className="h-6 w-6" strokeWidth={3} />
             </Button>
           </TooltipTrigger>
           <TooltipContent className="font-bold">Skip To Next</TooltipContent>

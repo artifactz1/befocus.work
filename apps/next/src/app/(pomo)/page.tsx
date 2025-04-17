@@ -10,7 +10,7 @@ export default function App() {
   return (
     <div>
       <GlobalSoundsPlayer />
-      <main className="flex h-screen w-screen flex-col items-center justify-center">
+      <main className="continer px-auto flex h-screen w-screen flex-col items-center justify-center">
         <Header />
         <Timer />
         <Footer />

@@ -1,7 +1,5 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Button } from "@repo/ui/button";
 import {
   Tooltip,
@@ -9,6 +7,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/tooltip";
+import { Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
+import MenuButton from './MenuButtons';
 
 export const DarkModeToggle = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -42,15 +43,15 @@ export const DarkModeToggle = () => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
+          <MenuButton
             onClick={handleToggle}
             variant="outline"
             size="lg"
-            className="lg:h-12 lg:w-32"
+            className="lg:h-10 lg:w-20 xl:h-12 xl:w-32"
           >
             {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{" "}
             {/* This changes the icon */}
-          </Button>
+          </MenuButton>
         </TooltipTrigger>
         <TooltipContent className="font-bold">
           Toggle {isDarkMode ? " Light Mode" : " Dark Mode"}
