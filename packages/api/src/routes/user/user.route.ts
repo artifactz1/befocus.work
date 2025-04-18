@@ -55,10 +55,25 @@ export const getUserSettings = createRoute({
   },
 })
 
+export const createUserSettingsSchema = z.object({
+  workDuration: z.number(),
+  breakDuration: z.number(),
+  numberOfSessions: z.number(),
+})
+
 export const createUserSettings = createRoute({
   path: '/user/settings',
   method: 'post',
   tags,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: createUserSettingsSchema,
+        },
+      },
+    },
+  },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(getUserSettingsSchema, 'The requested session'),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),

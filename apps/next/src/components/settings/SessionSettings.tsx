@@ -21,7 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@repo/ui/alert-dialog";
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api } from '~/lib/api.client';
 import { useTimerStore } from "~/store/useTimerStore";
@@ -30,28 +30,56 @@ import { BreakDurationInput } from "../input/BreakDurationInput";
 import { SessionsInput } from '../input/SessionsInput';
 import { WorkDurationInput } from '../input/WorkDurationInput';
 
+type UserSettings = {
+  workDuration: number;
+  breakDuration: number;
+  numberOfSessions: number;
+  userId: string;
+  id: string;
+};
+
 export const SessionSettings: React.FC = () => {
-  const { sessions, workDuration, breakDuration, reset, updateSettings } =
+  const [workTime, setWorkTime] = useState(25 * 60);
+  const [breakTime, setBreakTime] = useState(5 * 60);
+  const [session, setSession] = useState(6);
+  // const { sessions, workDuration, breakDuration, reset, updateSettings } =
+  //   useTimerStore();
+
+  const { reset, updateSettings } =
     useTimerStore();
 
-  const [workTime, setWorkTime] = useState(workDuration);
-  const [breakTime, setBreakTime] = useState(breakDuration);
-  const [session, setSession] = useState(sessions);
+  const { data } = useQuery<UserSettings | null>({
+    queryKey: ["userSettings"],
+    queryFn: async () => {
+      const response = await api.user.settings.$get();
+      if (!response.ok) return null;
 
-  // const { data, isLoading } = useQuery({
-  //   queryKey: ["userSettings"],
-  //   queryFn: async () => {
-  //     const response = await api.user.settings.$get();
-  //     if (!response.ok) {
-  //       return null
-  //     }
+      const data = await response.json();
+      console.log("DATA", data)
 
-  //     return await response.json()
-  //   },
-  // })
+      setWorkTime(data.workDuration)
+
+      return await response.json();
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      setWorkTime(data.workDuration);
+      setBreakTime(data.breakDuration);
+      setSession(data.numberOfSessions);
+    }
+  }, [data]);
 
   async function userSettingCreate() {
-    const response = await api.user.settings.$post();
+    const response = await api.user.settings.$post({
+      json: {
+        workDuration: 3000, // in seconds
+        breakDuration: 600,
+        numberOfSessions: 6,
+      },
+    })
+    // Default values
     console.log("RESPONSE", response)
     if (!response.ok) {
       return null
@@ -82,19 +110,44 @@ export const SessionSettings: React.FC = () => {
           </div>
           <Separator className="my-4 bg-white" />
 
+          {/* {data && (
+              <div>
+                <WorkDurationInput
+                  value={data?.workDuration / 60}
+                  onChange={(value) => setWorkTime(value)}
+                />
+                <BreakDurationInput
+                  value={breakTime / 60}
+                  onChange={(value) => setBreakTime(value)}
+                />
+                <SessionsInput
+                  value={session}
+                  onChange={(value) => setSession(value)}
+                />
+              </div>
+            )} */}
+
+
+
           <div className="flex flex-col space-y-6">
-            <WorkDurationInput
-              value={workTime / 60}
-              onChange={(value) => setWorkTime(value)}
-            />
-            <BreakDurationInput
-              value={breakTime / 60}
-              onChange={(value) => setBreakTime(value)}
-            />
-            <SessionsInput
-              value={session}
-              onChange={(value) => setSession(value)}
-            />
+            {
+              <div>
+                <WorkDurationInput
+                  value={workTime / 60}
+                  onChange={(value) => setWorkTime(value)}
+                />
+                <BreakDurationInput
+                  value={breakTime / 60}
+                  onChange={(value) => setBreakTime(value)}
+                />
+                <SessionsInput
+                  value={session}
+                  onChange={(value) => setSession(value)}
+                />
+              </div>
+
+            }
+
             <div className="flex w-full justify-end">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
