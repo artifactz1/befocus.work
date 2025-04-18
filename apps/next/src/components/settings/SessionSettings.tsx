@@ -20,13 +20,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@repo/ui/alert-dialog";
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from "react";
 import { toast } from "sonner";
+import { api } from '~/lib/api.client';
 import { useTimerStore } from "~/store/useTimerStore";
 import MenuButton from '../MenuButtons';
 import { BreakDurationInput } from "../input/BreakDurationInput";
-import { SessionsInput } from "../input/SessionsInput";
-import { WorkDurationInput } from "../input/WorkDurationInput";
+import { SessionsInput } from '../input/SessionsInput';
+import { WorkDurationInput } from '../input/WorkDurationInput';
 
 export const SessionSettings: React.FC = () => {
   const { sessions, workDuration, breakDuration, reset, updateSettings } =
@@ -36,10 +38,32 @@ export const SessionSettings: React.FC = () => {
   const [breakTime, setBreakTime] = useState(breakDuration);
   const [session, setSession] = useState(sessions);
 
-  function handleSave() {
-    // if logged in saveon the backend
-    // no matter what save on the client
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ["userSettings"],
+  //   queryFn: async () => {
+  //     const response = await api.user.settings.$get();
+  //     if (!response.ok) {
+  //       return null
+  //     }
+
+  //     return await response.json()
+  //   },
+  // })
+
+  async function userSettingCreate() {
+    const response = await api.user.settings.$post();
+    console.log("RESPONSE", response)
+    if (!response.ok) {
+      return null
+    }
+
+    return await response.json()
   }
+
+  const { mutateAsync } = useMutation({
+    mutationKey: ["userSettings"],
+    mutationFn: userSettingCreate,
+  })
 
   return (
     <Popover>
@@ -91,6 +115,11 @@ export const SessionSettings: React.FC = () => {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={() => {
+                        console.log("HIT")
+                        // if !userSetting  create 
+                        mutateAsync()
+                        // else update existing userSetting with put 
+
                         updateSettings("workDuration", workTime);
                         updateSettings("breakDuration", breakTime);
                         updateSettings("sessions", session);

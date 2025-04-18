@@ -8,7 +8,7 @@ import MenuButton from './MenuButtons';
 
 export default function AccountButton() {
   const { data } = useSession()
-  const iconSize = "md:h-5 xl:h-6";
+  // const iconSize = "md:h-5 xl:h-6";
   const router = useRouter();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const buttonVariant = isSmallScreen ? "ghost" : "outline";
