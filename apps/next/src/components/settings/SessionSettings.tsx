@@ -1,6 +1,5 @@
 "use client";
 
-import { Timer } from "lucide-react";
 import { Button } from "@repo/ui/button";
 import {
   Popover,
@@ -8,9 +7,8 @@ import {
   PopoverTrigger,
 } from "@repo/ui/popover";
 import { Separator } from "@repo/ui/separator";
+import { Timer } from "lucide-react";
 
-import { useState } from "react";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,11 +20,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@repo/ui/alert-dialog";
+import { useState } from "react";
+import { toast } from "sonner";
 import { useTimerStore } from "~/store/useTimerStore";
+import MenuButton from '../MenuButtons';
 import { BreakDurationInput } from "../input/BreakDurationInput";
 import { SessionsInput } from "../input/SessionsInput";
 import { WorkDurationInput } from "../input/WorkDurationInput";
-import MenuButton from '../MenuButtons';
 
 export const SessionSettings: React.FC = () => {
   const { sessions, workDuration, breakDuration, reset, updateSettings } =
@@ -35,6 +35,11 @@ export const SessionSettings: React.FC = () => {
   const [workTime, setWorkTime] = useState(workDuration);
   const [breakTime, setBreakTime] = useState(breakDuration);
   const [session, setSession] = useState(sessions);
+
+  function handleSave() {
+    // if logged in saveon the backend
+    // no matter what save on the client
+  }
 
   return (
     <Popover>

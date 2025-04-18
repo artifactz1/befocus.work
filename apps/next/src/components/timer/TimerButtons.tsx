@@ -6,12 +6,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/tooltip";
-import { Pause, Play, RotateCcw, SkipForward, User } from "lucide-react";
+import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTimerStore } from "~/store/useTimerStore";
 import MenuButton from '../MenuButtons';
 
 import { useRouter } from 'next/navigation';
+import AccountButton from '../AccountButton';
 
 const iconSize = "md:h-5 xl:h-6 ";
 
@@ -90,20 +91,8 @@ export default function TimerButtons() {
         </Tooltip>
       </TooltipProvider>
 
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <MenuButton
-              onClick={() => router.push('/sign-in')}
-              variant={buttonVariant}
-              className="xl:h-12 xl:w-32"
-            >
-              <User className={`${iconSize}`} strokeWidth={3} />
-            </MenuButton>
-          </TooltipTrigger>
-          <TooltipContent className="font-bold">Skip To Next</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <AccountButton />
+
     </div>
   );
 }

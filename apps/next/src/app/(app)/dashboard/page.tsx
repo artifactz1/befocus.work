@@ -1,25 +1,19 @@
 "use client"
-
-import { Button } from '@repo/ui/button'
-import { useRouter } from 'next/navigation'
-import { signOut } from '~/lib/auth.client'
+import Footer from '~/components/Footer';
+import GlobalSoundsPlayer from '~/components/GlobalSoundsPlayer';
+import Header from '~/components/Header';
+import Timer from '~/components/timer/Timer';
 
 export default function Dashboard() {
-  const router = useRouter();
-
-  // TODO: update use of useSession with useQueryClient
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      router.push('/sign-in')
-    } catch (error) {
-      console.error('Sign out failed', error)
-    }
-  }
 
   return (
     <div>
-      <Button onClick={handleSignOut}>Sign Out</Button>
+      <GlobalSoundsPlayer />
+      <main className="continer px-auto flex h-screen w-screen flex-col items-center justify-center">
+        <Header />
+        <Timer />
+        <Footer />
+      </main>
     </div>
   )
 }
