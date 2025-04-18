@@ -11,14 +11,11 @@ import { useEffect, useState } from "react";
 import { useTimerStore } from "~/store/useTimerStore";
 import MenuButton from '../MenuButtons';
 
-import { useRouter } from 'next/navigation';
 import AccountButton from '../AccountButton';
 
 const iconSize = "md:h-5 xl:h-6 ";
 
 export default function TimerButtons() {
-
-  const router = useRouter()
 
   const { isRunning, resetCurrentTime, skipToNextSession, toggleTimer } =
     useTimerStore();
