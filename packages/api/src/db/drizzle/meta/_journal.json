@@ -22,6 +22,13 @@
       "when": 1741394520402,
       "tag": "0002_parched_iron_lad",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1744941715304,
+      "tag": "0003_swift_dark_beast",
+      "breakpoints": true
     }
   ]
 }

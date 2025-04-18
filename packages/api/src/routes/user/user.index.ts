@@ -7,6 +7,7 @@ const router = createRouter()
   .openapi(routes.getUserSession, handlers.getUserSession)
   .openapi(routes.getUserAccounts, handlers.getUserAccounts)
   .openapi(routes.getUserSettings, handlers.getUserSettings)
+  .openapi(routes.createUserSettings, handlers.createUserSettings)
   .openapi(routes.putUserSettings, handlers.putUserSettings)
 
 export default router

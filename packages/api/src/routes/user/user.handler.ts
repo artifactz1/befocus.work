@@ -3,6 +3,7 @@ import * as HttpStatusPhrases from '@repo/api/lib/http-status-phrases'
 import type { AppRouteHandler } from '@repo/api/types/app-context'
 import { sessionSettings } from './../../db/tables/settings';
 import type {
+  CreateUserSettings,
   GetUserAccountsRoute,
   GetUserRoute,
   GetUserSessionRoute,
@@ -83,6 +84,41 @@ const settings = await db.query.sessionSettings.findFirst({
   return c.json(settings, HttpStatusCodes.OK)
 
 }
+
+import { nanoid } from 'nanoid'
+
+export const createUserSettings: AppRouteHandler<CreateUserSettings> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const session = c.get('session')
+
+  if (!user || !session) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  // Check if settings already exist
+  const existingSettings = await db.query.sessionSettings.findFirst({
+    where: (sessionSettings, { eq }) => eq(sessionSettings.userId, user.id),
+  })
+
+  if (existingSettings) {
+    return c.json(existingSettings , HttpStatusCodes.OK)
+  }
+
+  const inserted = await db
+    .insert(sessionSettings)
+    .values({
+      id: nanoid(),
+      userId: user.id,
+      workDuration: 25 * 60,
+      breakDuration: 5 * 60,
+      numberOfSessions: 6,
+    })
+    .returning()
+
+  return c.json(inserted[0], HttpStatusCodes.OK)
+}
+
 
 export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
   const db = c.get('db')
