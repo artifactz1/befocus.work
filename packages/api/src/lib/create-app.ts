@@ -43,7 +43,7 @@ export default function createApp() {
     .use('*', handleSessionMiddleware)
     // Better Auth route config
     // Note: /api is needed for better auth
-    .on(['POST', 'GET'], '/api/auth/**', c => {
+    .on(['POST', 'GET', ], '/api/auth/**', c => {
       const auth = c.get('auth')
       return auth.handler(c.req.raw)
     })

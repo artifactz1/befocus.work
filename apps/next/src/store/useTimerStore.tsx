@@ -19,6 +19,11 @@ interface TimerState {
     key: "sessions" | "workDuration" | "breakDuration",
     value: number,
   ) => void;
+  hydrateFromSettings: (settings: {
+    sessions: number
+    workDuration: number
+    breakDuration: number
+  }) => void;
 }
 
 export const useTimerStore = create<TimerState>((set, get) => ({
@@ -91,5 +96,20 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     set((state) => ({
       ...state,
       [key]: value,
+    })),
+  hydrateFromSettings: (settings: {
+    sessions: number
+    workDuration: number
+    breakDuration: number
+  }) =>
+    set((state) => ({
+      sessions: settings.sessions,
+      workDuration: settings.workDuration,
+      breakDuration: settings.breakDuration,
+      timeLeft: settings.workDuration, // Reset timeLeft to match work duration
+      currentSession: 1,
+      isWorking: true,
+      isRunning: false,
+      isAlarmOn: false,
     })),
 }));

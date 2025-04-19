@@ -139,6 +139,9 @@ export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
     return c.json({ message: 'Settings not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
+  console.log('DATA PUT', data)
+  console.log('ID', sessionSettings.id)
+
   const updated = await db
     .update(sessionSettings)
     .set({
@@ -147,7 +150,7 @@ export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
       numberOfSessions: data.numberOfSessions,
     })
     // .where((sessionSettings, { eq }) => eq(sessionSettings.id, user.id))
-    .where(eq(sessionSettings.id, user.id))
+    .where(eq(sessionSettings.userId, user.id))
     .returning()
 
   return c.json(updated[0], HttpStatusCodes.OK)

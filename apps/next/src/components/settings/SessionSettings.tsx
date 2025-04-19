@@ -54,12 +54,14 @@ export const SessionSettings: React.FC = () => {
       const response = await api.user.settings.$get();
       if (!response.ok) return null;
 
-      const data = await response.json();
-      console.log("DATA", data)
+      const res = await response.json();
+      console.log("DATA", res)
 
-      setWorkTime(data.workDuration)
+      setWorkTime(res.workDuration)
+      setBreakTime(res.breakDuration)
+      setSession(res.numberOfSessions)
 
-      return await response.json();
+      return await res;
     },
   });
 
@@ -74,13 +76,12 @@ export const SessionSettings: React.FC = () => {
   async function userSettingCreate() {
     const response = await api.user.settings.$post({
       json: {
-        workDuration: 3000, // in seconds
-        breakDuration: 600,
-        numberOfSessions: 6,
+        workDuration: workTime, // in seconds
+        breakDuration: breakTime,
+        numberOfSessions: session,
       },
     })
     // Default values
-    console.log("RESPONSE", response)
     if (!response.ok) {
       return null
     }
@@ -88,10 +89,49 @@ export const SessionSettings: React.FC = () => {
     return await response.json()
   }
 
-  const { mutateAsync } = useMutation({
+  async function userSettingUpdate() {
+    const response = await api.user.settings.$put({
+      json: {
+        workDuration: workTime, // in seconds
+        breakDuration: breakTime,
+        numberOfSessions: session,
+      },
+    })
+    if (!response.ok) {
+      return null
+    }
+
+    // console.log('Response Status:', workTime, breakTime, session);
+  }
+
+
+  const { mutateAsync: createSettings } = useMutation({
     mutationKey: ["userSettings"],
     mutationFn: userSettingCreate,
   })
+
+  const { mutateAsync: saveSettings, } = useMutation({
+    mutationKey: ["userSettings"],
+    mutationFn: async () => {
+      if (!data) {
+        // No existing setting, create one
+        console.log("RESPONSE Create")
+        return await createSettings();
+      }
+      // Existing setting, update it
+      console.log("RESPONSE UPDATE")
+      return await userSettingUpdate();
+    },
+    onSuccess: () => {
+      toast("Session Settings has been saved", {
+        description: "Your preferences have been updated.",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to save settings");
+      console.error("Error saving settings:", error);
+    }
+  });
 
   return (
     <Popover>
@@ -170,7 +210,7 @@ export const SessionSettings: React.FC = () => {
                       onClick={() => {
                         console.log("HIT")
                         // if !userSetting  create 
-                        mutateAsync()
+                        saveSettings()
                         // else update existing userSetting with put 
 
                         updateSettings("workDuration", workTime);
