@@ -26,7 +26,7 @@ export function betterAuthCorsMiddleware(c: Context<AppContext>) {
       env(c).API_DOMAIN || 'http://localhost:8787', // and backend
     ],
     allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'PUT', 'GET', 'OPTIONS'],
+    allowMethods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS'],
     exposeHeaders: ['Content-Length'],
     maxAge: 600,
     credentials: true, // Required for cookies to work cross-origin
