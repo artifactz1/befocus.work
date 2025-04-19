@@ -23,10 +23,10 @@ export function betterAuthCorsMiddleware(c: Context<AppContext>) {
   return cors({
     origin: [
       env(c).WEB_DOMAIN || 'http://localhost:3000', // Use env var for frontend domain
-      env(c).API_DOMAIN || 'http://localhost:8787'  // and backend 
+      env(c).API_DOMAIN || 'http://localhost:8787', // and backend
     ],
     allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    allowMethods: ['POST', 'PUT', 'GET', 'OPTIONS'],
     exposeHeaders: ['Content-Length'],
     maxAge: 600,
     credentials: true, // Required for cookies to work cross-origin
