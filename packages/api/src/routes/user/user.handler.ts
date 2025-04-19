@@ -1,15 +1,17 @@
 import * as HttpStatusCodes from '@repo/api/lib/http-status-codes'
 import * as HttpStatusPhrases from '@repo/api/lib/http-status-phrases'
 import type { AppRouteHandler } from '@repo/api/types/app-context'
-import { sessionSettings } from './../../db/tables/settings';
+import { eq } from 'drizzle-orm'
+import { nanoid } from 'nanoid'
+import { sessionSettings } from './../../db/tables/settings'
 import type {
+  CreateUserSettings,
   GetUserAccountsRoute,
   GetUserRoute,
   GetUserSessionRoute,
   GetUserSettings,
   PutUserSettings,
 } from './user.route'
-import { eq } from 'drizzle-orm';
 
 export const getUser: AppRouteHandler<GetUserRoute> = async c => {
   const user = c.get('user')
@@ -72,7 +74,7 @@ export const getUserSettings: AppRouteHandler<GetUserSettings> = async c => {
     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
   }
 
-const settings = await db.query.sessionSettings.findFirst({
+  const settings = await db.query.sessionSettings.findFirst({
     where: (sessionSettings, { eq }) => eq(sessionSettings.userId, user.id),
   })
 
@@ -81,7 +83,42 @@ const settings = await db.query.sessionSettings.findFirst({
   }
 
   return c.json(settings, HttpStatusCodes.OK)
+}
 
+export const createUserSettings: AppRouteHandler<CreateUserSettings> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const session = c.get('session')
+
+  if (!user || !session) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  // Check if settings already exist
+  const existingSettings = await db.query.sessionSettings.findFirst({
+    where: (sessionSettings, { eq }) => eq(sessionSettings.userId, user.id),
+  })
+
+  if (existingSettings) {
+    return c.json(existingSettings, HttpStatusCodes.OK)
+  }
+
+  // 👇 Get values from the POST body
+  const body = await c.req.json()
+  const { workDuration, breakDuration, numberOfSessions } = body
+
+  const inserted = await db
+    .insert(sessionSettings)
+    .values({
+      id: nanoid(),
+      userId: user.id,
+      workDuration,
+      breakDuration,
+      numberOfSessions,
+    })
+    .returning()
+
+  return c.json(inserted[0], HttpStatusCodes.OK)
 }
 
 export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
@@ -97,12 +134,12 @@ export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
   const existingSettings = await db.query.sessionSettings.findFirst({
     where: (sessionSettings, { eq }) => eq(sessionSettings.userId, user.id),
   })
-  
+
   if (!existingSettings) {
     return c.json({ message: 'Settings not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
- const updated = await db
+  const updated = await db
     .update(sessionSettings)
     .set({
       workDuration: data.workDuration,

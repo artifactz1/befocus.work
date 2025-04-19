@@ -22,6 +22,20 @@
       "when": 1741394520402,
       "tag": "0002_parched_iron_lad",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1744941715304,
+      "tag": "0003_swift_dark_beast",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1744949629813,
+      "tag": "0004_flashy_gorgon",
+      "breakpoints": true
     }
   ]
 }
