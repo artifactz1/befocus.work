@@ -97,20 +97,11 @@ export const SessionSettings: React.FC = () => {
         numberOfSessions: session,
       },
     })
-    // // Default values
     if (!response.ok) {
       return null
     }
 
-    console.log('Response Status:', workTime, breakTime, session );
-    // const text = await response.text(); // Get raw response text for debugging
-    // console.log('Response Text:', text);
-
-    // if (!response.ok) {
-    //   throw new Error('Failed to update settings');
-    // }
-
-    // return text ? JSON.parse(text) : null; // 
+    // console.log('Response Status:', workTime, breakTime, session);
   }
 
 
