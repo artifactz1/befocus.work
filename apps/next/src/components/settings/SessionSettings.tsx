@@ -58,6 +58,8 @@ export const SessionSettings: React.FC = () => {
       console.log("DATA", data)
 
       setWorkTime(data.workDuration)
+      setBreakTime(data.breakDuration)
+      setSession(data.numberOfSessions)
 
       return await response.json();
     },
@@ -74,9 +76,9 @@ export const SessionSettings: React.FC = () => {
   async function userSettingCreate() {
     const response = await api.user.settings.$post({
       json: {
-        workDuration: 3000, // in seconds
-        breakDuration: 600,
-        numberOfSessions: 6,
+        workDuration: workTime, // in seconds
+        breakDuration: breakTime,
+        numberOfSessions: session,
       },
     })
     // Default values
