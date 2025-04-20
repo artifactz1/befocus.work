@@ -29,7 +29,7 @@ export const initializeBetterAuth = (c: Context<AppContext>) => {
       defaultCookieAttributes: {
         sameSite: isProduction ? 'lax' : 'none',
         secure: true,
-        domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined // Use env var for frontend domain
+        domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined, // Use env var for frontend domain
       },
     },
   })

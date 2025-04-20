@@ -1,9 +1,9 @@
-import { Button } from "@repo/ui/button";
-import { Plus } from "lucide-react";
-import { useSoundsStore } from "~/store/useSoundsStore";
+import { Button } from '@repo/ui/button'
+import { Plus } from 'lucide-react'
+import { useSoundsStore } from '~/store/useSoundsStore'
 
 export default function ToggleAddMode() {
-  const { toggleAddMode, toggleDeleteMode, isDeleteMode } = useSoundsStore();
+  const { toggleAddMode, toggleDeleteMode, isDeleteMode } = useSoundsStore()
 
   const handleSubmit = () => {
     // if (isDeleteMode === true) {
@@ -14,16 +14,16 @@ export default function ToggleAddMode() {
     // }
 
     if (isDeleteMode === true) {
-      toggleDeleteMode();
-      toggleAddMode();
+      toggleDeleteMode()
+      toggleAddMode()
     } else {
-      toggleAddMode();
+      toggleAddMode()
     }
-  };
+  }
 
   return (
     <Button onClick={handleSubmit}>
       <Plus />
     </Button>
-  );
+  )
 }

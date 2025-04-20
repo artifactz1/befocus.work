@@ -1,7 +1,5 @@
-
-"use client";
-import { NotebookPen, Plus } from "lucide-react";
-import { Button } from "@repo/ui/button";
+'use client'
+import { Button } from '@repo/ui/button'
 import {
   Drawer,
   DrawerContent,
@@ -9,43 +7,39 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@repo/ui/drawer";
-import { Separator } from "@repo/ui/separator";
-import { useTodoStore } from "~/store/useToDoStore";
-import TaskList from "../to-do-list/TaskList";
+} from '@repo/ui/drawer'
+import { Separator } from '@repo/ui/separator'
+import { NotebookPen, Plus } from 'lucide-react'
+import { useTodoStore } from '~/store/useToDoStore'
+import TaskList from '../to-do-list/TaskList'
 
 export default function ToDoListMobile() {
-  const { toggleAdd } = useTodoStore();
+  const { toggleAdd } = useTodoStore()
 
   return (
-    <main className="block sm:hidden">
+    <main className='block sm:hidden'>
       <Drawer>
         <DrawerTrigger asChild>
-          <Button variant="outline" size="lg" className="lg:h-12 lg:w-32">
+          <Button variant='outline' size='lg' className='lg:h-12 lg:w-32'>
             <NotebookPen />
           </Button>
         </DrawerTrigger>
-        <DrawerContent className="px-2">
+        <DrawerContent className='px-2'>
           <DrawerHeader>
-            <DrawerTitle className="mx-1">
+            <DrawerTitle className='mx-1'>
               <NotebookPen />
-              <div className="mb-2 mt-4 text-left text-lg font-bold">
-                befocus/todolist
-              </div>
-              <Separator className="mt-4 bg-white" />
+              <div className='mb-2 mt-4 text-left text-lg font-bold'>befocus/todolist</div>
+              <Separator className='mt-4 bg-white' />
             </DrawerTitle>
             {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
           </DrawerHeader>
 
-          <div className="px-5 pb-12">
+          <div className='px-5 pb-12'>
             <TaskList />
           </div>
 
           <DrawerFooter>
-            <Button
-              onClick={() => toggleAdd()}
-              className="absolute bottom-6 right-6"
-            >
+            <Button onClick={() => toggleAdd()} className='absolute bottom-6 right-6'>
               <Plus />
             </Button>
 
@@ -56,5 +50,5 @@ export default function ToDoListMobile() {
         </DrawerContent>
       </Drawer>
     </main>
-  );
+  )
 }

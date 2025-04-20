@@ -10,14 +10,16 @@ import type {
   GetUserRoute,
   GetUserSessionRoute,
   GetUserSettings,
-  PutUserSettings,
+  UpdateUserSettings,
 } from './user.route'
 
 export const getUser: AppRouteHandler<GetUserRoute> = async c => {
   const user = c.get('user')
+
   if (!user) {
     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
   }
+
   // Ensure the success response matches the expected schema
   return c.json(
     {
@@ -121,7 +123,7 @@ export const createUserSettings: AppRouteHandler<CreateUserSettings> = async c =
   return c.json(inserted[0], HttpStatusCodes.OK)
 }
 
-export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
+export const updateUserSettings: AppRouteHandler<UpdateUserSettings> = async c => {
   const db = c.get('db')
   const user = c.get('user')
   const session = c.get('session')
@@ -139,9 +141,6 @@ export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
     return c.json({ message: 'Settings not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
-  console.log('DATA PUT', data)
-  console.log('ID', sessionSettings.id)
-
   const updated = await db
     .update(sessionSettings)
     .set({
@@ -149,7 +148,6 @@ export const putUserSettings: AppRouteHandler<PutUserSettings> = async c => {
       breakDuration: data.breakDuration,
       numberOfSessions: data.numberOfSessions,
     })
-    // .where((sessionSettings, { eq }) => eq(sessionSettings.id, user.id))
     .where(eq(sessionSettings.userId, user.id))
     .returning()
 

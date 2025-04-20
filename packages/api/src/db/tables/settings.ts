@@ -15,9 +15,9 @@ export const sessionSettings = pgTable('sessionSettings', {
 
 export type Settings = InferSelectModel<typeof sessionSettings>
 
+// Schemas
+export const getUserSettingsSchema = createSelectSchema(sessionSettings)
 export const updateUserSettingsSchema = createUpdateSchema(sessionSettings).omit({
   id: true,
   userId: true,
 })
-
-export const getUserSettingsSchema = createSelectSchema(sessionSettings)
