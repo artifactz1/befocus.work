@@ -156,8 +156,26 @@ export const updateUserSounds = createRoute({
   },
 })
 
+export const deleteUserSound = createRoute({
+  path: '/user/sounds/:id',
+  method: 'delete',
+  tags,
+  request: {
+    params: z.object({
+      id: z.string().uuid(), // Assuming your sound ID is a UUID
+    }),
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      z.object({ message: z.string() }),
+      'Sound deleted successfully',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Sound not found'),
+  },
+})
+
 export const getSoundPreference = createRoute({
-  path: '/user/sounds',
+  path: '/user/sounds/preferences',
   method: 'get',
   tags,
   responses: {
@@ -167,7 +185,7 @@ export const getSoundPreference = createRoute({
 })
 
 export const addSoundPreference = createRoute({
-  path: '/user/sounds',
+  path: '/user/sounds/preferences',
   method: 'post',
   tags,
   request: {
@@ -187,7 +205,7 @@ export const addSoundPreference = createRoute({
 })
 
 export const updateSoundPreference = createRoute({
-  path: '/user/sounds',
+  path: '/user/sounds/preferences',
   method: 'put',
   tags,
   request: {
@@ -206,6 +224,24 @@ export const updateSoundPreference = createRoute({
   },
 })
 
+export const deleteSoundPreference = createRoute({
+  path: '/user/sounds/preferences/:id',
+  method: 'delete',
+  tags,
+  request: {
+    params: z.object({
+      id: z.string().uuid(), // Adjust if not a UUID
+    }),
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      z.object({ message: z.string() }),
+      'Sound preference deleted successfully',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Sound preference not found'),
+  },
+})
+
 export type CreateUserSettings = typeof createUserSettings
 export type GetUserAccountsRoute = typeof getUserAccounts
 export type GetUserRoute = typeof getUser
@@ -215,6 +251,8 @@ export type UpdateUserSettings = typeof updateUserSettings
 export type GetUserSounds = typeof getUserSounds
 export type AddUserSounds = typeof addUserSounds
 export type UpdateUserSounds = typeof updateUserSounds
+export type DeleteUserSound = typeof deleteUserSound
 export type GetSoundPreference = typeof getSoundPreference
 export type AddSoundPreference = typeof addSoundPreference
 export type UpdateSoundPreference = typeof updateSoundPreference
+export type DeleteSoundPreference = typeof deleteSoundPreference
