@@ -116,7 +116,7 @@ export const getUserSounds = createRoute({
   },
 })
 
-export const addUserSounds = createRoute({
+export const createUserSounds = createRoute({
   path: '/user/sounds',
   method: 'post',
   tags,
@@ -184,7 +184,7 @@ export const getSoundPreference = createRoute({
   },
 })
 
-export const addSoundPreference = createRoute({
+export const createSoundPreference = createRoute({
   path: '/user/sounds/preferences',
   method: 'post',
   tags,
@@ -249,10 +249,10 @@ export type GetUserSessionRoute = typeof getUserSession
 export type GetUserSettings = typeof getUserSettings
 export type UpdateUserSettings = typeof updateUserSettings
 export type GetUserSounds = typeof getUserSounds
-export type AddUserSounds = typeof addUserSounds
+export type CreateUserSounds = typeof createUserSounds
 export type UpdateUserSounds = typeof updateUserSounds
 export type DeleteUserSound = typeof deleteUserSound
 export type GetSoundPreference = typeof getSoundPreference
-export type AddSoundPreference = typeof addSoundPreference
+export type CreateSoundPreference = typeof createSoundPreference
 export type UpdateSoundPreference = typeof updateSoundPreference
 export type DeleteSoundPreference = typeof deleteSoundPreference

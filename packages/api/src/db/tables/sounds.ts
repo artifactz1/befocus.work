@@ -33,7 +33,18 @@ export type Sounds = InferSelectModel<typeof sounds>
 export type SoundPreferences = InferSelectModel<typeof soundPreferences>
 
 // Zod Schemas
-export const insertSoundSchema = createInsertSchema(sounds)
+
+export const soundTypeEnum = z.enum(['alarm', 'ambient', 'bgMusic']) // or whatever values you're allowing
+
+export const insertSoundSchema = z.object({
+  id: z.string(),
+  url: z.string().url(),
+  soundType: soundTypeEnum,
+  createdAt: z.date().optional().nullable(),
+  isCustom: z.boolean().optional(),
+})
+
+// export const insertSoundSchema = createInsertSchema(sounds)
 export const updateSoundSchema = createUpdateSchema(sounds)
 export const getSoundSchema = createSelectSchema(sounds, {
   createdAt: z.string().nullable(), // or z.string().datetime().nullable()
