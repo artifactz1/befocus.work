@@ -1,21 +1,21 @@
-"use client";
-// app/components/GlobalPlayer.tsx
-import ReactPlayer from "react-player";
-import { useSoundsStore } from "~/store/useSoundsStore";
+'use client'
+
+import ReactPlayer from 'react-player'
+import { useSoundsStore } from '~/store/useSoundsStore'
 
 const GlobalPlayer = () => {
-  const { sounds } = useSoundsStore();
-  const soundKeys = Object.keys(sounds);
+  const { sounds } = useSoundsStore()
+  const soundKeys = Object.keys(sounds)
 
   return (
     <>
       {soundKeys
-        .filter((key) => sounds[key]?.soundType !== "alarm")
-        .map((key) => {
-          const sound = sounds[key];
+        .filter(key => sounds[key]?.soundType !== 'alarm')
+        .map(key => {
+          const sound = sounds[key]
 
           // Check if sound exists before rendering the ReactPlayer
-          if (!sound) return null;
+          if (!sound) return null
 
           return (
             <ReactPlayer
@@ -25,15 +25,15 @@ const GlobalPlayer = () => {
               volume={sound.volume}
               controls={false} // Don't show controls as it's controlled globally
               muted={!sound.playing}
-              width="0"
-              height="0"
-                  onReady = {() => console.log('Player is ready')}
-      onStart={() => console.log('Video started')}
+              width='0'
+              height='0'
+              onReady={() => console.log('Player is ready')}
+              onStart={() => console.log('Video started')}
             />
-          );
+          )
         })}
     </>
-  );
-};
+  )
+}
 
-export default GlobalPlayer;
+export default GlobalPlayer

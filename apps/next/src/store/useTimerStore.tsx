@@ -1,29 +1,25 @@
-
-import { create } from "zustand";
+import { create } from 'zustand'
 
 interface TimerState {
-  sessions: number;
-  workDuration: number;
-  breakDuration: number;
-  currentSession: number;
-  isWorking: boolean;
-  timeLeft: number;
-  isRunning: boolean;
-  reset: () => void;
-  resetCurrentTime: () => void;
-  skipToNextSession: () => void;
-  toggleTimer: () => void;
-  decrementTime: () => void;
-  isAlarmOn: boolean;
-  updateSettings: (
-    key: "sessions" | "workDuration" | "breakDuration",
-    value: number,
-  ) => void;
+  sessions: number
+  workDuration: number
+  breakDuration: number
+  currentSession: number
+  isWorking: boolean
+  timeLeft: number
+  isRunning: boolean
+  reset: () => void
+  resetCurrentTime: () => void
+  skipToNextSession: () => void
+  toggleTimer: () => void
+  decrementTime: () => void
+  isAlarmOn: boolean
+  updateSettings: (key: 'sessions' | 'workDuration' | 'breakDuration', value: number) => void
   hydrateFromSettings: (settings: {
     sessions: number
     workDuration: number
     breakDuration: number
-  }) => void;
+  }) => void
 }
 
 export const useTimerStore = create<TimerState>((set, get) => ({
@@ -55,45 +51,44 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       isAlarmOn: false, // Resetting isAlarmOn to false
     }),
   skipToNextSession: () => {
-    const { isWorking, breakDuration, workDuration, sessions, currentSession } =
-      get();
+    const { isWorking, breakDuration, workDuration, sessions, currentSession } = get()
     if (isWorking) {
-      set({ isWorking: false, timeLeft: breakDuration });
+      set({ isWorking: false, timeLeft: breakDuration })
     } else {
       set({
         isWorking: true,
         timeLeft: workDuration,
         currentSession: Math.min(currentSession + 1, sessions),
-      });
+      })
     }
-    set({ isRunning: false });
+    set({ isRunning: false })
   },
-  toggleTimer: () => set((state) => ({ isRunning: !state.isRunning })),
+  toggleTimer: () => set(state => ({ isRunning: !state.isRunning })),
 
   decrementTime: () =>
-    set((state) => {
+    set(state => {
       if (state.timeLeft === 0) {
-        state.isRunning = false;
-        state.timeLeft = 0;
+        state.isRunning = false
+        state.timeLeft = 0
         if (state.isAlarmOn === false) {
           if (state.isWorking && state.currentSession < state.sessions) {
-            return { isWorking: false, timeLeft: state.breakDuration };
+            return { isWorking: false, timeLeft: state.breakDuration }
           }
           if (!state.isWorking) {
             return {
               isWorking: true,
               currentSession: state.currentSession + 1,
               timeLeft: state.workDuration,
-            };
+            }
           }
-          return { isRunning: false, timeLeft: 0 };
+          return { isRunning: false, timeLeft: 0 }
         }
       }
-      return { timeLeft: state.timeLeft - 1 };
+      return { timeLeft: state.timeLeft - 1 }
     }),
 
   updateSettings: (key, value) =>
-    set((state) => ({
+    set(state => ({
       ...state,
       [key]: value,
     })),
@@ -102,7 +97,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     workDuration: number
     breakDuration: number
   }) =>
-    set((state) => ({
+    set(state => ({
       sessions: settings.sessions,
       workDuration: settings.workDuration,
       breakDuration: settings.breakDuration,
@@ -112,4 +107,4 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       isRunning: false,
       isAlarmOn: false,
     })),
-}));
+}))

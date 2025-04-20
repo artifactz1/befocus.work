@@ -172,7 +172,6 @@
   font-style: italic;
 }
 
-
 html {
   /* Set dark mode as default */
   @apply dark;

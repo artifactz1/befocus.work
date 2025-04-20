@@ -3,13 +3,13 @@ import type { Session } from '@repo/api/db/schemas'
 import { env } from '@repo/app/env/next'
 import { type NextRequest, NextResponse } from 'next/server'
 
-const authRoutes = ["/sign-in", "/sign-up"]
-const passwordRoutes = ["/reset-password-success", "/forgot-password"]
+const authRoutes = ['/sign-in', '/sign-up']
+const passwordRoutes = ['/reset-password-success', '/forgot-password']
 
 export default async function authMiddleware(request: NextRequest) {
-  const pathName = request.nextUrl.pathname;
-  const isAuthRoute = authRoutes.includes(pathName);
-  const isPaswordRoute = passwordRoutes.includes(pathName);
+  const pathName = request.nextUrl.pathname
+  const isAuthRoute = authRoutes.includes(pathName)
+  const isPaswordRoute = passwordRoutes.includes(pathName)
 
   // Fetch the session data from the backend
   // Because of cross domain cookies, session is the same
@@ -24,14 +24,14 @@ export default async function authMiddleware(request: NextRequest) {
   // If no session is found, redirect to the sign-in page
   if (!session) {
     if (isAuthRoute || isPaswordRoute) {
-      return NextResponse.next();
+      return NextResponse.next()
     }
 
     return NextResponse.redirect(new URL('/sign-in', request.url))
   }
 
   // If session exists, continue to the next middleware or route
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export async function middleware(request: NextRequest) {

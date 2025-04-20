@@ -43,7 +43,7 @@
       "enabled": true
     },
     "parser": {
-     "allowTrailingCommas": false 
+      "allowTrailingCommas": false
     }
   },
   "linter": {

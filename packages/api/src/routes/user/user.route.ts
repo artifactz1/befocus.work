@@ -80,7 +80,7 @@ export const createUserSettings = createRoute({
   },
 })
 
-export const putUserSettings = createRoute({
+export const updateUserSettings = createRoute({
   path: '/user/settings',
   method: 'put',
   tags,
@@ -100,9 +100,9 @@ export const putUserSettings = createRoute({
   },
 })
 
+export type CreateUserSettings = typeof createUserSettings
+export type GetUserAccountsRoute = typeof getUserAccounts
 export type GetUserRoute = typeof getUser
 export type GetUserSessionRoute = typeof getUserSession
-export type GetUserAccountsRoute = typeof getUserAccounts
 export type GetUserSettings = typeof getUserSettings
-export type CreateUserSettings = typeof createUserSettings
-export type PutUserSettings = typeof putUserSettings
+export type UpdateUserSettings = typeof updateUserSettings
