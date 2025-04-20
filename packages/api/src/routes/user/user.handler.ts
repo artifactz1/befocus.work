@@ -10,6 +10,7 @@ import type {
   GetUserRoute,
   GetUserSessionRoute,
   GetUserSettings,
+  GetUserSounds,
   UpdateUserSettings,
 } from './user.route'
 
@@ -153,3 +154,56 @@ export const updateUserSettings: AppRouteHandler<UpdateUserSettings> = async c =
 
   return c.json(updated[0], HttpStatusCodes.OK)
 }
+
+export const getUserSounds: AppRouteHandler<GetUserSounds> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const session = c.get('session')
+
+  if (!user || !session) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const soundData = await db.query.sounds.findMany({
+    where: (sounds, { eq }) => eq(sounds.userId, user.id),
+  })
+
+  if (!soundData) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  // Convert createdAt to string
+  const transformedSoundData = soundData.map(sound => ({
+    ...sound,
+    createdAt: sound.createdAt ? sound.createdAt.toISOString() : null,
+  }))
+
+  return c.json(transformedSoundData, HttpStatusCodes.OK)
+}
+
+// export const addUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
+//   const db = c.get('db')
+//   const user = c.get('user')
+//   const session = c.get('session')
+
+//   if (!user || !session) {
+//     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+//   }
+
+//   // 👇 Get values from the POST body
+//   const body = await c.req.json()
+//   const { workDuration, breakDuration, numberOfSessions } = body
+
+//   const inserted = await db
+//     .insert(sessionSettings)
+//     .values({
+//       id: nanoid(),
+//       userId: user.id,
+//       workDuration,
+//       breakDuration,
+//       numberOfSessions,
+//     })
+//     .returning()
+
+//   return c.json(inserted[0], HttpStatusCodes.OK)
+// }

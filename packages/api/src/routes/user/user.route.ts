@@ -1,9 +1,15 @@
 import { createRoute, z } from '@hono/zod-openapi'
 import {
+  getSoundPreferencesSchema,
+  getSoundSchema,
   getUserAccountsSchema,
   getUserSchema,
   getUserSessionSchema,
   getUserSettingsSchema,
+  insertSoundPreferencesSchema,
+  insertSoundSchema,
+  updateSoundPreferencesSchema,
+  updateSoundSchema,
   updateUserSettingsSchema,
 } from '@repo/api/db/schemas'
 import { notFoundSchema } from '@repo/api/lib/constants'
@@ -100,9 +106,115 @@ export const updateUserSettings = createRoute({
   },
 })
 
+export const getUserSounds = createRoute({
+  path: '/user/sounds',
+  method: 'get',
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(z.array(getSoundSchema), 'The requested session'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
+export const addUserSounds = createRoute({
+  path: '/user/sounds',
+  method: 'post',
+  tags,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: insertSoundSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(insertSoundSchema, 'The requested session'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
+export const updateUserSounds = createRoute({
+  path: '/user/sounds',
+  method: 'put',
+  tags,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: updateSoundSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(updateUserSettingsSchema, 'The requested session'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
+export const getSoundPreference = createRoute({
+  path: '/user/sounds',
+  method: 'get',
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(getSoundPreferencesSchema, 'The requested session'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
+export const addSoundPreference = createRoute({
+  path: '/user/sounds',
+  method: 'post',
+  tags,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: insertSoundPreferencesSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(insertSoundPreferencesSchema, 'The requested session'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
+export const updateSoundPreference = createRoute({
+  path: '/user/sounds',
+  method: 'put',
+  tags,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: updateSoundPreferencesSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(updateSoundPreferencesSchema, 'The requested session'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
 export type CreateUserSettings = typeof createUserSettings
 export type GetUserAccountsRoute = typeof getUserAccounts
 export type GetUserRoute = typeof getUser
 export type GetUserSessionRoute = typeof getUserSession
 export type GetUserSettings = typeof getUserSettings
 export type UpdateUserSettings = typeof updateUserSettings
+export type GetUserSounds = typeof getUserSounds
+export type AddUserSounds = typeof addUserSounds
+export type UpdateUserSounds = typeof updateUserSounds
+export type GetSoundPreference = typeof getSoundPreference
+export type AddSoundPreference = typeof addSoundPreference
+export type UpdateSoundPreference = typeof updateSoundPreference
