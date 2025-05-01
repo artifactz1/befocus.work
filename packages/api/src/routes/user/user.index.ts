@@ -10,5 +10,6 @@ const router = createRouter()
   .openapi(routes.createUserSettings, handlers.createUserSettings)
   .openapi(routes.updateUserSettings, handlers.updateUserSettings)
   .openapi(routes.getUserSounds, handlers.getUserSounds)
+  .openapi(routes.createUserSounds, handlers.createUserSounds)
 
 export default router
