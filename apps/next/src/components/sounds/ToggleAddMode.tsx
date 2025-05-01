@@ -1,4 +1,5 @@
 import { Button } from '@repo/ui/button'
+import { Toggle } from '@repo/ui/toggle'
 import { Plus } from 'lucide-react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
@@ -22,8 +23,8 @@ export default function ToggleAddMode() {
   }
 
   return (
-    <Button onClick={handleSubmit}>
+    <Toggle onClick={handleSubmit}>
       <Plus />
-    </Button>
+    </Toggle>
   )
 }

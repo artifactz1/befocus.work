@@ -10,6 +10,7 @@ import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
 import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
 import { Separator } from '@repo/ui/separator'
 import BgMusicSoundsButton from '../sounds/BgMusicSoundsButton'
+import ConfigureSounds from '../sounds/ConfigureSounds'
 // import ToggleAddMode from '../sounds/ToggleAddMode'Mode'
 
 export default function SoundSettings() {
@@ -48,9 +49,11 @@ export default function SoundSettings() {
           </TabsList>
           <TabsContent value="music">
             <BgMusicSoundsButton />
+            <ConfigureSounds sound='bgMusic'/>
           </TabsContent>
           <TabsContent value="ambient">
             <AmbientSoundsButton />
+            <ConfigureSounds sound='ambient'/>
           </TabsContent>
           <TabsContent value="alarm">
             <AlarmSoundsButton />

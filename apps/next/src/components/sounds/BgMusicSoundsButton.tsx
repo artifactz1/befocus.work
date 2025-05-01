@@ -2,10 +2,7 @@
 
 import { Separator } from '@repo/ui/separator'
 import { useSoundsStore } from '~/store/useSoundsStore'
-import AddSoundButton from './AddSoundButton'
 import SoundButton from './SoundButton'
-import ToggleAddMode from './ToggleAddMode'
-import ToggleDeleteModeButton from './ToggleDeleteMode'
 
 export default function BgMusicSoundsButton() {
   const { sounds } = useSoundsStore()
@@ -44,11 +41,6 @@ export default function BgMusicSoundsButton() {
           .map(soundId => (
             <SoundButton key={soundId} soundId={soundId} />
           ))}
-      </div>
-      <AddSoundButton type={'bgMusic'} />
-      <div className='mt-4 flex w-full items-center justify-center space-x-2'>
-        <ToggleAddMode />
-        <ToggleDeleteModeButton />
       </div>
     </main>
   )
