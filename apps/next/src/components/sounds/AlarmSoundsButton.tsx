@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@repo/ui/button'
 import {
   Select,
   SelectContent,
@@ -57,12 +58,12 @@ export default function AlarmSoundsButton() {
 
       <Separator className='my-4 hidden bg-white md:block' />
       <h3 className='mb-3 text-left font-semibold'>Alarm Sound</h3>
-      <div className='flex flex-row space-x-2'>
+      <div className='flex flex-col space-y-10 '>
         <Select
           value={alarmId} // Ensure value is a string
           onValueChange={handleSelectChange}
         >
-          <SelectTrigger className='w-1/3'>
+          <SelectTrigger className='w-full'>
             <SelectValue placeholder='Select an alarm' />
           </SelectTrigger>
           <SelectContent>
@@ -90,6 +91,9 @@ export default function AlarmSoundsButton() {
             className='w-full'
           />
         </div>
+        <Button>
+          Preview Sound
+        </Button>
       </div>
     </div>
   )
