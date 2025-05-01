@@ -1,11 +1,14 @@
 'use client'
+import type { SoundType } from '@repo/api/db/schemas'
 import { Button } from '@repo/ui/button'
 import { Input } from '@repo/ui/input'
 import { Label } from '@repo/ui/label'
 import { useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
-export default function AddSoundButton() {
+
+
+export default function AddSoundButton({type} : {type : SoundType } ) {
   const { addSound, isAddMode, toggleAddMode } = useSoundsStore()
   const [name, setName] = useState('')
   const [link, setLink] = useState('')
@@ -41,7 +44,7 @@ export default function AddSoundButton() {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
 
-    addSound(name, link, false, 'ambient')
+    addSound(name, link, false, type)
 
     setName('')
     setLink('')
