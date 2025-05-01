@@ -1,21 +1,22 @@
 'use client'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover'
+import { Separator } from '@repo/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs'
 import { Volume2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import MenuButton from '../MenuButtons'
-import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
+import AddSoundButton from '../sounds/AddSoundButton'
 import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
-import { Separator } from '@repo/ui/separator'
+import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
 import BgMusicSoundsButton from '../sounds/BgMusicSoundsButton'
 import ConfigureSounds from '../sounds/ConfigureSounds'
 // import ToggleAddMode from '../sounds/ToggleAddMode'Mode'
 
 export default function SoundSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false)
-  const { setSoundSettingsOpen } = useSoundsStore()
+  const { setSoundSettingsOpen, isAddMode } = useSoundsStore()
 
   useEffect(() => {
     setSoundSettingsOpen(isSoundOpen)
@@ -29,7 +30,7 @@ export default function SoundSettings() {
       </PopoverTrigger>
       <PopoverContent
         align='center'
-        className='max-h-[500px] w-[90vw] gap-3 overflow-y-hidden rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 hover:overflow-y-auto sm:ml-[82px] sm:w-[392px] md:mx-10 lg:mx-0'
+        className=' w-[90vw] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 sm:ml-[82px] sm:w-[392px] md:mx-10 lg:mx-0'
       >
 
         <Tabs className='flex w-full select-none flex-col justify-end rounded-md no-underline outline-none'>
@@ -48,12 +49,26 @@ export default function SoundSettings() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="music">
-            <BgMusicSoundsButton />
-            <ConfigureSounds sound='bgMusic'/>
+            {
+              isAddMode ? (
+                <AddSoundButton type={'bgMusic'} />
+              ) : (
+
+                <BgMusicSoundsButton />
+              )
+            }
+            <ConfigureSounds />
           </TabsContent>
           <TabsContent value="ambient">
-            <AmbientSoundsButton />
-            <ConfigureSounds sound='ambient'/>
+            {
+              isAddMode ? (
+                <AddSoundButton type={'bgMusic'} />
+              ) : (
+
+                <AmbientSoundsButton />
+              )
+            }
+            <ConfigureSounds />
           </TabsContent>
           <TabsContent value="alarm">
             <AlarmSoundsButton />

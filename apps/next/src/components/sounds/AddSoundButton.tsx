@@ -58,7 +58,9 @@ export default function AddSoundButton({type} : {type : SoundType } ) {
         <div className='flex flex-col space-y-4 py-6'>
           <div className='space-y-2'>
             <Label htmlFor='name' className='text-left'>
-              Sound name
+              {
+                type === 'bgMusic' ? 'Background Music Name' : 'Ambient Sound Name'
+              }
             </Label>
             <Input
               id='name'

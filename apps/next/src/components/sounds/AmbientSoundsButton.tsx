@@ -10,7 +10,7 @@ export default function AmbientSoundsButton() {
 
   return (
     <main>
-      <Separator className='my-4 bg-white' />
+     <Separator className='my-4 bg-white' />
       {/* <Accordion type='single' collapsible>
         <AccordionItem className='border-0' value='item-1'>
           <AccordionTrigger className='text-md font-bold'>Ambient Sounds</AccordionTrigger>

@@ -1,10 +1,9 @@
-import { Button } from '@repo/ui/button'
 import { Toggle } from '@repo/ui/toggle'
 import { Minus } from 'lucide-react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 export default function ToggleDeleteModeButton() {
-  const { toggleDeleteMode, toggleAddMode, isAddMode } = useSoundsStore()
+  const { toggleDeleteMode, toggleAddMode, isAddMode, isDeleteMode } = useSoundsStore()
 
   const handleSubmit = () => {
     if (isAddMode === true) {
@@ -15,8 +14,12 @@ export default function ToggleDeleteModeButton() {
   }
 
   return (
-    <Toggle onClick={handleSubmit}>
-      <Minus />
+
+    <Toggle disabled={isAddMode} onClick={handleSubmit}>
+      {
+        isAddMode ? '' : isDeleteMode ? 'Cancel' :
+          <Minus />
+      }
     </Toggle>
   )
 }
