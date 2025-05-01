@@ -12,7 +12,6 @@ import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
 import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
 import BgMusicSoundsButton from '../sounds/BgMusicSoundsButton'
 import ConfigureSounds from '../sounds/ConfigureSounds'
-// import ToggleAddMode from '../sounds/ToggleAddMode'Mode'
 
 export default function SoundSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false)
@@ -32,7 +31,6 @@ export default function SoundSettings() {
         align='center'
         className=' w-[90vw] gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 sm:ml-[82px] sm:w-[392px] md:mx-10 lg:mx-0'
       >
-
         <Tabs className='flex w-full select-none flex-col justify-end rounded-md no-underline outline-none'>
           <Volume2 />
           <div className='mb-2 mt-4 text-lg font-bold'>befocus/sounds</div>
@@ -74,15 +72,6 @@ export default function SoundSettings() {
             <AlarmSoundsButton />
           </TabsContent>
         </Tabs>
-        {/* <div className='mb-2 mt-4 text-lg font-bold'>befocus/sounds</div>
-          <AlarmSoundsButton />
-          <AmbientSoundsButton />
-          <BgMusicSoundsButton />
-          <AddSoundButton />
-          <div className='mt-4 flex w-full items-center justify-center space-x-2'>
-            <ToggleAddMode />
-            <ToggleDeleteModeButton />
-          </div> */}
       </PopoverContent>
     </Popover>
   )
