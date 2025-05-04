@@ -121,13 +121,12 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
     mutationKey: ['userSounds'],
     mutationFn: async () => {
       const res = await api.user.sounds.$post({
-        json: [{
+        json: {
           id: name,        // or generate your own ID
           url: link,
           isCustom: true,
           soundType: type,
-          createdAt: new Date(),
-        }],
+        },
       })
       if (!res.ok) {
         const { message } = await res.json().catch(() => ({ message: 'Unknown error' }))
@@ -137,7 +136,7 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
     },
     onSuccess: (newSound) => {
       // 2. Push into store
-      addSound(newSound.id, newSound.url, newSound.isCustom, newSound.soundType)
+      addSound(newSound.id, newSound.url, newSound.isCustom, type)
       // 3. Optional: invalidate or refetch userSounds
       queryClient.invalidateQueries({ queryKey: ['userSounds'] })
       toast.success('Sound added!')

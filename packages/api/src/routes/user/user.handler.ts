@@ -1,4 +1,3 @@
-import { useSoundsStore } from '~/store/useSoundsStore';
 import * as HttpStatusCodes from '@repo/api/lib/http-status-codes'
 import * as HttpStatusPhrases from '@repo/api/lib/http-status-phrases'
 import type { AppRouteHandler } from '@repo/api/types/app-context'
@@ -208,7 +207,7 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
   const body = await c.req.json()
 
   // Validate input as an array of insertSoundSchema
-  const parsed = z.array(insertSoundSchema).safeParse(body)
+  const parsed = insertSoundSchema.safeParse(body)
   if (!parsed.success) {
     return c.json(
       { message: 'Invalid sound data', errors: parsed.error.format() },
@@ -216,9 +215,9 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
     )
   }
 
-  const inputSounds = parsed.data
+  const sound = parsed.data
 
-  // Get user's existing sounds
+  // Get user's existing sounds to check for duplicates
   const existingSounds = await db.query.sounds.findMany({
     where: (s, { eq }) => eq(s.userId, user.id),
   })
@@ -226,30 +225,44 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
   const existingIds = new Set(existingSounds.map(s => s.id))
   const existingUrls = new Set(existingSounds.map(s => s.url))
 
-  // const duplicates = inputSounds.filter(s => existingIds.has(s.id) || existingUrls.has(s.url))
-  const duplicates = inputSounds.filter(
-    s => (s.id && existingIds.has(s.id)) || (s.url && existingUrls.has(s.url)),
-  )
-
-  if (duplicates.length > 0) {
+  if ((sound.id && existingIds.has(sound.id)) || existingUrls.has(sound.url)) {
     return c.json(
       {
-        message: 'Duplicate sound(s) detected. No sounds were added.',
-        duplicates: duplicates.map(d => ({ id: d.id, url: d.url })),
+        message: 'Duplicate sound detected. No sound was added.',
+        duplicates: [{ id: sound.id, url: sound.url }],
       },
       HttpStatusCodes.CONFLICT,
     )
   }
 
-  // Add userId + fallback for id (in case)
-  const toInsert = inputSounds.map(sound => ({
-    ...sound,
+  const toInsert = {
     id: sound.id || nanoid(),
+    url: sound.url,
+    isCustom: sound.isCustom,
+    soundType: sound.soundType,
     userId: user.id,
-  }))
+  }
 
   const inserted = await db.insert(sounds).values(toInsert).returning()
 
-  return c.json(inserted, HttpStatusCodes.CREATED)
+  if (inserted.length === 0) {
+    return c.json({ message: 'Failed to insert sound' }, HttpStatusCodes.INTERNAL_SERVER_ERROR)
+  }
+
+  // Take the one-and-only row
+  const saved = inserted[0]
+
+  const result = {
+    id: saved.id,
+    userId: saved.userId,
+    url: saved.url,
+    isCustom: saved.isCustom,
+    soundType: saved.soundType,
+    createdAt: saved.createdAt ? saved.createdAt.toISOString() : null,
+  }
+
+  return c.json(result, HttpStatusCodes.OK)
+
+  // return c.json(inserted, HttpStatusCodes.CREATED)
 }
 

@@ -130,9 +130,29 @@ export const createUserSounds = createRoute({
       required: true,
     },
   },
+  // responses: {
+  //   [HttpStatusCodes.OK]: jsonContent(insertSoundSchema, 'The requested session'),
+  //   [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  // },
   responses: {
-    [HttpStatusCodes.OK]: jsonContent(insertSoundSchema, 'The requested session'),
+    // ← use getSoundSchema here so the client knows the response has id, url, etc.
+    [HttpStatusCodes.OK]: jsonContent(getSoundSchema, 'The newly created sound'),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      z.object({ message: z.string(), errors: z.any() }),
+      'Invalid sound data',
+    ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      z.object({
+        message: z.string(),
+        duplicates: z.array(z.object({ id: z.string(), url: z.string() })),
+      }),
+      'Duplicate sound detected',
+    ),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      z.object({ message: z.string() }),
+      'Failed to insert sound',
+    ),
   },
 })
 

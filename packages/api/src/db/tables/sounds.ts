@@ -40,7 +40,6 @@ export const insertSoundSchema = z.object({
   id: z.string(),
   url: z.string().url(),
   soundType: soundTypeEnum,
-  createdAt: z.date(),
   isCustom: z.boolean(),
 })
 
