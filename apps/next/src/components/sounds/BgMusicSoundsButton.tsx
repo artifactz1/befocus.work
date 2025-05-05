@@ -1,124 +1,65 @@
-// 'use client'
-
-// import { Separator } from '@repo/ui/separator'
-// import { useSoundsStore } from '~/store/useSoundsStore'
-// import SoundButton from './SoundButton'
-
-// export default function BgMusicSoundsButton() {
-//   const { sounds } = useSoundsStore()
-
-//   return (
-//     <main>
-//       <Separator className='my-4 bg-white' />
-//       <div className='space-y-4'>
-//         {Object.keys(sounds)
-//           .filter(soundId => sounds[soundId]?.soundType === 'bgMusic')
-//           .map(soundId => (
-//             <SoundButton key={soundId} soundId={soundId} />
-//           ))}
-//       </div>
-//     </main>
-//   )
-// }
-
 'use client'
 
 import { Separator } from '@repo/ui/separator'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
+import { api } from '~/lib/api.client'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import SoundButton from './SoundButton'
-import { useQuery } from '@tanstack/react-query'
-import { api } from '~/lib/api.client'
-import { useEffect } from 'react'
-
-export const soundTypes = ['alarm', 'ambient', 'bgMusic'] as const
-export type SoundType = (typeof soundTypes)[number]
-
-// type Sound = {
-//   id: string
-//   url: string
-//   isCustom: boolean
-//   soundType: SoundType 
-//   createdAt: string | null
-//   userId: string
-// }
-
-// 1) Raw server response
-type RawSound = {
-  id: string
-  url: string
-  isCustom: boolean
-  soundType: string         // <-- just `string` here
-  createdAt: string | null
-  userId: string
-}
-
-// 2) Your store’s richer type
-type Sound = RawSound & {
-  playing: boolean
-  volume: number
-  soundType: 'alarm' | 'ambient' | 'bgMusic'  // narrower union
-}
 
 export default function BgMusicSoundsButton() {
-  const sounds = useSoundsStore((s) => s.sounds)
-  const addSound = useSoundsStore((s) => s.addSound)
+  const sounds = useSoundsStore(s => s.sounds)
+  const addSound = useSoundsStore(s => s.addSound)
 
-  // const { data: userSounds, isLoading, error } = useQuery<RawSound[]>({
-  //   queryKey: ['userSounds'],
-  //   queryFn: async () => {
-  //     const res = await api.user.sounds.$get()
-  //     if (!res.ok) throw new Error('Failed to fetch user sounds')
-  //     return await res.json() 
-  //   },
-  //   // You can choose whether to refetch on window focus, on reconnect, etc.
-  //   // refetchOnWindowFocus: false,
-  // })
-
-  // 3) useQuery with select
-  const { data: userSounds, isLoading, error } = useQuery<
-    RawSound[],   // TQueryFnData
-    Error,        // TError
-    Sound[]       // TData (after select)
-  >({
+  const {
+    data: userSounds,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['userSounds'],
-    queryFn: async (): Promise<RawSound[]> => {
+    queryFn: async () => {
       const res = await api.user.sounds.$get()
       if (!res.ok) throw new Error('Failed to fetch user sounds')
-      return res.json()
+      return res.json()                              // RawSound[]
     },
-    select: (raw): Sound[] =>
-      raw
-        // optionally filter out any totally bogus `soundType`
-        .filter((r): r is RawSound => true)
-        .map((r) => ({
-          ...r,
-          // cast the string into the union (you could also runtime-validate here)
-          soundType: r.soundType as Sound['soundType'],
-          playing: false,
-          volume: 0,
-        })),
+    select: (raw) =>
+      raw.map(r => ({
+        ...r,
+        soundType: r.soundType as 'alarm' | 'ambient' | 'bgMusic',
+        playing: false,
+        volume: 0,
+      })),                                           // Sound[]
+    // we only need the sounds once → don’t refetch on focus
+    refetchOnWindowFocus: false,
   })
-  
+
+  /* merge user sounds into the store once the fetch succeeds */
   useEffect(() => {
     if (!userSounds) return
-
-    //⬇️ Replace forEach with for…of
     for (const s of userSounds) {
       addSound(s.id, s.url, s.isCustom, s.soundType)
     }
   }, [userSounds, addSound])
 
-  if (isLoading) return <div>Loading music...</div>
-  if (error) return <div className="text-red-400">Error loading music</div>
-
+  /* ------------------------------------------------------------------ */
   return (
     <main>
       <Separator className="my-4 bg-white" />
+
+      {isLoading && (
+        <p className="mb-2 text-sm text-gray-300">Loading your sounds…</p>
+      )}
+      {isError && (
+        <p className="mb-2 text-sm text-red-400">
+          Couldn’t load your sounds – showing defaults only.
+        </p>
+      )}
+
       <div className="space-y-4">
         {Object.entries(sounds)
           .filter(([_, s]) => s.soundType === 'bgMusic')
-          .map(([soundId]) => (
-            <SoundButton key={soundId} soundId={soundId} />
+          .map(([id]) => (
+            <SoundButton key={id} soundId={id} />
           ))}
       </div>
     </main>
