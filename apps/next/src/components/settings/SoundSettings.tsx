@@ -12,10 +12,12 @@ import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
 import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
 import BgMusicSoundsButton from '../sounds/BgMusicSoundsButton'
 import ConfigureSounds from '../sounds/ConfigureSounds'
+import GlobalPlayer from '../GlobalSoundsPlayer'
 
 export default function SoundSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false)
   const { setSoundSettingsOpen, isAddMode } = useSoundsStore()
+
 
   useEffect(() => {
     setSoundSettingsOpen(isSoundOpen)
@@ -60,7 +62,7 @@ export default function SoundSettings() {
           <TabsContent value="ambient">
             {
               isAddMode ? (
-                <AddSoundButton type={'bgMusic'} />
+                <AddSoundButton type={'ambient'} />
               ) : (
 
                 <AmbientSoundsButton />

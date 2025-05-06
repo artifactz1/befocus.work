@@ -1,7 +1,7 @@
 'use client'
 
 import { Separator } from '@repo/ui/separator'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery} from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { api } from '~/lib/api.client'
 import { useSoundsStore } from '~/store/useSoundsStore'
@@ -34,12 +34,25 @@ export default function BgMusicSoundsButton() {
   })
 
   /* merge user sounds into the store once the fetch succeeds */
+  // useEffect(() => {
+  //   if (!userSounds) return
+  //   for (const s of userSounds) {
+  //     addSound(s.id, s.url, s.isCustom, s.soundType)
+  //   }
+  // }, [userSounds, addSound])
+
   useEffect(() => {
-    if (!userSounds) return
+    if (!userSounds) return;
+
+    const existing = useSoundsStore.getState().sounds;
+
+    // instead of userSounds.forEach(...)
     for (const s of userSounds) {
-      addSound(s.id, s.url, s.isCustom, s.soundType)
+      if (!existing[s.id]) {
+        addSound(s.id, s.url, s.isCustom, s.soundType);
+      }
     }
-  }, [userSounds, addSound])
+  }, [userSounds, addSound]);
 
   /* ------------------------------------------------------------------ */
   return (
