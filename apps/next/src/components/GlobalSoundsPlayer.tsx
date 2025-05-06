@@ -11,7 +11,10 @@ const GlobalPlayer = () => {
     <>
       {soundKeys
         .filter(key => sounds[key]?.soundType !== 'alarm')
-        .map(key => {
+        .map((
+          key,
+          index,
+        ) => {
           const sound = sounds[key]
 
           // Check if sound exists before rendering the ReactPlayer
@@ -27,8 +30,9 @@ const GlobalPlayer = () => {
               muted={!sound.playing}
               width='0'
               height='0'
-              onReady={() => console.log('Player is ready')}
-              onStart={() => console.log('Video started')}
+              onReady={() => console.log(`Player is ready ${index}`)}
+              // onPause={() => `Pause index ${index}`}
+              onStart={() => console.log(`Playing index ${index}`)}
             />
           )
         })}

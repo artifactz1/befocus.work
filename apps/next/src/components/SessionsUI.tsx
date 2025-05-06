@@ -12,8 +12,8 @@ export default function SessionsUI() {
 
   const isLandscape = useIsLandscape() // Get Zustand state & function
 
-  const opacitySession = Math.round((1 - timeLeft / workDuration) * 100) // Clamp between 0 and 1
-  const opacitySessionBrk = Math.round((1 - timeLeft / breakDuration) * 100) // Clamp between 0 and 1
+  // const opacitySession = Math.round((1 - timeLeft / workDuration) * 100) // Clamp between 0 and 1
+  // const opacitySessionBrk = Math.round((1 - timeLeft / breakDuration) * 100) // Clamp between 0 and 1
 
   // Map opacitySession to Tailwind opacity classes
   // const getOpacityClass = (opacity: number) => {
