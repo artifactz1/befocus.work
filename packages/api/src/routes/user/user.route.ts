@@ -182,7 +182,8 @@ export const deleteUserSound = createRoute({
   tags,
   request: {
     params: z.object({
-      id: z.string().uuid(), // Assuming your sound ID is a UUID
+      // id: z.string().uuid(), // Assuming your sound ID is a UUID
+      id: z.string(), // Assuming your sound ID is a UUID
     }),
   },
   responses: {
@@ -191,6 +192,10 @@ export const deleteUserSound = createRoute({
       'Sound deleted successfully',
     ),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Sound not found'),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(
+      z.object({ message: z.string() }),
+      'User not authenticated',
+    ),
   },
 })
 

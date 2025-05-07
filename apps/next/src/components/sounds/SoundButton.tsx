@@ -3,18 +3,44 @@
 import { Button } from '@repo/ui/button'
 import { Slider } from '@repo/ui/slider'
 import { Toggle } from '@repo/ui/toggle'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 // app/components/SoundSettings.tsx
 import { Volume2, VolumeX } from 'lucide-react'
+import { api } from '~/lib/api.client'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 const SoundSettings = ({ soundId }: { soundId: string }) => {
   const { sounds, toggleSound, setVolume, isDeleteMode, deleteSound } = useSoundsStore()
   const sound = sounds[soundId]
+  const queryClient = useQueryClient()
+
+  const deleteMutation = useMutation<void, Error, string>({
+    mutationFn: async (id: string) => {
+      const response = await api.user.sounds[':id'].$delete({
+        param: { id }
+      })
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({ message: 'Unknown error' }))
+        throw new Error(err.message ?? 'Failed to delete sound')
+      }
+    },
+    onSuccess: (_, id) => {
+      deleteSound(id)
+      queryClient.invalidateQueries({queryKey : ['userSounds']})
+      console.log(`Deleted sound ${id}`)
+    },
+    onError: err => {
+      console.log(`Delete failed: ${err.message}`)
+    },
+  })
+
 
   if (!sound) return null
 
   const handleDelete = () => {
-    deleteSound(soundId)
+    // deleteSound(soundId)
+    deleteMutation.mutate(soundId)
+
   }
 
   return (
@@ -48,6 +74,15 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
           {/* <label className="p-1">{soundId}</label> */}
           <Button onClick={handleDelete}>Delete {soundId}</Button>
         </div>
+
+          // <div className='flex flex-col space-y-2'>
+          //   <Button onClick={handleDelete} disabled={deleteMutation.status === }>
+          //     {deleteMutation.status === 'loading' ? 'Deleting…' : `Delete ${soundId}`}
+          //   </Button>
+          //   {deleteMutation.isError && (
+          //     <p className='text-red-500'>{deleteMutation.error.message}</p>
+          //   )}
+          // </div>
       )}
     </main>
   )

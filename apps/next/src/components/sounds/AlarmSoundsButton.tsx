@@ -83,7 +83,7 @@ export default function AlarmSoundsButton() {
           <Slider
             value={[sound.volume * 100]} // Default to the current volume (range 0-100)
             onValueChange={value => {
-              const newVolume = value[0] ?? 80 // Default to 80 if value is undefined
+              const newVolume = value[0] ?? 0 // Default to 80 if value is undefined
               setVolume(alarmId, newVolume / 100) // Set volume globally (range 0-1)
             }}
             max={100}

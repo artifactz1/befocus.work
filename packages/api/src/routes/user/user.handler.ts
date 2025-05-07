@@ -8,6 +8,7 @@ import { insertSoundSchema, sounds } from './../../db/tables/sounds'
 import type {
   CreateUserSettings,
   CreateUserSounds,
+  DeleteUserSound,
   GetUserAccountsRoute,
   GetUserRoute,
   GetUserSessionRoute,
@@ -15,8 +16,6 @@ import type {
   GetUserSounds,
   UpdateUserSettings,
 } from './user.route'
-import { z } from 'zod'
-import { base } from 'framer-motion/client';
 
 export const getUser: AppRouteHandler<GetUserRoute> = async c => {
   const user = c.get('user')
@@ -185,7 +184,6 @@ export const getUserSounds: AppRouteHandler<GetUserSounds> = async c => {
   return c.json(transformedSoundData, HttpStatusCodes.OK)
 }
 
-
 // Suggestion for Sounds Store for default values
 
 // If user doesn't have any sounds by getting the data from database
@@ -264,5 +262,34 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
   return c.json(result, HttpStatusCodes.OK)
 
   // return c.json(inserted, HttpStatusCodes.CREATED)
+}
+
+export const deleteUserSound: AppRouteHandler<DeleteUserSound> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  // const params = c.req.param // ← params, not param
+  const soundId = c.req.param('id')
+
+  if (!user) {
+    // ← use `param('id')`, not `params`
+
+    return c.json({ message: HttpStatusPhrases.UNAUTHORIZED }, HttpStatusCodes.UNAUTHORIZED)
+  }
+
+  // only delete if it exists & not already deleted
+  const existing = await db.query.sounds.findFirst({
+    where: (s, { eq, and }) => and(eq(s.id, soundId), eq(s.userId, user.id)),
+  })
+
+  if (!existing) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  await db.delete(sounds).where(eq(sounds.id, soundId))
+
+  // return c.json(undefined, HttpStatusCodes.NO_CONTENT)
+  return c.json({ message: 'Sound deleted successfully' }, HttpStatusCodes.OK)
+
+
 }
 
