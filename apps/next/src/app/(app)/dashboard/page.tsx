@@ -8,8 +8,8 @@ import { TimerInitializer } from '~/components/timer/TimerInitializer'
 export default function Dashboard() {
   return (
     <div>
-      <TimerInitializer />
       <GlobalSoundsPlayer />
+      <TimerInitializer />
       <main className='continer px-auto flex h-screen w-screen flex-col items-center justify-center'>
         <Header />
         <Timer />

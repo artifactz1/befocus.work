@@ -11,62 +11,54 @@ export default function BgMusicSoundsButton() {
   const sounds = useSoundsStore(s => s.sounds)
   const addSound = useSoundsStore(s => s.addSound)
 
-  const {
-    data: userSounds,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['userSounds'],
-    queryFn: async () => {
-      const res = await api.user.sounds.$get()
-      if (!res.ok) throw new Error('Failed to fetch user sounds')
-      return res.json()                              // RawSound[]
-    },
-    select: (raw) =>
-      raw.map(r => ({
-        ...r,
-        soundType: r.soundType as 'alarm' | 'ambient' | 'bgMusic',
-        playing: false,
-        volume: 0,
-      })),                                           // Sound[]
-    // we only need the sounds once → don’t refetch on focus
-    refetchOnWindowFocus: false,
-  })
+  // const {
+  //   data: userSounds,
+  //   isLoading,
+  //   isError,
+  // } = useQuery({
+  //   queryKey: ['userSounds'],
+  //   queryFn: async () => {
+  //     const res = await api.user.sounds.$get()
+  //     if (!res.ok) throw new Error('Failed to fetch user sounds')
+  //     return res.json()                              // RawSound[]
+  //   },
+  //   select: (raw) =>
+  //     raw.map(r => ({
+  //       ...r,
+  //       soundType: r.soundType as 'alarm' | 'ambient' | 'bgMusic',
+  //       playing: false,
+  //       volume: 0,
+  //     })),                                           // Sound[]
+  //   // we only need the sounds once → don’t refetch on focus
+  //   refetchOnWindowFocus: false,
+  // })
 
-  /* merge user sounds into the store once the fetch succeeds */
   // useEffect(() => {
-  //   if (!userSounds) return
+  //   if (!userSounds) return;
+
+  //   const existing = useSoundsStore.getState().sounds;
+
+  //   // instead of userSounds.forEach(...)
   //   for (const s of userSounds) {
-  //     addSound(s.id, s.url, s.isCustom, s.soundType)
+  //     if (!existing[s.id]) {
+  //       addSound(s.id, s.url, s.isCustom, s.soundType);
+  //     }
   //   }
-  // }, [userSounds, addSound])
-
-  useEffect(() => {
-    if (!userSounds) return;
-
-    const existing = useSoundsStore.getState().sounds;
-
-    // instead of userSounds.forEach(...)
-    for (const s of userSounds) {
-      if (!existing[s.id]) {
-        addSound(s.id, s.url, s.isCustom, s.soundType);
-      }
-    }
-  }, [userSounds, addSound]);
+  // }, [userSounds, addSound]);
 
   /* ------------------------------------------------------------------ */
   return (
     <main>
       <Separator className="my-4 bg-white" />
 
-      {isLoading && (
+      {/* {isLoading && (
         <p className="mb-2 text-sm text-gray-300">Loading your sounds…</p>
       )}
       {isError && (
         <p className="mb-2 text-sm text-red-400">
           Couldn’t load your sounds – showing defaults only.
         </p>
-      )}
+      )} */}
 
       <div className="space-y-4">
         {Object.entries(sounds)

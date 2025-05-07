@@ -26,7 +26,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
     },
     onSuccess: (_, id) => {
       deleteSound(id)
-      queryClient.invalidateQueries({queryKey : ['userSounds']})
+      queryClient.invalidateQueries({ queryKey: ['userSounds'] })
       console.log(`Deleted sound ${id}`)
     },
     onError: err => {
@@ -50,18 +50,40 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
           <span className='p-1 font-medium'>{soundId}</span>
           <div className='flex space-x-2'>
             <Toggle
-              pressed={sound.playing}
+              pressed={sound.playing === true}
               onClick={() => toggleSound(soundId)} // Toggle sound globally
-              // className={`${sound.playing ? "text-blue" : "bg-gray-200 text-gray-800"}`}
+            // className={`${sound.playing ? "text-blue" : "bg-gray-200 text-gray-800"}`}
             >
               {sound.playing ? <Volume2 /> : <VolumeX />}
             </Toggle>
 
-            <Slider
+            {/* <Slider
               value={[sound.volume * 100]} // Default to the current volume (range 0-100)
               onValueChange={value => {
                 const newVolume = value[0] ?? 80 // Default to 80 if value is undefined
                 setVolume(soundId, newVolume / 100) // Set volume globally (range 0-1)
+              }}
+              max={100}
+              step={1}
+              className='w-full'
+            /> */}
+            <Slider
+              value={[sound.volume * 100]}
+              onValueChange={([raw]) => {
+                const newVolume = raw ?? 80
+                const normalized = newVolume / 100
+
+                // update the volume in your store
+                setVolume(soundId, normalized)
+
+                // if we go above 80 and it isn’t already playing, start it
+                if (newVolume > 1 && !sound.playing) {
+                  toggleSound(soundId)
+                }
+                // if we drop to zero and it’s playing, stop it
+                else if (newVolume === 0 && sound.playing === true) {
+                  toggleSound(soundId)
+                }
               }}
               max={100}
               step={1}
@@ -75,14 +97,14 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
           <Button onClick={handleDelete}>Delete {soundId}</Button>
         </div>
 
-          // <div className='flex flex-col space-y-2'>
-          //   <Button onClick={handleDelete} disabled={deleteMutation.status === }>
-          //     {deleteMutation.status === 'loading' ? 'Deleting…' : `Delete ${soundId}`}
-          //   </Button>
-          //   {deleteMutation.isError && (
-          //     <p className='text-red-500'>{deleteMutation.error.message}</p>
-          //   )}
-          // </div>
+        // <div className='flex flex-col space-y-2'>
+        //   <Button onClick={handleDelete} disabled={deleteMutation.status === }>
+        //     {deleteMutation.status === 'loading' ? 'Deleting…' : `Delete ${soundId}`}
+        //   </Button>
+        //   {deleteMutation.isError && (
+        //     <p className='text-red-500'>{deleteMutation.error.message}</p>
+        //   )}
+        // </div>
       )}
     </main>
   )
