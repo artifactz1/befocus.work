@@ -5,7 +5,7 @@ import { Slider } from '@repo/ui/slider'
 import { Toggle } from '@repo/ui/toggle'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 // app/components/SoundSettings.tsx
-import { Volume2, VolumeX } from 'lucide-react'
+import { Pencil, Volume2, VolumeX } from 'lucide-react'
 import { api } from '~/lib/api.client'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
@@ -47,7 +47,8 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
     <main>
       {!isDeleteMode ? (
         <div className='flex-row space-y-2'>
-          <span className='p-1 font-medium'>{soundId}</span>
+          <span className='p-1 font-medium text-md'>{soundId}</span>
+
           <div className='flex space-x-2'>
             <Toggle
               pressed={sound.playing === true}
