@@ -65,18 +65,49 @@ const GlobalPlayer = () => {
             <ReactPlayer
               config={{
                 youtube: {
-                  // pass your origin so postMessage doesn’t get blocked:
+                  // 1) Tell YouTube your actual page origin:
                   playerVars: {
-                    origin: typeof window !== 'undefined'
-                      ? window.location.origin
-                      : undefined,
+                    origin:
+                      typeof window !== 'undefined'
+                        ? window.location.origin     // "http://localhost:3000"
+                        : undefined,
+                    enablejsapi: 1,               // ensure JS API is enabled
                   },
-                  // override the iframe embed host:
+                  // 2) (Optional) If you want the no-cookie host:
                   embedOptions: {
-                    host: 'https://www.youtube.com',
+                    host: 'https://www.youtube-nocookie.com',
                   },
                 },
               }}
+              // config={{
+              //   youtube: {
+              //     playerVars: {
+              //       // exactly your page’s origin:
+              //       origin:
+              //         typeof window !== 'undefined'
+              //           ? window.location.origin    // e.g. "http://localhost:3000"
+              //           : undefined,
+              //     },
+              //     embedOptions: {
+              //       // optional: use no-cookie host if you prefer
+              //       host: 'https://www.youtube-nocookie.com',
+              //     },
+              //   },
+              // }}
+              // config={{
+              //   youtube: {
+              //     // pass your origin so postMessage doesn’t get blocked:
+              //     playerVars: {
+              //       origin: typeof window !== 'undefined'
+              //         ? window.location.origin
+              //         : undefined,
+              //     },
+              //     // override the iframe embed host:
+              //     embedOptions: {
+              //       host: 'https://www.youtube.com',
+              //     },
+              //   },
+              // }}
               key={key}
               url={sound.url}
               playing={sound.playing}
