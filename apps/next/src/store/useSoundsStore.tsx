@@ -35,6 +35,10 @@ interface SoundsState {
   setBgMusic: (id: string) => void
   isSoundSettingsOpen: boolean
   setSoundSettingsOpen: (state: boolean) => void
+  editModes: Record<string, boolean>
+  toggleEditMode: (id: string) => void
+  editSound: (id: string, newName: string) => void
+
 }
 
 const alarmList: Alarm[] = [
@@ -110,6 +114,25 @@ export const useSoundsStore = create<SoundsState>(set => {
       set(state => ({
         ...state,
         isAddMode: !state.isAddMode,
+      })),
+    editModes: {},
+    toggleEditMode: (id) =>
+      set((state) => ({
+        editModes: {
+          ...state.editModes,
+          [id]: !state.editModes[id],
+        },
+      })),
+    editSound: (id, newName) =>
+      set((state) => ({
+        sounds: {
+          ...state.sounds,
+          [id]: {
+            ...state.sounds[id],
+            // we’ll need to have given Sound a “name” field too if you want to rename
+            name: newName,
+          } as Sound,
+        },
       })),
   }
 })
