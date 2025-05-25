@@ -12,7 +12,7 @@ export default function SessionTitleDisplay() {
       ? 'Focus'
       : 'Break'
     : workDuration === timeLeft
-      ? 'BeFocused'
+      ? 'BeFocus'
       : isWorking
         ? 'Paused'
         : 'Break'
