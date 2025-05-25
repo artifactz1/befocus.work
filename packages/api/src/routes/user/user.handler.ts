@@ -1,7 +1,7 @@
 import * as HttpStatusCodes from '@repo/api/lib/http-status-codes'
 import * as HttpStatusPhrases from '@repo/api/lib/http-status-phrases'
 import type { AppRouteHandler } from '@repo/api/types/app-context'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { sessionSettings } from './../../db/tables/settings'
 import { insertSoundSchema, sounds, updateSoundSchema } from './../../db/tables/sounds'
@@ -332,7 +332,9 @@ export const updateUserSounds: AppRouteHandler<UpdateUserSounds> = async c => {
       ...(data.soundType && { soundType: data.soundType }),
       ...(typeof data.isCustom === 'boolean' && { isCustom: data.isCustom }),
     })
-    .where(eq(sounds.id, data.id))
+    // .where(eq(sounds.id, data.id))
+    .where(and(eq(sounds.id, data.id), eq(sounds.userId, user.id)))
+
     .returning()
 
   return c.json(updated[0], HttpStatusCodes.OK)

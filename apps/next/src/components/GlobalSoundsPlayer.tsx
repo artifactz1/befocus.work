@@ -43,7 +43,7 @@ const GlobalPlayer = () => {
     // instead of userSounds.forEach(...)
     for (const s of userSounds) {
       if (!existing[s.id]) {
-        addSound(s.id, s.url, s.isCustom, s.soundType);
+        addSound(s.id, s.name, s.url, s.isCustom, s.soundType);
       }
     }
   }, [userSounds, addSound]);

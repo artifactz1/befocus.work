@@ -12,9 +12,9 @@ export default function AmbientSoundsButton() {
       <Separator className='my-4 bg-white' />
       <div className='space-y-4'>
         {Object.keys(sounds)
-          .filter(soundId => sounds[soundId]?.soundType === 'ambient')
-          .map(soundId => (
-            <SoundButton key={soundId} soundId={soundId} />
+          .filter(id => sounds[id]?.soundType === 'ambient')
+          .map(id => (
+            <SoundButton key={id} soundId={id} />
           ))}
       </div>
     </main>

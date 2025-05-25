@@ -154,10 +154,34 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
     },
   })
 
+  const updateSoundMutation = useMutation({
+    mutationKey: ['updateSound', soundId],
+    mutationFn: async (newName: string) => {
+      console.log('NEWNAME', newName);
+      const response = await api.user.sounds  .$put({
+        json: { id: soundId, name: newName },
+      })
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({ message: 'Unknown error' }))
+        throw new Error(err.message ?? 'Failed to update sound')
+      }
+      return response.json()
+    },
+    onSuccess: () => {
+      console.log("User Sound successfully update")
+      queryClient.invalidateQueries({ queryKey: ['userSounds'] })
+    },
+    onError: (err: any) => {
+      console.error('Error updating sound:', err)
+    },
+  })
+
   if (!sound) return null
 
   // helper flag
   const isEditing = !!editModes[soundId]
+
+
 
   return (
     <main>
@@ -176,28 +200,35 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
             {isEditing ? (
               <Input
                 type="text"
-                value={soundId}
+                value={sound.name}
                 autoFocus
                 /* prevent clicks inside the Input from bubbling back up */
                 onClick={e => e.stopPropagation()}
                 onChange={e => editSound(soundId, e.target.value)}
-                onBlur={() => toggleEditMode(soundId)}
+                // onBlur={() => toggleEditMode(soundId)}
+                // onKeyDown={e => {
+                //   if (e.key === 'Enter' || e.key === 'Escape') {
+                //     toggleEditMode(soundId)
+                //   }
+                // }}
+                onBlur={() => {
+                  toggleEditMode(soundId)
+                  updateSoundMutation.mutate(sound.name)
+                }}
                 onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === 'Escape') {
                     toggleEditMode(soundId)
+                    updateSoundMutation.mutate(sound.name)
                   }
                 }}
                 className="bg-transparent h-fit px-0 py-0"
               />
             ) : (
               <span className="relative inline-block">
-                {soundId}
+                {sound.name}
               </span>
             )}
           </motion.button>
-
-
-
 
           <div className='flex space-x-2'>
             <Toggle
@@ -224,7 +255,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
       ) : (
         <div className='space-y-2'>
           <Button onClick={() => deleteMutation.mutate(soundId)}>
-            Delete {soundId}
+            Delete {sound.name}
           </Button>
         </div>
       )}

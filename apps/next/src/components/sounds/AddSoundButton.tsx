@@ -138,6 +138,7 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
       return res.json()
     },
     onSuccess: (newSound) => {
+      console.log("Sound sent to database")
       // 2. Push into store
       addSound(newSound.id, newSound.name, newSound.url, newSound.isCustom, type)
       // 3. Optional: invalidate or refetch userSounds
