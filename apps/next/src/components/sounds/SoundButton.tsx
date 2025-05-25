@@ -243,7 +243,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
               onValueChange={([raw]) => {
                 const newVol = (raw ?? 0) / 100
                 setVolume(soundId, newVol)
-                if (newVol > 0.8 && !sound.playing) toggleSound(soundId)
+                if (newVol > 0.01 && !sound.playing) toggleSound(soundId)
                 if (newVol === 0 && sound.playing) toggleSound(soundId)
               }}
               max={100}
