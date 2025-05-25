@@ -108,6 +108,8 @@ import { useSoundsStore } from '~/store/useSoundsStore'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '~/lib/api.client'
 import { toast } from 'sonner'
+import { createId } from '@paralleldrive/cuid2'
+
 
 export default function AddSoundButton({ type }: { type: SoundType }) {
   const { addSound, isAddMode, toggleAddMode } = useSoundsStore()
@@ -136,7 +138,7 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
     },
     onSuccess: (newSound) => {
       // 2. Push into store
-      addSound(newSound.id, newSound.url, newSound.isCustom, type)
+      addSound(createId(), newSound.name, newSound.url, newSound.isCustom, type)
       // 3. Optional: invalidate or refetch userSounds
       queryClient.invalidateQueries({ queryKey: ['userSounds'] })
       toast.success('Sound added!')

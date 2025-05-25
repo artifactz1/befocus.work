@@ -5,6 +5,7 @@
       "name": "test-mono",
       "dependencies": {
         "@biomejs/biome": "^1.9.4",
+        "@paralleldrive/cuid2": "^2.2.2",
         "better-auth": "^1.1.18",
         "framer-motion": "^12.4.7",
         "hono-pino": "^0.7.2",
@@ -240,6 +241,8 @@
     "@oslojs/jwt": ["@oslojs/jwt@0.2.0", "", { "dependencies": { "@oslojs/encoding": "0.4.1" } }, ""],
 
     "@panva/hkdf": ["@panva/hkdf@1.2.1", "", {}, ""],
+
+    "@paralleldrive/cuid2": ["@paralleldrive/cuid2@2.2.2", "", { "dependencies": { "@noble/hashes": "^1.1.5" } }, "sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA=="],
 
     "@peculiar/asn1-android": ["@peculiar/asn1-android@2.3.15", "", { "dependencies": { "@peculiar/asn1-schema": "^2.3.15", "asn1js": "^3.0.5", "tslib": "^2.8.1" } }, ""],
 

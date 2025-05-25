@@ -10,7 +10,7 @@ export type SoundType = (typeof soundTypes)[number]
 
 export const sounds = pgTable('sounds', {
   id: text('id').primaryKey(), // e.g., "rain", "jazz", "howls moving castle"
-  name: text('name').notNull,
+  name: text('name').notNull(),
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
