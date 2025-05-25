@@ -25,8 +25,5 @@ export const TimerInitializer = () => {
     }
   }, [isSuccess, data, hydrateFromSettings])
 
-  if (isLoading) return <p>Loading user settings...</p>
-  if (isError) return <p>Failed to load user settings.</p>
-
   return null
 }
