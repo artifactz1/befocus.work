@@ -122,6 +122,7 @@ import { Toggle } from '@repo/ui/toggle'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Volume2, VolumeX } from 'lucide-react'
+import { useState } from 'react'
 import { api } from '~/lib/api.client'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
@@ -139,6 +140,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
 
   const sound = sounds[soundId]
   const queryClient = useQueryClient()
+  const [originalName, setOriginalName] = useState('')
 
   const deleteMutation = useMutation<void, Error, string>({
     mutationFn: async (id) => {
@@ -158,7 +160,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
     mutationKey: ['updateSound', soundId],
     mutationFn: async (newName: string) => {
       console.log('NEWNAME', newName);
-      const response = await api.user.sounds  .$put({
+      const response = await api.user.sounds.$put({
         json: { id: soundId, name: newName },
       })
       if (!response.ok) {
@@ -193,6 +195,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
             /* single-click anywhere on the row (when not already editing) opens the Input */
             onClick={e => {
               if (e.detail === 1 && !isEditing) {
+                setOriginalName(sound.name)
                 toggleEditMode(soundId)
               }
             }}
@@ -205,23 +208,39 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
                 /* prevent clicks inside the Input from bubbling back up */
                 onClick={e => e.stopPropagation()}
                 onChange={e => editSound(soundId, e.target.value)}
-                // onBlur={() => toggleEditMode(soundId)}
-                // onKeyDown={e => {
-                //   if (e.key === 'Enter' || e.key === 'Escape') {
-                //     toggleEditMode(soundId)
-                //   }
-                // }}
                 onBlur={() => {
                   toggleEditMode(soundId)
-                  updateSoundMutation.mutate(sound.name)
-                }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' || e.key === 'Escape') {
-                    toggleEditMode(soundId)
+
+                  if (
+                    sound.name.trim() === '' // ⛔ prevent empty strings
+                  ) {
+                    editSound(soundId, originalName) // 🔁 revert to original
+                    return
+                  }
+
+                  if (sound.name !== originalName) {
                     updateSoundMutation.mutate(sound.name)
                   }
                 }}
-                className="bg-transparent h-fit px-0 py-0"
+
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === 'Escape') {
+                    toggleEditMode(soundId)
+
+                    if (
+                      sound.name.trim() === ''
+                    ) {
+                      editSound(soundId, originalName)
+                      return
+                    }
+
+                    if (sound.name !== originalName) {
+                      updateSoundMutation.mutate(sound.name)
+                    }
+                  }
+                }}
+                className="bg-transparent h-fit px-0 py-0 rounded-sm"
+              // className="bg-transparent h-fit  rounded-sm"
               />
             ) : (
               <span className="relative inline-block">
