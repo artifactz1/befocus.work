@@ -4,7 +4,7 @@ import type { AppRouteHandler } from '@repo/api/types/app-context'
 import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { sessionSettings } from './../../db/tables/settings'
-import { insertSoundSchema, sounds } from './../../db/tables/sounds'
+import { insertSoundSchema, sounds, updateSoundSchema } from './../../db/tables/sounds'
 import type {
   CreateUserSettings,
   CreateUserSounds,
@@ -15,6 +15,7 @@ import type {
   GetUserSettings,
   GetUserSounds,
   UpdateUserSettings,
+  UpdateUserSounds,
 } from './user.route'
 
 export const getUser: AppRouteHandler<GetUserRoute> = async c => {
@@ -235,6 +236,7 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
 
   const toInsert = {
     id: sound.id || nanoid(),
+    name: sound.name,
     url: sound.url,
     isCustom: sound.isCustom,
     soundType: sound.soundType,
@@ -252,6 +254,7 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
 
   const result = {
     id: saved.id,
+    name: saved.name,
     userId: saved.userId,
     url: saved.url,
     isCustom: saved.isCustom,
@@ -291,5 +294,47 @@ export const deleteUserSound: AppRouteHandler<DeleteUserSound> = async c => {
   return c.json({ message: 'Sound deleted successfully' }, HttpStatusCodes.OK)
 
 
+}
+
+export const updateUserSounds: AppRouteHandler<UpdateUserSounds> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const session = c.get('session')
+
+  if (!user || !session) {
+    return c.json({ message: 'User or session not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const body = await c.req.json()
+  const parsed = updateSoundSchema.safeParse(body)
+  if (!parsed.success) {
+    return c.json(
+      { message: 'Invalid update data', errors: parsed.error.format() },
+      HttpStatusCodes.BAD_REQUEST,
+    )
+  }
+
+  const data = parsed.data
+
+  const existing = await db.query.sounds.findFirst({
+    where: (s, { eq, and }) => and(eq(s.id, data.id), eq(s.userId, user.id)),
+  })
+
+  if (!existing) {
+    return c.json({ message: 'Sound not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const updated = await db
+    .update(sounds)
+    .set({
+      ...(data.name && { name: data.name }),
+      ...(data.url && { url: data.url }),
+      ...(data.soundType && { soundType: data.soundType }),
+      ...(typeof data.isCustom === 'boolean' && { isCustom: data.isCustom }),
+    })
+    .where(eq(sounds.id, data.id))
+    .returning()
+
+  return c.json(updated[0], HttpStatusCodes.OK)
 }
 
