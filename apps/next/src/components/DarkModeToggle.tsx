@@ -39,6 +39,7 @@ export const DarkModeToggle = () => {
           <MenuButton
             onClick={handleToggle}
             variant='outline'
+            size='lg'
             className=' lg:w-24 lg:h-12 xl:h-12 xl:w-32'
           >
             {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{' '}
