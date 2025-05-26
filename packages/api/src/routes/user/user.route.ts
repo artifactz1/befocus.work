@@ -1,9 +1,12 @@
 import { createRoute, z } from '@hono/zod-openapi'
 import {
+  getSoundSchema,
   getUserAccountsSchema,
   getUserSchema,
   getUserSessionSchema,
   getUserSettingsSchema,
+  insertSoundSchema,
+  updateSoundSchema,
   updateUserSettingsSchema,
 } from '@repo/api/db/schemas'
 import { notFoundSchema } from '@repo/api/lib/constants'
@@ -100,9 +103,106 @@ export const updateUserSettings = createRoute({
   },
 })
 
+export const getUserSounds = createRoute({
+  path: '/user/sounds',
+  method: 'get',
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(z.array(getSoundSchema), 'The requested session'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+  },
+})
+
+export const createUserSounds = createRoute({
+  path: '/user/sounds',
+  method: 'post',
+  tags,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: insertSoundSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    // ← use getSoundSchema here so the client knows the response has id, url, etc.
+    [HttpStatusCodes.OK]: jsonContent(getSoundSchema, 'The newly created sound'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      z.object({ message: z.string(), errors: z.any() }),
+      'Invalid sound data',
+    ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      z.object({
+        message: z.string(),
+        duplicates: z.array(z.object({ id: z.string(), url: z.string() })),
+      }),
+      'Duplicate sound detected',
+    ),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      z.object({ message: z.string() }),
+      'Failed to insert sound',
+    ),
+  },
+})
+
+export const updateUserSounds = createRoute({
+  path: '/user/sounds',
+  method: 'put',
+  tags,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: updateSoundSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(getSoundSchema, 'The updated sound'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Sound not found'),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      z.object({ message: z.string(), errors: z.any() }),
+      'Invalid sound data',
+    ),
+  },
+})
+
+export const deleteUserSound = createRoute({
+  path: '/user/sounds/:id',
+  method: 'delete',
+  tags,
+  request: {
+    params: z.object({
+      // id: z.string().uuid(), // Assuming your sound ID is a UUID
+      id: z.string(), // Assuming your sound ID is a UUID
+    }),
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      z.object({ message: z.string() }),
+      'Sound deleted successfully',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Sound not found'),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(
+      z.object({ message: z.string() }),
+      'User not authenticated',
+    ),
+  },
+})
+
 export type CreateUserSettings = typeof createUserSettings
 export type GetUserAccountsRoute = typeof getUserAccounts
 export type GetUserRoute = typeof getUser
 export type GetUserSessionRoute = typeof getUserSession
 export type GetUserSettings = typeof getUserSettings
 export type UpdateUserSettings = typeof updateUserSettings
+export type GetUserSounds = typeof getUserSounds
+export type CreateUserSounds = typeof createUserSounds
+export type UpdateUserSounds = typeof updateUserSounds
+export type DeleteUserSound = typeof deleteUserSound

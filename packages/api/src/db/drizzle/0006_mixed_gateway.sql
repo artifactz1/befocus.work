@@ -1,0 +1,1 @@
+ALTER TABLE "sounds" ADD COLUMN "name" text NOT NULL;

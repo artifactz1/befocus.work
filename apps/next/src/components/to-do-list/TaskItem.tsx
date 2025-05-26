@@ -42,10 +42,13 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
       <motion.div
         animate={{ x: task.completed ? [5, 0, 0] : 0 }}
         transition={{ type: 'tween', duration: 1.2, ease: 'easeInOut' }}
-        className={`group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-1000 ${
-          task.completed ? 'text-stone-500' : 'font-semibold'
-        }`}
-        onClick={() => toggleEditMode(task.id)}
+        className={`group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-1000 ${task.completed ? 'text-stone-500' : 'font-semibold'
+          }`}
+        onClick={e => {
+          if (e.detail === 1 && !task.editMode) {
+            toggleEditMode(task.id)
+          }
+        }}
       >
         {task.editMode ? (
           <Input
@@ -56,15 +59,14 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
             onBlur={() => toggleEditMode(task.id)}
             onKeyDown={e => e.key === 'Enter' && toggleEditMode(task.id)}
             // className="w-full rounded border p-2 text-sm font-medium"
-            className='rounded-0 border-input-0 h-fit border-0 px-0 py-0 focus-visible:ring-0'
+            className='bg-transparent h-fit px-0 py-0 '
           />
         ) : (
           <span className='relative inline-block'>
             {task.text}
             <span
-              className={`absolute left-0 top-1/2 h-[2px] transition-all duration-500 ${
-                task.completed ? 'w-full bg-stone-500' : 'w-0 bg-white'
-              }`}
+              className={`absolute left-0 top-1/2 h-[2px] transition-all duration-500 ${task.completed ? 'w-full bg-stone-500' : 'w-0 bg-white'
+                }`}
               style={{ transform: 'translateY(-50%)' }}
             />
           </span>

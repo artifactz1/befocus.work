@@ -36,6 +36,27 @@
       "when": 1744949629813,
       "tag": "0004_flashy_gorgon",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1745141871284,
+      "tag": "0005_nervous_lenny_balinger",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1748155824620,
+      "tag": "0006_mixed_gateway",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1748168300478,
+      "tag": "0007_oval_red_ghost",
+      "breakpoints": true
     }
   ]
 }

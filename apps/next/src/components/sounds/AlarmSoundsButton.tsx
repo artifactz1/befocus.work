@@ -20,6 +20,8 @@ export default function AlarmSoundsButton() {
 
   const sound = sounds[alarmId]
 
+  const [volume, setVolumeState] = useState(0.5)
+
   const [isPlaying, setIsPlaying] = useState(false) // Local state to manage ReactPlayer's playing state
 
   // Set ReactPlayer to not play when popover is open
@@ -43,11 +45,11 @@ export default function AlarmSoundsButton() {
   if (!sound) return null
 
   return (
-    <div>
+    <div className="pb-5">
       <ReactPlayer
         url={sound.url} // Replace with your media URL
         playing={isPlaying} // Controlled by state
-        volume={sound.volume}
+        volume={volume}
         controls={false}
         width='0'
         height='0'
@@ -56,13 +58,13 @@ export default function AlarmSoundsButton() {
       />
 
       <Separator className='my-4 hidden bg-white md:block' />
-      <h3 className='mb-3 text-left font-semibold'>Alarm Sound</h3>
-      <div className='flex flex-row space-x-2'>
+      <h3 className='mb-3 text-left font-semibold py-2'>Alarm Sound</h3>
+      <div className='flex flex-col space-y-10 '>
         <Select
           value={alarmId} // Ensure value is a string
           onValueChange={handleSelectChange}
         >
-          <SelectTrigger className='w-1/3'>
+          <SelectTrigger className='w-full'>
             <SelectValue placeholder='Select an alarm' />
           </SelectTrigger>
           <SelectContent>
@@ -80,16 +82,26 @@ export default function AlarmSoundsButton() {
         <div className='flex w-full items-center space-y-2'>
           {/* <label className="block text-center text-sm">Volume</label> */}
           <Slider
-            value={[sound.volume * 100]} // Default to the current volume (range 0-100)
+            value={[volume * 100]} // Default to the current volume (range 0-100)
             onValueChange={value => {
-              const newVolume = value[0] ?? 80 // Default to 80 if value is undefined
-              setVolume(alarmId, newVolume / 100) // Set volume globally (range 0-1)
+              const newVol = (value[0] ?? 0) / 100  // Default to 80 if value is undefined
+              // setVolume(alarmId, newVolume / 100) // Set volume globally (range 0-1)
+              setVolumeState(newVol) // Set volume globally (range 0-1)
+              setVolume(alarmId, newVol)
             }}
             max={100}
             step={1}
             className='w-full'
           />
         </div>
+        {/* <Button>
+          Preview Sound
+        </Button> */}
+        {/* <Button onClick={() => setIsPlaying(true)}>
+          Preview Sound
+        </Button> */}
+
+        {/* <Separator className='my-4 hidden bg-white md:block' /> */}
       </div>
     </div>
   )
