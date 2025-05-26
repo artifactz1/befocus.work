@@ -4,13 +4,13 @@ import { useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { cn } from '~/lib/utils'
 import { useTimerStore } from '~/store/useTimerStore'
-import useIsLandscape from './useIsMobileLandscape'
+import useIsLandscape from '../helper/useIsMobileLandscape'
 
 export default function SessionsUI() {
   // const { sessions, currentSession, isWorking, timeLeft, workDuration, breakDuration } =
   //   useTimerStore()
 
-  const { sessions, currentSession, isWorking,} =
+  const { sessions, currentSession, isWorking, } =
     useTimerStore()
 
   const isLandscape = useIsLandscape() // Get Zustand state & function
@@ -59,7 +59,7 @@ export default function SessionsUI() {
                     index <= currentSession - 1 // Completed work sessions
                       ? isWorking && currentSession - 1 === index
                         ? // ? `${opacityClass}`
-                          'bg-pink-500'
+                        'bg-pink-500'
                         : 'bg-green-500'
                       : '', // No color if not completed
                   )}
@@ -77,7 +77,7 @@ export default function SessionsUI() {
                       ? 'bg-green-500'
                       : !isWorking && currentSession - 1 === index // Current break session
                         ? // ? `${opacityClassBrk}`
-                          'bg-pink-500'
+                        'bg-pink-500'
                         : 'bg-transparent',
                   )}
                 />
@@ -105,7 +105,7 @@ export default function SessionsUI() {
                   index <= currentSession - 1
                     ? isWorking && currentSession - 1 === index
                       ? // ? `${opacityClass}`
-                        'bg-pink-500'
+                      'bg-pink-500'
                       : 'bg-green-500'
                     : '',
                 )}
@@ -130,7 +130,7 @@ export default function SessionsUI() {
                     ? 'bg-green-500'
                     : !isWorking && currentSession - 1 === index
                       ? // ? `${opacityClassBrk}`
-                        'bg-pink-500'
+                      'bg-pink-500'
                       : 'bg-transparent',
                 )}
               />

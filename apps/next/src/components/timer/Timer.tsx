@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore } from '~/store/useTimerStore'
-import useIsLandscape from '../useIsMobileLandscape'
+import useIsLandscape from '../helper/useIsMobileLandscape'
 import TimerUI from './TimeUI'
 
 export default function Timer() {

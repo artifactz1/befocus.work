@@ -11,7 +11,7 @@ import { User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { signOut, useSession } from '~/lib/auth.client'
-import MenuButton from './MenuButtons'
+import MenuButton from './helper/MenuButtons'
 
 export default function AccountButton() {
   const { data } = useSession()

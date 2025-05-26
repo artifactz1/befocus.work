@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTimerStore } from '~/store/useTimerStore'
-import useIsLandscape from './useIsMobileLandscape'
+import useIsLandscape from '../helper/useIsMobileLandscape'
 
 export default function SessionTitleDisplay() {
   const { isWorking, isRunning, workDuration, timeLeft } = useTimerStore()

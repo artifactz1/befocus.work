@@ -3,7 +3,7 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui/tooltip'
 import { Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import MenuButton from './MenuButtons'
+import MenuButton from './helper/MenuButtons'
 
 export const DarkModeToggle = () => {
   const [isDarkMode, setIsDarkMode] = useState(false)

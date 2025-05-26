@@ -1,7 +1,7 @@
 'use client'
 import Footer from '~/components/Footer'
-import GlobalSoundsPlayer from '~/components/GlobalSoundsPlayer'
 import Header from '~/components/Header'
+import GlobalSoundsPlayer from '~/components/helper/GlobalSoundsPlayer'
 import Timer from '~/components/timer/Timer'
 import { TimerInitializer } from '~/components/timer/TimerInitializer'
 

@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/
 import { Pause, Play, RotateCcw, SkipForward } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTimerStore } from '~/store/useTimerStore'
-import MenuButton from '../MenuButtons'
+import MenuButton from '../helper/MenuButtons'
 
 import AccountButton from '../AccountButton'
 
@@ -36,7 +36,7 @@ export default function TimerButtons() {
             <MenuButton
               onClick={toggleTimer}
               variant={buttonVariant}
-              // size={window.length < 640 ? "sm" : "lg"}
+            // size={window.length < 640 ? "sm" : "lg"}
             >
               {isRunning ? (
                 <Pause className={`${iconSize}`} strokeWidth={3} />
