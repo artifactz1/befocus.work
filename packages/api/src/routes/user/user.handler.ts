@@ -252,6 +252,10 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
   // Take the one-and-only row
   const saved = inserted[0]
 
+  if (!saved) {
+    return c.json({ message: 'Failed to insert sound' }, HttpStatusCodes.INTERNAL_SERVER_ERROR)
+  }
+
   const result = {
     id: saved.id,
     name: saved.name,
