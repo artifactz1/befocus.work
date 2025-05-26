@@ -76,7 +76,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
         <div className='space-y-2'>
           <motion.button
             // …same animation props…
-            className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300"
+            className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
             /* single-click anywhere on the row (when not already editing) opens the Input */
             onClick={e => {
               if (e.detail === 1 && !isEditing) {
@@ -124,11 +124,10 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
                     }
                   }
                 }}
-                className="bg-transparent h-fit px-0 py-0 rounded-sm"
-              // className="bg-transparent h-fit  rounded-sm"
+                className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
               />
             ) : (
-              <span className="relative inline-block">
+              <span>
                 {sound.name}
               </span>
             )}
