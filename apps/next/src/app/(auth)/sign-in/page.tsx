@@ -9,7 +9,7 @@ export default function SignIn() {
 
   return (
     <div className='flex flex-col items-center justify-center h-full gap-10'>
-      <h1 className='text-4xl font-bold'>BeFocus</h1>
+      <h1 className='text-4xl font-bold'>Be Focus</h1>
       <div>
         <div className='flex flex-col gap-12 flex-1 items-center justify-center h-full max-w-sm w-80'>
           <Button
