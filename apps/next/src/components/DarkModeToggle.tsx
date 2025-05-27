@@ -27,7 +27,7 @@ export const DarkModeToggle = () => {
     setIsDarkMode(!isDarkMode)
   }
 
-  if (!mounted) return null // Or a skeleton/spinner if preferred
+  if (!mounted) return null
 
   return (
     <TooltipProvider>

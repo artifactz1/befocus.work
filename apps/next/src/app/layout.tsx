@@ -10,7 +10,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
+        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
           <AppProviders>{children}</AppProviders>
         </ThemeProvider>
       </body>
