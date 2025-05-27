@@ -4,33 +4,30 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/
 import { Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import MenuButton from './helper/MenuButtons'
+import { useTheme } from 'next-themes'
 
 export const DarkModeToggle = () => {
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   useEffect(() => {
-    // Check localStorage or default to dark mode
-    const darkModeFromLocalStorage = localStorage.getItem('darkMode') === 'true'
-    setIsDarkMode(darkModeFromLocalStorage)
-
-    if (darkModeFromLocalStorage) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
+    setMounted(true)
   }, [])
 
-  const handleToggle = () => {
-    setIsDarkMode(prevMode => !prevMode)
-
-    if (isDarkMode) {
-      document.documentElement.classList.remove('dark')
-      localStorage.setItem('darkMode', 'false')
-    } else {
-      document.documentElement.classList.add('dark')
-      localStorage.setItem('darkMode', 'true')
+  useEffect(() => {
+    if (mounted) {
+      setIsDarkMode(theme === 'dark')
     }
+  }, [mounted, theme])
+
+  const handleToggle = () => {
+    const nextTheme = isDarkMode ? 'light' : 'dark'
+    setTheme(nextTheme)
+    setIsDarkMode(!isDarkMode)
   }
+
+  if (!mounted) return null // Or a skeleton/spinner if preferred
 
   return (
     <TooltipProvider>
@@ -40,10 +37,9 @@ export const DarkModeToggle = () => {
             onClick={handleToggle}
             variant='outline'
             size='lg'
-            className=' lg:w-24 lg:h-12 xl:h-12 xl:w-32'
+            className='lg:w-24 lg:h-12 xl:h-12 xl:w-32'
           >
-            {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}{' '}
-            {/* This changes the icon */}
+            {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}
           </MenuButton>
         </TooltipTrigger>
         <TooltipContent className='font-bold'>
