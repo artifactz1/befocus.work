@@ -1,4 +1,5 @@
 import '@repo/ui/globals.css'
+import ThemeProvider from '~/components/sessions/ThemeProvider'
 import AppProviders from '~/provider/AppProviders'
 
 export default function RootLayout({
@@ -7,9 +8,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
       <body>
-        <AppProviders>{children}</AppProviders>
+        <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+          <AppProviders>{children}</AppProviders>
+        </ThemeProvider>
       </body>
     </html>
   )
