@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type React from 'react'
-import { ThemeProvider } from '~/components/sessions/ThemeProvider'
+import ThemeProvider from '~/components/sessions/ThemeProvider'
 
 const queryClient = new QueryClient()
 
