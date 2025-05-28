@@ -101,7 +101,7 @@ export default function TaskList() {
             {tasks
               .filter(task => !task.archived)
               .map(task => (
-                <TaskItem key={task.id} task={task} handleChange={handleChange} />
+                <TaskItem key={task.id} task={task}/>
               ))}
           </div>
 
@@ -114,7 +114,7 @@ export default function TaskList() {
                     {tasks
                       .filter(task => task.archived)
                       .map(task => (
-                        <TaskItem key={task.id} task={task} handleChange={handleChange} />
+                        <TaskItem key={task.id} task={task}/>
                       ))}
                   </div>
                 </AccordionContent>
