@@ -26,6 +26,7 @@ export const insertTaskSchema = createInsertSchema(tasks).omit({
   id: true,
   editMode: true,
   createdAt: true, // let DB handle the timestamp
+  userId: true,
 })
 
 export const updateTaskSchema = createUpdateSchema(tasks).omit({

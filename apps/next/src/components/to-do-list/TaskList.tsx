@@ -2,61 +2,55 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@r
 import { Checkbox } from '@repo/ui/checkbox'
 import { Input } from '@repo/ui/input'
 import { Separator } from '@repo/ui/separator'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { stagger, useAnimate } from 'framer-motion'
 import { NotebookPen } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTodoStore } from '~/store/useToDoStore'; // Zustand store
 import TaskItem from '../to-do-list/TaskItem'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { api } from '~/lib/api.client'
 
-export default function TaskList() {
-  const { tasks, toggleTask } = useTodoStore()
-  const [ref, animate] = useAnimate()
-  const [newTask, setNewTask] = useState('')
-  const { addMode, addTask, toggleAdd } = useTodoStore()
-
-  function handleChange(id: number) {
-    toggleTask(id)
-  }
-
+export const useCreateUserTask = () => {
   const queryClient = useQueryClient()
 
-  const { data: taskData = [], isLoading } = useQuery({
-    queryKey: ['tasks'],
-    queryFn: async () => {
-      const res = await fetch('/api/user/tasks')
-      if (!res.ok) throw new Error('Failed to fetch tasks')
-      return res.json()
-    },
-  })
-
-  const createTaskMutation = useMutation({
+  return useMutation({
     mutationFn: async (text: string) => {
-      const res = await fetch('/api/user/tasks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      })
+      const res = await api.user.tasks.$post({ json: {
+        text,
+      } })
       if (!res.ok) throw new Error('Failed to create task')
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+      queryClient.invalidateQueries({ queryKey: ['userTasks'] })
     },
   })
+}
 
-  function handleAddTask() {
-    if (newTask.trim() !== '') {
-      createTaskMutation.mutate(newTask)
-      setNewTask('')
-    }
+export const useUserTasks = () =>
+  useQuery({
+    queryKey: ['userTasks'],
+    queryFn: async () => {
+      const res = await api.user.tasks.$get()
+      if (!res.ok) throw new Error('Failed to fetch user tasks')
+      return res.json()
+    },
+    select: raw =>
+      raw.map(task => ({
+        ...task,
+        editMode: false, // frontend-only state
+      })),
+    refetchOnWindowFocus: false,
+  })
+
+export default function TaskList() {
+  const [ref, animate] = useAnimate()
+  const [newTask, setNewTask] = useState('')
+  const { addMode, addTask, toggleAdd, toggleTask, tasks } = useTodoStore()
+
+  function handleChange(id: number) {
+    toggleTask(id)
   }
-  // function handleAddTask() {
-  //   if (newTask.trim() !== '') {
-  //     addTask(newTask)
-  //     setNewTask('')
-  //   }
-  // }
 
   useEffect(() => {
     if (tasks.length === 0) return
@@ -79,6 +73,32 @@ export default function TaskList() {
     return () => clearTimeout(timeout)
   }, [tasks, animate])
 
+  function handleAddTask() {
+    if (newTask.trim() !== '') {
+      addTask(newTask)
+      createTaskMutation.mutate(newTask)
+      setNewTask('')
+    }
+  }
+
+  const { data: userTasks } = useUserTasks()
+  const existing = useTodoStore.getState().tasks
+
+  useEffect(() => {
+    if (!userTasks) return
+
+    for (const task of userTasks) {
+      const alreadyExists = existing.some(t => t.id === task.id)
+      if (!alreadyExists) {
+        addTask(task.text)
+      }
+    }
+  }, [userTasks, addTask, existing])
+
+
+  const createTaskMutation = useCreateUserTask();
+
+
   return (
     <div className='h-fill'>
       <div className='hidden sm:block'>
@@ -90,6 +110,8 @@ export default function TaskList() {
       <div className='sm:flex sm:min-h-full sm:flex-col sm:items-center sm:justify-center'>
         <div className='flex w-full flex-col md:max-w-sm'>
           <div>
+
+            {/* Add Mode */}
             {addMode && (
               <div className='flex w-full items-center border-b-2 py-2'>
                 <Checkbox className='peer mr-2' />
@@ -113,6 +135,8 @@ export default function TaskList() {
               </div>
             )}
           </div>
+
+          {/* List of known tasks */}
           <div ref={ref} className='w-full pl-1'>
             {tasks
               .filter(task => !task.archived)
@@ -120,6 +144,8 @@ export default function TaskList() {
                 <TaskItem key={task.id} task={task} handleChange={handleChange} />
               ))}
           </div>
+
+          {/* Archived Tasks */}
           {tasks.some(task => task.archived) && (
             <Accordion type='single' collapsible>
               <AccordionItem value='item-1' className='border-0'>
@@ -141,3 +167,4 @@ export default function TaskList() {
     </div>
   )
 }
+
