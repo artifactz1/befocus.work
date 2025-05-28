@@ -9,28 +9,32 @@ const passwordRoutes = ['/reset-password-success', '/forgot-password']
 export default async function authMiddleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname
   const isAuthRoute = authRoutes.includes(pathName)
-  const isPaswordRoute = passwordRoutes.includes(pathName)
+  const isPasswordRoute = passwordRoutes.includes(pathName)
+  const isHomeRoute = pathName === '/'
 
   // Fetch the session data from the backend
-  // Because of cross domain cookies, session is the same
   const { data: session } = await betterFetch<Session>(`${env.API_URL}/api/auth/get-session`, {
     baseURL: request.nextUrl.origin,
     headers: {
-      // Get the cookie from the request
       cookie: request.headers.get('cookie') || '',
     },
   })
 
-  // If no session is found, redirect to the sign-in page
+  // If no session is found, allow auth and password routes
   if (!session) {
-    if (isAuthRoute || isPaswordRoute) {
+    if (isAuthRoute || isPasswordRoute || isHomeRoute) {
       return NextResponse.next()
     }
 
     return NextResponse.redirect(new URL('/sign-in', request.url))
   }
 
-  // If session exists, continue to the next middleware or route
+  // If session exists and user is on the home page, redirect to dashboard
+  if (session && isHomeRoute) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // If session exists and not on home, continue
   return NextResponse.next()
 }
 
@@ -39,15 +43,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    // '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-    '/dashboard',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)'],
 }
