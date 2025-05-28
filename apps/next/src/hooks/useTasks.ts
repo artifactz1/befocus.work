@@ -39,3 +39,22 @@ export const useCreateUserTask = () => {
     },
   })
 }
+
+// Update an existing task
+export const useUpdateUserTask = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ id, updates }: { id: number; updates: Partial<Task> }) => {
+      const res = await api.user.tasks[':id'].$put({
+        param: { id: String(id) },
+        json: updates,
+      })
+      if (!res.ok) throw new Error('Failed to update task')
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userTasks'] })
+    },
+  })
+}
