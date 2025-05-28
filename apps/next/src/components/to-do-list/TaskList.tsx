@@ -19,7 +19,7 @@ import TaskItem from '../to-do-list/TaskItem'
 export default function TaskList() {
   const [ref, animate] = useAnimate()
   const [newTask, setNewTask] = useState('')
-  const { addMode, addTask, toggleAdd, toggleTask, tasks, setTasks } = useTodoStore()
+  const { addMode, addTask, toggleAdd, tasks, setTasks } = useTodoStore()
   const createTaskMutation = useCreateUserTask()
   const { data: userTasks } = useUserTasks()
 
@@ -28,10 +28,6 @@ export default function TaskList() {
       setTasks(userTasks)
     }
   }, [userTasks, setTasks])
-
-  function handleChange(id: number) {
-    toggleTask(id)
-  }
 
   function handleAddTask() {
     if (newTask.trim() !== '') {
@@ -109,7 +105,7 @@ export default function TaskList() {
             <div>
 
               {tasks.some(task => task.archived) && (
-                <Accordion type='single' collapsible>
+                <Accordion type='single' collapsible className="overflow-x-hidden">
                   <AccordionItem value='item-1' className='border-0'>
                     <AccordionTrigger className='font-bold'>Archived</AccordionTrigger>
                     <AccordionContent className='pl-1'>
