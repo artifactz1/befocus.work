@@ -5,7 +5,7 @@ import { Separator } from '@repo/ui/separator'
 import { stagger, useAnimate } from 'framer-motion'
 import { NotebookPen } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useTodoStore } from '~/store/useToDoStore' // Zustand store
+import { useTodoStore } from '~/store/useToDoStore'; // Zustand store
 import TaskItem from '../to-do-list/TaskItem'
 
 export default function TaskList() {
@@ -18,12 +18,50 @@ export default function TaskList() {
     toggleTask(id)
   }
 
+  // useEffect(() => {
+  //   if (tasks.length === 0) return // Prevent animation when there are no tasks
+
+  //   if (tasks.every(task => task.completed)) {
+  //     const random = Math.random()
+
+  //     if (random < 1 / 3) {
+  //       animate('.peer', { scale: [1, 1.25, 1] }, { duration: 0.35, delay: stagger(0.075) })
+  //     } else if (random < 2 / 3) {
+  //       animate('.peer', { x: [0, 2, -2, 0] }, { duration: 0.4, delay: stagger(0.1) })
+  //     } else {
+  //       animate('.peer', { rotate: [0, 10, -10, 0] }, { duration: 0.5, delay: stagger(0.1) })
+  //     }
+  //   }
+  // }, [tasks, animate]) // Runs whenever `tasks` changes
+
+  // useEffect(() => {
+  //   if (tasks.length === 0) return
+  //   if (!tasks.every(task => task.completed)) return
+
+  //   // Check if any '.peer' elements are in the DOM
+  //   const peers = document.querySelectorAll('.peer')
+  //   if (peers.length === 0) return
+
+  //   const random = Math.random()
+
+  //   if (random < 1 / 3) {
+  //     animate('.peer', { scale: [1, 1.25, 1] }, { duration: 0.35, delay: stagger(0.075) })
+  //   } else if (random < 2 / 3) {
+  //     animate('.peer', { x: [0, 2, -2, 0] }, { duration: 0.4, delay: stagger(0.1) })
+  //   } else {
+  //     animate('.peer', { rotate: [0, 10, -10, 0] }, { duration: 0.5, delay: stagger(0.1) })
+  //   }
+  // }, [tasks, animate])
+
   useEffect(() => {
-    if (tasks.length === 0) return // Prevent animation when there are no tasks
+    if (tasks.length === 0) return
+    if (!tasks.every(task => task.completed)) return
 
-    if (tasks.every(task => task.completed)) {
+    const timeout = setTimeout(() => {
+      const peers = document.querySelectorAll('.peer')
+      if (peers.length === 0) return
+
       const random = Math.random()
-
       if (random < 1 / 3) {
         animate('.peer', { scale: [1, 1.25, 1] }, { duration: 0.35, delay: stagger(0.075) })
       } else if (random < 2 / 3) {
@@ -31,8 +69,10 @@ export default function TaskList() {
       } else {
         animate('.peer', { rotate: [0, 10, -10, 0] }, { duration: 0.5, delay: stagger(0.1) })
       }
-    }
-  }, [tasks, animate]) // Runs whenever `tasks` changes
+    }, 50)
+
+    return () => clearTimeout(timeout)
+  }, [tasks, animate])
 
   function handleAddTask() {
     if (newTask.trim() !== '') {
@@ -40,6 +80,8 @@ export default function TaskList() {
       setNewTask('')
     }
   }
+
+
 
   return (
     <div className='h-fill'>
@@ -75,7 +117,7 @@ export default function TaskList() {
               </div>
             )}
           </div>
-          <div ref={ref} className='w-full'>
+          <div ref={ref} className='w-full pl-1'>
             {tasks
               .filter(task => !task.archived)
               .map(task => (
@@ -86,7 +128,7 @@ export default function TaskList() {
             <Accordion type='single' collapsible>
               <AccordionItem value='item-1' className='border-0'>
                 <AccordionTrigger className='font-bold'>Archived</AccordionTrigger>
-                <AccordionContent className='pl-2'>
+                <AccordionContent className='pl-1'>
                   <div ref={ref}>
                     {tasks
                       .filter(task => task.archived)

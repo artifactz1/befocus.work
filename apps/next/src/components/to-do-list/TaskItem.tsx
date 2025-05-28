@@ -1,6 +1,7 @@
 import { Button } from '@repo/ui/button'
 import { Checkbox } from '@repo/ui/checkbox'
 import { Input } from '@repo/ui/input'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui/tooltip'
 import { motion } from 'framer-motion'
 import { Archive, ArchiveRestore } from 'lucide-react'
 
@@ -27,17 +28,12 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
         whileTap={{ scale: 0.8 }}
         className='flex items-center'
       >
-        {task.archived ? (
-          <Button onClick={() => archiveTask(task.id)}>
-            {task.archived ? <ArchiveRestore strokeWidth={1.5} /> : <Archive strokeWidth={1.5} />}
-          </Button>
-        ) : (
-          <Checkbox
-            checked={task.completed}
-            onCheckedChange={() => handleChange(task.id)}
-            className='peer mr-2'
-          />
-        )}
+
+        <Checkbox
+          checked={task.completed}
+          onCheckedChange={() => handleChange(task.id)}
+          className='peer mr-2'
+        />
       </motion.div>
       <motion.div
         animate={{ x: task.completed ? [5, 0, 0] : 0 }}
@@ -73,11 +69,44 @@ export default function TaskItem({ task, handleChange }: TaskItemProps) {
         )}
       </motion.div>
 
-      <div className='flex items-center opacity-0 transition-opacity hover:opacity-100'>
-        <Button onClick={() => archiveTask(task.id)}>
-          {!task.archived && <Archive strokeWidth={1.5} />}
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className='flex items-center opacity-0 transition-opacity hover:opacity-100'>
+              <Button variant='ghost' onClick={() => archiveTask(task.id)}>
+                {task.archived ? (
+                  <ArchiveRestore strokeWidth={1.5} />
+                ) : (
+                  <Archive strokeWidth={1.5} />
+                )}
+              </Button>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{task.archived ? 'Restore item' : 'Archive item'}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+
+
+      {/* <div className='flex items-center opacity-0 transition-opacity hover:opacity-100'>
+        <Button variant='ghost' onClick={() => archiveTask(task.id)}>
+          {task.archived ? <ArchiveRestore strokeWidth={1.5} /> : <Archive strokeWidth={1.5} />}
         </Button>
-      </div>
+      </div> */}
+
+      {/* {task.archived ? (
+        <Button variant='ghost' onClick={() => archiveTask(task.id)}>
+          {task.archived ? <ArchiveRestore strokeWidth={1.5} /> : <Archive strokeWidth={1.5} />}
+        </Button>
+      ) : (
+        <Checkbox
+          checked={task.completed}
+          onCheckedChange={() => handleChange(task.id)}
+          className='peer mr-2'
+        />
+      )} */}
     </div>
   )
 }
