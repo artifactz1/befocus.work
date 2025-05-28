@@ -2,6 +2,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@r
 import { Checkbox } from '@repo/ui/checkbox'
 import { Input } from '@repo/ui/input'
 import { Separator } from '@repo/ui/separator'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { stagger, useAnimate } from 'framer-motion'
 import { NotebookPen } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -18,40 +19,44 @@ export default function TaskList() {
     toggleTask(id)
   }
 
-  // useEffect(() => {
-  //   if (tasks.length === 0) return // Prevent animation when there are no tasks
+  const queryClient = useQueryClient()
 
-  //   if (tasks.every(task => task.completed)) {
-  //     const random = Math.random()
+  const { data: taskData = [], isLoading } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: async () => {
+      const res = await fetch('/api/user/tasks')
+      if (!res.ok) throw new Error('Failed to fetch tasks')
+      return res.json()
+    },
+  })
 
-  //     if (random < 1 / 3) {
-  //       animate('.peer', { scale: [1, 1.25, 1] }, { duration: 0.35, delay: stagger(0.075) })
-  //     } else if (random < 2 / 3) {
-  //       animate('.peer', { x: [0, 2, -2, 0] }, { duration: 0.4, delay: stagger(0.1) })
-  //     } else {
-  //       animate('.peer', { rotate: [0, 10, -10, 0] }, { duration: 0.5, delay: stagger(0.1) })
-  //     }
+  const createTaskMutation = useMutation({
+    mutationFn: async (text: string) => {
+      const res = await fetch('/api/user/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      })
+      if (!res.ok) throw new Error('Failed to create task')
+      return res.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
+    },
+  })
+
+  function handleAddTask() {
+    if (newTask.trim() !== '') {
+      createTaskMutation.mutate(newTask)
+      setNewTask('')
+    }
+  }
+  // function handleAddTask() {
+  //   if (newTask.trim() !== '') {
+  //     addTask(newTask)
+  //     setNewTask('')
   //   }
-  // }, [tasks, animate]) // Runs whenever `tasks` changes
-
-  // useEffect(() => {
-  //   if (tasks.length === 0) return
-  //   if (!tasks.every(task => task.completed)) return
-
-  //   // Check if any '.peer' elements are in the DOM
-  //   const peers = document.querySelectorAll('.peer')
-  //   if (peers.length === 0) return
-
-  //   const random = Math.random()
-
-  //   if (random < 1 / 3) {
-  //     animate('.peer', { scale: [1, 1.25, 1] }, { duration: 0.35, delay: stagger(0.075) })
-  //   } else if (random < 2 / 3) {
-  //     animate('.peer', { x: [0, 2, -2, 0] }, { duration: 0.4, delay: stagger(0.1) })
-  //   } else {
-  //     animate('.peer', { rotate: [0, 10, -10, 0] }, { duration: 0.5, delay: stagger(0.1) })
-  //   }
-  // }, [tasks, animate])
+  // }
 
   useEffect(() => {
     if (tasks.length === 0) return
@@ -73,15 +78,6 @@ export default function TaskList() {
 
     return () => clearTimeout(timeout)
   }, [tasks, animate])
-
-  function handleAddTask() {
-    if (newTask.trim() !== '') {
-      addTask(newTask)
-      setNewTask('')
-    }
-  }
-
-
 
   return (
     <div className='h-fill'>
