@@ -97,30 +97,39 @@ export default function TaskList() {
             )}
           </div>
 
-          <div ref={ref} className='w-full pl-1'>
-            {tasks
-              .filter(task => !task.archived)
-              .map(task => (
-                <TaskItem key={task.id} task={task}/>
-              ))}
+          <div>
+
+            <div ref={ref} className='w-full pl-1'>
+              {tasks
+                .filter(task => !task.archived)
+                .map(task => (
+                  <TaskItem key={task.id} task={task} />
+                ))}
+            </div>
+            <div>
+
+              {tasks.some(task => task.archived) && (
+                <Accordion type='single' collapsible>
+                  <AccordionItem value='item-1' className='border-0'>
+                    <AccordionTrigger className='font-bold'>Archived</AccordionTrigger>
+                    <AccordionContent className='pl-1'>
+                      <div ref={ref}>
+                        {tasks
+                          .filter(task => task.archived)
+                          .map(task => (
+                            <TaskItem key={task.id} task={task} />
+                          ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              )}
+            </div>
+
+
           </div>
 
-          {tasks.some(task => task.archived) && (
-            <Accordion type='single' collapsible>
-              <AccordionItem value='item-1' className='border-0'>
-                <AccordionTrigger className='font-bold'>Archived</AccordionTrigger>
-                <AccordionContent className='pl-1'>
-                  <div ref={ref}>
-                    {tasks
-                      .filter(task => task.archived)
-                      .map(task => (
-                        <TaskItem key={task.id} task={task}/>
-                      ))}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          )}
+
         </div>
       </div>
     </div>

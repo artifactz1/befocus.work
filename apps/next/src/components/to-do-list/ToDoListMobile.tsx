@@ -9,6 +9,7 @@ import {
   DrawerTrigger,
 } from '@repo/ui/drawer'
 import { Separator } from '@repo/ui/separator'
+import { Toggle } from '@repo/ui/toggle'
 import { NotebookPen, Plus } from 'lucide-react'
 import { useTodoStore } from '~/store/useToDoStore'
 import TaskList from '../to-do-list/TaskList'
@@ -33,14 +34,18 @@ export default function ToDoListMobile() {
             </DrawerTitle>
           </DrawerHeader>
 
-          <div className='px-5 pb-12'>
+          <div className='px-5 '>
             <TaskList />
           </div>
 
-          <DrawerFooter>
-            <Button onClick={() => toggleAdd()} className='absolute bottom-6 right-6'>
+          <DrawerFooter className="flex justify-start pl-4 pb-4">
+            {/* <Button onClick={() => toggleAdd()} className='absolute bottom-6 right-6'>
               <Plus />
-            </Button>
+            </Button> */}
+            <Toggle onClick={() => toggleAdd()} className='flex items-center w-fit '>
+              <Plus />
+              <p>New Reminder</p>
+            </Toggle>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
