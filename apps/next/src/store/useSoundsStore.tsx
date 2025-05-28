@@ -4,7 +4,7 @@ import { create } from 'zustand'
 const soundTypes = ['alarm', 'ambient', 'bgMusic'] as const
 type SoundType = (typeof soundTypes)[number]
 
-interface Sound {
+export interface Sound {
   id: string         // unique key
   name: string       // display name
   playing: boolean

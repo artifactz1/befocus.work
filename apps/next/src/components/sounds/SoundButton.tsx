@@ -4,11 +4,10 @@ import { Button } from '@repo/ui/button'
 import { Input } from '@repo/ui/input'
 import { Slider } from '@repo/ui/slider'
 import { Toggle } from '@repo/ui/toggle'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import { Volume2, VolumeX } from 'lucide-react'
 import { useState } from 'react'
-import { api } from '~/lib/api.client'
+import { useDeleteUserSound, useUpdateUserSound } from '~/hooks/useSounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 const SoundSettings = ({ soundId }: { soundId: string }) => {
@@ -20,55 +19,20 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
     toggleSound,
     setVolume,
     isDeleteMode,
-    deleteSound
+    // deleteSound
   } = useSoundsStore()
 
   const sound = sounds[soundId]
-  const queryClient = useQueryClient()
+
   const [originalName, setOriginalName] = useState('')
 
-  const deleteMutation = useMutation<void, Error, string>({
-    mutationFn: async (id) => {
-      const response = await api.user.sounds[':id'].$delete({ param: { id } })
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({ message: 'Unknown error' }))
-        throw new Error(err.message ?? 'Failed to delete sound')
-      }
-    },
-    onSuccess: (_, id) => {
-      deleteSound(id)
-      queryClient.invalidateQueries({ queryKey: ['userSounds'] })
-    },
-  })
-
-  const updateSoundMutation = useMutation({
-    mutationKey: ['updateSound', soundId],
-    mutationFn: async (newName: string) => {
-      console.log('NEWNAME', newName);
-      const response = await api.user.sounds.$put({
-        json: { id: soundId, name: newName },
-      })
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({ message: 'Unknown error' }))
-        throw new Error(err.message ?? 'Failed to update sound')
-      }
-      return response.json()
-    },
-    onSuccess: () => {
-      console.log("User Sound successfully update")
-      queryClient.invalidateQueries({ queryKey: ['userSounds'] })
-    },
-    onError: (err: any) => {
-      console.error('Error updating sound:', err)
-    },
-  })
+  const deleteSoundMutation = useDeleteUserSound();
+  const updateSoundMutation = useUpdateUserSound(soundId);
 
   if (!sound) return null
 
   // helper flag
   const isEditing = !!editModes[soundId]
-
-
 
   return (
     <main>
@@ -157,7 +121,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
         </div>
       ) : (
         <div className='space-y-2'>
-          <Button onClick={() => deleteMutation.mutate(soundId)}>
+          <Button onClick={() => deleteSoundMutation.mutate(soundId)}>
             Delete {sound.name}
           </Button>
         </div>

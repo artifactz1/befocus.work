@@ -8,6 +8,7 @@ import { Label } from '@repo/ui/label'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { useSound } from '~/hooks/useSounds'
 import { api } from '~/lib/api.client'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
@@ -18,38 +19,16 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
   const [link, setLink] = useState('')
   const [linkError, setLinkError] = useState('')
 
-  // 1. Setup mutation
-  const queryClient = useQueryClient()
-  const { mutateAsync: createSound, status } = useMutation({
-    mutationKey: ['userSounds'],
-    mutationFn: async () => {
-      const res = await api.user.sounds.$post({
-        json: {
-          id: createId(),        // or generate your own ID
-          name: name,
-          url: link,
-          isCustom: true,
-          soundType: type,
-        },
-      })
-      if (!res.ok) {
-        const { message } = await res.json().catch(() => ({ message: 'Unknown error' }))
-        throw new Error(message)
-      }
-      return res.json()
-    },
-    onSuccess: (newSound) => {
-      console.log("Sound sent to database")
-      // 2. Push into store
+  // ✅ Hook call with current name, link, type
+  const { mutateAsync: createSound, status } = useSound({
+    name,
+    url: link,
+    type,
+    onSuccessCallback: newSound => {
       addSound(newSound.id, newSound.name, newSound.url, newSound.isCustom, type)
-      // 3. Optional: invalidate or refetch userSounds
-      queryClient.invalidateQueries({ queryKey: ['userSounds'] })
-      toast.success('Sound added!')
-    },
-    onError: (err: any) => {
-      toast.error(`Error adding sound: ${err.message}`)
     },
   })
+  
 
   const validateYoutubeLink = (url: string) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/
