@@ -39,9 +39,9 @@ export default function TimerButtons() {
             // size={window.length < 640 ? "sm" : "lg"}
             >
               {isRunning ? (
-                <Pause className={`${iconSize}`} strokeWidth={3} />
+                <Pause className={`${iconSize}`} strokeWidth={2} />
               ) : (
-                <Play className={`${iconSize}`} strokeWidth={3} />
+                <Play className={`${iconSize}`} strokeWidth={2} />
               )}
             </MenuButton>
           </TooltipTrigger>
@@ -57,7 +57,7 @@ export default function TimerButtons() {
               variant={buttonVariant}
               className='xl:h-12 xl:w-32'
             >
-              <RotateCcw className={`${iconSize}`} strokeWidth={3} />
+              <RotateCcw className={`${iconSize}`} strokeWidth={2} />
             </MenuButton>
           </TooltipTrigger>
           <TooltipContent className='font-bold'>Reset Time</TooltipContent>
@@ -72,7 +72,7 @@ export default function TimerButtons() {
               variant={buttonVariant}
               className='xl:h-12 xl:w-32'
             >
-              <SkipForward className={`${iconSize}`} strokeWidth={3} />
+              <SkipForward className={`${iconSize}`} strokeWidth={2} />
             </MenuButton>
           </TooltipTrigger>
           <TooltipContent className='font-bold'>Skip To Next</TooltipContent>

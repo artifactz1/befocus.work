@@ -9,6 +9,7 @@ import {
   DrawerTrigger,
 } from '@repo/ui/drawer'
 import { Separator } from '@repo/ui/separator'
+import { Toggle } from '@repo/ui/toggle'
 import { NotebookPen, Plus } from 'lucide-react'
 import { useTodoStore } from '~/store/useToDoStore'
 import TaskList from '../to-do-list/TaskList'
@@ -31,21 +32,20 @@ export default function ToDoListMobile() {
               <div className='mb-2 mt-4 text-left text-lg font-bold'>befocus/todolist</div>
               <Separator className='mt-4 bg-white' />
             </DrawerTitle>
-            {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
           </DrawerHeader>
 
-          <div className='px-5 pb-12'>
+          <div className='px-5 '>
             <TaskList />
           </div>
 
-          <DrawerFooter>
-            <Button onClick={() => toggleAdd()} className='absolute bottom-6 right-6'>
+          <DrawerFooter className="flex justify-start pl-4 pb-4">
+            {/* <Button onClick={() => toggleAdd()} className='absolute bottom-6 right-6'>
               <Plus />
-            </Button>
-
-            {/* <DrawerClose>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose> */}
+            </Button> */}
+            <Toggle onClick={() => toggleAdd()} className='flex items-center w-fit '>
+              <Plus />
+              <p>New Reminder</p>
+            </Toggle>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

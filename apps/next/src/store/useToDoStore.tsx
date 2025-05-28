@@ -1,12 +1,6 @@
 import { create } from 'zustand'
 
-interface Task {
-  id: number
-  text: string
-  completed: boolean
-  editMode: boolean
-  archived: boolean
-}
+import type { Task } from '@repo/types/tasks'
 
 interface TodoStore {
   addMode: boolean
@@ -18,6 +12,7 @@ interface TodoStore {
   editTask: (id: number, newText: string) => void
   removeTask: (id: number) => void
   archiveTask: (id: number) => void
+  setTasks: (tasks: Task[]) => void
 }
 
 export const useTodoStore = create<TodoStore>(set => ({
@@ -26,29 +21,7 @@ export const useTodoStore = create<TodoStore>(set => ({
     set(state => ({
       addMode: !state.addMode,
     })),
-  tasks: [
-    {
-      id: 1,
-      text: 'Buy groceries',
-      completed: true,
-      editMode: false,
-      archived: false,
-    },
-    {
-      id: 2,
-      text: 'Finish project',
-      completed: false,
-      editMode: false,
-      archived: false,
-    },
-    {
-      id: 3,
-      text: 'Go for a run',
-      completed: false,
-      editMode: false,
-      archived: false,
-    },
-  ],
+  tasks: [],
   addTask: text =>
     set(state => ({
       tasks: [
@@ -93,4 +66,5 @@ export const useTodoStore = create<TodoStore>(set => ({
         task.id === id ? { ...task, archived: !task.archived } : task,
       ),
     })),
+  setTasks: tasks => set({ tasks }),
 }))

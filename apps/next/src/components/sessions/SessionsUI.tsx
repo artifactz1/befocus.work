@@ -88,6 +88,56 @@ export default function SessionsUI() {
       </div>
 
       <div className='block sm:hidden'>
+        <div className='flex w-full flex-col items-center justify-center space-y-1 sm:mx-auto sm:p-6 min-h-[120px]'>
+          <div
+            className='grid w-full max-w-xs gap-1'
+            style={{
+              gridTemplateColumns: `repeat(${Math.max(sessions, 4)}, minmax(0, 1fr))`,
+              gridAutoRows: '1fr',
+            }}
+          >
+            {sessionKeys.map((key, index) => (
+              <div
+                key={key}
+                className={cn(
+                  'aspect-square rounded-lg border-2 transition-all duration-300',
+                  'border-gray-300 dark:border-white/80',
+                  index <= currentSession - 1
+                    ? isWorking && currentSession - 1 === index
+                      ? 'bg-pink-500'
+                      : 'bg-green-500'
+                    : '',
+                )}
+              />
+            ))}
+          </div>
+
+          <div
+            className='grid w-full max-w-xs gap-1'
+            style={{
+              gridTemplateColumns: `repeat(${Math.max(sessions, 4)}, minmax(0, 1fr))`,
+              gridAutoRows: '1fr',
+            }}
+          >
+            {sessionKeys.map((key, index) => (
+              <div
+                key={key}
+                className={cn(
+                  'aspect-square rounded-lg border-2 transition-all duration-300',
+                  'border-gray-300 dark:border-white/80',
+                  index < currentSession - 1
+                    ? 'bg-green-500'
+                    : !isWorking && currentSession - 1 === index
+                      ? 'bg-pink-500'
+                      : 'bg-transparent',
+                )}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* <div className='block sm:hidden'>
         <div className='flex w-full flex-col items-center justify-center space-y-1 sm:mx-auto sm:p-6'>
           <div
             className='grid w-full gap-1'
@@ -137,7 +187,7 @@ export default function SessionsUI() {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
     </main>
   )
 }

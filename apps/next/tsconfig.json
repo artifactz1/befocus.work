@@ -9,7 +9,8 @@
     "paths": {
       "~/*": ["./src/*"],
       "@repo/api/*": ["../../packages/api/src/*"],
-      "@repo/ui/*": ["../../packages/ui/src/components/ui/*"]
+      "@repo/ui/*": ["../../packages/ui/src/components/ui/*"],
+      "@repo/types/*": ["../../packages/types/*"]
     }
   },
   "include": [

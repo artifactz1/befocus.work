@@ -1,29 +1,55 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@repo/ui/accordion'
+'use client'
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@repo/ui/accordion'
 import { Checkbox } from '@repo/ui/checkbox'
 import { Input } from '@repo/ui/input'
 import { Separator } from '@repo/ui/separator'
 import { stagger, useAnimate } from 'framer-motion'
 import { NotebookPen } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useTodoStore } from '~/store/useToDoStore' // Zustand store
+import { useCreateUserTask, useUserTasks } from '~/hooks/useTasks'
+import { useTodoStore } from '~/store/useToDoStore'
 import TaskItem from '../to-do-list/TaskItem'
 
 export default function TaskList() {
-  const { tasks, toggleTask } = useTodoStore()
   const [ref, animate] = useAnimate()
   const [newTask, setNewTask] = useState('')
-  const { addMode, addTask, toggleAdd } = useTodoStore()
+  const { addMode, addTask, toggleAdd, toggleTask, tasks, setTasks } = useTodoStore()
+  const createTaskMutation = useCreateUserTask()
+  const { data: userTasks } = useUserTasks()
+
+  useEffect(() => {
+    if (userTasks) {
+      setTasks(userTasks)
+    }
+  }, [userTasks, setTasks])
 
   function handleChange(id: number) {
     toggleTask(id)
   }
 
+  function handleAddTask() {
+    if (newTask.trim() !== '') {
+      createTaskMutation.mutate(newTask)
+      addTask(newTask)
+      setNewTask('')
+    }
+  }
+
   useEffect(() => {
-    if (tasks.length === 0) return // Prevent animation when there are no tasks
+    if (tasks.length === 0) return
+    if (!tasks.every(task => task.completed)) return
 
-    if (tasks.every(task => task.completed)) {
+    const timeout = setTimeout(() => {
+      const peers = document.querySelectorAll('.peer')
+      if (peers.length === 0) return
+
       const random = Math.random()
-
       if (random < 1 / 3) {
         animate('.peer', { scale: [1, 1.25, 1] }, { duration: 0.35, delay: stagger(0.075) })
       } else if (random < 2 / 3) {
@@ -31,15 +57,10 @@ export default function TaskList() {
       } else {
         animate('.peer', { rotate: [0, 10, -10, 0] }, { duration: 0.5, delay: stagger(0.1) })
       }
-    }
-  }, [tasks, animate]) // Runs whenever `tasks` changes
+    }, 50)
 
-  function handleAddTask() {
-    if (newTask.trim() !== '') {
-      addTask(newTask)
-      setNewTask('')
-    }
-  }
+    return () => clearTimeout(timeout)
+  }, [tasks, animate])
 
   return (
     <div className='h-fill'>
@@ -75,29 +96,40 @@ export default function TaskList() {
               </div>
             )}
           </div>
-          <div ref={ref} className='w-full'>
-            {tasks
-              .filter(task => !task.archived)
-              .map(task => (
-                <TaskItem key={task.id} task={task} handleChange={handleChange} />
-              ))}
+
+          <div>
+
+            <div ref={ref} className='w-full pl-1'>
+              {tasks
+                .filter(task => !task.archived)
+                .map(task => (
+                  <TaskItem key={task.id} task={task} />
+                ))}
+            </div>
+            <div>
+
+              {tasks.some(task => task.archived) && (
+                <Accordion type='single' collapsible>
+                  <AccordionItem value='item-1' className='border-0'>
+                    <AccordionTrigger className='font-bold'>Archived</AccordionTrigger>
+                    <AccordionContent className='pl-1'>
+                      <div ref={ref}>
+                        {tasks
+                          .filter(task => task.archived)
+                          .map(task => (
+                            <TaskItem key={task.id} task={task} />
+                          ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              )}
+            </div>
+
+
           </div>
-          {tasks.some(task => task.archived) && (
-            <Accordion type='single' collapsible>
-              <AccordionItem value='item-1' className='border-0'>
-                <AccordionTrigger className='font-bold'>Archived</AccordionTrigger>
-                <AccordionContent className='pl-2'>
-                  <div ref={ref}>
-                    {tasks
-                      .filter(task => task.archived)
-                      .map(task => (
-                        <TaskItem key={task.id} task={task} handleChange={handleChange} />
-                      ))}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          )}
+
+
         </div>
       </div>
     </div>

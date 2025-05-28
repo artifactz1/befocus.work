@@ -1,12 +1,15 @@
 import { createRoute, z } from '@hono/zod-openapi'
 import {
   getSoundSchema,
+  getTaskSchema,
   getUserAccountsSchema,
   getUserSchema,
   getUserSessionSchema,
   getUserSettingsSchema,
   insertSoundSchema,
+  insertTaskSchema,
   updateSoundSchema,
+  updateTaskSchema,
   updateUserSettingsSchema,
 } from '@repo/api/db/schemas'
 import { notFoundSchema } from '@repo/api/lib/constants'
@@ -195,6 +198,89 @@ export const deleteUserSound = createRoute({
     ),
   },
 })
+
+export const getUserTasks = createRoute({
+  path: '/user/tasks',
+  method: 'get',
+  tags,
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(z.array(getTaskSchema), 'All user tasks'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'User not found'),
+  },
+})
+
+export const createUserTask = createRoute({
+  path: '/user/tasks',
+  method: 'post',
+  tags,
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: insertTaskSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(getTaskSchema, 'Created task'),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      z.object({ message: z.string(), errors: z.any() }),
+      'Invalid task data',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(z.object({ message: z.string() }), 'User not found'), //
+  },
+})
+
+export const updateUserTask = createRoute({
+  path: '/user/tasks/:id',
+  method: 'put',
+  tags,
+  request: {
+    params: z.object({ id: z.string() }),
+    body: {
+      content: {
+        'application/json': {
+          schema: updateTaskSchema,
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(getTaskSchema, 'Updated task'),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      z.object({ message: z.string(), errors: z.any() }),
+      'Invalid task data',
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      z.object({ message: z.string() }),
+      'Task or user not found',
+    ),
+  },
+})
+
+export const deleteUserTask = createRoute({
+  path: '/user/tasks/:id',
+  method: 'delete',
+  tags,
+  request: {
+    params: z.object({ id: z.string() }),
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(z.object({ message: z.string() }), 'Deleted task'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Task not found'),
+  },
+})
+
+export type GetUserTasks = typeof getUserTasks
+export type CreateUserTask = typeof createUserTask
+export type UpdateUserTask = typeof updateUserTask
+export type DeleteUserTask = typeof deleteUserTask
+
+
+
 
 export type CreateUserSettings = typeof createUserSettings
 export type GetUserAccountsRoute = typeof getUserAccounts

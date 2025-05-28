@@ -296,8 +296,6 @@ export const deleteUserSound: AppRouteHandler<DeleteUserSound> = async c => {
 
   // return c.json(undefined, HttpStatusCodes.NO_CONTENT)
   return c.json({ message: 'Sound deleted successfully' }, HttpStatusCodes.OK)
-
-
 }
 
 export const updateUserSounds: AppRouteHandler<UpdateUserSounds> = async c => {
@@ -344,3 +342,101 @@ export const updateUserSounds: AppRouteHandler<UpdateUserSounds> = async c => {
   return c.json(updated[0], HttpStatusCodes.OK)
 }
 
+import { tasks, insertTaskSchema, updateTaskSchema } from '@repo/api/db/tables/tasks'
+import type { GetUserTasks, CreateUserTask, UpdateUserTask, DeleteUserTask } from './user.route'
+
+export const getUserTasks: AppRouteHandler<GetUserTasks> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  if (!user) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const result = await db.query.tasks.findMany({
+    where: (t, { eq }) => eq(t.userId, user.id),
+  })
+
+  return c.json(result, HttpStatusCodes.OK)
+}
+
+export const createUserTask: AppRouteHandler<CreateUserTask> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  if (!user) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const body = await c.req.json()
+  const parsed = insertTaskSchema.safeParse(body)
+
+  if (!parsed.success) {
+    return c.json(
+      { message: 'Invalid task data', errors: parsed.error.format() },
+      HttpStatusCodes.BAD_REQUEST,
+    )
+  }
+
+  const [inserted] = await db
+    .insert(tasks)
+    .values({ ...parsed.data, userId: user.id })
+    .returning()
+
+  return c.json(inserted, HttpStatusCodes.OK)
+}
+
+export const updateUserTask: AppRouteHandler<UpdateUserTask> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const taskId = Number(c.req.param('id'))
+
+  if (!user) {
+    return c.json({ message: 'User not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const body = await c.req.json()
+  const parsed = updateTaskSchema.safeParse(body)
+  if (!parsed.success) {
+    return c.json(
+      { message: 'Invalid update data', errors: parsed.error.format() },
+      HttpStatusCodes.BAD_REQUEST,
+    )
+  }
+
+  const existing = await db.query.tasks.findFirst({
+    where: t => and(eq(t.id, taskId), eq(t.userId, user.id)),
+  })
+
+  if (!existing) {
+    return c.json({ message: 'Task not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const [updated] = await db
+    .update(tasks)
+    .set(parsed.data)
+    .where(and(eq(tasks.id, taskId), eq(tasks.userId, user.id)))
+    .returning()
+
+  return c.json(updated, HttpStatusCodes.OK)
+}
+
+export const deleteUserTask: AppRouteHandler<DeleteUserTask> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const taskId = Number(c.req.param('id'))
+
+  if (!user) {
+    return c.json({ message: 'User not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const existing = await db.query.tasks.findFirst({
+    where: t => and(eq(t.id, taskId), eq(t.userId, user.id)),
+  })
+
+  if (!existing) {
+    return c.json({ message: 'Task not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  await db.delete(tasks).where(eq(tasks.id, taskId))
+
+  return c.json({ message: 'Task deleted successfully' }, HttpStatusCodes.OK)
+}

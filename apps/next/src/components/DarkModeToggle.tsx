@@ -2,9 +2,9 @@
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui/tooltip'
 import { Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
 import MenuButton from './helper/MenuButtons'
-import { useTheme } from 'next-themes'
 
 export const DarkModeToggle = () => {
   const { theme, setTheme } = useTheme()
@@ -39,7 +39,7 @@ export const DarkModeToggle = () => {
             size='lg'
             className='lg:w-24 lg:h-12 xl:h-12 xl:w-32'
           >
-            {isDarkMode ? <Sun strokeWidth={3} /> : <Moon strokeWidth={3} />}
+            {isDarkMode ? <Sun strokeWidth={2} /> : <Moon strokeWidth={2} />}
           </MenuButton>
         </TooltipTrigger>
         <TooltipContent className='font-bold'>
