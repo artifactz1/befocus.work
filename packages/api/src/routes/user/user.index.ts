@@ -13,5 +13,9 @@ const router = createRouter()
   .openapi(routes.createUserSounds, handlers.createUserSounds)
   .openapi(routes.deleteUserSound, handlers.deleteUserSound)
   .openapi(routes.updateUserSounds, handlers.updateUserSounds)
+  .openapi(routes.getUserTasks, handlers.getUserTasks)
+  .openapi(routes.createUserTask, handlers.createUserTask)
+  .openapi(routes.updateUserTask, handlers.updateUserTask)
+  .openapi(routes.deleteUserTask, handlers.deleteUserTask)
 
 export default router
