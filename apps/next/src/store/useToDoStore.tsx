@@ -21,29 +21,7 @@ export const useTodoStore = create<TodoStore>(set => ({
     set(state => ({
       addMode: !state.addMode,
     })),
-  tasks: [
-    // {
-    //   id: 1,
-    //   text: 'Buy groceries',
-    //   completed: true,
-    //   editMode: false,
-    //   archived: false,
-    // },
-    // {
-    //   id: 2,
-    //   text: 'Finish project',
-    //   completed: false,
-    //   editMode: false,
-    //   archived: false,
-    // },
-    // {
-    //   id: 3,
-    //   text: 'Go for a run',
-    //   completed: false,
-    //   editMode: false,
-    //   archived: false,
-    // },
-  ],
+  tasks: [],
   addTask: text =>
     set(state => ({
       tasks: [
