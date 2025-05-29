@@ -10,7 +10,7 @@ export default function Timer() {
   const { sounds, alarmId } = useSoundsStore()
   const { timeLeft, isRunning, decrementTime } = useTimerStore()
 
-  const [minutes, setMinutes] = useState<number>(0)
+  const [minutes, setMinutes] = useState<number>(timeLeft / 60)
   const [seconds, setSeconds] = useState<number>(0)
   const isLandscape = useIsLandscape()
   const audioRef = useRef<HTMLAudioElement | null>(null)
