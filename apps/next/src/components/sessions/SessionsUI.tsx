@@ -103,7 +103,8 @@ export default function SessionsUI() {
                 key={key}
                 className={cn(
                   'aspect-square rounded-lg border-2 transition-all duration-300',
-                  'border-gray-300 dark:border-white/80',
+                  // 'border-gray-300 dark:border-white/80',
+                  'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
                   index <= currentSession - 1
                     ? isWorking && currentSession - 1 === index
                       ? 'bg-pink-500'
@@ -126,7 +127,8 @@ export default function SessionsUI() {
                 key={key}
                 className={cn(
                   'aspect-square rounded-lg border-2 transition-all duration-300',
-                  'border-gray-300 dark:border-white/80',
+                  // 'border-gray-300 dark:border-white/80',
+                  'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
                   index < currentSession - 1
                     ? 'bg-green-500'
                     : !isWorking && currentSession - 1 === index
