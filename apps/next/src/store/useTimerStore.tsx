@@ -21,6 +21,7 @@ interface TimerState {
     workDuration: number
     breakDuration: number
   }) => void
+  resetAll: () => void
 }
 
 export const useTimerStore = create<TimerState>((set, get) => ({
@@ -111,4 +112,12 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       isAlarmOn: false,
       isHydrated: true,
     }),
+  resetAll: () =>
+    set(state => ({
+      currentSession: 1,
+      isWorking: true,
+      timeLeft: state.workDuration,
+      isRunning: false,
+      isAlarmOn: false,
+    })),
 }))

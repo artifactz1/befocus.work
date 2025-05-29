@@ -2,17 +2,24 @@
 import { motion } from 'framer-motion'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
+import { SessionCompleteModal } from '~/components/SessionCompleteModal'
 import GlobalSoundsPlayer from '~/components/helper/GlobalSoundsPlayer'
 import PrefetchUserTasks from '~/components/helper/PrefetchUserTasks'
 import Timer from '~/components/timer/Timer'
 import { TimerInitializer } from '~/components/timer/TimerInitializer'
+import { useTimerStore } from '~/store/useTimerStore'
 
 export default function Dashboard() {
+
+  const { currentSession, sessions } = useTimerStore()
+  console.log('Dashboard store state:', currentSession, sessions)
+
   return (
     <div>
       <GlobalSoundsPlayer />
       <TimerInitializer />
       <PrefetchUserTasks />
+      <SessionCompleteModal />
       <motion.main className='continer px-auto flex h-screen w-screen flex-col items-center justify-center'
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
