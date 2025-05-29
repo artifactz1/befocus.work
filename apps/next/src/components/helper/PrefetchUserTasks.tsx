@@ -11,6 +11,7 @@ export default function PrefetchUserTasks() {
   useEffect(() => {
     refetch().then(result => {
       if (result.data) {
+        // console.log('FETCHED DATA ========', result.data)
         setTasks(result.data)
       }
     })

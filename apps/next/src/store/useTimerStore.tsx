@@ -15,6 +15,7 @@ interface TimerState {
   decrementTime: () => void
   isAlarmOn: boolean
   updateSettings: (key: 'sessions' | 'workDuration' | 'breakDuration', value: number) => void
+  isHydrated: boolean
   hydrateFromSettings: (settings: {
     sessions: number
     workDuration: number
@@ -24,6 +25,7 @@ interface TimerState {
 
 export const useTimerStore = create<TimerState>((set, get) => ({
   sessions: 6,
+  // workDuration: 25 * 60,
   workDuration: 25 * 60,
   // workDuration: 10,
   breakDuration: 5 * 60,
@@ -92,12 +94,13 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       ...state,
       [key]: value,
     })),
+  isHydrated: false,
   hydrateFromSettings: (settings: {
     sessions: number
     workDuration: number
     breakDuration: number
   }) =>
-    set(state => ({
+    set({
       sessions: settings.sessions,
       workDuration: settings.workDuration,
       breakDuration: settings.breakDuration,
@@ -106,5 +109,6 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       isWorking: true,
       isRunning: false,
       isAlarmOn: false,
-    })),
+      isHydrated: true,
+    }),
 }))

@@ -1,5 +1,6 @@
 import type { AppContext } from '@repo/api/types/app-context'
 import { betterAuth } from 'better-auth'
+import { bearer } from 'better-auth/plugins'
 import type { Context } from 'hono'
 import { env } from 'hono/adapter'
 import { extractDomain } from '../../extractDomain'
@@ -32,6 +33,7 @@ export const initializeBetterAuth = (c: Context<AppContext>) => {
         domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined, // Use env var for frontend domain
       },
     },
+    plugins: [bearer()],
   })
   c.set('auth', auth)
   return auth

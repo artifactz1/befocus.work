@@ -55,7 +55,8 @@ export default function SessionsUI() {
                   key={key}
                   className={cn(
                     `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
-                    'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
+                    // 'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
+                    'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
                     index <= currentSession - 1 // Completed work sessions
                       ? isWorking && currentSession - 1 === index
                         ? // ? `${opacityClass}`
@@ -72,7 +73,8 @@ export default function SessionsUI() {
                   key={key}
                   className={cn(
                     `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
-                    'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
+                    // 'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
+                    'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
                     index < currentSession - 1 // Completed break sessions
                       ? 'bg-green-500'
                       : !isWorking && currentSession - 1 === index // Current break session
@@ -101,7 +103,8 @@ export default function SessionsUI() {
                 key={key}
                 className={cn(
                   'aspect-square rounded-lg border-2 transition-all duration-300',
-                  'border-gray-300 dark:border-white/80',
+                  // 'border-gray-300 dark:border-white/80',
+                  'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
                   index <= currentSession - 1
                     ? isWorking && currentSession - 1 === index
                       ? 'bg-pink-500'
@@ -124,7 +127,8 @@ export default function SessionsUI() {
                 key={key}
                 className={cn(
                   'aspect-square rounded-lg border-2 transition-all duration-300',
-                  'border-gray-300 dark:border-white/80',
+                  // 'border-gray-300 dark:border-white/80',
+                  'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
                   index < currentSession - 1
                     ? 'bg-green-500'
                     : !isWorking && currentSession - 1 === index

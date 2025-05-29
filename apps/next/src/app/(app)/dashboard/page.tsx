@@ -1,4 +1,5 @@
 'use client'
+import { motion } from 'framer-motion'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import GlobalSoundsPlayer from '~/components/helper/GlobalSoundsPlayer'
@@ -12,11 +13,15 @@ export default function Dashboard() {
       <GlobalSoundsPlayer />
       <TimerInitializer />
       <PrefetchUserTasks />
-      <main className='continer px-auto flex h-screen w-screen flex-col items-center justify-center'>
+      <motion.main className='continer px-auto flex h-screen w-screen flex-col items-center justify-center'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, ease: 'easeOut', delay: 0.25 }}
+      >
         <Header />
         <Timer />
         <Footer />
-      </main>
+      </motion.main>
     </div>
   )
 }
