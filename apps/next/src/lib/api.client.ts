@@ -1,5 +1,3 @@
-'use client'
-
 import type { AppType } from '@repo/api/src/app'
 import { env } from '@repo/app/env/next'
 import { hc as honoRPC } from 'hono/client'
@@ -11,6 +9,9 @@ export const api = honoRPC<AppType>(API_URL, {
   fetch: (input: URL | RequestInfo, requestInit?: RequestInit) =>
     fetch(input, {
       ...requestInit,
+      headers: {
+        ...(requestInit?.headers || {}),
+      },
       credentials: 'include',
     }),
 })

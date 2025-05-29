@@ -1,5 +1,3 @@
-'use client'
-
 import { env } from '@repo/app/env/next'
 import { createAuthClient } from 'better-auth/react'
 

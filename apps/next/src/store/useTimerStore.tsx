@@ -25,6 +25,7 @@ interface TimerState {
 
 export const useTimerStore = create<TimerState>((set, get) => ({
   sessions: 6,
+  // workDuration: 25 * 60,
   workDuration: 25 * 60,
   // workDuration: 10,
   breakDuration: 5 * 60,
