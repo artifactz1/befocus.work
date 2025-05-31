@@ -5,13 +5,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs'
 import { Volume2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
+import Divider from '../helper/Divider'
 import MenuButton from '../helper/MenuButtons'
 import AddSoundButton from '../sounds/AddSoundButton'
 import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
 import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
 import BgMusicSoundsButton from '../sounds/BgMusicSoundsButton'
 import ConfigureSounds from '../sounds/ConfigureSounds'
-import Divider from '../helper/Divider'
 
 export default function SoundSettings() {
   const [isSoundOpen, setIsSoundOpen] = useState<boolean>(false)
@@ -36,7 +36,7 @@ export default function SoundSettings() {
           <Volume2 />
           <div className='mb-2 mt-4 text-lg font-bold'>befocus/sounds</div>
           <Divider />
-          <TabsList className="flex w-full">
+          <TabsList className='flex w-full bg-[#d0d1d0] dark:bg-[#2A2523]'>
             <TabsTrigger className="flex-1 " value="music">
               Music
             </TabsTrigger>
