@@ -2,7 +2,6 @@
 
 import { Button } from '@repo/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover'
-import { Separator } from '@repo/ui/separator'
 import { Timer } from 'lucide-react'
 
 import {
@@ -21,6 +20,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
 import { useTimerStore } from '~/store/useTimerStore'
+import Divider from '../helper/Divider'
 import MenuButton from '../helper/MenuButtons'
 import { BreakDurationInput } from '../input/BreakDurationInput'
 import { SessionsInput } from '../input/SessionsInput'
@@ -134,7 +134,7 @@ export const SessionSettings: React.FC = () => {
       >
         <div className='flex h-full w-full select-none flex-col justify-end'>
           <div className='mb-2 mt-4 text-lg font-bold'>befocus/sessions-settings</div>
-          <Separator className='my-4 bg-white' />
+          <Divider />
 
           {/* {data && (
               <div>

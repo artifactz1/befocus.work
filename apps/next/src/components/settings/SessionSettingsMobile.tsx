@@ -27,7 +27,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@repo/ui/drawer'
-import { Separator } from '@repo/ui/separator'
+import Divider from '../helper/Divider'
 
 export default function SessionSettingsMobile() {
   const { sessions, workDuration, breakDuration, reset, updateSettings } = useTimerStore()
@@ -48,7 +48,7 @@ export default function SessionSettingsMobile() {
           <DrawerTitle className='mx-1'>
             <Timer />
             <div className='mb-2 mt-4 text-left text-lg font-bold'>befocus/sessions-settings</div>
-            <Separator className='mt-4 bg-white' />
+            <Divider />
           </DrawerTitle>
           {/* <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
         </DrawerHeader>

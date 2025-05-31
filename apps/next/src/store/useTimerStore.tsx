@@ -54,14 +54,14 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       isAlarmOn: false, // Resetting isAlarmOn to false
     }),
   skipToNextSession: () => {
-    const { isWorking, breakDuration, workDuration, sessions, currentSession } = get()
+    const { isWorking, breakDuration, workDuration, currentSession } = get()
     if (isWorking) {
       set({ isWorking: false, timeLeft: breakDuration })
     } else {
       set({
         isWorking: true,
         timeLeft: workDuration,
-        currentSession: Math.min(currentSession + 1, sessions),
+        currentSession: currentSession + 1,
       })
     }
     set({ isRunning: false })

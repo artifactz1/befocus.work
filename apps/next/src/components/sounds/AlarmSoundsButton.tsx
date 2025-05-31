@@ -8,11 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@repo/ui/select'
-import { Separator } from '@repo/ui/separator'
 import { Slider } from '@repo/ui/slider'
 import { useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { useSoundsStore } from '~/store/useSoundsStore'
+import Divider from '../helper/Divider'
 
 export default function AlarmSoundsButton() {
   const { sounds, alarmId, setAlarmId, setVolume, toggleSound, isSoundSettingsOpen } =
@@ -56,8 +56,7 @@ export default function AlarmSoundsButton() {
         onReady={() => console.log('Player is ready')}
         onStart={() => console.log('Video started')}
       />
-
-      <Separator className='my-4 hidden bg-white md:block' />
+      <Divider className="hidden md:block" />
       <h3 className='mb-3 text-left font-semibold py-2'>Alarm Sound</h3>
       <div className='flex flex-col space-y-10 '>
         <Select
