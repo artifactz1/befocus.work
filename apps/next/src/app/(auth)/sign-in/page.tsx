@@ -29,7 +29,7 @@ export default function SignIn() {
                 src='https://www.cdnlogo.com/logos/g/69/github-icon.svg'
                 width={18}
                 height={18}
-                className="border border-white dark:rounded-3xl dark:bg-white"
+                className="dark:border dark:border-white dark:rounded-3xl dark:bg-white"
               />
               Continue with GitHub
             </Button>
