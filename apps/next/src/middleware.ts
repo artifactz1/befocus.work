@@ -10,7 +10,7 @@ export default async function authMiddleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname
   const isAuthRoute = authRoutes.includes(pathName)
   const isPasswordRoute = passwordRoutes.includes(pathName)
-  const isHomeRoute = pathName === '/'
+  const isHomeRoute = pathName === '/guest'
 
   // Fetch the session data from the backend
   const { data: session } = await betterFetch<Session>(`${env.API_URL}/api/auth/get-session`, {
@@ -26,12 +26,12 @@ export default async function authMiddleware(request: NextRequest) {
       return NextResponse.next()
     }
 
-    return NextResponse.redirect(new URL('/sign-in', request.url))
+    return NextResponse.redirect(new URL('/guest', request.url))
   }
 
   // If session exists and user is on the home page, redirect to dashboard
   if (session && isHomeRoute) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
   // If session exists and not on home, continue
@@ -43,5 +43,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|sounds).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|sounds|guest).*)',
+  ],
 }

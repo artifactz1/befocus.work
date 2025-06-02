@@ -19,31 +19,6 @@ export default function Timer() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = {
-        timeLeft,
-        savedAt: Date.now(), // timestamp in ms
-        isRunning,
-      }
-      localStorage.setItem('timerProgress', JSON.stringify(saved))
-    }
-  }, [timeLeft, isRunning])
-
-  const { setTimeLeft, setIsRunning } = useTimerStore()
-
-  useEffect(() => {
-    const saved = localStorage.getItem('timerProgress')
-    if (saved) {
-      const { timeLeft, savedAt, isRunning } = JSON.parse(saved)
-      const elapsed = Math.floor((Date.now() - savedAt) / 1000)
-      const adjustedTimeLeft = Math.max(timeLeft - elapsed, 0)
-
-      setTimeLeft(adjustedTimeLeft)
-      setIsRunning(isRunning)
-    }
-  }, [setTimeLeft, setIsRunning])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
       audioRef.current = new Audio('sounds/public_sounds_alarm1.mp3')
       workerRef.current = new Worker(new URL('../../lib/timerWorker', import.meta.url))
       workerRef.current.onmessage = e => {

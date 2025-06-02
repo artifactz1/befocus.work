@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { signIn } from '~/lib/auth.client'
 
 export default function SignIn() {
-  const homePageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`
+  const homePageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/`
 
   return (
     <div className='flex flex-col items-center justify-center h-full gap-10'>
