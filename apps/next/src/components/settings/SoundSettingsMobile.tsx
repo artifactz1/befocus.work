@@ -84,11 +84,11 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@repo/ui/drawer'
-import { Separator } from '@repo/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs'
 import { Volume2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
+import Divider from '../helper/Divider'
 import AddSoundButton from '../sounds/AddSoundButton'
 import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
 import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
@@ -121,7 +121,7 @@ export default function SoundSettingsMobile() {
             <DrawerTitle className='mx-1'>
               <Volume2 />
               <div className='mb-2 mt-4 text-left text-lg font-bold'>befocus/sounds</div>
-              <Separator className='mt-4 bg-white' />
+              <Divider />
             </DrawerTitle>
           </DrawerHeader>
 

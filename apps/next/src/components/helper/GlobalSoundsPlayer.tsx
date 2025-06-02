@@ -96,7 +96,7 @@ const GlobalPlayer = () => {
               muted={!sound.playing}
               width='0'
               height='0'
-              onReady={() => console.log(`Player is ready ${index}`)}
+              onReady={() => console.log(`Player is ready ${key}`)}
               // onPause={() => `Pause index ${index}`}
               onStart={() => console.log(`Playing index ${index}`)}
             />

@@ -8,10 +8,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@repo/ui/drawer'
-import { Separator } from '@repo/ui/separator'
 import { Toggle } from '@repo/ui/toggle'
 import { NotebookPen, Plus } from 'lucide-react'
 import { useTodoStore } from '~/store/useToDoStore'
+import Divider from '../helper/Divider'
 import TaskList from '../to-do-list/TaskList'
 
 export default function ToDoListMobile() {
@@ -30,7 +30,7 @@ export default function ToDoListMobile() {
             <DrawerTitle className='mx-1'>
               <NotebookPen />
               <div className='mb-2 mt-4 text-left text-lg font-bold'>befocus/todolist</div>
-              <Separator className='mt-4 bg-white' />
+              <Divider />
             </DrawerTitle>
           </DrawerHeader>
 

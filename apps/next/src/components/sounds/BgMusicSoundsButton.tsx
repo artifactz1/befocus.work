@@ -1,7 +1,7 @@
 'use client'
 
-import { Separator } from '@repo/ui/separator'
 import { useSoundsStore } from '~/store/useSoundsStore'
+import Divider from '../helper/Divider'
 import SoundButton from './SoundButton'
 
 export default function BgMusicSoundsButton() {
@@ -9,7 +9,7 @@ export default function BgMusicSoundsButton() {
 
   return (
     <main>
-      <Separator className='my-4 bg-white' />
+      <Divider />
       <div className='space-y-4'>
         {Object.keys(sounds)
           .filter(id => sounds[id]?.soundType === 'bgMusic')

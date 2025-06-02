@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useTimerStore } from '~/store/useTimerStore'
-import { api } from '~/lib/api.client'
+import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
+import { api } from '~/lib/api.client'
+import { useTimerStore } from '~/store/useTimerStore'
 
 type UserSettings = {
   workDuration: number

@@ -17,52 +17,47 @@
 
 @layer base {
   :root {
-  --background: 60 55% 91%;            /* Warm cream */
-  --foreground: 30 20% 10%;            /* Ink-like brown */
+    --background: 60 40% 96%;          /* #f8f9f3 (Spring Wood) */
+    --foreground: 75 3% 15%;           /* #32322c (Tuatara) */
 
-  --card: 60 40% 95%;
-  --card-foreground: 30 20% 10%;
+    --card: 60 30% 97%;                /* #fcfcf4 (Bianca) */
+    --card-foreground: 75 3% 15%;
 
-  --popover: 60 55% 91%;
-  --popover-foreground: 30 20% 10%;
+    --popover: 60 40% 96%;
+    --popover-foreground: 75 3% 15%;
 
-  --primary: 220 60% 52%;
-  --primary-foreground: 60 55% 91%;
+    --primary: 210 4% 70%;             /* #b1b1ac (Delta) */
+    --primary-foreground: 75 3% 15%;
 
-  --secondary: 60 40% 88%;
-  --secondary-foreground: 30 25% 20%;
+    --secondary: 40 6% 72%;            /* #a9a8a3 (Delta alt / cloudy) */
+    --secondary-foreground: 75 3% 15%;
 
-  --muted: 60 30% 93%;
-  --muted-foreground: 30 15% 40%;
+    --muted: 40 5% 85%;                /* #e3e2dd blend */
+    --muted-foreground: 60 2% 40%;     /* #6e6e69 (Ironside Gray) */
 
-  --accent: 220 60% 96%;               /* Pale blue highlight */
-  --accent-foreground: 0 0% 0%;        /* 🖤 Actual black */
+    --accent: 30 5% 60%;               /* #8c8480 (Schooner) */
+    --accent-foreground: 60 40% 96%;
 
-  --destructive: 0 75% 50%;
-  --destructive-foreground: 0 0% 100%;
+    --destructive: 0 65% 50%;          /* Red fallback */
+    --destructive-foreground: 0 0% 100%;
 
-  --border: 30 15% 80%;
-  --input: 60 40% 94%;
-  --ring: 220 60% 52%;
+    --border: 60 4% 80%;               /* #d8d8d3 blend */
+    --input: 60 4% 90%;
+    --ring: 210 4% 70%;
 
-  --chart-1: 220 60% 52%;
-  --chart-2: 50 40% 50%;
-  --chart-3: 130 30% 40%;
-  --chart-4: 25 65% 45%;
-  --chart-5: 330 30% 50%;
+    --chart-1: 210 10% 60%;            /* muted blue-gray */
+    --chart-2: 35 20% 70%;             /* muted beige */
+    --chart-3: 120 10% 60%;            /* muted green */
+    --chart-4: 10 20% 55%;             /* muted orange */
+    --chart-5: 330 10% 60%;            /* muted mauve */
 
-  --radius: 0.5rem;
-}
+    --radius: 0.5rem;
+  }
 
-
-
-
-
-
-  .dark {
+   .dark {
     --background: 0, 0%, 6.3%;
     --foreground: 60 9.1% 97.8%;
-    --card: 20 14.3% 4.1%;
+    --card: 12 8% 8%;     /* Warmer, slightly lighter than current 4.1% */
     --card-foreground: 60 9.1% 97.8%;
     --popover: 20 14.3% 4.1%;
     --popover-foreground: 60 9.1% 97.8%;

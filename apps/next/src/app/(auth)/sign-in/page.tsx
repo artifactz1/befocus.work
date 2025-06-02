@@ -1,64 +1,84 @@
 'use client'
-
 import { Button } from '@repo/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/card'
 import Image from 'next/image'
 import { signIn } from '~/lib/auth.client'
 
 export default function SignIn() {
-  const homePageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`
+  const homePageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/`
 
   return (
-    <div className='flex flex-col items-center justify-center h-full gap-10'>
-      <h1 className='text-4xl font-bold'>Be Focus</h1>
-      <div>
-        <div className='flex flex-col gap-12 flex-1 items-center justify-center h-full max-w-sm w-80'>
-          <Button
-            className='flex gap-2 w-full'
-            onClick={() => signIn.social({ provider: 'github', callbackURL: homePageUrl })}
-          >
-            <Image
-              alt='GitHub Logo'
-              src={'https://www.cdnlogo.com/logos/g/69/github-icon.svg'}
-              width={20}
-              height={20}
-            />
-            Github SignIn
-          </Button>
-          <Button
-            className='flex gap-2 w-full'
-            onClick={() =>
-              signIn.social({
-                provider: 'google',
-                callbackURL: homePageUrl,
-              })
-            }
-          >
-            <Image
-              alt='Google Logo'
-              src={'https://www.cdnlogo.com/logos/g/35/google-icon.svg'}
-              width={20}
-              height={20}
-            />
-            Google SignIn
-          </Button>
-          <Button
-            className='flex gap-2 w-full'
-            onClick={() =>
-              signIn.social({
-                provider: 'discord',
-                callbackURL: homePageUrl,
-              })
-            }
-          >
-            <Image
-              alt='Discord'
-              src={'https://static.cdnlogo.com/logos/d/15/discord.svg'}
-              width={20}
-              height={20}
-            />
-            Discord SignIn
-          </Button>
-        </div>
+    <div className='min-h-screen flex items-center justify-center p-4'>
+      <div className='w-full max-w-md'>
+        <Card>
+          <CardHeader className='text-center'>
+            <CardTitle className='text-2xl'>Welcome to Be Focus</CardTitle>
+            <CardDescription>
+              Sign in to continue to your dashboard
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className='space-y-4 '>
+            <Button
+              variant='outline'
+              className='flex items-center justify-center gap-3 w-full h-11'
+              onClick={() => signIn.social({ provider: 'github', callbackURL: homePageUrl })}
+            >
+              <Image
+                alt='GitHub'
+                src='https://www.cdnlogo.com/logos/g/69/github-icon.svg'
+                width={18}
+                height={18}
+                className="border border-white dark:rounded-3xl dark:bg-white"
+              />
+              Continue with GitHub
+            </Button>
+
+            <Button
+              variant='outline'
+              className='flex items-center justify-center gap-3 w-full h-11'
+              onClick={() =>
+                signIn.social({
+                  provider: 'google',
+                  callbackURL: homePageUrl,
+                })
+              }
+            >
+              <Image
+                alt='Google'
+                src='https://www.cdnlogo.com/logos/g/35/google-icon.svg'
+                width={18}
+                height={18}
+              />
+              Continue with Google
+            </Button>
+
+            <Button
+              variant='outline'
+              className='flex items-center justify-center gap-3 w-full h-11'
+              onClick={() =>
+                signIn.social({
+                  provider: 'discord',
+                  callbackURL: homePageUrl,
+                })
+              }
+            >
+              <Image
+                alt='Discord'
+                src='https://static.cdnlogo.com/logos/d/15/discord.svg'
+                width={18}
+                height={18}
+              />
+              Continue with Discord
+            </Button>
+
+            <div className='pt-4 border-t'>
+              <p className='text-xs text-muted-foreground text-center'>
+                Sign in to access your personalized focus dashboard
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

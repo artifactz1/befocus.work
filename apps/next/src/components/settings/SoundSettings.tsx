@@ -1,11 +1,11 @@
 'use client'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover'
-import { Separator } from '@repo/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs'
 import { Volume2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
+import Divider from '../helper/Divider'
 import MenuButton from '../helper/MenuButtons'
 import AddSoundButton from '../sounds/AddSoundButton'
 import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
@@ -35,8 +35,8 @@ export default function SoundSettings() {
         <Tabs className='flex w-full select-none flex-col justify-end rounded-md no-underline outline-none'>
           <Volume2 />
           <div className='mb-2 mt-4 text-lg font-bold'>befocus/sounds</div>
-          <Separator className='my-4 bg-white' />
-          <TabsList className="flex w-full">
+          <Divider />
+          <TabsList className='flex w-full bg-[#d0d1d0] dark:bg-[#2A2523]'>
             <TabsTrigger className="flex-1 " value="music">
               Music
             </TabsTrigger>

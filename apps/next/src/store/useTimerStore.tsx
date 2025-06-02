@@ -21,6 +21,9 @@ interface TimerState {
     workDuration: number
     breakDuration: number
   }) => void
+  resetAll: () => void
+  setTimeLeft: (value: number) => void
+  setIsRunning: (value: boolean) => void
 }
 
 export const useTimerStore = create<TimerState>((set, get) => ({
@@ -53,14 +56,14 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       isAlarmOn: false, // Resetting isAlarmOn to false
     }),
   skipToNextSession: () => {
-    const { isWorking, breakDuration, workDuration, sessions, currentSession } = get()
+    const { isWorking, breakDuration, workDuration, currentSession } = get()
     if (isWorking) {
       set({ isWorking: false, timeLeft: breakDuration })
     } else {
       set({
         isWorking: true,
         timeLeft: workDuration,
-        currentSession: Math.min(currentSession + 1, sessions),
+        currentSession: currentSession + 1,
       })
     }
     set({ isRunning: false })
@@ -111,4 +114,15 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       isAlarmOn: false,
       isHydrated: true,
     }),
+  resetAll: () =>
+    set(state => ({
+      currentSession: 1,
+      isWorking: true,
+      timeLeft: state.workDuration,
+      isRunning: false,
+      isAlarmOn: false,
+    })),
+  setTimeLeft: (value: number) => set({ timeLeft: value }),
+  setIsRunning: (value: boolean) => set({ isRunning: value }),
 }))
+
