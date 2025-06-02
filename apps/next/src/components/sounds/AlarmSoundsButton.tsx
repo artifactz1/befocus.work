@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@repo/ui/button'
 import {
   Select,
   SelectContent,
@@ -55,6 +56,8 @@ export default function AlarmSoundsButton() {
         height='0'
         onReady={() => console.log('Player is ready')}
         onStart={() => console.log('Video started')}
+        onError={(error) => console.error('ReactPlayer error:', error)} // Add this
+        onLoadStart={() => console.log('Load started for:', sound.url)} // Add this
       />
       <Divider className="hidden md:block" />
       <h3 className='mb-3 text-left font-semibold py-2'>Alarm Sound</h3>
@@ -83,7 +86,7 @@ export default function AlarmSoundsButton() {
           <Slider
             value={[volume * 100]} // Default to the current volume (range 0-100)
             onValueChange={value => {
-              const newVol = (value[0] ?? 0) / 100  // Default to 80 if value is undefined
+              const newVol = (value[0] ?? 0) / 100  // Default to 0 if value is undefined
               // setVolume(alarmId, newVolume / 100) // Set volume globally (range 0-1)
               setVolumeState(newVol) // Set volume globally (range 0-1)
               setVolume(alarmId, newVol)
@@ -101,6 +104,12 @@ export default function AlarmSoundsButton() {
         </Button> */}
 
         {/* <Separator className='my-4 hidden bg-white md:block' /> */}
+        <Button onClick={() => {
+          toggleSound(alarmId);
+          setIsPlaying(true);
+        }}>
+          Preview Sound
+        </Button>
       </div>
     </div>
   )
