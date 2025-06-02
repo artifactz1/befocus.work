@@ -144,6 +144,6 @@ export const useSoundsStore = create<SoundsState>(set => {
 const custom = useSoundsStore.getState().addSound
 custom('rain', 'Rain Ambience', 'https://www.youtube.com/watch?v=yIQd2Ya0Ziw', true, 'ambient')
 custom('jazz', 'Smooth Jazz', 'https://www.youtube.com/watch?v=VwR3LBbL6Jk', true, 'bgMusic')
-custom('howls-move', 'Howl’s Moving Castle Theme', 'https://www.youtube.com/watch?v=z3aS5AwhJSU', true, 'bgMusic')
+custom('lofi1', 'Lofi Hip Hop', 'https://www.youtube.com/watch?v=617L_MOB37k&ab_channel=thebootlegboy2', true, 'bgMusic')
 custom('library', 'Library Murmurs', 'https://www.youtube.com/watch?v=4vIQON2fDWM', true, 'ambient')
 custom('fireplace', 'Crackling Fireplace', 'https://www.youtube.com/watch?v=UgHKb_7884o', true, 'ambient')

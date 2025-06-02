@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@repo/ui/button'
 import {
   Select,
   SelectContent,
@@ -104,12 +103,6 @@ export default function AlarmSoundsButton() {
         </Button> */}
 
         {/* <Separator className='my-4 hidden bg-white md:block' /> */}
-        <Button onClick={() => {
-          toggleSound(alarmId);
-          setIsPlaying(true);
-        }}>
-          Preview Sound
-        </Button>
       </div>
     </div>
   )
