@@ -54,25 +54,25 @@ export default function AccountButton() {
     }
   }
 
-  if (data === null) {
-    // User is NOT signed in
-    return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <MenuButton
-              onClick={() => router.push('/sign-in')}
-              variant={buttonVariant}
-              className='xl:h-12 xl:w-32'
-            >
-              Sign In
-            </MenuButton>
-          </TooltipTrigger>
-          <TooltipContent className='font-bold'>Sign In</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    )
-  }
+  // if (data === null) {
+  //   // User is NOT signed in
+  //   return (
+  //     <TooltipProvider>
+  //       <Tooltip>
+  //         <TooltipTrigger asChild>
+  //           <MenuButton
+  //             onClick={() => router.push('/sign-in')}
+  //             variant={buttonVariant}
+  //             className='xl:h-12 xl:w-32'
+  //           >
+  //             Sign In
+  //           </MenuButton>
+  //         </TooltipTrigger>
+  //         <TooltipContent className='font-bold'>Sign In</TooltipContent>
+  //       </Tooltip>
+  //     </TooltipProvider>
+  //   )
+  // }
 
   // User IS signed in
   return (
@@ -82,7 +82,9 @@ export default function AccountButton() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <MenuButton className='xl:h-12 xl:w-32' variant={buttonVariant}>
-                <User />
+                {
+                  data === null ? (<div> Sign In</div> ) : (<User />)
+                }
               </MenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -97,10 +99,21 @@ export default function AccountButton() {
                 {isDarkMode ? 'Light Mode' : 'Dark Mode'}
                 {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSignOut} className='flex justify-between items-center'>
-                Sign Out
-                <LogOut className="h-4 w-4" />
-              </DropdownMenuItem>
+              {
+                data === null ? (
+                  <DropdownMenuItem
+                    onClick={() => router.push('/sign-in')}
+                    className='flex justify-between items-center'>
+                    Sign In
+                    <LogOut className="h-4 w-4" />
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={handleSignOut} className='flex justify-between items-center'>
+                    Sign Out
+                    <LogOut className="h-4 w-4" />
+                  </DropdownMenuItem>
+                )
+              }
             </DropdownMenuContent>
           </DropdownMenu>
         </TooltipTrigger>
