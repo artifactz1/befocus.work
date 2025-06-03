@@ -1,12 +1,11 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import ReactPlayer from 'react-player'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
-import { useEffect } from 'react'
-import { api } from '~/lib/api.client'
+import { useEffect, useState } from 'react'
 import { useUserSounds } from '~/hooks/useSounds'
+import type { OnProgressProps } from 'react-player/base'
 
 const GlobalPlayer = () => {
   const { sounds } = useSoundsStore()
@@ -14,6 +13,18 @@ const GlobalPlayer = () => {
 
   const addSound = useSoundsStore(s => s.addSound)
   const { data: userSounds } = useUserSounds()
+
+  // State to hold timestamps: { [key: string]: number }
+  const [timestamps, setTimestamps] = useState({})
+
+  const handleProgress = (key : string, state: OnProgressProps) => {
+    // state has playedSeconds property which is the current timestamp in seconds
+    setTimestamps(prev => ({
+      ...prev,
+      [key]: state.playedSeconds,
+    }))
+  }
+
 
   useEffect(() => {
     if (!userSounds) return;
@@ -99,9 +110,11 @@ const GlobalPlayer = () => {
               onReady={() => console.log(`Player is ready ${key}`)}
               // onPause={() => `Pause index ${index}`}
               onStart={() => console.log(`Playing index ${index}`)}
+              onProgress={(state) => handleProgress(key, state)}
             />
           )
         })}
+      <pre>{JSON.stringify(timestamps, null, 2)}</pre>
     </>
   )
 }
