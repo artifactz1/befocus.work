@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 import { useTimerStore } from '~/store/useTimerStore'
 import MenuButton from '../helper/MenuButtons'
 
-import AccountButton from '../AccountButton'
 
 const iconSize = 'md:h-5 xl:h-6 '
 
@@ -94,7 +93,7 @@ export default function TimerButtons() {
       </TooltipProvider>
 
 
-      <AccountButton />
+      {/* <AccountButton /> */}
     </div>
   )
 }

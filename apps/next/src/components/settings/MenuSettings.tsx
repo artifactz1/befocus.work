@@ -1,5 +1,5 @@
 'use client'
-import { DarkModeToggle } from '../DarkModeToggle'
+import AccountButton from '../AccountButton'
 import ToDoList from '../to-do-list/ToDoList'
 import { SessionSettings } from './SessionSettings'
 import SoundSettings from './SoundSettings'
@@ -10,7 +10,8 @@ export default function MenuSettings() {
       <ToDoList />
       <SoundSettings />
       <SessionSettings />
-      <DarkModeToggle />
+      <AccountButton />
+      {/* <DarkModeToggle /> */}
     </main>
   )
 }
