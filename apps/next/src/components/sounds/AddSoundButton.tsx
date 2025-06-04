@@ -5,11 +5,8 @@ import type { SoundType } from '@repo/api/db/schemas'
 import { Button } from '@repo/ui/button'
 import { Input } from '@repo/ui/input'
 import { Label } from '@repo/ui/label'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSound } from '~/hooks/useSounds'
-import { api } from '~/lib/api.client'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 
@@ -28,7 +25,7 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
       addSound(newSound.id, newSound.name, newSound.url, newSound.isCustom, type)
     },
   })
-  
+
 
   const validateYoutubeLink = (url: string) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/
@@ -50,6 +47,15 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
       setLinkError('Please enter a valid YouTube link')
       return
     }
+
+    console.log('Sending sound:', {
+      id: createId(),
+      name: name.trim(),
+      url: link.trim(),
+      isCustom: true,
+      soundType: type,
+    })
+
 
     await createSound()
 

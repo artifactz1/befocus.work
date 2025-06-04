@@ -15,7 +15,7 @@
     "turbo:format": "turbo run format",
     "turbo:build": "turbo build",
     "check-deps": "check-dependency-version-consistency .",
-    "clean": "git clean -xdf node_modules && rm -f bun.lockb && rm -rf ./apps/next/.next && rm -rf && rm -rf ./apps/next/node_modules && rm -rf ./packages/ui/dist && rm -rf ./packages/api/node_modules"
+    "clean": "git clean -xdf node_modules && rm -f bun.lockb && rm -rf ./apps/next/.next && rm -rf ./apps/next/node_modules && rm -rf ./packages/ui/dist && rm -rf ./packages/api/node_modules"
   },
   "devDependencies": {
     "@types/uuid": "^10.0.0",
