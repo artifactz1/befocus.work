@@ -5,7 +5,7 @@ import type { SoundType } from '@repo/api/db/schemas'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
-import type { Sound } from '~/store/useSoundsStore' // or define a local type alias if needed
+import type { Sound } from '~/store/useSoundsStore'; // or define a local type alias if needed
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 export const useSound = ({
@@ -24,15 +24,24 @@ export const useSound = ({
   return useMutation({
     mutationKey: ['userSounds'],
     mutationFn: async () => {
+
+      const payload = {
+        id: createId(),
+        name,
+        url,
+        isCustom: true,
+        soundType: type,
+      }
+
+      console.log('Payload:', payload)
+
       const res = await api.user.sounds.$post({
-        json: {
-          id: createId(),
-          name,
-          url,
-          isCustom: true,
-          soundType: type,
-        },
+        json: payload
       })
+
+      console.log('Status:', res.status)
+      console.log('Response:', await res.text()) // avoid .json() in case of invalid JSON
+
       if (!res.ok) {
         const { message } = await res.json().catch(() => ({ message: 'Unknown error' }))
         throw new Error(message)
@@ -66,9 +75,11 @@ export const useUpdateUserSound = (soundId: string) => {
       return res.json()
     },
     onSuccess: () => {
+      console.log("SUCESSFULLY UPDATED :", soundId)
       queryClient.invalidateQueries({ queryKey: ['userSounds'] })
     },
     onError: (err: any) => {
+      console.log("ERROR UPDATING :", soundId)
       toast.error(`Error updating sound: ${err.message}`)
     },
   })
