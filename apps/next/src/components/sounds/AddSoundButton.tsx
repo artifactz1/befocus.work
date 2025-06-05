@@ -39,6 +39,7 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
   }
 
   const handleSubmit = async () => {
+
     if (!name.trim()) {
       setLinkError('Please enter a sound name')
       return
@@ -47,6 +48,16 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
       setLinkError('Please enter a valid YouTube link')
       return
     }
+
+    console.log({
+      id: createId(),
+      name: name.trim(),
+      url: link.trim(),
+      isCustom: true,
+      soundType: type,
+    }
+    
+    )
 
     console.log('Sending sound:', {
       id: createId(),

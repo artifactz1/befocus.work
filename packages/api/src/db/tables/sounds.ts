@@ -28,7 +28,7 @@ export const soundTypeEnum = z.enum(['alarm', 'ambient', 'bgMusic']) // or whate
 export const insertSoundSchema = z.object({
   id: z.string(),
   name: z.string().min(1), // ✅ NEW FIELD
-  url: z.string().url(),
+  url: z.string(),
   soundType: soundTypeEnum,
   isCustom: z.boolean(),
 })
