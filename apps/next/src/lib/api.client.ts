@@ -9,9 +9,6 @@ export const api = honoRPC<AppType>(API_URL, {
   fetch: (input: URL | RequestInfo, requestInit?: RequestInit) =>
     fetch(input, {
       ...requestInit,
-      headers: {
-        ...(requestInit?.headers || {}),
-      },
       credentials: 'include',
     }),
 })
