@@ -17,12 +17,19 @@ const GlobalPlayer = () => {
   // State to hold timestamps: { [key: string]: number }
   const [timestamps, setTimestamps] = useState({})
 
-  const handleProgress = (key : string, state: OnProgressProps) => {
-    // state has playedSeconds property which is the current timestamp in seconds
-    setTimestamps(prev => ({
-      ...prev,
-      [key]: state.playedSeconds,
-    }))
+  const setCurrentTime = useSoundsStore(s => s.setCurrentTime)
+
+
+  // const handleProgress = (key : string, state: OnProgressProps) => {
+  //   // state has playedSeconds property which is the current timestamp in seconds
+  //   setTimestamps(prev => ({
+  //     ...prev,
+  //     [key]: state.playedSeconds,
+  //   }))
+  // }
+
+  const handleProgress = (key: string, state: OnProgressProps) => {
+    setCurrentTime(key, state.playedSeconds)
   }
 
 

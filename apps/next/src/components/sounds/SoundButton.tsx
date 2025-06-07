@@ -6,7 +6,7 @@ import { Slider } from '@repo/ui/slider'
 import { Toggle } from '@repo/ui/toggle'
 import { motion } from 'framer-motion'
 import { Volume2, VolumeX } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useDeleteUserSound, useUpdateUserSound } from '~/hooks/useSounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
@@ -28,6 +28,10 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
 
   const deleteSoundMutation = useDeleteUserSound();
   const updateSoundMutation = useUpdateUserSound(soundId);
+
+  const { currentTimes, setCurrentTime } = useSoundsStore()
+  const currentTime = currentTimes[soundId] ?? 0
+  const [seeking, setSeeking] = useState(false)
 
   if (!sound) return null
 
@@ -117,6 +121,34 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
               step={1}
               className='w-full'
             />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Slider
+              value={[currentTime]}
+              min={0}
+              max={300} // Default max — we’ll fix duration support later
+              step={0.1}
+              onValueChange={([val]) => {
+                setSeeking(true)
+                setCurrentTime(soundId, val)
+              }}
+              onValueCommit={([val]) => {
+                const player = document.querySelector(`iframe[src*="${sound.url}"]`)?.contentWindow
+                if (player) {
+                  player.postMessage(
+                    JSON.stringify({
+                      event: 'command',
+                      func: 'seekTo',
+                      args: [val, true],
+                    }),
+                    '*'
+                  )
+                }
+                setSeeking(false)
+              }}
+              className="w-full"
+            />
+            <span className="text-xs">{Math.floor(currentTime)}s</span>
           </div>
         </div>
       ) : (
