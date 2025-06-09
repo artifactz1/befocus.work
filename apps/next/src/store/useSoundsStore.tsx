@@ -43,6 +43,8 @@ interface SoundsState {
   editSound: (id: string, newName: string) => void
   currentTimes: Record<string, number>
   setCurrentTime: (id: string, time: number) => void
+  durations: Record<string, number>
+  setDuration: (id: string, duration: number) => void
 }
 
 const alarmList: Alarm[] = [
@@ -145,6 +147,14 @@ export const useSoundsStore = create<SoundsState>(set => {
         currentTimes: {
           ...state.currentTimes,
           [id]: time,
+        },
+      })),
+    durations: {},
+    setDuration: (id, duration) =>
+      set(state => ({
+        durations: {
+          ...state.durations,
+          [id]: duration,
         },
       })),
   }

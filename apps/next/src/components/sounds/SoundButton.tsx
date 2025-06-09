@@ -6,7 +6,7 @@ import { Slider } from '@repo/ui/slider'
 import { Toggle } from '@repo/ui/toggle'
 import { motion } from 'framer-motion'
 import { Volume2, VolumeX } from 'lucide-react'
-import { useRef, useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useDeleteUserSound, useUpdateUserSound } from '~/hooks/useSounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
 

@@ -4,8 +4,8 @@ import ReactPlayer from 'react-player'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 import { useEffect, useState } from 'react'
-import { useUserSounds } from '~/hooks/useSounds'
 import type { OnProgressProps } from 'react-player/base'
+import { useUserSounds } from '~/hooks/useSounds'
 
 const GlobalPlayer = () => {
   const { sounds } = useSoundsStore()
@@ -77,35 +77,6 @@ const GlobalPlayer = () => {
                   },
                 },
               }}
-              // config={{
-              //   youtube: {
-              //     playerVars: {
-              //       // exactly your page’s origin:
-              //       origin:
-              //         typeof window !== 'undefined'
-              //           ? window.location.origin    // e.g. "http://localhost:3000"
-              //           : undefined,
-              //     },
-              //     embedOptions: {
-              //       // optional: use no-cookie host if you prefer
-              //       host: 'https://www.youtube-nocookie.com',
-              //     },
-              //   },
-              // }}
-              // config={{
-              //   youtube: {
-              //     // pass your origin so postMessage doesn’t get blocked:
-              //     playerVars: {
-              //       origin: typeof window !== 'undefined'
-              //         ? window.location.origin
-              //         : undefined,
-              //     },
-              //     // override the iframe embed host:
-              //     embedOptions: {
-              //       host: 'https://www.youtube.com',
-              //     },
-              //   },
-              // }}
               key={key}
               url={sound.url}
               playing={sound.playing}
@@ -121,7 +92,7 @@ const GlobalPlayer = () => {
             />
           )
         })}
-      <pre>{JSON.stringify(timestamps, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(timestamps, null, 2)}</pre> */}
     </>
   )
 }
