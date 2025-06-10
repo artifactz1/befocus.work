@@ -10,6 +10,12 @@ import { useState } from 'react'
 import { useDeleteUserSound, useUpdateUserSound } from '~/hooks/useSounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
+const formatTime = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
+}
+
 const SoundSettings = ({ soundId }: { soundId: string }) => {
   const {
     sounds,
@@ -20,6 +26,8 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
     setVolume,
     isDeleteMode,
     // deleteSound
+    durations,
+    playerRefs
   } = useSoundsStore()
 
   const sound = sounds[soundId]
@@ -31,6 +39,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
 
   const { currentTimes, setCurrentTime } = useSoundsStore()
   const currentTime = currentTimes[soundId] ?? 0
+  const duration = durations[soundId] ?? 300 // default to 5min fallback
   const [seeking, setSeeking] = useState(false)
 
   if (!sound) return null
@@ -124,32 +133,30 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
           </div>
           <div className="flex items-center space-x-2">
             <Slider
-              value={[currentTime]}
+              value={[seeking ? currentTime : currentTimes[soundId] ?? 0]}
               min={0}
-              max={300} // Default max — we’ll fix duration support later
+              max={duration}
               step={0.1}
-              onValueChange={([val]) => {
+              onValueChange={([raw]) => {
+                const val = raw ?? 0
                 setSeeking(true)
                 setCurrentTime(soundId, val)
               }}
-              onValueCommit={([val]) => {
-                const player = document.querySelector(`iframe[src*="${sound.url}"]`)?.contentWindow
+              onValueCommit={([raw]) => {
+                const val = raw ?? 0
+                const player = playerRefs[soundId]
                 if (player) {
-                  player.postMessage(
-                    JSON.stringify({
-                      event: 'command',
-                      func: 'seekTo',
-                      args: [val, true],
-                    }),
-                    '*'
-                  )
+                  player.seekTo(val, 'seconds')
                 }
                 setSeeking(false)
               }}
               className="w-full"
             />
-            <span className="text-xs">{Math.floor(currentTime)}s</span>
+            <span className="text-xs w-16 text-right">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
           </div>
+
         </div>
       ) : (
         <div className='space-y-2'>
@@ -163,3 +170,8 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
 }
 
 export default SoundSettings
+
+// Can we do the optional improvment of "move the playerRefs object to a Zustand store as well Or lift the Slider logic into a global controller per sound.
+// " can you please do this also : 
+
+// if you'd like the updated full GlobalPlayer + SoundButton file pasted together, or help formatting the time (mm:ss)"

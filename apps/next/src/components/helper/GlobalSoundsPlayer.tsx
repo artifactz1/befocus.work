@@ -3,7 +3,7 @@
 import ReactPlayer from 'react-player'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { OnProgressProps } from 'react-player/base'
 import { useUserSounds } from '~/hooks/useSounds'
 
@@ -15,9 +15,11 @@ const GlobalPlayer = () => {
   const { data: userSounds } = useUserSounds()
 
   // State to hold timestamps: { [key: string]: number }
-  const [timestamps, setTimestamps] = useState({})
+  // const [timestamps, setTimestamps] = useState({})
 
+  const playerRefs = useRef<Record<string, ReactPlayer>>({})
   const setCurrentTime = useSoundsStore(s => s.setCurrentTime)
+  const setDuration = useSoundsStore(s => s.setDuration)
 
 
   // const handleProgress = (key : string, state: OnProgressProps) => {
@@ -61,6 +63,9 @@ const GlobalPlayer = () => {
 
           return (
             <ReactPlayer
+            ref={player => { 
+              if (player) playerRefs.current[key] = player
+            }}
               config={{
                 youtube: {
                   // 1) Tell YouTube your actual page origin:
@@ -89,6 +94,7 @@ const GlobalPlayer = () => {
               // onPause={() => `Pause index ${index}`}
               onStart={() => console.log(`Playing index ${index}`)}
               onProgress={(state) => handleProgress(key, state)}
+              onDuration={duration => setDuration(key, duration)}
             />
           )
         })}

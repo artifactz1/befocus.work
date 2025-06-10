@@ -1,3 +1,4 @@
+import type ReactPlayer from 'react-player'
 import { create } from 'zustand'
 
 // Define sound types
@@ -45,6 +46,9 @@ interface SoundsState {
   setCurrentTime: (id: string, time: number) => void
   durations: Record<string, number>
   setDuration: (id: string, duration: number) => void
+  playerRefs: Record<string, ReactPlayer | null >
+  setPlayerRef: (id: string, ref: ReactPlayer | null) => void
+  
 }
 
 const alarmList: Alarm[] = [
@@ -155,6 +159,14 @@ export const useSoundsStore = create<SoundsState>(set => {
         durations: {
           ...state.durations,
           [id]: duration,
+        },
+      })),
+    playerRefs: {},
+    setPlayerRef: (id, ref) =>
+      set(state => ({
+        playerRefs: {
+          ...state.playerRefs,
+          [id]: ref,
         },
       })),
   }
