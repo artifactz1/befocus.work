@@ -15,15 +15,12 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
   const sound = useSoundsStore(state => state.sounds[soundId])
   const editModes = useSoundsStore(state => state.editModes)
   const isDeleteMode = useSoundsStore(state => state.isDeleteMode)
-  const playerRefs = useSoundsStore(state => state.playerRefs)
 
   // Actions
   const toggleEditMode = useSoundsStore(state => state.toggleEditMode)
   const editSound = useSoundsStore(state => state.editSound)
   const toggleSound = useSoundsStore(state => state.toggleSound)
   const setVolume = useSoundsStore(state => state.setVolume)
-  const setSeeking = useSoundsStore(state => state.setSeeking)
-  const setCurrentTime = useSoundsStore(state => state.setCurrentTime)
 
   const [originalName, setOriginalName] = useState('')
 
@@ -38,7 +35,7 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
   return (
     <main>
       {!isDeleteMode ? (
-        <div className='space-y-2'>
+        <div className='space-y-1 border-2 p-2 rounded-lg'>
           <motion.button
             className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
             onClick={e => {

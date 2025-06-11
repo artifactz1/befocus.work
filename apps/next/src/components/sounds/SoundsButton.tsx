@@ -2,10 +2,11 @@
 
 import { Button } from '@repo/ui/button'
 import { Input } from '@repo/ui/input'
+import { Separator } from '@repo/ui/separator'
 import { Slider } from '@repo/ui/slider'
 import { Toggle } from '@repo/ui/toggle'
 import { motion } from 'framer-motion'
-import { Volume2, VolumeX } from 'lucide-react'
+import { Pause, Play } from 'lucide-react'
 import { useState } from 'react'
 import { useDeleteUserSound, useUpdateUserSound } from '~/hooks/useSounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
@@ -16,7 +17,7 @@ const formatTime = (seconds: number) => {
   return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
 }
 
-const SoundSettings = ({ soundId, }: { soundId: string }) => {
+const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => {
   // Split the store selectors to avoid unnecessary re-renders
   const sound = useSoundsStore(state => state.sounds[soundId])
   const editModes = useSoundsStore(state => state.editModes)
@@ -73,14 +74,14 @@ const SoundSettings = ({ soundId, }: { soundId: string }) => {
   return (
     <main>
       {!isDeleteMode ? (
-        <div className='space-y-6 border-2 p-4 rounded-lg '>
+        <div className='space-y-3 border-2 p-4 rounded-lg '>
           <div className='flex space-x-2'>
             <Toggle
               pressed={sound.playing}
               onClick={() => toggleSound(soundId)}
               variant={'outline'}
             >
-              {sound.playing ? <Volume2 /> : <VolumeX />}
+              {sound.playing ? <Pause /> : <Play />}
             </Toggle>
 
             <motion.button
@@ -163,30 +164,42 @@ const SoundSettings = ({ soundId, }: { soundId: string }) => {
                 {Math.round(sound.volume * 100)}%
               </span>
             </div>
-
           </div>
 
+          {
+            type === 'bgMusic' && (
+              <div className="space-y-3">
 
-          <div className="flex items-center space-x-2">
-            <Slider
-              value={[isSeeking ? currentTime : currentTime]}
-              min={0}
-              max={duration}
-              step={0.1}
-              onValueChange={handleSliderChange}
-              onValueCommit={handleSliderCommit}
-              className="w-full"
-              trackClassName="bg-gray-100"
-              rangeClassName="bg-green-400 rounded-r-xl"
-              thumbClassName="hidden "
-            />
-            <div className="flex justify-center items-center w-1/3 ">
-              <span className="text-xs">
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </span>
-            </div>
+                <Separator />
 
-          </div>
+
+
+                <div className="flex items-center space-x-2">
+                  <Slider
+                    value={[isSeeking ? currentTime : currentTime]}
+                    min={0}
+                    max={duration}
+                    step={0.1}
+                    onValueChange={handleSliderChange}
+                    onValueCommit={handleSliderCommit}
+                    className="w-full"
+                    trackClassName="bg-gray-100"
+                    rangeClassName="bg-green-400 rounded-r-xl"
+                    thumbClassName="hidden "
+                  />
+                  <div className="flex justify-center items-center w-1/3 ">
+                    <span className="text-xs">
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+                  </div>
+
+                </div>
+              </div>
+
+            )
+          }
+
+
 
           {/* Debug Info - Remove in production */}
           {/* <div className="text-xs text-gray-500 mt-2">
