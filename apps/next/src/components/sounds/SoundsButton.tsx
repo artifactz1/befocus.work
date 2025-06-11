@@ -129,7 +129,7 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
                   className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
                 />
               ) : (
-                <span>{sound.name}</span>
+                <span>{sound.name.length > 17 ? sound.name.slice(0, 17) + '…' : sound.name}</span>
               )}
             </motion.button>
             <Slider
@@ -198,8 +198,6 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
 
             )
           }
-
-
 
           {/* Debug Info - Remove in production */}
           {/* <div className="text-xs text-gray-500 mt-2">
