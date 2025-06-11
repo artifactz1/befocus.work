@@ -16,7 +16,7 @@ const formatTime = (seconds: number) => {
   return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
 }
 
-const SoundSettings = ({ soundId,  }: { soundId: string }) => {
+const SoundSettings = ({ soundId, }: { soundId: string }) => {
   // Split the store selectors to avoid unnecessary re-renders
   const sound = useSoundsStore(state => state.sounds[soundId])
   const editModes = useSoundsStore(state => state.editModes)
@@ -73,37 +73,33 @@ const SoundSettings = ({ soundId,  }: { soundId: string }) => {
   return (
     <main>
       {!isDeleteMode ? (
-        <div className='space-y-2'>
-          <motion.button
-            className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
-            onClick={e => {
-              if (e.detail === 1 && !isEditing) {
-                setOriginalName(sound.name)
-                toggleEditMode(soundId)
-              }
-            }}
-          >
-            {isEditing ? (
-              <Input
-                type="text"
-                value={sound.name}
-                autoFocus
-                onClick={e => e.stopPropagation()}
-                onChange={e => editSound(soundId, e.target.value)}
-                onBlur={() => {
+        <div className='space-y-6 border-2 p-4 rounded-lg '>
+          <div className='flex space-x-2'>
+            <Toggle
+              pressed={sound.playing}
+              onClick={() => toggleSound(soundId)}
+              variant={'outline'}
+            >
+              {sound.playing ? <Volume2 /> : <VolumeX />}
+            </Toggle>
+
+            <motion.button
+              className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
+              onClick={e => {
+                if (e.detail === 1 && !isEditing) {
+                  setOriginalName(sound.name)
                   toggleEditMode(soundId)
-
-                  if (sound.name.trim() === '') {
-                    editSound(soundId, originalName)
-                    return
-                  }
-
-                  if (sound.name !== originalName) {
-                    updateSoundMutation.mutate(sound.name)
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === 'Escape') {
+                }
+              }}
+            >
+              {isEditing ? (
+                <Input
+                  type="text"
+                  value={sound.name}
+                  autoFocus
+                  onClick={e => e.stopPropagation()}
+                  onChange={e => editSound(soundId, e.target.value)}
+                  onBlur={() => {
                     toggleEditMode(soundId)
 
                     if (sound.name.trim() === '') {
@@ -114,23 +110,27 @@ const SoundSettings = ({ soundId,  }: { soundId: string }) => {
                     if (sound.name !== originalName) {
                       updateSoundMutation.mutate(sound.name)
                     }
-                  }
-                }}
-                className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
-              />
-            ) : (
-              <span>{sound.name}</span>
-            )}
-          </motion.button>
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === 'Escape') {
+                      toggleEditMode(soundId)
 
-          <div className='flex space-x-2'>
-            <Toggle
-              pressed={sound.playing}
-              onClick={() => toggleSound(soundId)}
-            >
-              {sound.playing ? <Volume2 /> : <VolumeX />}
-            </Toggle>
+                      if (sound.name.trim() === '') {
+                        editSound(soundId, originalName)
+                        return
+                      }
 
+                      if (sound.name !== originalName) {
+                        updateSoundMutation.mutate(sound.name)
+                      }
+                    }
+                  }}
+                  className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
+                />
+              ) : (
+                <span>{sound.name}</span>
+              )}
+            </motion.button>
             <Slider
               value={[sound.volume * 100]}
               onValueChange={([raw]) => {
@@ -141,25 +141,52 @@ const SoundSettings = ({ soundId,  }: { soundId: string }) => {
               }}
               max={100}
               step={1}
-              className='w-full'
+              className="w-full"
+              trackClassName="bg-gray-100"
+              rangeClassName=""
+              thumbClassName="w-4 h-4 "
             />
+            {/* <Slider
+              value={[sound.volume * 100]}
+              onValueChange={([raw]) => {
+                const newVol = (raw ?? 0) / 100
+                setVolume(soundId, newVol)
+                if (newVol > 0.01 && !sound.playing) toggleSound(soundId)
+                if (newVol === 0 && sound.playing) toggleSound(soundId)
+              }}
+              max={100}
+              step={1}
+              className='w-full'
+            /> */}
+            <div className="flex justify-between items-center">
+              <span className="text-xs  ">
+                {Math.round(sound.volume * 100)}%
+              </span>
+            </div>
+
           </div>
 
 
           <div className="flex items-center space-x-2">
-              <Slider
-                value={[isSeeking ? currentTime : currentTime]}
-                min={0}
-                max={duration}
-                step={0.1}
-                onValueChange={handleSliderChange}
-                onValueCommit={handleSliderCommit}
-                className="w-full"
-              />
-              <span className="text-xs w-16 text-right">
+            <Slider
+              value={[isSeeking ? currentTime : currentTime]}
+              min={0}
+              max={duration}
+              step={0.1}
+              onValueChange={handleSliderChange}
+              onValueCommit={handleSliderCommit}
+              className="w-full"
+              trackClassName="bg-gray-100"
+              rangeClassName="bg-green-400 rounded-r-xl"
+              thumbClassName="hidden "
+            />
+            <div className="flex justify-center items-center w-1/3 ">
+              <span className="text-xs">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </span>
             </div>
+
+          </div>
 
           {/* Debug Info - Remove in production */}
           {/* <div className="text-xs text-gray-500 mt-2">
