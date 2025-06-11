@@ -91,8 +91,8 @@ import { useSoundsStore } from '~/store/useSoundsStore'
 import Divider from '../helper/Divider'
 import AddSoundButton from '../sounds/AddSoundButton'
 import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
-import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
-import BgMusicSoundsButton from '../sounds/BgMusicSoundsButton'
+import AmbientSoundsButton from '../sounds/Ambient/AmbientSoundsMenu'
+import BgMusicSoundsButton from '../sounds/BgMusic/BgSoundsMenu'
 import ConfigureSounds from '../sounds/ConfigureSounds'
 
 export default function SoundSettingsMobile() {
