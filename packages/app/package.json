@@ -7,7 +7,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@repo/app": "file:",
     "@t3-oss/env-nextjs": "^0.12.0",
     "zustand": "^5.0.3"
   }
