@@ -2,7 +2,7 @@
 
 import { useSoundsStore } from '~/store/useSoundsStore'
 import Divider from '../helper/Divider'
-import SoundButton from './SoundButton'
+import SoundsButton from './SoundsButton'
 
 export default function BgMusicSoundsButton() {
   const { sounds } = useSoundsStore()
@@ -14,7 +14,7 @@ export default function BgMusicSoundsButton() {
         {Object.keys(sounds)
           .filter(id => sounds[id]?.soundType === 'bgMusic')
           .map(id => (
-            <SoundButton key={id} soundId={id} />
+            <SoundsButton key={id} soundId={id} type='bgMusic' />
           ))}
       </div>
     </main>

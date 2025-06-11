@@ -1,17 +1,16 @@
 'use client'
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui/tooltip'
-import { Pause, Play, RotateCcw, SkipForward } from 'lucide-react'
+import { Pause, Play, RotateCcw, SkipBack, SkipForward } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useTimerStore } from '~/store/useTimerStore'
 import MenuButton from '../helper/MenuButtons'
 
-import AccountButton from '../AccountButton'
 
 const iconSize = 'md:h-5 xl:h-6 '
 
 export default function TimerButtons() {
-  const { isRunning, resetCurrentTime, skipToNextSession, toggleTimer } = useTimerStore()
+  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } = useTimerStore()
 
   const [isSmallScreen, setIsSmallScreen] = useState(false)
 
@@ -30,6 +29,20 @@ export default function TimerButtons() {
 
   return (
     <div className='flex items-center justify-center space-x-1'>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <MenuButton
+              onClick={skipToPrevSession}
+              variant={buttonVariant}
+              className='xl:h-12 xl:w-32'
+            >
+              <SkipBack className={`${iconSize}`} strokeWidth={2} />
+            </MenuButton>
+          </TooltipTrigger>
+          <TooltipContent className='font-bold'>Skip To Prev</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -80,7 +93,7 @@ export default function TimerButtons() {
       </TooltipProvider>
 
 
-      <AccountButton />
+      {/* <AccountButton /> */}
     </div>
   )
 }

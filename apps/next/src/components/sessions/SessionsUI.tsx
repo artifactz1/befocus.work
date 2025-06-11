@@ -15,6 +15,9 @@ export default function SessionsUI() {
 
   const isLandscape = useIsLandscape() // Get Zustand state & function
 
+  const maxSessionIndex = sessions * 2 - 1 // total sessions + breaks (if 1 break after each work session)
+ 
+
   // const opacitySession = Math.round((1 - timeLeft / workDuration) * 100) // Clamp between 0 and 1
   // const opacitySessionBrk = Math.round((1 - timeLeft / breakDuration) * 100) // Clamp between 0 and 1
 

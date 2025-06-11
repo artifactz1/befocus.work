@@ -2,9 +2,9 @@
 
 import { useSoundsStore } from '~/store/useSoundsStore'
 import Divider from '../helper/Divider'
-import SoundButton from './SoundButton'
+import SoundsButton from './SoundsButton'
 
-export default function AmbientSoundsButton() {
+export default function AmbientSoundsMenu() {
   const { sounds } = useSoundsStore()
 
   return (
@@ -14,7 +14,7 @@ export default function AmbientSoundsButton() {
         {Object.keys(sounds)
           .filter(id => sounds[id]?.soundType === 'ambient')
           .map(id => (
-            <SoundButton key={id} soundId={id} />
+            <SoundsButton key={id} soundId={id} type='ambient' />
           ))}
       </div>
     </main>

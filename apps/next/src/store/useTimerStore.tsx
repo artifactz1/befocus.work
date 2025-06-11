@@ -11,6 +11,7 @@ interface TimerState {
   reset: () => void
   resetCurrentTime: () => void
   skipToNextSession: () => void
+  skipToPrevSession: () => void
   toggleTimer: () => void
   decrementTime: () => void
   isAlarmOn: boolean
@@ -68,6 +69,25 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     }
     set({ isRunning: false })
   },
+  skipToPrevSession: () => {
+    const { isWorking, breakDuration, workDuration, currentSession } = get()
+
+    if (!isWorking) {
+      // Currently on break -> go back to work session of the same currentSession
+      set({ isWorking: true, timeLeft: workDuration })
+    } else {
+      // Currently on work -> go back to break of previous session if possible
+      const newSession = currentSession > 1 ? currentSession - 1 : 1
+      set({
+        isWorking: false,
+        timeLeft: breakDuration,
+        currentSession: newSession,
+      })
+    }
+
+    set({ isRunning: false })
+  },
+
   toggleTimer: () => set(state => ({ isRunning: !state.isRunning })),
 
   decrementTime: () =>

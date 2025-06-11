@@ -10,19 +10,17 @@ import { useState } from 'react'
 import { useDeleteUserSound, useUpdateUserSound } from '~/hooks/useSounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
-const SoundSettings = ({ soundId }: { soundId: string }) => {
-  const {
-    sounds,
-    editModes,
-    toggleEditMode,
-    editSound,
-    toggleSound,
-    setVolume,
-    isDeleteMode,
-    // deleteSound
-  } = useSoundsStore()
+const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
+  // Split the store selectors to avoid unnecessary re-renders
+  const sound = useSoundsStore(state => state.sounds[soundId])
+  const editModes = useSoundsStore(state => state.editModes)
+  const isDeleteMode = useSoundsStore(state => state.isDeleteMode)
 
-  const sound = sounds[soundId]
+  // Actions
+  const toggleEditMode = useSoundsStore(state => state.toggleEditMode)
+  const editSound = useSoundsStore(state => state.editSound)
+  const toggleSound = useSoundsStore(state => state.toggleSound)
+  const setVolume = useSoundsStore(state => state.setVolume)
 
   const [originalName, setOriginalName] = useState('')
 
@@ -37,11 +35,9 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
   return (
     <main>
       {!isDeleteMode ? (
-        <div className='space-y-2'>
+        <div className='space-y-1 border-2 p-2 rounded-lg'>
           <motion.button
-            // …same animation props…
             className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
-            /* single-click anywhere on the row (when not already editing) opens the Input */
             onClick={e => {
               if (e.detail === 1 && !isEditing) {
                 setOriginalName(sound.name)
@@ -54,16 +50,13 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
                 type="text"
                 value={sound.name}
                 autoFocus
-                /* prevent clicks inside the Input from bubbling back up */
                 onClick={e => e.stopPropagation()}
                 onChange={e => editSound(soundId, e.target.value)}
                 onBlur={() => {
                   toggleEditMode(soundId)
 
-                  if (
-                    sound.name.trim() === '' // ⛔ prevent empty strings
-                  ) {
-                    editSound(soundId, originalName) // 🔁 revert to original
+                  if (sound.name.trim() === '') {
+                    editSound(soundId, originalName)
                     return
                   }
 
@@ -71,14 +64,11 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
                     updateSoundMutation.mutate(sound.name)
                   }
                 }}
-
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === 'Escape') {
                     toggleEditMode(soundId)
 
-                    if (
-                      sound.name.trim() === ''
-                    ) {
+                    if (sound.name.trim() === '') {
                       editSound(soundId, originalName)
                       return
                     }
@@ -91,9 +81,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
                 className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
               />
             ) : (
-              <span>
-                {sound.name}
-              </span>
+              <span>{sound.name}</span>
             )}
           </motion.button>
 
@@ -118,6 +106,7 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
               className='w-full'
             />
           </div>
+
         </div>
       ) : (
         <div className='space-y-2'>
@@ -130,4 +119,4 @@ const SoundSettings = ({ soundId }: { soundId: string }) => {
   )
 }
 
-export default SoundSettings
+export default AmbientSoundsButton

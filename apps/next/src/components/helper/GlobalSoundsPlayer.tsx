@@ -1,104 +1,101 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import ReactPlayer from 'react-player'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 import { useEffect } from 'react'
-import { api } from '~/lib/api.client'
+import type { OnProgressProps } from 'react-player/base'
 import { useUserSounds } from '~/hooks/useSounds'
 
 const GlobalPlayer = () => {
-  const { sounds } = useSoundsStore()
-  const soundKeys = Object.keys(sounds)
+  // Use selective subscriptions to prevent unnecessary re-renders
+  const sounds = useSoundsStore(state => state.sounds)
+  const seekingStates = useSoundsStore(state => state.seekingStates)
+  const setCurrentTime = useSoundsStore(state => state.setCurrentTime)
+  const setDuration = useSoundsStore(state => state.setDuration)
+  const setPlayerRef = useSoundsStore(state => state.setPlayerRef)
+  const addSound = useSoundsStore(state => state.addSound)
 
-  const addSound = useSoundsStore(s => s.addSound)
+  const soundKeys = Object.keys(sounds)
   const { data: userSounds } = useUserSounds()
+
+  // Simplified progress handler
+  const handleProgress = (key: string, state: OnProgressProps) => {
+    const isSeeking = seekingStates[key] ?? false
+
+    // console.log(`[${key}] Progress:`, state.playedSeconds, 'Seeking:', isSeeking)
+
+    // Only update currentTime if we're not actively seeking
+    if (!isSeeking) {
+      setCurrentTime(key, state.playedSeconds)
+    }
+  }
+
+  const handleDuration = (key: string, duration: number) => {
+    // console.log(`[${key}] Duration loaded:`, duration)
+    setDuration(key, duration)
+  }
+
+  const handleReady = (key: string, player: ReactPlayer) => {
+    // console.log(`[${key}] Player ready`)
+    setPlayerRef(key, player)
+  }
 
   useEffect(() => {
     if (!userSounds) return;
 
-    const existing = useSoundsStore.getState().sounds;
+    const existing = sounds; // Use the sounds from the hook subscription
 
-    // instead of userSounds.forEach(...)
     for (const s of userSounds) {
       if (!existing[s.id]) {
         addSound(s.id, s.name, s.url, s.isCustom, s.soundType);
       }
     }
-  }, [userSounds, addSound]);
+  }, [userSounds, addSound, sounds]); // Add sounds to dependencies
 
   return (
     <>
       {soundKeys
         .filter(key => sounds[key]?.soundType !== 'alarm')
-        .map((
-          key,
-          index,
-        ) => {
+        .map((key) => {
           const sound = sounds[key]
 
-          // Check if sound exists before rendering the ReactPlayer
           if (!sound) return null
 
           return (
             <ReactPlayer
+              ref={(player) => {
+                if (player) {
+                  handleReady(key, player)
+                }
+              }}
               config={{
                 youtube: {
-                  // 1) Tell YouTube your actual page origin:
                   playerVars: {
                     origin:
                       typeof window !== 'undefined'
-                        ? window.location.origin     // "http://localhost:3000"
+                        ? window.location.origin
                         : undefined,
-                    enablejsapi: 1,               // ensure JS API is enabled
+                    enablejsapi: 1,
                   },
-                  // 2) (Optional) If you want the no-cookie host:
                   embedOptions: {
                     host: 'https://www.youtube-nocookie.com',
                   },
                 },
               }}
-              // config={{
-              //   youtube: {
-              //     playerVars: {
-              //       // exactly your page’s origin:
-              //       origin:
-              //         typeof window !== 'undefined'
-              //           ? window.location.origin    // e.g. "http://localhost:3000"
-              //           : undefined,
-              //     },
-              //     embedOptions: {
-              //       // optional: use no-cookie host if you prefer
-              //       host: 'https://www.youtube-nocookie.com',
-              //     },
-              //   },
-              // }}
-              // config={{
-              //   youtube: {
-              //     // pass your origin so postMessage doesn’t get blocked:
-              //     playerVars: {
-              //       origin: typeof window !== 'undefined'
-              //         ? window.location.origin
-              //         : undefined,
-              //     },
-              //     // override the iframe embed host:
-              //     embedOptions: {
-              //       host: 'https://www.youtube.com',
-              //     },
-              //   },
-              // }}
               key={key}
               url={sound.url}
               playing={sound.playing}
               volume={sound.volume}
-              controls={false} // Don't show controls as it's controlled globally
+              controls={false}
               muted={!sound.playing}
               width='0'
               height='0'
-              onReady={() => console.log(`Player is ready ${key}`)}
-              // onPause={() => `Pause index ${index}`}
-              onStart={() => console.log(`Playing index ${index}`)}
+              onReady={() => { }} // Remove console.log to prevent re-renders
+              onStart={() => { }} // Remove console.log to prevent re-renders
+              onProgress={(state) => handleProgress(key, state)}
+              onDuration={(duration) => handleDuration(key, duration)}
+            // onError={(error) => console.error(`[${key}] Player error:`, error)}
             />
           )
         })}

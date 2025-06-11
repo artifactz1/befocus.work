@@ -10,8 +10,8 @@ import Divider from '../helper/Divider'
 import MenuButton from '../helper/MenuButtons'
 import AddSoundButton from '../sounds/AddSoundButton'
 import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
-import AmbientSoundsButton from '../sounds/AmbientSoundsButton'
-import BgMusicSoundsButton from '../sounds/BgMusicSoundsButton'
+import AmbientSoundsButton from '../sounds/AmbientSoundsMenu'
+import BgMusicSoundsButton from '../sounds/BgSoundsMenu'
 import ConfigureSounds from '../sounds/ConfigureSounds'
 
 export default function SoundSettings() {
