@@ -77,12 +77,17 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       set({ isWorking: true, timeLeft: workDuration })
     } else {
       // Currently on work -> go back to break of previous session if possible
-      const newSession = currentSession > 1 ? currentSession - 1 : 1
-      set({
-        isWorking: false,
-        timeLeft: breakDuration,
-        currentSession: newSession,
-      })
+      if (currentSession !== 1) {
+
+
+        const newSession = currentSession > 1 ? currentSession - 1 : 1
+        set({
+          isWorking: false,
+          timeLeft: breakDuration,
+          currentSession: newSession,
+        })
+
+      }
     }
 
     set({ isRunning: false })

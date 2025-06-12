@@ -399,7 +399,7 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
                     className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
                   />
                 ) : (
-                  <span>{sound.name.length > 17 ? sound.name.slice(0, 17) + '…' : sound.name}</span>
+                  <span>{sound.name.length > 17 ? `${sound.name.slice(0, 17)}…` : sound.name}</span>
                 )}
               </motion.button>
 
@@ -427,27 +427,46 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
             </div>
 
             {type === 'bgMusic' && (
-              <div className="space-y-3">
-                <Separator />
+              // <div className="space-y-3">
+              //   <Separator />
 
-                <div className="flex items-center space-x-2">
-                  <Slider
-                    value={[isSeeking ? currentTime : currentTime]}
-                    min={0}
-                    max={duration}
-                    step={0.1}
-                    onValueChange={handleSliderChange}
-                    onValueCommit={handleSliderCommit}
-                    className="w-full"
-                    trackClassName="bg-gray-100"
-                    rangeClassName="bg-green-400 rounded-r-xl"
-                    thumbClassName="hidden "
-                  />
-                  <div className="flex justify-center items-center w-1/3">
-                    <span className="text-xs">
-                      {formatTime(currentTime)} / {formatTime(duration)}
-                    </span>
-                  </div>
+              //   <div className="flex items-center space-x-2">
+              //     <Slider
+              //       value={[isSeeking ? currentTime : currentTime]}
+              //       min={0}
+              //       max={duration}
+              //       step={0.1}
+              //       onValueChange={handleSliderChange}
+              //       onValueCommit={handleSliderCommit}
+              //       className="w-fill"
+              //       trackClassName="bg-gray-100"
+              //       rangeClassName="bg-green-400 rounded-r-xl"
+              //       thumbClassName="hidden "
+              //     />
+              //     <div className="flex justify-center items-center w-fit">
+              //       <span className="text-xs">
+              //         {formatTime(currentTime)} / {formatTime(duration)}
+              //       </span>
+              //     </div>
+              //   </div>
+              // </div>
+              <div className="flex items-center space-x-2">
+                <Slider
+                  value={[isSeeking ? currentTime : currentTime]}
+                  min={0}
+                  max={duration}
+                  step={0.1}
+                  onValueChange={handleSliderChange}
+                  onValueCommit={handleSliderCommit}
+                  className="w-fill"
+                  trackClassName="bg-gray-100"
+                  rangeClassName="bg-green-400 rounded-r-xl"
+                  thumbClassName="hidden"
+                />
+                <div className="flex justify-center items-center w-fit">
+                  <span className="text-xs whitespace-nowrap">
+                    {formatTime(currentTime)} / {formatTime(duration)}
+                  </span>
                 </div>
               </div>
             )}
