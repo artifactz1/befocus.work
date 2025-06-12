@@ -1,8 +1,9 @@
 'use client'
 
 import { Button } from '@repo/ui/button'
+import { Card, CardContent } from '@repo/ui/card'
+import { BorderBeam } from '@repo/ui/components/magicui/border-beam'
 import { Input } from '@repo/ui/input'
-import { Separator } from '@repo/ui/separator'
 import { Slider } from '@repo/ui/slider'
 import { Toggle } from '@repo/ui/toggle'
 import { motion } from 'framer-motion'
@@ -36,12 +37,10 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
   const setCurrentTime = useSoundsStore(state => state.setCurrentTime)
 
   const [originalName, setOriginalName] = useState('')
+  const [initialPlay, setInitialPlay] = useState(false);
 
   const deleteSoundMutation = useDeleteUserSound();
   const updateSoundMutation = useUpdateUserSound(soundId);
-
-  // Debug logging - only log when values actually change
-  // console.log(`[${soundId}] Current Time:`, currentTime, 'Duration:', duration, 'Seeking:', isSeeking)
 
   if (!sound) return null
 
@@ -50,18 +49,15 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
 
   const handleSliderChange = ([raw]: number[]) => {
     const val = raw ?? 0
-    // console.log(`[${soundId}] Slider Change:`, val)
     setSeeking(soundId, true)
     setCurrentTime(soundId, val)
   }
 
   const handleSliderCommit = ([raw]: number[]) => {
     const val = raw ?? 0
-    // console.log(`[${soundId}] Slider Commit:`, val)
 
     const player = playerRefs[soundId]
     if (player) {
-      // console.log(`[${soundId}] Seeking to:`, val)
       player.seekTo(val, 'seconds')
     } else {
       console.warn(`[${soundId}] No player ref found`)
@@ -74,46 +70,55 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
   return (
     <main>
       {!isDeleteMode ? (
-        <div className='space-y-3 border-2 p-4 rounded-lg '>
-          <div className='flex space-x-2'>
-            <Toggle
-              pressed={sound.playing}
-              onClick={() => toggleSound(soundId)}
-              variant={'outline'}
-            >
-              {sound.playing ? <Pause /> : <Play />}
-            </Toggle>
+        <Card className="relative overflow-hidden ">
+          <div className={`transition-discrete duration-500 ${sound.playing ? 'opacity-100' : 'opacity-0'}`}>
+            <BorderBeam
+              duration={6}
+              size={100}
+              className="from-transparent via-green-500 to-transparent"
+            />
+            <BorderBeam
+              duration={6}
+              delay={3}
+              size={100}
+              className="from-transparent via-green-500 to-transparent"
+            />
+          </div>
 
-            <motion.button
-              className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
-              onClick={e => {
-                if (e.detail === 1 && !isEditing) {
-                  setOriginalName(sound.name)
-                  toggleEditMode(soundId)
-                }
-              }}
-            >
-              {isEditing ? (
-                <Input
-                  type="text"
-                  value={sound.name}
-                  autoFocus
-                  onClick={e => e.stopPropagation()}
-                  onChange={e => editSound(soundId, e.target.value)}
-                  onBlur={() => {
+
+          <CardContent className="p-4 space-y-3">
+            <div className='flex space-x-2'>
+              <Toggle
+                pressed={sound.playing}
+                onClick={() => {
+                  if (!initialPlay) {
+                    setInitialPlay(true);
+                    setVolume(soundId, 0.4);
+                  }
+                  toggleSound(soundId)
+                }}
+                variant={'outline'}
+              >
+                {sound.playing ? <Pause /> : <Play />}
+              </Toggle>
+
+              <motion.button
+                className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
+                onClick={e => {
+                  if (e.detail === 1 && !isEditing) {
+                    setOriginalName(sound.name)
                     toggleEditMode(soundId)
-
-                    if (sound.name.trim() === '') {
-                      editSound(soundId, originalName)
-                      return
-                    }
-
-                    if (sound.name !== originalName) {
-                      updateSoundMutation.mutate(sound.name)
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === 'Escape') {
+                  }
+                }}
+              >
+                {isEditing ? (
+                  <Input
+                    type="text"
+                    value={sound.name}
+                    autoFocus
+                    onClick={e => e.stopPropagation()}
+                    onChange={e => editSound(soundId, e.target.value)}
+                    onBlur={() => {
                       toggleEditMode(soundId)
 
                       if (sound.name.trim() === '') {
@@ -124,89 +129,97 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
                       if (sound.name !== originalName) {
                         updateSoundMutation.mutate(sound.name)
                       }
-                    }
-                  }}
-                  className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
-                />
-              ) : (
-                <span>{sound.name.length > 17 ? sound.name.slice(0, 17) + '…' : sound.name}</span>
-              )}
-            </motion.button>
-            <Slider
-              value={[sound.volume * 100]}
-              onValueChange={([raw]) => {
-                const newVol = (raw ?? 0) / 100
-                setVolume(soundId, newVol)
-                if (newVol > 0.01 && !sound.playing) toggleSound(soundId)
-                if (newVol === 0 && sound.playing) toggleSound(soundId)
-              }}
-              max={100}
-              step={1}
-              className="w-full"
-              trackClassName="bg-gray-100"
-              rangeClassName=""
-              thumbClassName="w-4 h-4 "
-            />
-            {/* <Slider
-              value={[sound.volume * 100]}
-              onValueChange={([raw]) => {
-                const newVol = (raw ?? 0) / 100
-                setVolume(soundId, newVol)
-                if (newVol > 0.01 && !sound.playing) toggleSound(soundId)
-                if (newVol === 0 && sound.playing) toggleSound(soundId)
-              }}
-              max={100}
-              step={1}
-              className='w-full'
-            /> */}
-            <div className="flex justify-between items-center">
-              <span className="text-xs  ">
-                {Math.round(sound.volume * 100)}%
-              </span>
-            </div>
-          </div>
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === 'Escape') {
+                        toggleEditMode(soundId)
 
-          {
-            type === 'bgMusic' && (
-              <div className="space-y-3">
+                        if (sound.name.trim() === '') {
+                          editSound(soundId, originalName)
+                          return
+                        }
 
-                <Separator />
-
-
-
-                <div className="flex items-center space-x-2">
-                  <Slider
-                    value={[isSeeking ? currentTime : currentTime]}
-                    min={0}
-                    max={duration}
-                    step={0.1}
-                    onValueChange={handleSliderChange}
-                    onValueCommit={handleSliderCommit}
-                    className="w-full"
-                    trackClassName="bg-gray-100"
-                    rangeClassName="bg-green-400 rounded-r-xl"
-                    thumbClassName="hidden "
+                        if (sound.name !== originalName) {
+                          updateSoundMutation.mutate(sound.name)
+                        }
+                      }
+                    }}
+                    className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
                   />
-                  <div className="flex justify-center items-center w-1/3 ">
-                    <span className="text-xs">
-                      {formatTime(currentTime)} / {formatTime(duration)}
-                    </span>
-                  </div>
+                ) : (
+                  <span>{sound.name.length > 17 ? `${sound.name.slice(0, 17)}…` : sound.name}</span>
+                )}
+              </motion.button>
 
+              <Slider
+                value={[sound.volume * 100]}
+                onValueChange={([raw]) => {
+                  const newVol = (raw ?? 0) / 100
+                  setVolume(soundId, newVol)
+                  if (newVol > 0.01 && !sound.playing) toggleSound(soundId)
+                  if (newVol === 0 && sound.playing) toggleSound(soundId)
+                }}
+                max={100}
+                step={1}
+                className="w-full"
+                trackClassName="bg-gray-100"
+                rangeClassName=""
+                thumbClassName="w-4 h-4 "
+              />
+
+              <div className="flex justify-between items-center">
+                <span className="text-xs">
+                  {Math.round(sound.volume * 100)}%
+                </span>
+              </div>
+            </div>
+
+            {type === 'bgMusic' && (
+              // <div className="space-y-3">
+              //   <Separator />
+
+              //   <div className="flex items-center space-x-2">
+              //     <Slider
+              //       value={[isSeeking ? currentTime : currentTime]}
+              //       min={0}
+              //       max={duration}
+              //       step={0.1}
+              //       onValueChange={handleSliderChange}
+              //       onValueCommit={handleSliderCommit}
+              //       className="w-fill"
+              //       trackClassName="bg-gray-100"
+              //       rangeClassName="bg-green-400 rounded-r-xl"
+              //       thumbClassName="hidden "
+              //     />
+              //     <div className="flex justify-center items-center w-fit">
+              //       <span className="text-xs">
+              //         {formatTime(currentTime)} / {formatTime(duration)}
+              //       </span>
+              //     </div>
+              //   </div>
+              // </div>
+              <div className="flex items-center space-x-2">
+                <Slider
+                  value={[isSeeking ? currentTime : currentTime]}
+                  min={0}
+                  max={duration}
+                  step={0.1}
+                  onValueChange={handleSliderChange}
+                  onValueCommit={handleSliderCommit}
+                  className="w-fill"
+                  trackClassName="bg-gray-100"
+                  rangeClassName="bg-green-400 rounded-r-xl"
+                  thumbClassName="hidden"
+                />
+                <div className="flex justify-center items-center w-fit">
+                  <span className="text-xs whitespace-nowrap">
+                    {formatTime(currentTime)} / {formatTime(duration)}
+                  </span>
                 </div>
               </div>
-
-            )
-          }
-
-          {/* Debug Info - Remove in production */}
-          {/* <div className="text-xs text-gray-500 mt-2">
-            <div>Debug: Seeking={isSeeking ? 'true' : 'false'}</div>
-            <div>Current Time: {currentTime.toFixed(1)}s</div>
-            <div>Duration: {duration.toFixed(1)}s</div>
-            <div>Player Ref: {playerRefs[soundId] ? 'exists' : 'missing'}</div>
-          </div> */}
-        </div>
+            )}
+          </CardContent>
+        </Card>
       ) : (
         <div className='space-y-2'>
           <Button onClick={() => deleteSoundMutation.mutate(soundId)}>

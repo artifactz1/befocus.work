@@ -80,6 +80,9 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+  .theme {
+    --animate-shine: shine var(--duration) infinite linear;
+  }
 }
 @layer base {
   * {
@@ -191,3 +194,16 @@
   --border: 0 0% 25%; /* a neutral dark border for dark mode */
 }
 
+@theme inline {
+  @keyframes shine {
+  0% {
+    background-position: 0% 0%;
+    }
+  50% {
+    background-position: 100% 100%;
+    }
+  to {
+    background-position: 0% 0%;
+    }
+  }
+}
