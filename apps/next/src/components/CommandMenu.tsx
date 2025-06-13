@@ -1,102 +1,14 @@
-// import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from '@repo/ui/command'
-// import { DialogTitle } from '@repo/ui/dialog'
-// import { CreditCard, Pause, Play, RotateCcw, Settings, SkipBack, SkipForward, User } from 'lucide-react'
-
-// import React from 'react'
-// import { useTimerStore } from '~/store/useTimerStore'
-
-// export function CommandMenu() {
-//   const { isRunning } = useTimerStore()
-//   const [open, setOpen] = React.useState(false)
-//   React.useEffect(() => {
-//     const down = (e: KeyboardEvent) => {
-//       console.log('Key pressed:', e.key, 'Ctrl:', e.ctrlKey, 'Meta:', e.metaKey) // Debug line
-
-//       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-//         console.log('Command menu triggered!') // Debug line
-//         e.preventDefault()
-//         setOpen((open) => !open)
-//       }
-//     }
-//     document.addEventListener("keydown", down)
-//     return () => document.removeEventListener("keydown", down)
-//   }, [])
-//   return (
-//     <>
-//       {/* <p className="text-muted-foreground text-sm">
-//         Press{" "}
-//         <kbd className="bg-muted text-muted-foreground pointer-events-none inline-flex h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
-//           <span className="text-xs">⌘</span>J
-//         </kbd>
-//       </p> */}
-//       <CommandDialog open={open} onOpenChange={setOpen}>
-//         <DialogTitle className="p-4">
-//           Command Menu
-//         </DialogTitle>
-//         <CommandInput placeholder="Type a command or search..." />
-//         <CommandList>
-//           <CommandEmpty>No results found.</CommandEmpty>
-
-//           <CommandGroup heading="Session / Timer">
-//             <CommandItem>
-//               <SkipBack />
-//               <span> Prev Session</span>
-//             </CommandItem>
-//             {isRunning ? (
-//               <CommandItem>
-//                 <Pause />
-//                 <span> Pause Timer </span>
-//               </CommandItem>
-//             ) : (
-
-//               <CommandItem>
-//                 <Play className='flex flex-row' />
-//                 <span> Resume Timer </span>
-//               </CommandItem>
-
-//             )}
-//             <CommandItem>
-//               <SkipForward />
-//               <span> Next Session</span>
-//             </CommandItem>
-//             <CommandItem>
-//               <RotateCcw />
-//               <span> Reset Session</span>
-//             </CommandItem>
-
-//           </CommandGroup>
-
-
-//           <CommandSeparator />
-//           <CommandGroup heading="Settings">
-//             <CommandItem>
-//               <User />
-//               <span>Profile</span>
-//               <CommandShortcut>⌘P</CommandShortcut>
-//             </CommandItem>
-//             <CommandItem>
-//               <CreditCard />
-//               <span>Billing</span>
-//               <CommandShortcut>⌘B</CommandShortcut>
-//             </CommandItem>
-//             <CommandItem>
-//               <Settings />
-//               <span>Settings</span>
-//               <CommandShortcut>⌘S</CommandShortcut>
-//             </CommandItem>
-//           </CommandGroup>
-//         </CommandList>
-//       </CommandDialog>
-//     </>
-//   )
-// }
-
+'use client'
 
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from '@repo/ui/command'
 import { DialogTitle } from '@repo/ui/dialog'
-import { CreditCard, Pause, Play, RotateCcw, Settings, SkipBack, SkipForward, User } from 'lucide-react'
+import { CreditCard, LogOut, Moon, Pause, Play, RotateCcw, Settings, SkipBack, SkipForward, Sun, User } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { useRouter } from 'next/navigation'
 import React from 'react'
+import { signOut, useSession } from '~/lib/auth.client'
 import { useTimerStore } from '~/store/useTimerStore'
+import { ClientOnly } from './ClientOnly'
 
 export function CommandMenu() {
   const {
@@ -107,7 +19,18 @@ export function CommandMenu() {
     toggleTimer
   } = useTimerStore()
 
+  const { data: session, isPending } = useSession()
+  const { theme, setTheme } = useTheme()
+  const router = useRouter()
   const [open, setOpen] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false)
+
+  const isDarkMode = theme === 'dark'
+
+  // Ensure component is mounted before rendering session-dependent UI
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -125,6 +48,26 @@ export function CommandMenu() {
     setOpen(false) // Close the command menu after executing
   }
 
+  const handleToggleTheme = () => {
+    setTheme(isDarkMode ? 'light' : 'dark')
+    setOpen(false)
+  }
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      router.push('/')
+      setOpen(false)
+    } catch (error) {
+      console.error('Sign out failed', error)
+    }
+  }
+
+  const handleSignIn = () => {
+    router.push('/sign-in')
+    setOpen(false)
+  }
+
   return (
     <>
       <CommandDialog open={open} onOpenChange={setOpen}>
@@ -134,14 +77,15 @@ export function CommandMenu() {
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Session / Timer">
+
+          <CommandGroup heading="Timer">
             <CommandItem onSelect={() => handleCommand(skipToPrevSession)}>
               <SkipBack />
-              <span>Prev Session</span>
+              <span>Previous Session</span>
             </CommandItem>
             <CommandItem onSelect={() => handleCommand(toggleTimer)}>
               {isRunning ? <Pause /> : <Play />}
-              <span>{isRunning ? 'Pause Timer' : 'Resume Timer'}</span>
+              <span>{isRunning ? 'Pause Timer' : 'Start Timer'}</span>
             </CommandItem>
             <CommandItem onSelect={() => handleCommand(skipToNextSession)}>
               <SkipForward />
@@ -152,7 +96,37 @@ export function CommandMenu() {
               <span>Reset Session</span>
             </CommandItem>
           </CommandGroup>
+
           <CommandSeparator />
+
+          <CommandGroup heading="Account">
+            <CommandItem onSelect={handleToggleTheme}>
+              {isDarkMode ? <Sun /> : <Moon />}
+              <span>{isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
+            </CommandItem>
+
+            {/* Only render auth-related items after component is mounted and session status is determined */}
+            {/* <ClientOnly > */}
+            <ClientOnly fallback={<div className="h-10" />}>
+              {mounted && !isPending && (
+                session === null ? (
+                  <CommandItem onSelect={handleSignIn}>
+                    <User />
+                    <span>Sign In</span>
+                  </CommandItem>
+                ) : (
+                  <CommandItem onSelect={handleSignOut}>
+                    <LogOut />
+                    <span>Sign Out</span>
+                  </CommandItem>
+                )
+              )}
+            </ClientOnly>
+
+          </CommandGroup>
+
+          <CommandSeparator />
+
           <CommandGroup heading="Settings">
             <CommandItem>
               <User />
