@@ -91,7 +91,7 @@ export const SessionSettings: React.FC = () => {
       },
     })
     if (!response.ok) return null
-  }
+  };
 
   const { mutateAsync: createSettings } = useMutation({
     mutationKey: ['userSettings'],

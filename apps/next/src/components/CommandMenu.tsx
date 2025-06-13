@@ -1,14 +1,14 @@
 'use client'
 
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from '@repo/ui/command'
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@repo/ui/command'
 import { DialogTitle } from '@repo/ui/dialog'
-import { CreditCard, LogOut, Moon, Pause, Play, RotateCcw, Settings, SkipBack, SkipForward, Sun, User } from 'lucide-react'
+import { LogOut, Moon, Pause, Play, RotateCcw, SkipBack, SkipForward, Sun, Timer, User } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { signOut, useSession } from '~/lib/auth.client'
 import { useTimerStore } from '~/store/useTimerStore'
-import { ClientOnly } from './ClientOnly'
+import { ClientOnly } from './helper/ClientOnly'
 
 export function CommandMenu() {
   const {
@@ -16,13 +16,15 @@ export function CommandMenu() {
     resetCurrentTime,
     skipToPrevSession,
     skipToNextSession,
-    toggleTimer
+    toggleTimer,
+    updateSettings
   } = useTimerStore()
 
   const { data: session, isPending } = useSession()
   const { theme, setTheme } = useTheme()
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
+  const [searchValue, setSearchValue] = React.useState('')
 
   const isDarkMode = theme === 'dark'
 
@@ -62,17 +64,71 @@ export function CommandMenu() {
     setOpen(false)
   }
 
+  // Parse work duration command
+  const parseWorkDurationCommand = (input: string) => {
+    const patterns = [
+      /^set work duration to (\d+)$/i,
+      /^work duration (\d+)$/i,
+      /^work (\d+)$/i,
+      /^(\d+) minutes work$/i,
+      /^(\d+)m work$/i,
+      /^(\d+)$/
+    ]
+
+    for (const pattern of patterns) {
+      const match = input.match(pattern)
+      if (match?.[1]) {
+        const minutes = Number.parseInt(match[1])
+        if (minutes >= 1 && minutes <= 120) { // Reasonable limits
+          return minutes
+        }
+      }
+    }
+    return null
+  }
+
+  const handleSetWorkDuration = (minutes: number) => {
+    const seconds = minutes * 60
+    updateSettings('workDuration', seconds)
+    resetCurrentTime()
+    setOpen(false)
+    setSearchValue('')
+  }
+
+  const workDurationMinutes = parseWorkDurationCommand(searchValue)
+
   return (
     <>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <DialogTitle className="p-4">
           Command Menu
         </DialogTitle>
-        <CommandInput placeholder="Type a command or search..." />
+        <CommandInput
+          placeholder="Type a command or search..."
+          value={searchValue}
+          onValueChange={setSearchValue}
+        />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
 
-          <CommandGroup heading="Timer">
+          <CommandGroup heading="Session">
+            {workDurationMinutes ? (
+              <CommandItem onSelect={() => handleSetWorkDuration(workDurationMinutes)}>
+                <Timer />
+                <span>Set work duration to {workDurationMinutes} minutes</span>
+              </CommandItem>
+            ) : (
+              <>
+                <CommandItem >
+                  <Timer />
+                  <span className="text-muted-foreground">Type a number to set work duration</span>
+                </CommandItem>
+                {/* You could add other session-related commands here */}
+              </>
+            )}
+          </CommandGroup>
+
+          <CommandGroup heading="Actions">
             <CommandItem onSelect={() => handleCommand(skipToPrevSession)}>
               <SkipBack />
               <span>Previous Session</span>
@@ -114,26 +170,16 @@ export function CommandMenu() {
                 )
               )}
             </ClientOnly>
-
           </CommandGroup>
 
           <CommandSeparator />
 
-          <CommandGroup heading="Settings">
-            <CommandItem>
-              <User />
-              <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
+          <CommandGroup heading="Help">
+            <CommandItem disabled>
+              <span className="text-muted-foreground">Try: &apos;set work duration to 25&apos;</span>
             </CommandItem>
-            <CommandItem>
-              <CreditCard />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <Settings />
-              <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
+            <CommandItem disabled>
+              <span className="text-muted-foreground">Or just type: &apos;30&apos; for 30 minutes</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>
