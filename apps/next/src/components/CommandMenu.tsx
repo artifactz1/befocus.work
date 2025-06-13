@@ -1,14 +1,31 @@
 'use client'
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@repo/ui/alert-dialog'
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@repo/ui/command'
 import { DialogTitle } from '@repo/ui/dialog'
-import { LogOut, Moon, Pause, Play, RotateCcw, SkipBack, SkipForward, Sun, Timer, User } from 'lucide-react'
+import { Coffee, Hash, LogOut, Moon, Pause, Play, RotateCcw, SkipBack, SkipForward, Sun, Timer, User } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import { useSaveUserSettings, useUserSettings } from '~/hooks/useSession'
 import { signOut, useSession } from '~/lib/auth.client'
 import { useTimerStore } from '~/store/useTimerStore'
 import { ClientOnly } from './helper/ClientOnly'
+
+type PendingSettingsUpdate = {
+  type: 'work' | 'break' | 'sessions'
+  value: number
+  label: string
+} | null
 
 export function CommandMenu() {
   const {
@@ -17,14 +34,21 @@ export function CommandMenu() {
     skipToPrevSession,
     skipToNextSession,
     toggleTimer,
-    updateSettings
+    updateSettings,
+    reset,
+    workDuration,
+    breakDuration,
+    sessions
   } = useTimerStore()
 
   const { data: session, isPending } = useSession()
+  const { data: userSettings } = useUserSettings()
   const { theme, setTheme } = useTheme()
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [searchValue, setSearchValue] = React.useState('')
+  const [alertOpen, setAlertOpen] = React.useState(false)
+  const [pendingUpdate, setPendingUpdate] = React.useState<PendingSettingsUpdate>(null)
 
   const isDarkMode = theme === 'dark'
 
@@ -41,7 +65,7 @@ export function CommandMenu() {
 
   const handleCommand = (action: () => void) => {
     action()
-    setOpen(false) // Close the command menu after executing
+    setOpen(false)
   }
 
   const handleToggleTheme = () => {
@@ -64,7 +88,26 @@ export function CommandMenu() {
     setOpen(false)
   }
 
-  // Parse work duration command
+  const { mutateAsync: saveSettings, isPending: isSaving } = useSaveUserSettings()
+
+  const handleSaveSettings = async (workTime: number, breakTime: number, sessionCount: number) => {
+    try {
+      await saveSettings({
+        workDuration: workTime,
+        breakDuration: breakTime,
+        numberOfSessions: sessionCount,
+      })
+      // Update timer store with new settings
+      updateSettings('workDuration', workTime)
+      updateSettings('breakDuration', breakTime)
+      updateSettings('sessions', sessionCount)
+      reset()
+    } catch (error) {
+      console.error('Failed to save settings:', error)
+    }
+  }
+
+  // Parse different types of commands
   const parseWorkDurationCommand = (input: string) => {
     const patterns = [
       /^set work duration to (\d+)$/i,
@@ -72,14 +115,13 @@ export function CommandMenu() {
       /^work (\d+)$/i,
       /^(\d+) minutes work$/i,
       /^(\d+)m work$/i,
-      /^(\d+)$/
     ]
 
     for (const pattern of patterns) {
       const match = input.match(pattern)
       if (match?.[1]) {
         const minutes = Number.parseInt(match[1])
-        if (minutes >= 1 && minutes <= 120) { // Reasonable limits
+        if (minutes >= 1 && minutes <= 120) {
           return minutes
         }
       }
@@ -87,15 +129,112 @@ export function CommandMenu() {
     return null
   }
 
-  const handleSetWorkDuration = (minutes: number) => {
-    const seconds = minutes * 60
-    updateSettings('workDuration', seconds)
-    resetCurrentTime()
+  const parseBreakDurationCommand = (input: string) => {
+    const patterns = [
+      /^set break duration to (\d+)$/i,
+      /^break duration (\d+)$/i,
+      /^break (\d+)$/i,
+      /^(\d+) minutes break$/i,
+      /^(\d+)m break$/i,
+    ]
+
+    for (const pattern of patterns) {
+      const match = input.match(pattern)
+      if (match?.[1]) {
+        const minutes = Number.parseInt(match[1])
+        if (minutes >= 1 && minutes <= 60) {
+          return minutes
+        }
+      }
+    }
+    return null
+  }
+
+  const parseSessionsCommand = (input: string) => {
+    const patterns = [
+      /^set sessions to (\d+)$/i,
+      /^sessions (\d+)$/i,
+      /^session (\d+)$/i, // Added singular form
+      /^(\d+) sessions$/i,
+      /^(\d+) session$/i, // Added singular form
+    ]
+
+    for (const pattern of patterns) {
+      const match = input.match(pattern)
+      if (match?.[1]) {
+        const count = Number.parseInt(match[1])
+        if (count >= 1 && count <= 20) {
+          return count
+        }
+      }
+    }
+    return null
+  }
+
+  // Check if input is just a number (for work duration shortcut)
+  const parseNumberOnly = (input: string) => {
+    const match = input.match(/^(\d+)$/)
+    if (match?.[1]) {
+      const minutes = Number.parseInt(match[1])
+      if (minutes >= 1 && minutes <= 120) {
+        return minutes
+      }
+    }
+    return null
+  }
+
+  const handleSettingUpdate = (type: 'work' | 'break' | 'sessions', value: number, label: string) => {
+    setPendingUpdate({ type, value, label })
     setOpen(false)
+    setAlertOpen(true)
+  }
+
+  const confirmSettingUpdate = async () => {
+    if (!pendingUpdate) return
+
+    const currentWorkTime = workDuration
+    const currentBreakTime = breakDuration
+    const currentSessions = sessions
+
+    let newWorkTime = currentWorkTime
+    let newBreakTime = currentBreakTime
+    let newSessions = currentSessions
+
+    // Update the appropriate setting
+    switch (pendingUpdate.type) {
+      case 'work':
+        newWorkTime = pendingUpdate.value * 60 // Convert to seconds
+        updateSettings('workDuration', newWorkTime)
+        break
+      case 'break':
+        newBreakTime = pendingUpdate.value * 60 // Convert to seconds
+        updateSettings('breakDuration', newBreakTime)
+        break
+      case 'sessions':
+        newSessions = pendingUpdate.value
+        updateSettings('sessions', newSessions)
+        break
+    }
+
+    // Save to backend
+    await handleSaveSettings(newWorkTime, newBreakTime, newSessions)
+
+    resetCurrentTime()
+    setAlertOpen(false)
+    setPendingUpdate(null)
+    setSearchValue('')
+  }
+
+  const cancelSettingUpdate = () => {
+    setAlertOpen(false)
+    setPendingUpdate(null)
     setSearchValue('')
   }
 
   const workDurationMinutes = parseWorkDurationCommand(searchValue)
+  const breakDurationMinutes = parseBreakDurationCommand(searchValue)
+  const sessionsCount = parseSessionsCommand(searchValue)
+  const numberOnly = parseNumberOnly(searchValue)
 
   return (
     <>
@@ -111,19 +250,42 @@ export function CommandMenu() {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
 
-          <CommandGroup heading="Session">
-            {workDurationMinutes ? (
-              <CommandItem onSelect={() => handleSetWorkDuration(workDurationMinutes)}>
+          <CommandGroup heading="Session Settings">
+            {/* Check for specific commands first, then fallback to number-only for work duration */}
+            {breakDurationMinutes ? (
+              <CommandItem onSelect={() => handleSettingUpdate('break', breakDurationMinutes, `break duration to ${breakDurationMinutes} minutes`)}>
+                <Coffee />
+                <span>Set break duration to {breakDurationMinutes} minutes</span>
+              </CommandItem>
+            ) : sessionsCount ? (
+              <CommandItem onSelect={() => handleSettingUpdate('sessions', sessionsCount, `sessions to ${sessionsCount}`)}>
+                <Hash />
+                <span>Set sessions to {sessionsCount}</span>
+              </CommandItem>
+            ) : workDurationMinutes ? (
+              <CommandItem onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}>
                 <Timer />
                 <span>Set work duration to {workDurationMinutes} minutes</span>
               </CommandItem>
+            ) : numberOnly ? (
+              <CommandItem onSelect={() => handleSettingUpdate('work', numberOnly, `work duration to ${numberOnly} minutes`)}>
+                <Timer />
+                <span>Set work duration to {numberOnly} minutes</span>
+              </CommandItem>
             ) : (
               <>
-                <CommandItem >
+                <CommandItem disabled>
                   <Timer />
                   <span className="text-muted-foreground">Type a number to set work duration</span>
                 </CommandItem>
-                {/* You could add other session-related commands here */}
+                <CommandItem disabled>
+                  <Coffee />
+                  <span className="text-muted-foreground">Try: break 10 for break duration</span>
+                </CommandItem>
+                <CommandItem disabled>
+                  <Hash />
+                  <span className="text-muted-foreground">Try: session 4 for session count</span>
+                </CommandItem>
               </>
             )}
           </CommandGroup>
@@ -176,14 +338,36 @@ export function CommandMenu() {
 
           <CommandGroup heading="Help">
             <CommandItem disabled>
-              <span className="text-muted-foreground">Try: &apos;set work duration to 25&apos;</span>
+              <span className="text-muted-foreground">Try: work 25 or just 25</span>
             </CommandItem>
             <CommandItem disabled>
-              <span className="text-muted-foreground">Or just type: &apos;30&apos; for 30 minutes</span>
+              <span className="text-muted-foreground">Try: break 5 or session 4</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>
       </CommandDialog>
+
+      {/* Settings Update Confirmation Dialog */}
+      <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your current
+              session and update your {pendingUpdate?.label}! Make sure this is what you want before continuing.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={cancelSettingUpdate}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmSettingUpdate}
+              disabled={isSaving}
+            >
+              {isSaving ? 'Saving...' : 'Continue'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
