@@ -21,10 +21,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@repo/ui/alert-dialog'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
-import { api } from '~/lib/api.client'
+import { useSaveUserSettings, useUserSettings } from '~/hooks/useSession'
 import { useTimerStore } from '~/store/useTimerStore'
 import Divider from '../helper/Divider'
 import MenuButton from '../helper/MenuButtons'
@@ -32,88 +30,41 @@ import { BreakDurationInput } from '../input/BreakDurationInput'
 import { SessionsInput } from '../input/SessionsInput'
 import { WorkDurationInput } from '../input/WorkDurationInput'
 
-type UserSettings = {
-  workDuration: number
-  breakDuration: number
-  numberOfSessions: number
-  userId: string
-  id: string
-}
-
 export const SessionSettings: React.FC = () => {
   const [workTime, setWorkTime] = useState(25 * 60)
   const [breakTime, setBreakTime] = useState(5 * 60)
   const [session, setSession] = useState(6)
 
   const { reset, updateSettings } = useTimerStore()
+  const { data: userSettings, isLoading } = useUserSettings()
+  const { mutateAsync: saveSettings, isPending: isSaving } = useSaveUserSettings()
 
-  const { data } = useQuery<UserSettings | null>({
-    queryKey: ['userSettings'],
-    queryFn: async () => {
-      const response = await api.user.settings.$get()
-      if (!response.ok) return null
-
-      const res = await response.json()
-      setWorkTime(res.workDuration)
-      setBreakTime(res.breakDuration)
-      setSession(res.numberOfSessions)
-
-      return res
-    },
-  })
-
+  // Update local state when user settings are loaded
   useEffect(() => {
-    if (data) {
-      setWorkTime(data.workDuration)
-      setBreakTime(data.breakDuration)
-      setSession(data.numberOfSessions)
+    if (userSettings) {
+      setWorkTime(userSettings.workDuration)
+      setBreakTime(userSettings.breakDuration)
+      setSession(userSettings.numberOfSessions)
     }
-  }, [data])
+  }, [userSettings])
 
-  async function userSettingCreate() {
-    const response = await api.user.settings.$post({
-      json: {
+  const handleSaveSettings = async () => {
+    try {
+      await saveSettings({
         workDuration: workTime,
         breakDuration: breakTime,
         numberOfSessions: session,
-      },
-    })
-    if (!response.ok) return null
-    return await response.json()
-  }
-
-  async function userSettingUpdate() {
-    const response = await api.user.settings.$put({
-      json: {
-        workDuration: workTime,
-        breakDuration: breakTime,
-        numberOfSessions: session,
-      },
-    })
-    if (!response.ok) return null
-  };
-
-  const { mutateAsync: createSettings } = useMutation({
-    mutationKey: ['userSettings'],
-    mutationFn: userSettingCreate,
-  })
-
-  const { mutateAsync: saveSettings } = useMutation({
-    mutationKey: ['userSettings'],
-    mutationFn: async () => {
-      if (!data) return await createSettings()
-      return await userSettingUpdate()
-    },
-    onSuccess: () => {
-      toast('Session Settings has been saved', {
-        description: 'Your preferences have been updated.',
       })
-    },
-    onError: error => {
-      toast.error('Failed to save settings')
-      console.error('Error saving settings:', error)
-    },
-  })
+      // Update timer store with new settings
+      updateSettings('workDuration', workTime)
+      updateSettings('breakDuration', breakTime)
+      updateSettings('sessions', session)
+      reset()
+    } catch (error) {
+      // Error handling is done in the hook
+      console.error('Failed to save settings:', error)
+    }
+  }
 
   return (
     <TooltipProvider>
@@ -149,7 +100,9 @@ export const SessionSettings: React.FC = () => {
               <div className='flex w-full justify-end'>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button>Save</Button>
+                    <Button disabled={isSaving || isLoading}>
+                      {isSaving ? 'Saving...' : 'Save'}
+                    </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
@@ -162,16 +115,8 @@ export const SessionSettings: React.FC = () => {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => {
-                          saveSettings()
-                          updateSettings('workDuration', workTime)
-                          updateSettings('breakDuration', breakTime)
-                          updateSettings('sessions', session)
-                          reset()
-                          toast('Session Settings has been saved', {
-                            description: 'Your preferences have been updated.',
-                          })
-                        }}
+                        onClick={handleSaveSettings}
+                        disabled={isSaving}
                       >
                         Continue
                       </AlertDialogAction>
