@@ -1,5 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
+import { CommandMenu } from '~/components/CommandMenu'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import { SessionCompleteModal } from '~/components/SessionCompleteModal'
@@ -20,6 +21,7 @@ export default function Dashboard() {
       <TimerInitializer />
       <PrefetchUserTasks />
       <SessionCompleteModal />
+      <CommandMenu/>
       <motion.main className='continer px-auto flex h-screen w-screen flex-col items-center justify-center'
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
