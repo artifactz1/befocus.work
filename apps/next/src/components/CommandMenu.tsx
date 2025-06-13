@@ -23,14 +23,8 @@ export function CommandMenu() {
   const { theme, setTheme } = useTheme()
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
-  const [mounted, setMounted] = React.useState(false)
 
   const isDarkMode = theme === 'dark'
-
-  // Ensure component is mounted before rendering session-dependent UI
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -105,10 +99,8 @@ export function CommandMenu() {
               <span>{isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
             </CommandItem>
 
-            {/* Only render auth-related items after component is mounted and session status is determined */}
-            {/* <ClientOnly > */}
             <ClientOnly fallback={<div className="h-10" />}>
-              {mounted && !isPending && (
+              {!isPending && (
                 session === null ? (
                   <CommandItem onSelect={handleSignIn}>
                     <User />
