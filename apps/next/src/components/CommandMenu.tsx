@@ -16,7 +16,7 @@ import { Coffee, Hash, LogOut, Moon, Pause, Play, RotateCcw, SkipBack, SkipForwa
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { useSaveUserSettings, useUserSettings } from '~/hooks/useSession'
+import { useSaveUserSettings } from '~/hooks/useSession'
 import { signOut, useSession } from '~/lib/auth.client'
 import { useTimerStore } from '~/store/useTimerStore'
 import { ClientOnly } from './helper/ClientOnly'
@@ -42,7 +42,6 @@ export function CommandMenu() {
   } = useTimerStore()
 
   const { data: session, isPending } = useSession()
-  const { data: userSettings } = useUserSettings()
   const { theme, setTheme } = useTheme()
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
@@ -236,6 +235,8 @@ export function CommandMenu() {
   const sessionsCount = parseSessionsCommand(searchValue)
   const numberOnly = parseNumberOnly(searchValue)
 
+  console.log(searchValue)
+
   return (
     <>
       <CommandDialog open={open} onOpenChange={setOpen}>
@@ -251,28 +252,55 @@ export function CommandMenu() {
           <CommandEmpty>No results found.</CommandEmpty>
 
           <CommandGroup heading="Session Settings">
-            {/* Check for specific commands first, then fallback to number-only for work duration */}
-            {breakDurationMinutes ? (
-              <CommandItem onSelect={() => handleSettingUpdate('break', breakDurationMinutes, `break duration to ${breakDurationMinutes} minutes`)}>
-                <Coffee />
-                <span>Set break duration to {breakDurationMinutes} minutes</span>
-              </CommandItem>
-            ) : sessionsCount ? (
-              <CommandItem onSelect={() => handleSettingUpdate('sessions', sessionsCount, `sessions to ${sessionsCount}`)}>
-                <Hash />
-                <span>Set sessions to {sessionsCount}</span>
-              </CommandItem>
-            ) : workDurationMinutes ? (
+            {/* Render all matching commands */}
+            {workDurationMinutes && (
               <CommandItem onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}>
                 <Timer />
                 <span>Set work duration to {workDurationMinutes} minutes</span>
               </CommandItem>
-            ) : numberOnly ? (
+            )}
+
+            {breakDurationMinutes && (
+              <CommandItem onSelect={() => handleSettingUpdate('break', breakDurationMinutes, `break duration to ${breakDurationMinutes} minutes`)}>
+                <Coffee />
+                <span>Set break duration to {breakDurationMinutes} minutes</span>
+              </CommandItem>
+            )}
+
+            {sessionsCount && (
+              <CommandItem onSelect={() => handleSettingUpdate('sessions', sessionsCount, `sessions to ${sessionsCount}`)}>
+                <Hash />
+                <span>Set sessions to {sessionsCount}</span>
+              </CommandItem>
+            )}
+
+            {/* Number-only shortcut for work duration (only if no specific work pattern matched) */}
+            {numberOnly && !workDurationMinutes && (
               <CommandItem onSelect={() => handleSettingUpdate('work', numberOnly, `work duration to ${numberOnly} minutes`)}>
                 <Timer />
                 <span>Set work duration to {numberOnly} minutes</span>
               </CommandItem>
-            ) : (
+
+            )}
+
+            {numberOnly && !breakDurationMinutes && (
+              <CommandItem onSelect={() => handleSettingUpdate('break', numberOnly, `break duration to ${numberOnly} minutes`)}>
+                <Timer />
+                <span>Set break duration to {numberOnly} minutes</span>
+              </CommandItem>
+
+            )}
+
+            {numberOnly && !sessionsCount && (
+              <CommandItem onSelect={() => handleSettingUpdate('sessions', numberOnly, `session total to ${numberOnly}`)}>
+                <Timer />
+                <span>Set session {numberOnly} </span>
+              </CommandItem>
+
+            )}
+
+            {/* Show hints only when no commands match */}
+            {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
               <>
                 <CommandItem disabled>
                   <Timer />
@@ -289,6 +317,8 @@ export function CommandMenu() {
               </>
             )}
           </CommandGroup>
+
+
 
           <CommandGroup heading="Actions">
             <CommandItem onSelect={() => handleCommand(skipToPrevSession)}>
