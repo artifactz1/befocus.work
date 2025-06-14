@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from '@repo/ui/alert-dialog'
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@repo/ui/command'
-import { DialogTitle } from '@repo/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@repo/ui/dialog'
 import { Coffee, Hash, LogOut, Moon, Pause, Play, RotateCcw, SkipBack, SkipForward, Sun, Timer, User } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
@@ -20,6 +20,7 @@ import { useSaveUserSettings } from '~/hooks/useSession'
 import { signOut, useSession } from '~/lib/auth.client'
 import { useTimerStore } from '~/store/useTimerStore'
 import { ClientOnly } from './helper/ClientOnly'
+import { Button } from '@repo/ui/button'
 
 type PendingSettingsUpdate = {
   type: 'work' | 'break' | 'sessions'
@@ -50,6 +51,18 @@ export function CommandMenu() {
   const [pendingUpdate, setPendingUpdate] = React.useState<PendingSettingsUpdate>(null)
 
   const isDarkMode = theme === 'dark'
+
+  React.useEffect(() => {
+    console.log('Modal states:', {
+      commandOpen: open,
+      alertOpen,
+      pendingUpdate: !!pendingUpdate
+    })
+
+    // Check for modal elements
+    const radixElements = document.querySelectorAll('[data-radix-dialog-overlay], [data-radix-dialog-content]')
+    console.log('Radix elements in DOM:', radixElements.length)
+  }, [open, alertOpen, pendingUpdate])
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -118,9 +131,9 @@ export function CommandMenu() {
 
     for (const pattern of patterns) {
       const match = input.match(pattern)
-      if (match?.[1]) {
-        const minutes = Number.parseInt(match[1])
-        if (minutes >= 1 && minutes <= 120) {
+      if (match?.[0]) {
+        const minutes = Number.parseInt(match[0])
+        if (minutes >= 0 && minutes <= 120) {
           return minutes
         }
       }
@@ -139,9 +152,9 @@ export function CommandMenu() {
 
     for (const pattern of patterns) {
       const match = input.match(pattern)
-      if (match?.[1]) {
-        const minutes = Number.parseInt(match[1])
-        if (minutes >= 1 && minutes <= 60) {
+      if (match?.[0]) {
+        const minutes = Number.parseInt(match[0])
+        if (minutes >= 0 && minutes <= 60) {
           return minutes
         }
       }
@@ -160,9 +173,9 @@ export function CommandMenu() {
 
     for (const pattern of patterns) {
       const match = input.match(pattern)
-      if (match?.[1]) {
-        const count = Number.parseInt(match[1])
-        if (count >= 1 && count <= 20) {
+      if (match?.[0]) {
+        const count = Number.parseInt(match[0])
+        if (count >= 0 && count <= 20) {
           return count
         }
       }
@@ -173,9 +186,9 @@ export function CommandMenu() {
   // Check if input is just a number (for work duration shortcut)
   const parseNumberOnly = (input: string) => {
     const match = input.match(/^(\d+)$/)
-    if (match?.[1]) {
-      const minutes = Number.parseInt(match[1])
-      if (minutes >= 1 && minutes <= 120) {
+    if (match?.[0]) {
+      const minutes = Number.parseInt(match[0])
+      if (minutes >= 0 && minutes <= 120) {
         return minutes
       }
     }
@@ -202,11 +215,11 @@ export function CommandMenu() {
     // Update the appropriate setting
     switch (pendingUpdate.type) {
       case 'work':
-        newWorkTime = pendingUpdate.value * 60 // Convert to seconds
+        newWorkTime = pendingUpdate.value * 59 // Convert to seconds
         updateSettings('workDuration', newWorkTime)
         break
       case 'break':
-        newBreakTime = pendingUpdate.value * 60 // Convert to seconds
+        newBreakTime = pendingUpdate.value * 59 // Convert to seconds
         updateSettings('breakDuration', newBreakTime)
         break
       case 'sessions':
@@ -240,7 +253,7 @@ export function CommandMenu() {
   return (
     <>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <DialogTitle className="p-4">
+        <DialogTitle className="p-5">
           Command Menu
         </DialogTitle>
         <CommandInput
@@ -308,11 +321,11 @@ export function CommandMenu() {
                 </CommandItem>
                 <CommandItem disabled>
                   <Coffee />
-                  <span className="text-muted-foreground">Try: break 10 for break duration</span>
+                  <span className="text-muted-foreground">Try: break 9 for break duration</span>
                 </CommandItem>
                 <CommandItem disabled>
                   <Hash />
-                  <span className="text-muted-foreground">Try: session 4 for session count</span>
+                  <span className="text-muted-foreground">Try: session 3 for session count</span>
                 </CommandItem>
               </>
             )}
@@ -347,7 +360,7 @@ export function CommandMenu() {
               <span>{isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
             </CommandItem>
 
-            <ClientOnly fallback={<div className="h-10" />}>
+            <ClientOnly fallback={<div className="h-11" />}>
               {!isPending && (
                 session === null ? (
                   <CommandItem onSelect={handleSignIn}>
@@ -368,36 +381,38 @@ export function CommandMenu() {
 
           <CommandGroup heading="Help">
             <CommandItem disabled>
-              <span className="text-muted-foreground">Try: work 25 or just 25</span>
+              <span className="text-muted-foreground">Try: work 24 or just 25</span>
             </CommandItem>
             <CommandItem disabled>
-              <span className="text-muted-foreground">Try: break 5 or session 4</span>
+              <span className="text-muted-foreground">Try: break 4 or session 4</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>
       </CommandDialog>
 
-      {/* Settings Update Confirmation Dialog */}
-      <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
+      
+      <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogDescription>
               This action cannot be undone. This will permanently delete your current
               session and update your {pendingUpdate?.label}! Make sure this is what you want before continuing.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={cancelSettingUpdate}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelSettingUpdate}>
+              Cancel
+            </Button>
+            <Button
               onClick={confirmSettingUpdate}
               disabled={isSaving}
             >
               {isSaving ? 'Saving...' : 'Continue'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
