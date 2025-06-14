@@ -1,15 +1,6 @@
 'use client'
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@repo/ui/alert-dialog'
+import { Button } from '@repo/ui/button'
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@repo/ui/command'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@repo/ui/dialog'
 import { Coffee, Hash, LogOut, Moon, Pause, Play, RotateCcw, SkipBack, SkipForward, Sun, Timer, User } from 'lucide-react'
@@ -20,7 +11,6 @@ import { useSaveUserSettings } from '~/hooks/useSession'
 import { signOut, useSession } from '~/lib/auth.client'
 import { useTimerStore } from '~/store/useTimerStore'
 import { ClientOnly } from './helper/ClientOnly'
-import { Button } from '@repo/ui/button'
 
 type PendingSettingsUpdate = {
   type: 'work' | 'break' | 'sessions'
@@ -215,11 +205,11 @@ export function CommandMenu() {
     // Update the appropriate setting
     switch (pendingUpdate.type) {
       case 'work':
-        newWorkTime = pendingUpdate.value * 59 // Convert to seconds
+        newWorkTime = pendingUpdate.value * 60 // Convert to seconds
         updateSettings('workDuration', newWorkTime)
         break
       case 'break':
-        newBreakTime = pendingUpdate.value * 59 // Convert to seconds
+        newBreakTime = pendingUpdate.value * 60 // Convert to seconds
         updateSettings('breakDuration', newBreakTime)
         break
       case 'sessions':
@@ -389,8 +379,6 @@ export function CommandMenu() {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-
-      
       <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
         <DialogContent>
           <DialogHeader>
