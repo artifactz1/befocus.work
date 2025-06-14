@@ -255,73 +255,74 @@ export function CommandMenu() {
           <CommandEmpty>No results found.</CommandEmpty>
 
           <CommandGroup heading="Session Settings">
-            {/* Render all matching commands */}
-            {workDurationMinutes && (
-              <CommandItem onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}>
-                <Timer />
-                <span>Set work duration to {workDurationMinutes} minutes</span>
-              </CommandItem>
-            )}
+            <ClientOnly fallback={<div className="h-11" />}>
 
-            {breakDurationMinutes && (
-              <CommandItem onSelect={() => handleSettingUpdate('break', breakDurationMinutes, `break duration to ${breakDurationMinutes} minutes`)}>
-                <Coffee />
-                <span>Set break duration to {breakDurationMinutes} minutes</span>
-              </CommandItem>
-            )}
-
-            {sessionsCount && (
-              <CommandItem onSelect={() => handleSettingUpdate('sessions', sessionsCount, `sessions to ${sessionsCount}`)}>
-                <Hash />
-                <span>Set sessions to {sessionsCount}</span>
-              </CommandItem>
-            )}
-
-            {/* Number-only shortcut for work duration (only if no specific work pattern matched) */}
-            {numberOnly && !workDurationMinutes && (
-              <CommandItem onSelect={() => handleSettingUpdate('work', numberOnly, `work duration to ${numberOnly} minutes`)}>
-                <Timer />
-                <span>Set work duration to {numberOnly} minutes</span>
-              </CommandItem>
-
-            )}
-
-            {numberOnly && !breakDurationMinutes && (
-              <CommandItem onSelect={() => handleSettingUpdate('break', numberOnly, `break duration to ${numberOnly} minutes`)}>
-                <Timer />
-                <span>Set break duration to {numberOnly} minutes</span>
-              </CommandItem>
-
-            )}
-
-            {numberOnly && !sessionsCount && (
-              <CommandItem onSelect={() => handleSettingUpdate('sessions', numberOnly, `session total to ${numberOnly}`)}>
-                <Timer />
-                <span>Set session {numberOnly} </span>
-              </CommandItem>
-
-            )}
-
-            {/* Show hints only when no commands match */}
-            {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
-              <>
-                <CommandItem disabled>
+              {/* Render all matching commands */}
+              {workDurationMinutes && (
+                <CommandItem onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}>
                   <Timer />
-                  <span className="text-muted-foreground">Type a number to set work duration</span>
+                  <span>Set work duration to {workDurationMinutes} minutes</span>
                 </CommandItem>
-                <CommandItem disabled>
+              )}
+
+              {breakDurationMinutes && (
+                <CommandItem onSelect={() => handleSettingUpdate('break', breakDurationMinutes, `break duration to ${breakDurationMinutes} minutes`)}>
                   <Coffee />
-                  <span className="text-muted-foreground">Try: break 9 for break duration</span>
+                  <span>Set break duration to {breakDurationMinutes} minutes</span>
                 </CommandItem>
-                <CommandItem disabled>
+              )}
+
+              {sessionsCount && (
+                <CommandItem onSelect={() => handleSettingUpdate('sessions', sessionsCount, `sessions to ${sessionsCount}`)}>
                   <Hash />
-                  <span className="text-muted-foreground">Try: session 3 for session count</span>
+                  <span>Set sessions to {sessionsCount}</span>
                 </CommandItem>
-              </>
-            )}
+              )}
+
+              {/* Number-only shortcut for work duration (only if no specific work pattern matched) */}
+              {numberOnly && !workDurationMinutes && (
+                <CommandItem onSelect={() => handleSettingUpdate('work', numberOnly, `work duration to ${numberOnly} minutes`)}>
+                  <Timer />
+                  <span>Set work duration to {numberOnly} minutes</span>
+                </CommandItem>
+
+              )}
+
+              {numberOnly && !breakDurationMinutes && (
+                <CommandItem onSelect={() => handleSettingUpdate('break', numberOnly, `break duration to ${numberOnly} minutes`)}>
+                  <Timer />
+                  <span>Set break duration to {numberOnly} minutes</span>
+                </CommandItem>
+
+              )}
+
+              {numberOnly && !sessionsCount && (
+                <CommandItem onSelect={() => handleSettingUpdate('sessions', numberOnly, `session total to ${numberOnly}`)}>
+                  <Timer />
+                  <span>Set session {numberOnly} </span>
+                </CommandItem>
+
+              )}
+
+              {/* Show hints only when no commands match */}
+              {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
+                <>
+                  <CommandItem disabled>
+                    <Timer />
+                    <span className="text-muted-foreground">Type a number to set work duration</span>
+                  </CommandItem>
+                  <CommandItem disabled>
+                    <Coffee />
+                    <span className="text-muted-foreground">Try: break 9 for break duration</span>
+                  </CommandItem>
+                  <CommandItem disabled>
+                    <Hash />
+                    <span className="text-muted-foreground">Try: session 3 for session count</span>
+                  </CommandItem>
+                </>
+              )}
+            </ClientOnly>
           </CommandGroup>
-
-
 
           <CommandGroup heading="Actions">
             <CommandItem onSelect={() => handleCommand(skipToPrevSession)}>
