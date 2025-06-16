@@ -109,6 +109,97 @@ export function CommandMenu() {
     }
   }
 
+  const parsePartialCommands = (input: string) => {
+    const trimmedInput = input.trim().toLowerCase()
+
+    const partialMatches = {
+      workDuration: false,
+      breakDuration: false,
+      sessions: false
+    }
+
+    // Check for work duration partial matches
+    const workPatterns = [
+      'set work',
+      'work duration',
+      'work',
+      'set work duration',
+      'set work duration to'
+    ]
+
+    // Check for break duration partial matches  
+    const breakPatterns = [
+      'set break',
+      'break duration',
+      'break',
+      'set break duration',
+      'set break duration to'
+    ]
+
+    // Check for sessions partial matches
+    const sessionPatterns = [
+      'set session',
+      'set sessions',
+      'session',
+      'sessions'
+    ]
+
+    partialMatches.workDuration = workPatterns.some(pattern =>
+      pattern.startsWith(trimmedInput) || trimmedInput.startsWith(pattern)
+    )
+
+    partialMatches.breakDuration = breakPatterns.some(pattern =>
+      pattern.startsWith(trimmedInput) || trimmedInput.startsWith(pattern)
+    )
+
+    partialMatches.sessions = sessionPatterns.some(pattern =>
+      pattern.startsWith(trimmedInput) || trimmedInput.startsWith(pattern)
+    )
+
+    return partialMatches
+  }
+
+  const getAutocompleteSuggestions = (input: string) => {
+    const trimmedInput = input.trim().toLowerCase()
+    const suggestions = []
+
+    // Work duration suggestions
+    if ('set work duration to'.startsWith(trimmedInput) && trimmedInput.length > 0) {
+      suggestions.push({
+        id: 'work-duration-autocomplete', // Add unique ID
+        type: 'autocomplete',
+        text: 'set work duration to ',
+        description: 'Set work session duration'
+      })
+    }
+
+    // Break duration suggestions  
+    if ('set break duration to'.startsWith(trimmedInput) && trimmedInput.length > 0) {
+      suggestions.push({
+        id: 'break-duration-autocomplete', // Add unique ID
+        type: 'autocomplete',
+        text: 'set break duration to ',
+        description: 'Set break duration'
+      })
+    }
+
+    // Sessions suggestions
+    if ('set sessions to'.startsWith(trimmedInput) && trimmedInput.length > 0) {
+      suggestions.push({
+        id: 'sessions-autocomplete', // Add unique ID
+        type: 'autocomplete',
+        text: 'set sessions to ',
+        description: 'Set number of sessions'
+      })
+    }
+
+    return suggestions
+  }
+
+
+  const partialMatches = parsePartialCommands(searchValue)
+  const autocompleteSuggestions = getAutocompleteSuggestions(searchValue)
+
   // Parse different types of commands
   const parseWorkDurationCommand = (input: string) => {
     const patterns = [
@@ -257,6 +348,24 @@ export function CommandMenu() {
           <CommandGroup heading="Session Settings">
             <ClientOnly fallback={<div className="h-11" />}>
 
+              {/* Autocomplete suggestions */}
+              {autocompleteSuggestions.map((suggestion) => (
+
+                <CommandItem
+                  key={suggestion.id} // Use unique ID instead of index
+                  onSelect={() => {
+                    setSearchValue(suggestion.text)
+                    // Don't close the dialog, let user continue typing
+                  }}
+                >
+                  <Timer />
+                  <span>{suggestion.text}</span>
+                  <span className="text-muted-foreground ml-auto text-sm">
+                    {suggestion.description}
+                  </span>
+                </CommandItem>
+              ))}
+
               {/* Render all matching commands */}
               {workDurationMinutes && (
                 <CommandItem onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}>
@@ -305,7 +414,7 @@ export function CommandMenu() {
               )}
 
               {/* Show hints only when no commands match */}
-              {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
+              {/* {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
                 <>
                   <CommandItem disabled>
                     <Timer />
@@ -319,6 +428,45 @@ export function CommandMenu() {
                     <Hash />
                     <span className="text-muted-foreground">Try: session 3 for session count</span>
                   </CommandItem>
+                </>
+              )} */}
+              {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
+                <>
+                  {partialMatches.workDuration ? (
+                    <CommandItem disabled>
+                      <Timer />
+                      <span className="text-muted-foreground">Continue typing... e.g., set work duration to 25</span>
+                    </CommandItem>
+                  ) : (
+                    <CommandItem disabled>
+                      <Timer />
+                      <span className="text-muted-foreground">Type a number to set work duration</span>
+                    </CommandItem>
+                  )}
+
+                  {partialMatches.breakDuration ? (
+                    <CommandItem disabled>
+                      <Coffee />
+                      <span className="text-muted-foreground">Continue typing... e.g., set break duration to 5</span>
+                    </CommandItem>
+                  ) : (
+                    <CommandItem disabled>
+                      <Coffee />
+                      <span className="text-muted-foreground">Try: break 5 for break duration</span>
+                    </CommandItem>
+                  )}
+
+                  {partialMatches.sessions ? (
+                    <CommandItem disabled>
+                      <Hash />
+                      <span className="text-muted-foreground">Continue typing... e.g., set sessions to 4</span>
+                    </CommandItem>
+                  ) : (
+                    <CommandItem disabled>
+                      <Hash />
+                      <span className="text-muted-foreground">Try: sessions 4 for session count</span>
+                    </CommandItem>
+                  )}
                 </>
               )}
             </ClientOnly>
