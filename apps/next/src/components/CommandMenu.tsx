@@ -42,17 +42,6 @@ export function CommandMenu() {
 
   const isDarkMode = theme === 'dark'
 
-  React.useEffect(() => {
-    console.log('Modal states:', {
-      commandOpen: open,
-      alertOpen,
-      pendingUpdate: !!pendingUpdate
-    })
-
-    // Check for modal elements
-    const radixElements = document.querySelectorAll('[data-radix-dialog-overlay], [data-radix-dialog-content]')
-    console.log('Radix elements in DOM:', radixElements.length)
-  }, [open, alertOpen, pendingUpdate])
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -203,7 +192,8 @@ export function CommandMenu() {
   // Parse different types of commands
   const parseWorkDurationCommand = (input: string) => {
     const patterns = [
-      /^set work duration to (\d+)$/i,
+      /^set work duration to (\d+) minutes$/i,
+      /^set work duration to (\d+)$/i,  // ✅ This matches your autocomplete: "set work duration to 10"
       /^work duration (\d+)$/i,
       /^work (\d+)$/i,
       /^(\d+) minutes work$/i,
@@ -212,13 +202,15 @@ export function CommandMenu() {
 
     for (const pattern of patterns) {
       const match = input.match(pattern)
-      if (match?.[0]) {
-        const minutes = Number.parseInt(match[0])
+      if (match?.[1]) {
+        const minutes = Number.parseInt(match[1])
         if (minutes >= 0 && minutes <= 120) {
           return minutes
         }
       }
     }
+
+    console.log('❌ No match found, returning null')
     return null
   }
 
@@ -233,8 +225,8 @@ export function CommandMenu() {
 
     for (const pattern of patterns) {
       const match = input.match(pattern)
-      if (match?.[0]) {
-        const minutes = Number.parseInt(match[0])
+      if (match?.[1]) {
+        const minutes = Number.parseInt(match[1])
         if (minutes >= 0 && minutes <= 60) {
           return minutes
         }
@@ -254,8 +246,8 @@ export function CommandMenu() {
 
     for (const pattern of patterns) {
       const match = input.match(pattern)
-      if (match?.[0]) {
-        const count = Number.parseInt(match[0])
+      if (match?.[1]) {
+        const count = Number.parseInt(match[1])
         if (count >= 0 && count <= 20) {
           return count
         }
@@ -267,8 +259,8 @@ export function CommandMenu() {
   // Check if input is just a number (for work duration shortcut)
   const parseNumberOnly = (input: string) => {
     const match = input.match(/^(\d+)$/)
-    if (match?.[0]) {
-      const minutes = Number.parseInt(match[0])
+    if (match?.[1]) {
+      const minutes = Number.parseInt(match[1])
       if (minutes >= 0 && minutes <= 120) {
         return minutes
       }
@@ -330,6 +322,22 @@ export function CommandMenu() {
   const numberOnly = parseNumberOnly(searchValue)
 
   console.log(searchValue)
+
+  console.log('=== DEBUG INFO ===')
+  console.log('searchValue:', searchValue)
+  console.log('workDurationMinutes:', workDurationMinutes)
+  console.log('breakDurationMinutes:', breakDurationMinutes)
+  console.log('sessionsCount:', sessionsCount)
+  console.log('numberOnly:', numberOnly)
+
+  // Also let's test the regex manually
+  console.log('Testing regex manually:')
+  const testInput = "set work duration to 10"
+  const testPattern = /^set work duration to (\d+)$/i
+  const testMatch = testInput.match(testPattern)
+  console.log('testInput:', testInput)
+  console.log('testPattern:', testPattern)
+  console.log('testMatch:', testMatch)
 
   return (
     <>
@@ -414,22 +422,6 @@ export function CommandMenu() {
               )}
 
               {/* Show hints only when no commands match */}
-              {/* {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
-                <>
-                  <CommandItem disabled>
-                    <Timer />
-                    <span className="text-muted-foreground">Type a number to set work duration</span>
-                  </CommandItem>
-                  <CommandItem disabled>
-                    <Coffee />
-                    <span className="text-muted-foreground">Try: break 9 for break duration</span>
-                  </CommandItem>
-                  <CommandItem disabled>
-                    <Hash />
-                    <span className="text-muted-foreground">Try: session 3 for session count</span>
-                  </CommandItem>
-                </>
-              )} */}
               {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
                 <>
                   {partialMatches.workDuration ? (
