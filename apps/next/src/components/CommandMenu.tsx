@@ -98,56 +98,6 @@ export function CommandMenu() {
     }
   }
 
-  const parsePartialCommands = (input: string) => {
-    const trimmedInput = input.trim().toLowerCase()
-
-    const partialMatches = {
-      workDuration: false,
-      breakDuration: false,
-      sessions: false
-    }
-
-    // Check for work duration partial matches
-    const workPatterns = [
-      'set work',
-      'work duration',
-      'work',
-      'set work duration',
-      'set work duration to'
-    ]
-
-    // Check for break duration partial matches  
-    const breakPatterns = [
-      'set break',
-      'break duration',
-      'break',
-      'set break duration',
-      'set break duration to'
-    ]
-
-    // Check for sessions partial matches
-    const sessionPatterns = [
-      'set session',
-      'set sessions',
-      'session',
-      'sessions'
-    ]
-
-    partialMatches.workDuration = workPatterns.some(pattern =>
-      pattern.startsWith(trimmedInput) || trimmedInput.startsWith(pattern)
-    )
-
-    partialMatches.breakDuration = breakPatterns.some(pattern =>
-      pattern.startsWith(trimmedInput) || trimmedInput.startsWith(pattern)
-    )
-
-    partialMatches.sessions = sessionPatterns.some(pattern =>
-      pattern.startsWith(trimmedInput) || trimmedInput.startsWith(pattern)
-    )
-
-    return partialMatches
-  }
-
   const getAutocompleteSuggestions = (input: string) => {
     const trimmedInput = input.trim().toLowerCase()
     const suggestions = []
@@ -158,7 +108,7 @@ export function CommandMenu() {
         id: 'work-duration-autocomplete', // Add unique ID
         type: 'autocomplete',
         text: 'set work duration to ',
-        description: 'Set work session duration'
+        description: 'Suggestion'
       })
     }
 
@@ -168,7 +118,7 @@ export function CommandMenu() {
         id: 'break-duration-autocomplete', // Add unique ID
         type: 'autocomplete',
         text: 'set break duration to ',
-        description: 'Set break duration'
+        description: 'Suggestion'
       })
     }
 
@@ -178,7 +128,7 @@ export function CommandMenu() {
         id: 'sessions-autocomplete', // Add unique ID
         type: 'autocomplete',
         text: 'set sessions to ',
-        description: 'Set number of sessions'
+        description: 'Suggestion'
       })
     }
 
@@ -186,7 +136,7 @@ export function CommandMenu() {
   }
 
 
-  const partialMatches = parsePartialCommands(searchValue)
+  // const partialMatches = parsePartialCommands(searchValue)
   const autocompleteSuggestions = getAutocompleteSuggestions(searchValue)
 
   // Parse different types of commands
@@ -317,38 +267,12 @@ export function CommandMenu() {
     setSearchValue('')
   }
 
+
+
   const workDurationMinutes = parseWorkDurationCommand(searchValue)
   const breakDurationMinutes = parseBreakDurationCommand(searchValue)
   const sessionsCount = parseSessionsCommand(searchValue)
   const numberOnly = parseNumberOnly(searchValue)
-
-  console.log(searchValue)
-
-  // console.log('=== DEBUG INFO ===')
-  // console.log('searchValue:', searchValue)
-  // console.log('workDurationMinutes:', workDurationMinutes)
-  // console.log('breakDurationMinutes:', breakDurationMinutes)
-  // console.log('sessionsCount:', sessionsCount)
-  // console.log('numberOnly:', numberOnly)
-
-  // console.log('Should render workDuration CommandItem?', !!workDurationMinutes)
-  // console.log('Should render breakDuration CommandItem?', !!breakDurationMinutes)
-  // console.log('Should render sessions CommandItem?', !!sessionsCount)
-  // console.log('Should render numberOnly work CommandItem?', !!(numberOnly && !workDurationMinutes))
-
-  // console.log('workDurationMinutes truthy check:', workDurationMinutes ? 'YES' : 'NO')
-  // console.log('typeof workDurationMinutes:', typeof workDurationMinutes)
-  // console.log('workDurationMinutes === 10:', workDurationMinutes === 10)
-
-  // // Also let's test the regex manually
-  // console.log('Testing regex manually:')
-  // const testInput = "set work duration to 10"
-  // const testPattern = /^set work duration to (\d+)$/i
-  // const testMatch = testInput.match(testPattern)
-  // console.log('testInput:', testInput)
-  // console.log('testPattern:', testPattern)
-  // console.log('testMatch:', testMatch)
-
 
   return (
     <>
@@ -364,131 +288,10 @@ export function CommandMenu() {
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
 
-          <CommandGroup heading="Session Settings">
-            <ClientOnly fallback={<div className="h-11" />}>
-
-            {/* Autocomplete suggestions */}
-            {autocompleteSuggestions.map((suggestion) => (
-
-              <CommandItem
-                key={suggestion.id} // Use unique ID instead of index
-                onSelect={() => {
-                  setSearchValue(suggestion.text)
-                  // Don't close the dialog, let user continue typing
-                }}
-              >
-                <Timer />
-                <span>{suggestion.text}</span>
-                <span className="text-muted-foreground ml-auto text-sm">
-                  {suggestion.description}
-                </span>
-              </CommandItem>
-            ))}
-
-            {/* Render all matching commands */}
-            {/* <CommandItem disabled={!workDurationMinutes} onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}> */}
-            <CommandItem
-              disabled={!workDurationMinutes}
-              onSelect={() => {
-                if (workDurationMinutes) {
-                  handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)
-                }
-              }}
-            >
-              <Timer />
-              <span>Set work duration to {workDurationMinutes} minutes</span>
+          <CommandGroup heading="Help">
+            <CommandItem disabled>
+              <span className="text-muted-foreground">Try: typing &apos;set&apos; or a number to update sessions </span>
             </CommandItem>
-
-            <CommandItem
-              disabled={!breakDurationMinutes}
-              onSelect={() => {
-                if (breakDurationMinutes) {
-                  handleSettingUpdate('break', breakDurationMinutes, `break duration to ${breakDurationMinutes} minutes`)
-                }
-              }}
-            >
-              <Coffee />
-              <span>Set break duration to {breakDurationMinutes} minutes</span>
-            </CommandItem>
-
-            <CommandItem
-              disabled={!sessionsCount}
-              onSelect={() => {
-                if (sessionsCount) {
-                  handleSettingUpdate('sessions', sessionsCount, `break duration to ${sessionsCount} minutes`)
-                }
-              }}
-            >
-              <Hash />
-              <span>Set sessions to {sessionsCount}</span>
-            </CommandItem>
-
-            {/* Number-only shortcut for work duration (only if no specific work pattern matched) */}
-            {numberOnly && !workDurationMinutes && (
-              <CommandItem onSelect={() => handleSettingUpdate('work', numberOnly, `work duration to ${numberOnly} minutes`)}>
-                <Timer />
-                <span>Set work duration to {numberOnly} minutes</span>
-              </CommandItem>
-
-            )}
-
-            {numberOnly && !breakDurationMinutes && (
-              <CommandItem onSelect={() => handleSettingUpdate('break', numberOnly, `break duration to ${numberOnly} minutes`)}>
-                <Timer />
-                <span>Set break duration to {numberOnly} minutes</span>
-              </CommandItem>
-
-            )}
-
-            {numberOnly && !sessionsCount && (
-              <CommandItem onSelect={() => handleSettingUpdate('sessions', numberOnly, `session total to ${numberOnly}`)}>
-                <Timer />
-                <span>Set session {numberOnly} </span>
-              </CommandItem>
-
-            )}
-
-            {/* Show hints only when no commands match */}
-            {!workDurationMinutes && !breakDurationMinutes && !sessionsCount && !numberOnly && (
-              <>
-                {partialMatches.workDuration ? (
-                  <CommandItem disabled>
-                    <Timer />
-                    <span className="text-muted-foreground">Continue typing... e.g., set work duration to 25</span>
-                  </CommandItem>
-                ) : (
-                  <CommandItem disabled>
-                    <Timer />
-                    <span className="text-muted-foreground">Type a number to set work duration</span>
-                  </CommandItem>
-                )}
-
-                {partialMatches.breakDuration ? (
-                  <CommandItem disabled>
-                    <Coffee />
-                    <span className="text-muted-foreground">Continue typing... e.g., set break duration to 5</span>
-                  </CommandItem>
-                ) : (
-                  <CommandItem disabled>
-                    <Coffee />
-                    <span className="text-muted-foreground">Try: break 5 for break duration</span>
-                  </CommandItem>
-                )}
-
-                {partialMatches.sessions ? (
-                  <CommandItem disabled>
-                    <Hash />
-                    <span className="text-muted-foreground">Continue typing... e.g., set sessions to 4</span>
-                  </CommandItem>
-                ) : (
-                  <CommandItem disabled>
-                    <Hash />
-                    <span className="text-muted-foreground">Try: sessions 4 for session count</span>
-                  </CommandItem>
-                )}
-              </>
-            )}
-            </ClientOnly>
           </CommandGroup>
 
           <CommandGroup heading="Actions">
@@ -517,8 +320,7 @@ export function CommandMenu() {
               {isDarkMode ? <Sun /> : <Moon />}
               <span>{isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
             </CommandItem>
-
-            <ClientOnly fallback={<div className="h-11" />}>
+            <ClientOnly>
               {!isPending && (
                 session === null ? (
                   <CommandItem onSelect={handleSignIn}>
@@ -537,16 +339,95 @@ export function CommandMenu() {
 
           <CommandSeparator />
 
-          <CommandGroup heading="Help">
-            <CommandItem disabled>
-              <span className="text-muted-foreground">Try: work 24 or just 25</span>
-            </CommandItem>
-            <CommandItem disabled>
-              <span className="text-muted-foreground">Try: break 4 or session 4</span>
-            </CommandItem>
+          <CommandGroup heading="Session Settings">
+
+            {/* Autocomplete suggestions */}
+            {autocompleteSuggestions.map((suggestion) => (
+
+              <CommandItem
+                key={suggestion.id} // Use unique ID instead of index
+                onSelect={() => {
+                  setSearchValue(suggestion.text)
+                  // Don't close the dialog, let user continue typing
+                }}
+              >
+                <Timer />
+                <span>{suggestion.text}</span>
+                <span className="text-muted-foreground ml-auto text-sm">
+                  {suggestion.description}
+                </span>
+              </CommandItem>
+            ))}
+
+            {/* Render all matching commands */}
+            {/* <CommandItem disabled={!workDurationMinutes} onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}> */}
+            <ClientOnly fallback={<div className="h-11" />}>
+              <CommandItem
+                disabled={!workDurationMinutes}
+                onSelect={() => {
+                  if (workDurationMinutes) {
+                    handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)
+                  }
+                }}
+              >
+                <Timer />
+                <span>Set work duration to {workDurationMinutes} minutes</span>
+              </CommandItem>
+
+              <CommandItem
+                disabled={!breakDurationMinutes}
+                onSelect={() => {
+                  if (breakDurationMinutes) {
+                    handleSettingUpdate('break', breakDurationMinutes, `break duration to ${breakDurationMinutes} minutes`)
+                  }
+                }}
+              >
+                <Coffee />
+                <span>Set break duration to {breakDurationMinutes} minutes</span>
+              </CommandItem>
+
+              <CommandItem
+                disabled={!sessionsCount}
+                onSelect={() => {
+                  if (sessionsCount) {
+                    handleSettingUpdate('sessions', sessionsCount, `break duration to ${sessionsCount} minutes`)
+                  }
+                }}
+              >
+                <Hash />
+                <span>Set sessions to {sessionsCount}</span>
+              </CommandItem>
+
+              {numberOnly && !workDurationMinutes && (
+                <CommandItem onSelect={() => handleSettingUpdate('work', numberOnly, `work duration to ${numberOnly} minutes`)}>
+                  <Timer />
+                  <span>Set work duration to {numberOnly} minutes</span>
+                </CommandItem>
+
+              )}
+
+              {numberOnly && !breakDurationMinutes && (
+                <CommandItem onSelect={() => handleSettingUpdate('break', numberOnly, `break duration to ${numberOnly} minutes`)}>
+                  <Timer />
+                  <span>Set break duration to {numberOnly} minutes</span>
+                </CommandItem>
+
+              )}
+
+              {numberOnly && !sessionsCount && (
+                <CommandItem onSelect={() => handleSettingUpdate('sessions', numberOnly, `session total to ${numberOnly}`)}>
+                  <Timer />
+                  <span>Set session {numberOnly} </span>
+                </CommandItem>
+
+              )}
+
+            </ClientOnly>
           </CommandGroup>
+          <CommandSeparator />
         </CommandList>
       </CommandDialog>
+
       <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
         <DialogContent>
           <DialogHeader>
