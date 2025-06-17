@@ -134,6 +134,11 @@ export function CommandMenu() {
 
     // Check each template
     for (const template of suggestionTemplates) {
+      // Don't show suggestion if input exactly matches the suggestion text
+      if (trimmedInput === template.text.trim()) {
+        continue
+      }
+
       const shouldShow =
         // Exact prefix match (original behavior)
         template.fullText.startsWith(trimmedInput) ||
@@ -158,6 +163,67 @@ export function CommandMenu() {
 
     return suggestions
   }
+
+  // const getAutocompleteSuggestions = (input: string) => {
+  //   const trimmedInput = input.trim().toLowerCase()
+  //   const suggestions: { id: string; type: string; text: string; description: string, keywords: string[] }[] = []
+
+  //   // If input is empty, don't show suggestions
+  //   if (trimmedInput.length === 0) {
+  //     return suggestions
+  //   }
+
+  //   // Define suggestion templates
+  //   const suggestionTemplates = [
+  //     {
+  //       id: 'work-duration-autocomplete',
+  //       text: 'set work duration to ',
+  //       description: 'Suggestion',
+  //       keywords: ['work', 'duration'],
+  //       fullText: 'set work duration to'
+  //     },
+  //     {
+  //       id: 'break-duration-autocomplete',
+  //       text: 'set break duration to ',
+  //       description: 'Suggestion',
+  //       keywords: ['break', 'duration'],
+  //       fullText: 'set break duration to'
+  //     },
+  //     {
+  //       id: 'sessions-autocomplete',
+  //       text: 'set sessions to ',
+  //       description: 'Suggestion',
+  //       keywords: ['session', 'sessions'],
+  //       fullText: 'set sessions to'
+  //     }
+  //   ]
+
+  //   // Check each template
+  //   for (const template of suggestionTemplates) {
+  //     const shouldShow =
+  //       // Exact prefix match (original behavior)
+  //       template.fullText.startsWith(trimmedInput) ||
+  //       // Contains relevant keywords
+  //       template.keywords.some(keyword => trimmedInput.includes(keyword)) ||
+  //       // Partial match after "set "
+  //       (trimmedInput.startsWith('set ') &&
+  //         template.keywords.some(keyword =>
+  //           keyword.startsWith(trimmedInput.replace('set ', '').trim())
+  //         ))
+
+  //     if (shouldShow) {
+  //       suggestions.push({
+  //         id: template.id,
+  //         type: 'autocomplete',
+  //         text: template.text,
+  //         keywords: template.keywords,
+  //         description: template.description
+  //       })
+  //     }
+  //   }
+
+  //   return suggestions
+  // }
 
 
 
