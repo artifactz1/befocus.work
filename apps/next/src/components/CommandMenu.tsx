@@ -390,7 +390,7 @@ export function CommandMenu() {
                 disabled={!sessionsCount}
                 onSelect={() => {
                   if (sessionsCount) {
-                    handleSettingUpdate('sessions', sessionsCount, `break duration to ${sessionsCount} minutes`)
+                    handleSettingUpdate('sessions', sessionsCount, `session total to ${sessionsCount} `)
                   }
                 }}
               >
