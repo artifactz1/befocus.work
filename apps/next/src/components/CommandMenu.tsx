@@ -7,6 +7,7 @@ import { Coffee, Hash, LogOut, Moon, Pause, Play, RotateCcw, SkipBack, SkipForwa
 import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import { useParsedCommands } from '~/hooks/useParsedCommands'
 import { useSaveUserSettings } from '~/hooks/useSession'
 import { signOut, useSession } from '~/lib/auth.client'
 import { useTimerStore } from '~/store/useTimerStore'
@@ -39,6 +40,7 @@ export function CommandMenu() {
   const [searchValue, setSearchValue] = React.useState('')
   const [alertOpen, setAlertOpen] = React.useState(false)
   const [pendingUpdate, setPendingUpdate] = React.useState<PendingSettingsUpdate>(null)
+  const { workDuration: workDurationMinutes, breakDuration: breakDurationMinutes, sessions: sessionsCount, numberOnly } = useParsedCommands(searchValue)
 
   const isDarkMode = theme === 'dark'
 
@@ -167,73 +169,6 @@ export function CommandMenu() {
   // const partialMatches = parsePartialCommands(searchValue)
   const autocompleteSuggestions = getAutocompleteSuggestions(searchValue)
 
-  // Parse different types of commands
-  const parseWorkDurationCommand = (input: string) => {
-    const patterns = [
-      /^set work duration to (\d+) minutes$/i,
-      /^set work duration to (\d+)$/i,  // ✅ This matches your autocomplete: "set work duration to 10"
-    ]
-
-    for (const pattern of patterns) {
-      const match = input.match(pattern)
-      if (match?.[1]) {
-        const minutes = Number.parseInt(match[1])
-        if (minutes >= 0 && minutes <= 120) {
-          return minutes
-        }
-      }
-    }
-
-    console.log('❌ No match found, returning null')
-    return null
-  }
-
-  const parseBreakDurationCommand = (input: string) => {
-    const patterns = [
-      /^set break duration to (\d+)$/i,
-    ]
-
-    for (const pattern of patterns) {
-      const match = input.match(pattern)
-      if (match?.[1]) {
-        const minutes = Number.parseInt(match[1])
-        if (minutes >= 0 && minutes <= 60) {
-          return minutes
-        }
-      }
-    }
-    return null
-  }
-
-  const parseSessionsCommand = (input: string) => {
-    const patterns = [
-      /^set sessions to (\d+)$/i,
-    ]
-
-    for (const pattern of patterns) {
-      const match = input.match(pattern)
-      if (match?.[1]) {
-        const count = Number.parseInt(match[1])
-        if (count >= 0 && count <= 20) {
-          return count
-        }
-      }
-    }
-    return null
-  }
-
-  // Check if input is just a number (for work duration shortcut)
-  const parseNumberOnly = (input: string) => {
-    const match = input.match(/^(\d+)$/)
-    if (match?.[1]) {
-      const minutes = Number.parseInt(match[1])
-      if (minutes >= 0 && minutes <= 120) {
-        return minutes
-      }
-    }
-    return null
-  }
-
   const handleSettingUpdate = (type: 'work' | 'break' | 'sessions', value: number, label: string) => {
     setPendingUpdate({ type, value, label })
     setOpen(false)
@@ -283,37 +218,30 @@ export function CommandMenu() {
   }
 
 
+  // console.log('=== DEBUG INFO ===')
+  // console.log('searchValue:', searchValue)
+  // console.log('workDurationMinutes:', workDurationMinutes)
+  // console.log('breakDurationMinutes:', breakDurationMinutes)
+  // console.log('sessionsCount:', sessionsCount)
+  // console.log('numberOnly:', numberOnly)
 
-  const workDurationMinutes = parseWorkDurationCommand(searchValue)
-  const breakDurationMinutes = parseBreakDurationCommand(searchValue)
-  const sessionsCount = parseSessionsCommand(searchValue)
-  const numberOnly = parseNumberOnly(searchValue)
+  // console.log('Should render workDuration CommandItem?', !!workDurationMinutes)
+  // console.log('Should render breakDuration CommandItem?', !!breakDurationMinutes)
+  // console.log('Should render sessions CommandItem?', !!sessionsCount)
+  // console.log('Should render numberOnly work CommandItem?', !!(numberOnly && !workDurationMinutes))
 
+  // console.log('workDurationMinutes truthy check:', workDurationMinutes ? 'YES' : 'NO')
+  // console.log('typeof workDurationMinutes:', typeof workDurationMinutes)
+  // console.log('workDurationMinutes === 10:', workDurationMinutes === 10)
 
-  console.log('=== DEBUG INFO ===')
-  console.log('searchValue:', searchValue)
-  console.log('workDurationMinutes:', workDurationMinutes)
-  console.log('breakDurationMinutes:', breakDurationMinutes)
-  console.log('sessionsCount:', sessionsCount)
-  console.log('numberOnly:', numberOnly)
-
-  console.log('Should render workDuration CommandItem?', !!workDurationMinutes)
-  console.log('Should render breakDuration CommandItem?', !!breakDurationMinutes)
-  console.log('Should render sessions CommandItem?', !!sessionsCount)
-  console.log('Should render numberOnly work CommandItem?', !!(numberOnly && !workDurationMinutes))
-
-  console.log('workDurationMinutes truthy check:', workDurationMinutes ? 'YES' : 'NO')
-  console.log('typeof workDurationMinutes:', typeof workDurationMinutes)
-  console.log('workDurationMinutes === 10:', workDurationMinutes === 10)
-
-  // Also let's test the regex manually
-  console.log('Testing regex manually:')
-  const testInput = "set work duration to 10"
-  const testPattern = /^set work duration to (\d+)$/i
-  const testMatch = testInput.match(testPattern)
-  console.log('testInput:', testInput)
-  console.log('testPattern:', testPattern)
-  console.log('testMatch:', testMatch)
+  // // Also let's test the regex manually
+  // console.log('Testing regex manually:')
+  // const testInput = "set work duration to 10"
+  // const testPattern = /^set work duration to (\d+)$/i
+  // const testMatch = testInput.match(testPattern)
+  // console.log('testInput:', testInput)
+  // console.log('testPattern:', testPattern)
+  // console.log('testMatch:', testMatch)
 
   return (
     <>
@@ -401,11 +329,7 @@ export function CommandMenu() {
           <CommandSeparator />
 
           <CommandGroup heading="Session Settings">
-
-
-
             {/* Render all matching commands */}
-            {/* <CommandItem disabled={!workDurationMinutes} onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}> */}
             <ClientOnly fallback={<div className="h-11" />}>
               <CommandItem
                 disabled={!workDurationMinutes}
@@ -464,7 +388,6 @@ export function CommandMenu() {
                   </CommandItem>
                 </>
               )}
-
             </ClientOnly>
           </CommandGroup>
           <CommandSeparator />
