@@ -113,23 +113,23 @@ export function CommandMenu() {
         id: 'work-duration-autocomplete',
         text: 'set work duration to ',
         description: 'Suggestion',
-        keywords: ['work', 'duration'],
+        keywords: ['set', 'work'],
         fullText: 'set work duration to'
       },
       {
         id: 'break-duration-autocomplete',
         text: 'set break duration to ',
         description: 'Suggestion',
-        keywords: ['break', 'duration'],
+        keywords: ['set', 'break'],
         fullText: 'set break duration to'
       },
       {
         id: 'sessions-autocomplete',
         text: 'set sessions to ',
         description: 'Suggestion',
-        keywords: ['session', 'sessions'],
+        keywords: ['set', 'session', 'sessions'],
         fullText: 'set sessions to'
-      }
+      },
     ]
 
     // Check each template
@@ -164,69 +164,6 @@ export function CommandMenu() {
     return suggestions
   }
 
-  // const getAutocompleteSuggestions = (input: string) => {
-  //   const trimmedInput = input.trim().toLowerCase()
-  //   const suggestions: { id: string; type: string; text: string; description: string, keywords: string[] }[] = []
-
-  //   // If input is empty, don't show suggestions
-  //   if (trimmedInput.length === 0) {
-  //     return suggestions
-  //   }
-
-  //   // Define suggestion templates
-  //   const suggestionTemplates = [
-  //     {
-  //       id: 'work-duration-autocomplete',
-  //       text: 'set work duration to ',
-  //       description: 'Suggestion',
-  //       keywords: ['work', 'duration'],
-  //       fullText: 'set work duration to'
-  //     },
-  //     {
-  //       id: 'break-duration-autocomplete',
-  //       text: 'set break duration to ',
-  //       description: 'Suggestion',
-  //       keywords: ['break', 'duration'],
-  //       fullText: 'set break duration to'
-  //     },
-  //     {
-  //       id: 'sessions-autocomplete',
-  //       text: 'set sessions to ',
-  //       description: 'Suggestion',
-  //       keywords: ['session', 'sessions'],
-  //       fullText: 'set sessions to'
-  //     }
-  //   ]
-
-  //   // Check each template
-  //   for (const template of suggestionTemplates) {
-  //     const shouldShow =
-  //       // Exact prefix match (original behavior)
-  //       template.fullText.startsWith(trimmedInput) ||
-  //       // Contains relevant keywords
-  //       template.keywords.some(keyword => trimmedInput.includes(keyword)) ||
-  //       // Partial match after "set "
-  //       (trimmedInput.startsWith('set ') &&
-  //         template.keywords.some(keyword =>
-  //           keyword.startsWith(trimmedInput.replace('set ', '').trim())
-  //         ))
-
-  //     if (shouldShow) {
-  //       suggestions.push({
-  //         id: template.id,
-  //         type: 'autocomplete',
-  //         text: template.text,
-  //         keywords: template.keywords,
-  //         description: template.description
-  //       })
-  //     }
-  //   }
-
-  //   return suggestions
-  // }
-
-
-
   // const partialMatches = parsePartialCommands(searchValue)
   const autocompleteSuggestions = getAutocompleteSuggestions(searchValue)
 
@@ -235,11 +172,6 @@ export function CommandMenu() {
     const patterns = [
       /^set work duration to (\d+) minutes$/i,
       /^set work duration to (\d+)$/i,  // ✅ This matches your autocomplete: "set work duration to 10"
-      /^set work duration to /i,  // ✅ This matches your autocomplete: "set work duration to 10"
-      /^work duration (\d+)$/i,
-      /^work (\d+)$/i,
-      /^(\d+) minutes work$/i,
-      /^(\d+)m work$/i,
     ]
 
     for (const pattern of patterns) {
@@ -259,10 +191,6 @@ export function CommandMenu() {
   const parseBreakDurationCommand = (input: string) => {
     const patterns = [
       /^set break duration to (\d+)$/i,
-      /^break duration (\d+)$/i,
-      /^break (\d+)$/i,
-      /^(\d+) minutes break$/i,
-      /^(\d+)m break$/i,
     ]
 
     for (const pattern of patterns) {
@@ -280,10 +208,6 @@ export function CommandMenu() {
   const parseSessionsCommand = (input: string) => {
     const patterns = [
       /^set sessions to (\d+)$/i,
-      /^sessions (\d+)$/i,
-      /^session (\d+)$/i, // Added singular form
-      /^(\d+) sessions$/i,
-      /^(\d+) session$/i, // Added singular form
     ]
 
     for (const pattern of patterns) {
@@ -366,30 +290,30 @@ export function CommandMenu() {
   const numberOnly = parseNumberOnly(searchValue)
 
 
-  // console.log('=== DEBUG INFO ===')
-  // console.log('searchValue:', searchValue)
-  // console.log('workDurationMinutes:', workDurationMinutes)
-  // console.log('breakDurationMinutes:', breakDurationMinutes)
-  // console.log('sessionsCount:', sessionsCount)
-  // console.log('numberOnly:', numberOnly)
+  console.log('=== DEBUG INFO ===')
+  console.log('searchValue:', searchValue)
+  console.log('workDurationMinutes:', workDurationMinutes)
+  console.log('breakDurationMinutes:', breakDurationMinutes)
+  console.log('sessionsCount:', sessionsCount)
+  console.log('numberOnly:', numberOnly)
 
-  // console.log('Should render workDuration CommandItem?', !!workDurationMinutes)
-  // console.log('Should render breakDuration CommandItem?', !!breakDurationMinutes)
-  // console.log('Should render sessions CommandItem?', !!sessionsCount)
-  // console.log('Should render numberOnly work CommandItem?', !!(numberOnly && !workDurationMinutes))
+  console.log('Should render workDuration CommandItem?', !!workDurationMinutes)
+  console.log('Should render breakDuration CommandItem?', !!breakDurationMinutes)
+  console.log('Should render sessions CommandItem?', !!sessionsCount)
+  console.log('Should render numberOnly work CommandItem?', !!(numberOnly && !workDurationMinutes))
 
-  // console.log('workDurationMinutes truthy check:', workDurationMinutes ? 'YES' : 'NO')
-  // console.log('typeof workDurationMinutes:', typeof workDurationMinutes)
-  // console.log('workDurationMinutes === 10:', workDurationMinutes === 10)
+  console.log('workDurationMinutes truthy check:', workDurationMinutes ? 'YES' : 'NO')
+  console.log('typeof workDurationMinutes:', typeof workDurationMinutes)
+  console.log('workDurationMinutes === 10:', workDurationMinutes === 10)
 
-  // // Also let's test the regex manually
-  // console.log('Testing regex manually:')
-  // const testInput = "set work duration to 10"
-  // const testPattern = /^set work duration to (\d+)$/i
-  // const testMatch = testInput.match(testPattern)
-  // console.log('testInput:', testInput)
-  // console.log('testPattern:', testPattern)
-  // console.log('testMatch:', testMatch)
+  // Also let's test the regex manually
+  console.log('Testing regex manually:')
+  const testInput = "set work duration to 10"
+  const testPattern = /^set work duration to (\d+)$/i
+  const testMatch = testInput.match(testPattern)
+  console.log('testInput:', testInput)
+  console.log('testPattern:', testPattern)
+  console.log('testMatch:', testMatch)
 
   return (
     <>
@@ -409,6 +333,26 @@ export function CommandMenu() {
             <CommandItem disabled>
               <span className="text-muted-foreground">Try: typing &apos;set&apos; or a number to update sessions </span>
             </CommandItem>
+          </CommandGroup>
+          <CommandGroup>
+            {/* Autocomplete suggestions */}
+            {autocompleteSuggestions.map((suggestion) => (
+
+              <CommandItem
+                key={suggestion.id} // Use unique ID instead of index
+                onSelect={() => {
+                  setSearchValue(suggestion.text)
+                  // Don't close the dialog, let user continue typing
+                }}
+                keywords={suggestion.keywords}
+              >
+                <Timer />
+                <span>{suggestion.text}</span>
+                <span className="text-muted-foreground ml-auto text-sm">
+                  {suggestion.description}
+                </span>
+              </CommandItem>
+            ))}
           </CommandGroup>
 
           <CommandGroup heading="Actions">
@@ -458,42 +402,23 @@ export function CommandMenu() {
 
           <CommandGroup heading="Session Settings">
 
-            {/* Autocomplete suggestions */}
-            {autocompleteSuggestions.map((suggestion) => (
 
-              <CommandItem
-                key={suggestion.id} // Use unique ID instead of index
-                onSelect={() => {
-                  setSearchValue(suggestion.text)
-                  // Don't close the dialog, let user continue typing
-                }}
-                keywords={suggestion.keywords}
-              >
-                <Timer />
-                <span>{suggestion.text}</span>
-                <span className="text-muted-foreground ml-auto text-sm">
-                  {suggestion.description}
-                </span>
-              </CommandItem>
-            ))}
 
             {/* Render all matching commands */}
             {/* <CommandItem disabled={!workDurationMinutes} onSelect={() => handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)}> */}
             <ClientOnly fallback={<div className="h-11" />}>
-            
-
-                <CommandItem
-                  disabled={!workDurationMinutes}
-                  keywords={['set', 'work']}
-                  onSelect={() => {
-                    if (workDurationMinutes) {
-                      handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)
-                    }
-                  }}
-                >
-                  <Timer />
-                  <span>Set work duration to {workDurationMinutes || '[number]'} minutes</span>
-                </CommandItem>
+              <CommandItem
+                disabled={!workDurationMinutes}
+                keywords={['set', 'work']}
+                onSelect={() => {
+                  if (workDurationMinutes) {
+                    handleSettingUpdate('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)
+                  }
+                }}
+              >
+                <Timer />
+                <span>Set work duration to {workDurationMinutes || '[number]'} minutes</span>
+              </CommandItem>
 
               <CommandItem
                 disabled={!breakDurationMinutes}
@@ -510,7 +435,7 @@ export function CommandMenu() {
 
               <CommandItem
                 disabled={!sessionsCount}
-                keywords={['set', 'sessions']}
+                keywords={['set', 'session', 'sessions']}
                 onSelect={() => {
                   if (sessionsCount) {
                     handleSettingUpdate('sessions', sessionsCount, `session to ${sessionsCount} `)
