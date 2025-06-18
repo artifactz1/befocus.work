@@ -9,13 +9,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' className='dark' suppressHydrationWarning>
-      <body>
         <body suppressHydrationWarning>
           <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
             <AppProviders>{children}</AppProviders>
           </ThemeProvider>
         </body>
-      </body>
     </html>
   )
 }
