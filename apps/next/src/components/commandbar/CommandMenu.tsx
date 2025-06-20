@@ -1,7 +1,7 @@
 'use client'
 
+import { ClientOnly } from '../helper/ClientOnly'
 import CommandDialogConent from './CommandDialogContent'
-import { ClientOnly } from './helper/ClientOnly'
 
 export default function CommandMenu() {
   return (

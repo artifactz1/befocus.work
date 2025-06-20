@@ -3,7 +3,7 @@ import confetti from "canvas-confetti"
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { useTimerStore } from '~/store/useTimerStore'
-import Divider from './helper/Divider'
+import Divider from '../helper/Divider'
 
 export function SessionCompleteModal() {
   const { currentSession, sessions, resetAll } = useTimerStore()
