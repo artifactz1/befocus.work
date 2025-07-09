@@ -1,5 +1,7 @@
 # BeFocus.Work
 
+![image](https://github.com/user-attachments/assets/010b2bf4-4600-4ae0-8871-688639192f02)
+
 > A modern productivity application with Pomodoro timer, focus tracking, and goal management.
 
 ## Table of Contents
