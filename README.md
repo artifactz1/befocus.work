@@ -13,7 +13,6 @@
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
 - [Development](#development)
-- [Environment Variables](#environment-variables)
 - [Scripts](#scripts)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
@@ -186,40 +185,6 @@ bun run check
 
 # Fix all issues
 bun run fix:check
-```
-
-## Environment Variables
-
-### API Package (`packages/api/.dev.vars`)
-
-```env
-DATABASE_URL=your_neon_database_url
-ENV=development
-JWT_SECRET=your_jwt_secret
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-DISCORD_CLIENT_ID=your_discord_client_id
-DISCORD_CLIENT_SECRET=your_discord_client_secret
-APPLE_CLIENT_ID=your_apple_client_id
-APPLE_WEB_CLIENT_ID=your_apple_web_client_id
-APPLE_PRIVATE_KEY=your_apple_private_key
-APPLE_TEAM_ID=your_apple_team_id
-APPLE_KEY_ID=your_apple_key_id
-API_DOMAIN=http://localhost:8787
-WEB_DOMAIN=http://localhost:3000
-BETTER_AUTH_SECRET=your_auth_secret
-API_VERSION=v1
-RATE_LIMITER=5
-```
-
-### Next.js App (`apps/next/.env.local`)
-
-```env
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_API_URL=http://localhost:8787
-API_URL=http://localhost:8787
 ```
 
 ## Scripts
