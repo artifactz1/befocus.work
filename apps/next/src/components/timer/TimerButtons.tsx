@@ -28,7 +28,7 @@ export default function TimerButtons() {
   const buttonVariant = isSmallScreen ? 'ghost' : 'outline'
 
   return (
-    <div className='flex items-center justify-center space-x-1'>
+    <div className='flex items-center justify-center gap-1 rounded-full bg-card/50 px-2 py-1.5 backdrop-blur-md shadow-[0_20px_60px_-30px_rgba(0,0,0,0.5)]'>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>

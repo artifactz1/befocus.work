@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --font-app: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'Inter Tight', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Background customization contract — settings page writes to these */
+  --bg-image: none;
+  --bg-image-size: cover;
+  --bg-image-position: center;
+  --bg-overlay-color: 0 0% 0%;
+  --bg-overlay-opacity: 0;
+  --bg-blur: 0px;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -90,6 +104,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-app);
     /* @apply transition-colors duration-500 ease-in-out; */
     @apply transition-colors duration-500 ease-in-out;
   }

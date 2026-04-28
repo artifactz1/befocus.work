@@ -1,9 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { signIn } from '~/lib/auth.client'
-
-const SUPREME = 'Supreme, ui-serif, Georgia, serif'
 
 const providers = [
   {
@@ -41,13 +40,11 @@ const providers = [
 const ease = [0.22, 1, 0.36, 1] as const
 
 export default function SignIn() {
+  const router = useRouter()
   const homePageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/`
 
   return (
-    <div
-      className='relative min-h-screen w-full overflow-hidden bg-background text-foreground'
-      style={{ fontFamily: SUPREME }}
-    >
+    <div className='relative min-h-screen w-full overflow-hidden bg-background text-foreground'>
       {/* Grain overlay */}
       <svg
         aria-hidden
@@ -66,80 +63,39 @@ export default function SignIn() {
         className='pointer-events-none fixed inset-0 z-[0]'
         style={{
           background:
-            'radial-gradient(ellipse 60% 50% at 75% 40%, hsl(var(--accent) / 0.12), transparent 70%), radial-gradient(ellipse 50% 40% at 15% 90%, hsl(var(--muted) / 0.18), transparent 70%)',
+            'radial-gradient(ellipse 60% 50% at 75% 40%, hsl(var(--accent) / 0.10), transparent 70%), radial-gradient(ellipse 50% 40% at 15% 90%, hsl(var(--muted) / 0.14), transparent 70%)',
         }}
       />
 
-      {/* Watermark numeral */}
-      <motion.div
-        aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.6, ease, delay: 0.6 }}
-        className='pointer-events-none absolute -bottom-12 -right-6 z-[1] select-none leading-none'
-        style={{
-          fontFamily: SUPREME,
-          fontWeight: 200,
-          fontStyle: 'italic',
-          fontSize: 'clamp(14rem, 28vw, 30rem)',
-          color: 'hsl(var(--foreground) / 0.04)',
-          letterSpacing: '-0.04em',
-        }}
-      >
-        25
-      </motion.div>
-
-      {/* Vertical sidebar label */}
-      <div
-        className='absolute left-6 top-1/2 z-[2] hidden -translate-y-1/2 -rotate-90 origin-left text-[10px] uppercase tracking-[0.4em] text-muted-foreground md:block'
-        style={{ fontFamily: SUPREME, fontWeight: 500 }}
-      >
-        Vol. 01 — A Focus Almanac
-      </div>
-
-      {/* Top bar */}
+      {/* Top bar — single anchor */}
       <header className='relative z-[3] flex items-center justify-between px-8 pt-8 md:px-16 md:pt-10'>
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease }}
-          className='flex items-center gap-3 text-[11px] uppercase tracking-[0.32em] text-muted-foreground'
-          style={{ fontFamily: SUPREME, fontWeight: 500 }}
+          className='flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground'
         >
           <span className='inline-block h-[6px] w-[6px] rounded-full bg-foreground' />
           Be Focus
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease, delay: 0.05 }}
-          className='text-[11px] uppercase tracking-[0.32em] text-muted-foreground'
-          style={{ fontFamily: SUPREME, fontWeight: 500 }}
-        >
-          Est. 2025
-        </motion.div>
       </header>
 
       {/* Main composition */}
-      <main className='relative z-[3] mx-auto grid min-h-[calc(100vh-12rem)] max-w-7xl grid-cols-1 items-center gap-16 px-8 py-16 md:grid-cols-12 md:gap-8 md:px-16'>
+      <main className='relative z-[3] mx-auto grid min-h-[calc(100vh-8rem)] max-w-7xl grid-cols-1 items-center gap-16 px-8 py-16 md:grid-cols-12 md:gap-12 md:px-16'>
         {/* Editorial column */}
         <section className='md:col-span-7'>
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease, delay: 0.15 }}
-            className='mb-8 text-[11px] uppercase tracking-[0.4em] text-muted-foreground'
-            style={{ fontFamily: SUPREME, fontWeight: 500 }}
+            className='mb-8 text-[11px] font-medium uppercase tracking-[0.4em] text-muted-foreground'
           >
             Session — 01 / Sign in
           </motion.p>
 
           <h1
-            className='leading-[0.92] tracking-[-0.04em]'
-            style={{
-              fontFamily: SUPREME,
-              fontSize: 'clamp(3.5rem, 9vw, 8rem)',
-            }}
+            className='font-display leading-[0.92] tracking-[-0.04em]'
+            style={{ fontSize: 'clamp(3.5rem, 9vw, 8rem)' }}
           >
             {['Quiet', 'focus,', 'deep', 'work.'].map((word, i) => (
               <motion.span
@@ -162,8 +118,7 @@ export default function SignIn() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease, delay: 0.7 }}
-            className='mt-10 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg'
-            style={{ fontFamily: SUPREME, fontWeight: 300 }}
+            className='mt-10 max-w-md text-base font-light leading-relaxed text-muted-foreground md:text-lg'
           >
             A simple ritual — twenty-five minutes at a time. Sign in to keep your sessions, sounds, and tasks in sync wherever you are.
           </motion.p>
@@ -171,45 +126,45 @@ export default function SignIn() {
 
         {/* Sign-in column */}
         <aside className='relative md:col-span-5'>
-          {/* Decorative timer ring */}
+          {/* Decorative timer ring — smaller, quieter */}
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease, delay: 0.4 }}
-            className='pointer-events-none absolute -right-24 -top-24 hidden md:block'
+            className='pointer-events-none absolute -right-16 -top-20 hidden md:block'
             aria-hidden
           >
             <motion.svg
-              width='340'
-              height='340'
-              viewBox='0 0 340 340'
+              width='240'
+              height='240'
+              viewBox='0 0 240 240'
               animate={{ rotate: 360 }}
-              transition={{ duration: 120, ease: 'linear', repeat: Number.POSITIVE_INFINITY }}
+              transition={{ duration: 180, ease: 'linear', repeat: Number.POSITIVE_INFINITY }}
             >
               <circle
-                cx='170'
-                cy='170'
-                r='160'
+                cx='120'
+                cy='120'
+                r='112'
                 fill='none'
-                stroke='hsl(var(--foreground) / 0.12)'
+                stroke='hsl(var(--foreground) / 0.08)'
                 strokeWidth='1'
               />
               <circle
-                cx='170'
-                cy='170'
-                r='160'
+                cx='120'
+                cy='120'
+                r='112'
                 fill='none'
-                stroke='hsl(var(--foreground) / 0.6)'
+                stroke='hsl(var(--foreground) / 0.35)'
                 strokeWidth='1'
-                strokeDasharray='2 14'
+                strokeDasharray='1.5 12'
                 strokeLinecap='round'
               />
               {Array.from({ length: 12 }).map((_, i) => {
                 const angle = (i / 12) * Math.PI * 2 - Math.PI / 2
-                const x1 = 170 + Math.cos(angle) * 148
-                const y1 = 170 + Math.sin(angle) * 148
-                const x2 = 170 + Math.cos(angle) * (i % 3 === 0 ? 132 : 142)
-                const y2 = 170 + Math.sin(angle) * (i % 3 === 0 ? 132 : 142)
+                const x1 = 120 + Math.cos(angle) * 102
+                const y1 = 120 + Math.sin(angle) * 102
+                const x2 = 120 + Math.cos(angle) * (i % 3 === 0 ? 90 : 96)
+                const y2 = 120 + Math.sin(angle) * (i % 3 === 0 ? 90 : 96)
                 return (
                   <line
                     key={i}
@@ -217,8 +172,8 @@ export default function SignIn() {
                     y1={y1}
                     x2={x2}
                     y2={y2}
-                    stroke='hsl(var(--foreground) / 0.45)'
-                    strokeWidth={i % 3 === 0 ? 1.2 : 0.8}
+                    stroke='hsl(var(--foreground) / 0.30)'
+                    strokeWidth={i % 3 === 0 ? 1 : 0.7}
                     strokeLinecap='round'
                   />
                 )
@@ -232,20 +187,12 @@ export default function SignIn() {
             transition={{ duration: 0.9, ease, delay: 0.55 }}
             className='relative overflow-hidden rounded-2xl border border-border/60 bg-card/70 backdrop-blur-md shadow-[0_30px_80px_-30px_rgba(0,0,0,0.45)]'
           >
-            {/* Inner divider header */}
+            {/* Header */}
             <div className='flex items-center justify-between border-b border-border/50 px-6 py-5'>
-              <span
-                className='text-[10px] uppercase tracking-[0.36em] text-muted-foreground'
-                style={{ fontFamily: SUPREME, fontWeight: 500 }}
-              >
+              <span className='text-[10px] font-medium uppercase tracking-[0.36em] text-muted-foreground'>
                 Begin Session
               </span>
-              <span
-                className='text-[10px] tabular-nums text-muted-foreground'
-                style={{ fontFamily: SUPREME, fontWeight: 400 }}
-              >
-                25 : 00
-              </span>
+              <span className='text-[10px] tabular-nums text-muted-foreground'>25 : 00</span>
             </div>
 
             {/* Provider rows */}
@@ -261,22 +208,16 @@ export default function SignIn() {
                     type='button'
                     onClick={() => signIn.social({ provider: p.id, callbackURL: homePageUrl })}
                     className='group flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-accent/40 focus-visible:bg-accent/40 focus-visible:outline-none'
-                    style={{ fontFamily: SUPREME }}
                   >
                     <span className='flex items-center gap-4'>
                       <span className='flex h-8 w-8 items-center justify-center rounded-full bg-foreground/5 text-foreground transition-colors group-hover:bg-foreground/10'>
                         {p.icon}
                       </span>
                       <span className='flex flex-col'>
-                        <span
-                          className='text-[10px] uppercase tracking-[0.32em] text-muted-foreground'
-                          style={{ fontWeight: 500 }}
-                        >
+                        <span className='text-[10px] font-medium uppercase tracking-[0.32em] text-muted-foreground'>
                           Continue with
                         </span>
-                        <span className='text-base text-foreground' style={{ fontWeight: 500 }}>
-                          {p.label}
-                        </span>
+                        <span className='text-base font-medium text-foreground'>{p.label}</span>
                       </span>
                     </span>
                     <span
@@ -298,45 +239,39 @@ export default function SignIn() {
               ))}
             </ul>
 
-            {/* Footer caption */}
+            {/* Guest escape hatch */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, ease, delay: 1.05 }}
-              className='border-t border-border/50 px-6 py-4'
+              transition={{ duration: 0.7, ease, delay: 1.0 }}
+              className='border-t border-border/50'
             >
-              <p
-                className='text-[11px] leading-relaxed text-muted-foreground'
-                style={{ fontFamily: SUPREME, fontWeight: 300 }}
+              <button
+                type='button'
+                onClick={() => router.push('/guest')}
+                className='group flex w-full items-center justify-between px-6 py-4 text-left transition-colors hover:bg-accent/30 focus-visible:bg-accent/30 focus-visible:outline-none'
               >
-                Your sessions and preferences sync across devices. No password to remember.
-              </p>
+                <span className='flex flex-col'>
+                  <span className='text-[10px] font-medium uppercase tracking-[0.32em] text-muted-foreground'>
+                    No account?
+                  </span>
+                  <span className='text-sm text-foreground/80 transition-colors group-hover:text-foreground'>
+                    Continue as guest
+                  </span>
+                </span>
+                <span
+                  className='text-foreground/40 transition-all group-hover:translate-x-1 group-hover:text-foreground/80'
+                  aria-hidden
+                >
+                  <svg width='18' height='10' viewBox='0 0 22 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                    <path d='M1 5h19M16 1l4 4-4 4' stroke='currentColor' strokeWidth='1.2' strokeLinecap='round' strokeLinejoin='round' />
+                  </svg>
+                </span>
+              </button>
             </motion.div>
           </motion.div>
         </aside>
       </main>
-
-      {/* Footer */}
-      <footer className='relative z-[3] flex items-end justify-between px-8 pb-8 md:px-16 md:pb-10'>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, ease, delay: 1.2 }}
-          className='text-[11px] uppercase tracking-[0.32em] text-muted-foreground'
-          style={{ fontFamily: SUPREME, fontWeight: 500 }}
-        >
-          New session — Pomodoro 25 ⁄ 5
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, ease, delay: 1.25 }}
-          className='hidden text-[11px] uppercase tracking-[0.32em] text-muted-foreground md:block'
-          style={{ fontFamily: SUPREME, fontWeight: 500 }}
-        >
-          ↳ Sign in to begin
-        </motion.div>
-      </footer>
     </div>
   )
 }

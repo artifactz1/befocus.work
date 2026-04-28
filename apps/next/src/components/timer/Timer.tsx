@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore } from '~/store/useTimerStore'
+import TimerProgressRing from '../dashboard/TimerProgressRing'
 import useIsLandscape from '../helper/useIsMobileLandscape'
 import TimerUI from './TimeUI'
 
@@ -113,6 +114,7 @@ export default function Timer() {
 
   return (
     <div className='relative z-0 flex h-[70vh] items-center justify-center'>
+      <TimerProgressRing />
       <div className='absolute hidden h-[70vh] items-center justify-center font-bold sm:flex'>
         <TimerUI value={minutes} fontSize={isLandscape ? '30vh' : widthSize} />
         <p className={`flex h-full items-center ${isLandscape ? 'text-[30vh]' : textSize}`}>:</p>

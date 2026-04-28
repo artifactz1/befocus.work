@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
-// import CommandMenu from '~/components/CommandMenu'
+import AppBackground from '~/components/dashboard/AppBackground'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import { SessionCompleteModal } from '~/components/SessionCompleteModal'
@@ -13,8 +13,6 @@ import Timer from '~/components/timer/Timer'
 const INTRO_FLAG = 'befocus.guestIntroShown'
 
 export default function App() {
-  // TODO: update use of useSession with useQueryClient
-
   const CommandMenu = dynamic(() => import('~/components/CommandMenu'), { ssr: false })
 
   const [showIntro, setShowIntro] = useState(false)
@@ -39,6 +37,7 @@ export default function App() {
       <GlobalSoundsPlayer />
       <SessionCompleteModal />
       <CommandMenu />
+      <AppBackground />
 
       <AnimatePresence onExitComplete={() => setIntroDone(true)}>
         {showIntro && (
@@ -64,7 +63,7 @@ export default function App() {
 
       {introDone && (
         <motion.main
-          className='continer px-auto flex h-screen w-screen flex-col items-center justify-center'
+          className='continer px-auto relative z-10 flex h-screen w-screen flex-col items-center justify-center'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, ease: 'easeOut', delay: 0.25 }}

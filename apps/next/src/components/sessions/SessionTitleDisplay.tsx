@@ -13,20 +13,20 @@ export default function SessionTitleDisplay() {
       : 'Break'
     : workDuration === timeLeft
       ? 'Be Focus'
-      : isWorking
-        ? 'Paused'
-        : 'Break'
+      : 'Paused'
 
   const isLandscape = useIsLandscape()
+  const isIdle = !isRunning
 
   return (
     <AnimatePresence mode='wait'>
       <motion.p
-        key={text} // Forces re-render when text changes
-        animate={{ opacity: 1, y: 0 }} // Fades in and moves into place
-        exit={{ opacity: 0, y: 0 }} // Moves up slightly when fading out
+        key={text}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 0 }}
         transition={{ duration: 0.25, ease: 'easeInOut' }}
-        className={`text-right text-4xl font-bold ${isLandscape ? 'pt-10 sm:text-4xl' : 'sm:text-5xl'} lg:text-7xl`}
+        className={`text-right text-4xl tracking-tight ${isIdle ? 'font-bold italic text-foreground/85' : 'font-bold italic text-foreground'
+          } ${isLandscape ? 'pt-10 sm:text-4xl' : 'sm:text-5xl'} lg:text-7xl`}
       >
         {text}
       </motion.p>

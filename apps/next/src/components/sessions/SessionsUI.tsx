@@ -56,13 +56,12 @@ export default function SessionsUI() {
                   className={cn(
                     `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
                     // 'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
-                    'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
-                    index <= currentSession - 1 // Completed work sessions
+                    'border-foreground/15 dark:border-foreground/25',
+                    index <= currentSession - 1
                       ? isWorking && currentSession - 1 === index
-                        ? // ? `${opacityClass}`
-                        'bg-pink-500'
-                        : 'bg-green-500'
-                      : '', // No color if not completed
+                        ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
+                        : 'bg-foreground/55 border-foreground/55'
+                      : '',
                   )}
                 />
               ))}
@@ -74,12 +73,11 @@ export default function SessionsUI() {
                   className={cn(
                     `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
                     // 'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
-                    'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
-                    index < currentSession - 1 // Completed break sessions
-                      ? 'bg-green-500'
-                      : !isWorking && currentSession - 1 === index // Current break session
-                        ? // ? `${opacityClassBrk}`
-                        'bg-pink-500'
+                    'border-foreground/15 dark:border-foreground/25',
+                    index < currentSession - 1
+                      ? 'bg-foreground/55 border-foreground/55'
+                      : !isWorking && currentSession - 1 === index
+                        ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
                         : 'bg-transparent',
                   )}
                 />
@@ -104,11 +102,11 @@ export default function SessionsUI() {
                 className={cn(
                   'aspect-square rounded-lg border-2 transition-all duration-300',
                   // 'border-gray-300 dark:border-white/80',
-                  'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
+                  'border-foreground/15 dark:border-foreground/25',
                   index <= currentSession - 1
                     ? isWorking && currentSession - 1 === index
-                      ? 'bg-pink-500'
-                      : 'bg-green-500'
+                      ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
+                      : 'bg-foreground/55 border-foreground/55'
                     : '',
                 )}
               />
@@ -128,11 +126,11 @@ export default function SessionsUI() {
                 className={cn(
                   'aspect-square rounded-lg border-2 transition-all duration-300',
                   // 'border-gray-300 dark:border-white/80',
-                  'border-[#B0B0B0] dark:border-white/50', // Light mode: black, Dark mode: white
+                  'border-foreground/15 dark:border-foreground/25',
                   index < currentSession - 1
-                    ? 'bg-green-500'
+                    ? 'bg-foreground/55 border-foreground/55'
                     : !isWorking && currentSession - 1 === index
-                      ? 'bg-pink-500'
+                      ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
                       : 'bg-transparent',
                 )}
               />
