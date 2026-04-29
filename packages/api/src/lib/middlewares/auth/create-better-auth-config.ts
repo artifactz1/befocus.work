@@ -29,7 +29,7 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
     return acc
   }, {})
 
-  const isProduction = env(c).env === 'production'
+  const isProduction = env(c).ENV === 'production'
 
   return {
     baseURL: env(c).API_DOMAIN, // API URL
@@ -43,12 +43,12 @@ export function createBetterAuthConfig(dbInstance: any, c: Context<AppContext>) 
     socialProviders: configuredProviders,
     advanced: {
       crossSubDomainCookies: {
-        enabled: true, // Enables cross-domain cookies
+        enabled: isProduction,
       },
       defaultCookieAttributes: {
-        sameSite: isProduction ? 'lax' : 'none',
-        secure: true,
-        domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined, // Use env var for frontend domain
+        sameSite: 'lax',
+        secure: isProduction,
+        domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined,
       },
     },
     rateLimit: {
