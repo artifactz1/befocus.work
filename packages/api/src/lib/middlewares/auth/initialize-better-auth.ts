@@ -25,12 +25,12 @@ export const initializeBetterAuth = (c: Context<AppContext>) => {
     ...betterAuthConfig,
     advanced: {
       crossSubDomainCookies: {
-        enabled: true, // Enables cross-domain cookies
+        enabled: isProduction,
       },
       defaultCookieAttributes: {
-        sameSite: isProduction ? 'lax' : 'none',
-        secure: true,
-        domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined, // Use env var for frontend domain
+        sameSite: 'lax',
+        secure: isProduction,
+        domain: isProduction ? extractDomain(env(c).WEB_DOMAIN) : undefined,
       },
     },
     plugins: [bearer()],
