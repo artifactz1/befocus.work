@@ -7,6 +7,8 @@ const CENTER = VIEWBOX / 2
 const RADIUS = 380
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
+const round = (n: number) => Math.round(n * 1000) / 1000
+
 export default function TimerProgressRing() {
   const timeLeft = useTimerStore(s => s.timeLeft)
   const workDuration = useTimerStore(s => s.workDuration)
@@ -51,8 +53,8 @@ export default function TimerProgressRing() {
           fill='none'
           stroke='hsl(var(--foreground) / 0.5)'
           strokeWidth='1.5'
-          strokeDasharray={CIRCUMFERENCE}
-          strokeDashoffset={CIRCUMFERENCE - offset}
+          strokeDasharray={round(CIRCUMFERENCE)}
+          strokeDashoffset={round(CIRCUMFERENCE - offset)}
           strokeLinecap='round'
           style={{ transition: 'stroke-dashoffset 1s linear' }}
         />
@@ -60,10 +62,10 @@ export default function TimerProgressRing() {
           const angle = (i / 12) * Math.PI * 2
           const major = i % 3 === 0
           const inner = RADIUS - (major ? 26 : 14)
-          const x1 = CENTER + Math.cos(angle) * RADIUS
-          const y1 = CENTER + Math.sin(angle) * RADIUS
-          const x2 = CENTER + Math.cos(angle) * inner
-          const y2 = CENTER + Math.sin(angle) * inner
+          const x1 = round(CENTER + Math.cos(angle) * RADIUS)
+          const y1 = round(CENTER + Math.sin(angle) * RADIUS)
+          const x2 = round(CENTER + Math.cos(angle) * inner)
+          const y2 = round(CENTER + Math.sin(angle) * inner)
           return (
             <line
               key={i}

@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --font-app: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-display: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: 'Inter Tight', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-app), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-app), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Background customization contract — settings page writes to these */
   --bg-image: none;
