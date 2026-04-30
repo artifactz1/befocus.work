@@ -4,6 +4,7 @@ import { Button } from '@repo/ui/button'
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -35,6 +36,7 @@ export default function MobileToolsTrigger() {
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Tools</DrawerTitle>
+          <DrawerDescription className='sr-only'>App tools and settings</DrawerDescription>
         </DrawerHeader>
         <div className='flex flex-col gap-1 p-4 pb-8'>
           <ToolRow icon={<ListTodo className='h-5 w-5' />} label='To-do'>
@@ -46,17 +48,18 @@ export default function MobileToolsTrigger() {
           <ToolRow icon={<Music className='h-5 w-5' />} label='Sessions'>
             <SessionSettingsMobile />
           </ToolRow>
-          <button
-            type='button'
-            onClick={() => {
-              setOpen(false)
-              openCustomize()
-            }}
-            className='flex items-center gap-3 rounded-md px-3 py-3 text-left transition-colors hover:bg-accent/40'
-          >
-            <Settings2 className='h-5 w-5' />
-            <span>Customize</span>
-          </button>
+          <ToolRow icon={<Settings2 className='h-5 w-5' />} label='Customize'>
+            <Button
+              variant='outline'
+              size='lg'
+              onClick={() => {
+                setOpen(false)
+                openCustomize()
+              }}
+            >
+              Open
+            </Button>
+          </ToolRow>
           <ToolRow icon={<User className='h-5 w-5' />} label='Account'>
             <AccountButton />
           </ToolRow>
