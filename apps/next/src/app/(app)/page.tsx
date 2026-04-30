@@ -1,7 +1,10 @@
 'use client'
 import { motion } from 'framer-motion'
 import CommandMenu from '~/components/CommandMenu'
+import CustomizeStyleApplier from '~/components/customize/CustomizeStyleApplier'
 import AppBackground from '~/components/dashboard/AppBackground'
+import LeftRail from '~/components/dashboard/LeftRail'
+import MobileToolsTrigger from '~/components/dashboard/MobileToolsTrigger'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import { SessionCompleteModal } from '~/components/SessionCompleteModal'
@@ -19,6 +22,10 @@ export default function Dashboard() {
       <SessionCompleteModal />
       <CommandMenu />
       <AppBackground />
+      <CustomizeStyleApplier />
+      <LeftRail />
+      <MobileToolsTrigger />
+      {/* TODO Phase 3: <CustomizePanel /> */}
       <motion.main
         className='continer px-auto relative z-10 flex h-screen w-screen flex-col items-center justify-center'
         initial={{ opacity: 0 }}
