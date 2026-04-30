@@ -13,6 +13,8 @@
   --bg-overlay-color: 0 0% 0%;
   --bg-overlay-opacity: 0;
   --bg-blur: 0px;
+  --text-contrast: 1;
+  --grain-opacity: 0.05;
 }
 
 ::-webkit-scrollbar {
