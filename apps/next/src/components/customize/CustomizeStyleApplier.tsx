@@ -13,6 +13,8 @@ export default function CustomizeStyleApplier() {
   const isOpen = useCustomizeStore((s) => s.isOpen)
   const preview = useCustomizeStore((s) => s.preview)
   const active = useCustomizeStore((s) => s.activeTheme.customizations)
+  // Store actions always produce fresh references for `preview` / `activeTheme.customizations`,
+  // so this derived `c` flips identity on every meaningful change → useEffect dep array works.
   const c = isOpen ? preview : active
 
   useEffect(() => {

@@ -21,7 +21,7 @@ type CustomizeStore = {
   hydrate: (theme: Theme) => void
 }
 
-export const useCustomizeStore = create<CustomizeStore>((set, get) => ({
+export const useCustomizeStore = create<CustomizeStore>(set => ({
   activeTheme: DEFAULT_THEME,
   preview: DEFAULT_CUSTOMIZATIONS,
   isOpen: false,
