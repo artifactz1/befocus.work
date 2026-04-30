@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
+import CustomizePanel from '~/components/customize/CustomizePanel'
 import CustomizeStyleApplier from '~/components/customize/CustomizeStyleApplier'
 import AppBackground from '~/components/dashboard/AppBackground'
 import LeftRail from '~/components/dashboard/LeftRail'
@@ -44,7 +45,7 @@ export default function App() {
       <CustomizeStyleApplier />
       {introDone && <LeftRail />}
       {introDone && <MobileToolsTrigger />}
-      {/* TODO Phase 3: {introDone && <CustomizePanel />} */}
+      {introDone && <CustomizePanel />}
 
       <AnimatePresence onExitComplete={() => setIntroDone(true)}>
         {showIntro && (
