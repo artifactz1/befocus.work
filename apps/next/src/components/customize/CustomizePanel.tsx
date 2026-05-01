@@ -43,21 +43,24 @@ export default function CustomizePanel() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-          className='fixed bottom-28 left-1/2 z-40 hidden w-[min(64vw,720px)] -translate-x-1/2 rounded-2xl border border-border/40 bg-card/90 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)] backdrop-blur-xl sm:block'
+          className='fixed bottom-32 left-1/2 z-40 hidden w-[min(72vw,820px)] -translate-x-1/2 overflow-hidden rounded-2xl border border-border/40 bg-card/85 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] backdrop-blur-2xl sm:block'
           role='region'
           aria-label='Customize'
         >
-          <header className='flex items-center justify-between'>
-            <nav className='flex flex-wrap gap-1' aria-label='Customize categories'>
+          <header className='flex items-center justify-between gap-3 border-b border-border/30 px-5 py-3'>
+            <span className='shrink-0 text-[10px] font-medium uppercase tracking-[0.32em] text-muted-foreground/70'>
+              Customize
+            </span>
+            <nav className='flex flex-1 flex-wrap items-center gap-1' aria-label='Customize categories'>
               {TABS.map(t => (
                 <button
                   key={t.id}
                   type='button'
                   onClick={() => setTab(t.id)}
-                  className={`rounded-full border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${
+                  className={`rounded-full px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.22em] transition-colors ${
                     tab === t.id
-                      ? 'border-border/60 bg-foreground/10 text-foreground'
-                      : 'border-transparent text-muted-foreground hover:text-foreground/80'
+                      ? 'bg-foreground text-background'
+                      : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {t.label}
@@ -68,13 +71,13 @@ export default function CustomizePanel() {
               type='button'
               onClick={close}
               aria-label='Close'
-              className='ml-2 grid h-6 w-6 place-items-center rounded-full border border-border/40 text-muted-foreground hover:text-foreground'
+              className='grid h-7 w-7 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground'
             >
-              <X className='h-3 w-3' />
+              <X className='h-3.5 w-3.5' />
             </button>
           </header>
 
-          <div className='mt-3 border-t border-border/40 pt-3'>
+          <div className='min-h-[180px] px-5 py-5'>
             {tab === 'color' && <ColorTab />}
             {tab === 'theme' && <PlaceholderTab name='Theme' />}
             {tab === 'background' && <PlaceholderTab name='Background' />}
@@ -82,19 +85,19 @@ export default function CustomizePanel() {
             {tab === 'style' && <PlaceholderTab name='Style' />}
           </div>
 
-          <footer className='mt-3 flex items-center justify-end gap-2 border-t border-border/40 pt-3'>
+          <footer className='flex items-center justify-end gap-2 border-t border-border/30 bg-foreground/[0.02] px-5 py-3'>
             <button
               type='button'
               onClick={resetToDefault}
-              className='mr-auto inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground'
+              className='mr-auto inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground'
             >
               <RotateCcw className='h-3 w-3' />
               Restore defaults
             </button>
-            <Button variant='ghost' size='sm' onClick={close}>
+            <Button variant='ghost' size='sm' onClick={close} className='h-8 rounded-full px-4'>
               Cancel
             </Button>
-            <Button size='sm' onClick={apply}>
+            <Button size='sm' onClick={apply} className='h-8 rounded-full px-5'>
               Apply
             </Button>
           </footer>
