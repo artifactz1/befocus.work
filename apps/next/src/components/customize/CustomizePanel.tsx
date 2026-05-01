@@ -44,7 +44,7 @@ export default function CustomizePanel() {
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
           className='fixed bottom-28 left-1/2 z-40 hidden w-[min(64vw,720px)] -translate-x-1/2 rounded-2xl border border-border/40 bg-card/90 p-3 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)] backdrop-blur-xl sm:block'
-          role='dialog'
+          role='region'
           aria-label='Customize'
         >
           <header className='flex items-center justify-between'>
@@ -89,7 +89,7 @@ export default function CustomizePanel() {
               className='mr-auto inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground'
             >
               <RotateCcw className='h-3 w-3' />
-              Reset to default
+              Restore defaults
             </button>
             <Button variant='ghost' size='sm' onClick={close}>
               Cancel
