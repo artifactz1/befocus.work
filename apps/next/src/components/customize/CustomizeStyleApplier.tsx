@@ -10,16 +10,27 @@ import { useCustomizeStore } from '~/store/useCustomizeStore'
  * Mount once near the dashboard root.
  */
 export default function CustomizeStyleApplier() {
-  const isOpen = useCustomizeStore((s) => s.isOpen)
-  const preview = useCustomizeStore((s) => s.preview)
-  const active = useCustomizeStore((s) => s.activeTheme.customizations)
-  // Store actions always produce fresh references for `preview` / `activeTheme.customizations`,
-  // so this derived `c` flips identity on every meaningful change → useEffect dep array works.
+  const isOpen = useCustomizeStore(s => s.isOpen)
+  const preview = useCustomizeStore(s => s.preview)
+  const active = useCustomizeStore(s => s.activeTheme.customizations)
+  const isHydrated = useCustomizeStore(s => s.isHydrated)
+  const hydrateFromStorage = useCustomizeStore(s => s.hydrateFromStorage)
+
+  // Hydrate from localStorage once on mount.
+  useEffect(() => {
+    if (!isHydrated) hydrateFromStorage()
+  }, [isHydrated, hydrateFromStorage])
+
+  // Store mutations always produce fresh references; this derived `c`
+  // flips identity on every meaningful change so the effect dep array works.
   const c = isOpen ? preview : active
 
   useEffect(() => {
-    const root = document.documentElement
+    // Don't write defaults to <html> until hydration completes — prevents
+    // a flash of default values before the user's saved theme loads.
+    if (!isHydrated) return
 
+    const root = document.documentElement
     root.style.setProperty('--accent', stripHsl(c.color.accent))
     root.style.setProperty('--text-contrast', String(c.color.contrast))
     root.style.setProperty('--grain-opacity', String(c.grain))
@@ -38,7 +49,7 @@ export default function CustomizeStyleApplier() {
     root.dataset.ringStyle = c.timer.ringStyle
     root.dataset.density = c.density
     root.dataset.fontFamily = c.typography.family
-  }, [c])
+  }, [c, isHydrated])
 
   return null
 }
