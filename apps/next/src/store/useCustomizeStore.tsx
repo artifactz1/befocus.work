@@ -3,6 +3,11 @@
 import type { Customizations, Theme } from '@repo/types/customize'
 import { DEFAULT_CUSTOMIZATIONS, DEFAULT_THEME } from '@repo/types/customize'
 import { create } from 'zustand'
+import {
+  clearActiveTheme,
+  loadActiveTheme,
+  saveActiveTheme,
+} from '~/lib/customize-persistence'
 
 type CustomizeTab = 'theme' | 'background' | 'type' | 'color' | 'style'
 
@@ -25,6 +30,7 @@ type CustomizeStore = {
   preview: Customizations
   isOpen: boolean
   currentTab: CustomizeTab
+  isHydrated: boolean
 
   open: (tab?: CustomizeTab) => void
   close: () => void
@@ -33,13 +39,15 @@ type CustomizeStore = {
   apply: () => void
   resetToDefault: () => void
   hydrate: (theme: Theme) => void
+  hydrateFromStorage: () => void
 }
 
-export const useCustomizeStore = create<CustomizeStore>(set => ({
+export const useCustomizeStore = create<CustomizeStore>((set, get) => ({
   activeTheme: DEFAULT_THEME,
   preview: DEFAULT_CUSTOMIZATIONS,
   isOpen: false,
   currentTab: 'theme',
+  isHydrated: false,
 
   open: tab =>
     set(s => ({
@@ -56,10 +64,6 @@ export const useCustomizeStore = create<CustomizeStore>(set => ({
 
   setTab: tab => set({ currentTab: tab }),
 
-  // Deep-merges one level for nested objects (color/overlay/typography/timer).
-  // Top-level merge alone would let `setPreview({ color: { accent } })` drop
-  // `contrast`, so callers can patch a single nested field without re-reading
-  // siblings out of stale closures.
   setPreview: patch =>
     set(s => ({
       preview: {
@@ -74,21 +78,27 @@ export const useCustomizeStore = create<CustomizeStore>(set => ({
       },
     })),
 
-  apply: () =>
-    set(s => ({
-      activeTheme: {
-        ...s.activeTheme,
-        customizations: s.preview,
-        updatedAt: new Date().toISOString(),
-      },
-      isOpen: false,
-    })),
+  apply: () => {
+    const next: Theme = {
+      ...get().activeTheme,
+      customizations: get().preview,
+      updatedAt: new Date().toISOString(),
+    }
+    saveActiveTheme(next)
+    set({ activeTheme: next, isOpen: false })
+  },
 
-  resetToDefault: () =>
-    set(() => ({
-      activeTheme: DEFAULT_THEME,
-      preview: DEFAULT_CUSTOMIZATIONS,
-    })),
+  resetToDefault: () => {
+    clearActiveTheme()
+    set({ activeTheme: DEFAULT_THEME, preview: DEFAULT_CUSTOMIZATIONS })
+  },
 
-  hydrate: theme => set({ activeTheme: theme, preview: theme.customizations }),
+  hydrate: theme =>
+    set({ activeTheme: theme, preview: theme.customizations, isHydrated: true }),
+
+  hydrateFromStorage: () => {
+    if (get().isHydrated) return
+    const theme = loadActiveTheme()
+    set({ activeTheme: theme, preview: theme.customizations, isHydrated: true })
+  },
 }))
