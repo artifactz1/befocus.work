@@ -6,6 +6,20 @@ import { create } from 'zustand'
 
 type CustomizeTab = 'theme' | 'background' | 'type' | 'color' | 'style'
 
+// One-level-deep partial: scalar fields stay required-or-absent, nested
+// object fields accept Partial. Lets callers patch e.g. just
+// `{ color: { accent } }` without restating `contrast`.
+type CustomizationsPatch = {
+  background?: Customizations['background']
+  overlay?: Partial<Customizations['overlay']>
+  blur?: Customizations['blur']
+  grain?: Customizations['grain']
+  typography?: Partial<Customizations['typography']>
+  color?: Partial<Customizations['color']>
+  timer?: Partial<Customizations['timer']>
+  density?: Customizations['density']
+}
+
 type CustomizeStore = {
   activeTheme: Theme
   preview: Customizations
@@ -15,7 +29,7 @@ type CustomizeStore = {
   open: (tab?: CustomizeTab) => void
   close: () => void
   setTab: (tab: CustomizeTab) => void
-  setPreview: (patch: Partial<Customizations>) => void
+  setPreview: (patch: CustomizationsPatch) => void
   apply: () => void
   resetToDefault: () => void
   hydrate: (theme: Theme) => void
@@ -42,7 +56,23 @@ export const useCustomizeStore = create<CustomizeStore>(set => ({
 
   setTab: tab => set({ currentTab: tab }),
 
-  setPreview: patch => set(s => ({ preview: { ...s.preview, ...patch } })),
+  // Deep-merges one level for nested objects (color/overlay/typography/timer).
+  // Top-level merge alone would let `setPreview({ color: { accent } })` drop
+  // `contrast`, so callers can patch a single nested field without re-reading
+  // siblings out of stale closures.
+  setPreview: patch =>
+    set(s => ({
+      preview: {
+        ...s.preview,
+        ...patch,
+        color: patch.color ? { ...s.preview.color, ...patch.color } : s.preview.color,
+        overlay: patch.overlay ? { ...s.preview.overlay, ...patch.overlay } : s.preview.overlay,
+        typography: patch.typography
+          ? { ...s.preview.typography, ...patch.typography }
+          : s.preview.typography,
+        timer: patch.timer ? { ...s.preview.timer, ...patch.timer } : s.preview.timer,
+      },
+    })),
 
   apply: () =>
     set(s => ({

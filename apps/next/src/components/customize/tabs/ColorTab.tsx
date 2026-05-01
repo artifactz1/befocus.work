@@ -23,8 +23,9 @@ export default function ColorTab() {
   const contrast = useCustomizeStore(s => s.preview.color.contrast)
   const setPreview = useCustomizeStore(s => s.setPreview)
 
-  const setAccent = (hsl: string) => setPreview({ color: { accent: hsl, contrast } })
-  const setContrast = (val: number) => setPreview({ color: { accent, contrast: val } })
+  // setPreview deep-merges nested objects, so we can patch single fields safely.
+  const setAccent = (hsl: string) => setPreview({ color: { accent: hsl } })
+  const setContrast = (val: number) => setPreview({ color: { contrast: val } })
 
   return (
     <div className='flex flex-col gap-5'>
@@ -32,21 +33,23 @@ export default function ColorTab() {
         <span className='text-[10px] font-medium uppercase tracking-[0.32em] text-muted-foreground/70'>
           Accent
         </span>
-        <div className='flex flex-wrap gap-2'>
+        <div role='radiogroup' aria-label='Accent color' className='flex flex-wrap gap-2'>
           {SWATCHES.map(s => {
             const selected = s.hsl === accent
             return (
               <button
                 key={s.id}
                 type='button'
-                aria-label={`Accent ${s.id}`}
-                aria-pressed={selected}
+                role='radio'
+                aria-checked={selected}
+                aria-label={s.id}
+                tabIndex={selected ? 0 : -1}
                 onClick={() => setAccent(s.hsl)}
                 style={{ background: s.hsl }}
                 className={`h-8 w-8 rounded-full border transition-all ${
                   selected
                     ? 'scale-110 border-foreground/80 ring-2 ring-foreground/30 ring-offset-2 ring-offset-background'
-                    : 'border-border/40 hover:scale-105'
+                    : 'border-border/60 hover:scale-105'
                 }`}
               />
             )
