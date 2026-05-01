@@ -51,8 +51,8 @@ export default function TimerProgressRing() {
           cy={CENTER}
           r={RADIUS}
           fill='none'
-          stroke='hsl(var(--foreground) / 0.5)'
-          strokeWidth='1.5'
+          stroke='hsl(var(--accent))'
+          strokeWidth='2'
           strokeDasharray={round(CIRCUMFERENCE)}
           strokeDashoffset={round(CIRCUMFERENCE - offset)}
           strokeLinecap='round'

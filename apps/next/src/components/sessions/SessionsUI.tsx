@@ -59,8 +59,8 @@ export default function SessionsUI() {
                     'border-foreground/15 dark:border-foreground/25',
                     index <= currentSession - 1
                       ? isWorking && currentSession - 1 === index
-                        ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
-                        : 'bg-foreground/55 border-foreground/55'
+                        ? 'bg-accent border-accent shadow-[0_0_0_4px_hsl(var(--accent)/0.25)]'
+                        : 'bg-accent/55 border-accent/55'
                       : '',
                   )}
                 />
@@ -75,9 +75,9 @@ export default function SessionsUI() {
                     // 'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
                     'border-foreground/15 dark:border-foreground/25',
                     index < currentSession - 1
-                      ? 'bg-foreground/55 border-foreground/55'
+                      ? 'bg-accent/55 border-accent/55'
                       : !isWorking && currentSession - 1 === index
-                        ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
+                        ? 'bg-accent border-accent shadow-[0_0_0_4px_hsl(var(--accent)/0.25)]'
                         : 'bg-transparent',
                   )}
                 />
@@ -105,8 +105,8 @@ export default function SessionsUI() {
                   'border-foreground/15 dark:border-foreground/25',
                   index <= currentSession - 1
                     ? isWorking && currentSession - 1 === index
-                      ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
-                      : 'bg-foreground/55 border-foreground/55'
+                      ? 'bg-accent border-accent shadow-[0_0_0_4px_hsl(var(--accent)/0.25)]'
+                      : 'bg-accent/55 border-accent/55'
                     : '',
                 )}
               />
@@ -128,9 +128,9 @@ export default function SessionsUI() {
                   // 'border-gray-300 dark:border-white/80',
                   'border-foreground/15 dark:border-foreground/25',
                   index < currentSession - 1
-                    ? 'bg-foreground/55 border-foreground/55'
+                    ? 'bg-accent/55 border-accent/55'
                     : !isWorking && currentSession - 1 === index
-                      ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
+                      ? 'bg-accent border-accent shadow-[0_0_0_4px_hsl(var(--accent)/0.25)]'
                       : 'bg-transparent',
                 )}
               />
