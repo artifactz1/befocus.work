@@ -43,7 +43,7 @@ export default function CustomizePanel() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-          className='fixed bottom-32 left-1/2 z-40 hidden w-[min(72vw,820px)] -translate-x-1/2 overflow-hidden rounded-2xl border border-border/40 bg-card/85 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)] backdrop-blur-2xl sm:block'
+          className='fixed left-1/2 top-1/2 z-40 hidden w-[min(72vw,820px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-border/40 bg-card/90 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.75)] backdrop-blur-2xl sm:block'
           role='region'
           aria-label='Customize'
         >
