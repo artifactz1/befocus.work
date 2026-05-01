@@ -109,6 +109,10 @@
     /* @apply transition-colors duration-500 ease-in-out; */
     @apply transition-colors duration-500 ease-in-out;
   }
+  body {
+    /* Text intensity slider — fades foreground evenly. */
+    color: hsl(var(--foreground) / var(--text-contrast, 1));
+  }
 }
 
 @font-face {
