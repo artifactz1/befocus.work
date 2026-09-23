@@ -20,9 +20,9 @@
                ▼                          ▼ credentials: include) │
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    packages/api (Hono on Cloudflare Workers)         │
-│  `src/lib/create-app.ts` — ordered middleware chain                  │
-│  `src/routes/**` — OpenAPI three-file split (route/handler/index)    │
-│  `src/app.ts` — wires routers, exports `AppType` for the RPC client  │
+│  `src/lib/create-app.ts` - ordered middleware chain                  │
+│  `src/routes/**` - OpenAPI three-file split (route/handler/index)    │
+│  `src/app.ts` - wires routers, exports `AppType` for the RPC client  │
 └───────────────────────────┬───────────────────────────────────────────┘
                              │ drizzle-orm/neon-http (per-request client)
                              ▼
@@ -32,7 +32,7 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-`packages/ui` (ShadCN components + `globals.css` design tokens) and `packages/app` (env schemas, auth provider utils) are shared libraries consumed by both `apps/next` and `packages/api` — not runtime services of their own.
+`packages/ui` (ShadCN components + `globals.css` design tokens) and `packages/app` (env schemas, auth provider utils) are shared libraries consumed by both `apps/next` and `packages/api` - not runtime services of their own.
 
 ## Component Responsibilities
 
@@ -53,22 +53,22 @@
 
 ## Pattern Overview
 
-**Overall:** Turborepo monorepo, thin-client + typed-RPC-backend. Next.js App Router (Server Components for initial data fetch, Client Components for interactivity) talks to a Hono/Cloudflare-Workers API through a fully-typed RPC client (`hono/client`) generated from the API's own route definitions — there is no separate OpenAPI codegen step, the type flows directly from `AppType` in `packages/api/src/app.ts`.
+**Overall:** Turborepo monorepo, thin-client + typed-RPC-backend. Next.js App Router (Server Components for initial data fetch, Client Components for interactivity) talks to a Hono/Cloudflare-Workers API through a fully-typed RPC client (`hono/client`) generated from the API's own route definitions - there is no separate OpenAPI codegen step, the type flows directly from `AppType` in `packages/api/src/app.ts`.
 
 **Key Characteristics:**
 - Server Components do a one-shot data fetch per request (no persistent server-side session object); everything else is client-fetched via TanStack Query.
 - All app state that must survive navigation lives in Zustand stores (`src/store/`), not React context.
 - Styling/theming is CSS-custom-property driven (HSL tuples + Tailwind `hsl(var(--x))` color tokens), so runtime customization does not require Tailwind recompilation.
-- The API is a single Worker with one global middleware chain; there are no per-route middleware stacks — auth gating is achieved by mounting public routes (like `/api/auth/**`) *before* the catch-all `requireAuth`.
+- The API is a single Worker with one global middleware chain; there are no per-route middleware stacks - auth gating is achieved by mounting public routes (like `/api/auth/**`) *before* the catch-all `requireAuth`.
 
 ## Layers
 
 **Presentation (`apps/next/src/app/**`, `apps/next/src/components/**`):**
 - Purpose: route composition and UI rendering.
 - Location: `apps/next/src/app/` (route groups `(app)`, `(auth)`, `guest`), `apps/next/src/components/` (feature-grouped: `dashboard/`, `sessions/`, `settings/`, `sounds/`, `timer/`, `to-do-list/`, `input/`, `helper/`).
-- Contains: Server Components (layouts that fetch), Client Components (`'use client'` — the majority).
+- Contains: Server Components (layouts that fetch), Client Components (`'use client'` - the majority).
 - Depends on: `store/` (Zustand), `hooks/` (TanStack Query wrappers), `lib/api.client.ts`, `@repo/ui` components.
-- Used by: nothing above it — this is the entry layer.
+- Used by: nothing above it - this is the entry layer.
 
 **Client state (`apps/next/src/store/**`):**
 - Purpose: in-memory, non-persisted (no zustand `persist` middleware anywhere) client state for timer, sounds, and to-do list.
@@ -79,7 +79,7 @@
 
 **Data-fetch hooks (`apps/next/src/hooks/**`):**
 - Purpose: wrap `api` (hono RPC client) calls in TanStack Query `useQuery`/`useMutation`.
-- Location: `apps/next/src/hooks/useSession.ts`, `useSounds.ts`, `useTasks.ts`, `useTimer.ts` (note: `DashboardShell.tsx` also lives in `hooks/` despite being a component — see Anti-Patterns).
+- Location: `apps/next/src/hooks/useSession.ts`, `useSounds.ts`, `useTasks.ts`, `useTimer.ts` (note: `DashboardShell.tsx` also lives in `hooks/` despite being a component - see Anti-Patterns).
 - Contains: query key conventions (`['userSettings']`, `['userTasks']`), mutation + `invalidateQueries` pairs, `sonner` toast side effects.
 - Depends on: `lib/api.client.ts`.
 - Used by: components that need server data (e.g. `TimerInitializer`, `PrefetchUserTasks`, settings panels).
@@ -106,7 +106,7 @@
 - Purpose: cross-cutting code with no runtime of its own.
 - `packages/ui`: ShadCN primitives (`src/components/ui/*`), `magicui` effects, `globals.css` design tokens, Tailwind config.
 - `packages/app`: Zod-validated env schemas (`env/api.ts` for the Worker, `env/next.ts` via `@t3-oss/env-nextjs`), auth provider utils (`provider/auth/*`).
-- `packages/types`: hand-written shared types (`tasks.ts`) — not a real workspace package (no `package.json`), reached purely via a tsconfig path alias.
+- `packages/types`: hand-written shared types (`tasks.ts`) - not a real workspace package (no `package.json`), reached purely via a tsconfig path alias.
 
 ## Data Flow
 
@@ -116,7 +116,7 @@
 2. `(app)/layout.tsx` (Server Component) calls the server action `getUserSettings()`, which reads the `better-auth.session_token` cookie directly and calls `betterFetch<Settings>('${API_URL}/user/settings')` with that cookie forwarded manually (`apps/next/src/lib/server/getUserSettings.ts:23-32`).
 3. Server Component passes the fetched `Settings | null` into `<DashboardShell initialSettings={data}>` (`apps/next/src/app/(app)/layout.tsx:11`).
 4. `DashboardShell` (Client Component) runs a `useEffect` once: if not already hydrated and `initialSettings` is present, calls `useTimerStore.hydrateFromSettings(...)` (`apps/next/src/hooks/DashboardShell.tsx:17-25`).
-5. **Redundant path:** `TimerInitializer` (mounted in the dashboard page, not the layout) independently re-fetches `/user/settings` client-side via TanStack Query and also calls `hydrateFromSettings` on success (`apps/next/src/components/timer/TimerInitializer.tsx:9-26`). Both paths write to the same store field — see Anti-Patterns.
+5. **Redundant path:** `TimerInitializer` (mounted in the dashboard page, not the layout) independently re-fetches `/user/settings` client-side via TanStack Query and also calls `hydrateFromSettings` on success (`apps/next/src/components/timer/TimerInitializer.tsx:9-26`). Both paths write to the same store field - see Anti-Patterns.
 
 ### Settings write path (session duration settings)
 
@@ -128,14 +128,14 @@
 **State Management:**
 - Server-authoritative resources (settings, sounds, tasks) live in Postgres and are read via TanStack Query hooks with query-key-based invalidation.
 - Ephemeral/interaction state (which sound is playing, timer countdown, to-do add-mode) lives only in Zustand, never persisted to `localStorage` today (no `persist` middleware present anywhere in `store/`).
-- The only bridge from "server truth" to "client store" is the explicit `hydrateFromSettings` call — there is no generic sync layer.
+- The only bridge from "server truth" to "client store" is the explicit `hydrateFromSettings` call - there is no generic sync layer.
 
 ## Key Abstractions
 
 **OpenAPI three-file route split:**
 - Purpose: separate the wire contract (Zod schemas via `createRoute`) from the implementation (`AppRouteHandler<typeof Route>`) from route registration (`.openapi(route, handler)` chaining).
 - Examples: `packages/api/src/routes/user/user.route.ts`, `user.handler.ts`, `user.index.ts`.
-- Pattern: adding an endpoint means adding to all three files, then adding the router to the `routes` array in `packages/api/src/app.ts` — omitting the last step means the route works at runtime but is invisible to the typed frontend client.
+- Pattern: adding an endpoint means adding to all three files, then adding the router to the `routes` array in `packages/api/src/app.ts` - omitting the last step means the route works at runtime but is invisible to the typed frontend client.
 
 **Server-fetched-then-hydrate:**
 - Purpose: avoid SSR/CSR drift for user-scoped data.
@@ -145,7 +145,7 @@
 **CSS-custom-property theming contract:**
 - Purpose: let runtime (non-Tailwind-compiled) values drive presentation.
 - Examples: `packages/ui/src/globals.css:5-16` (background contract: `--bg-image`, `--bg-image-size`, `--bg-image-position`, `--bg-overlay-color`, `--bg-overlay-opacity`, `--bg-blur`), consumed by `apps/next/src/components/dashboard/AppBackground.tsx`. Color tokens (`--background`, `--accent`, etc.) defined per-theme-class (`:root`, `.dark`) in the same file and wired into Tailwind via `hsl(var(--x))` in `packages/ui/tailwind.config.ts:28-62`.
-- Pattern: a component sets inline `style={{ backgroundImage: 'var(--bg-image)' }}` (or references the token via a Tailwind class like `bg-background`) and something else (currently: nothing yet — the comment says "settings page will populate via CSS vars") is expected to `document.documentElement.style.setProperty(...)` these variables. **This contract exists in CSS today with no writer implemented** — it is the intended integration point for the customization feature (see `docs/superpowers/specs/2026-04-29-dashboard-customization-design.md`).
+- Pattern: a component sets inline `style={{ backgroundImage: 'var(--bg-image)' }}` (or references the token via a Tailwind class like `bg-background`) and something else (currently: nothing yet - the comment says "settings page will populate via CSS vars") is expected to `document.documentElement.style.setProperty(...)` these variables. **This contract exists in CSS today with no writer implemented** - it is the intended integration point for the customization feature (see `docs/superpowers/specs/2026-04-29-dashboard-customization-design.md`).
 
 **Typed RPC client (`hono/client`):**
 - Purpose: end-to-end type safety from Drizzle/Zod schema → Hono route → frontend fetch call, no codegen step.
@@ -176,18 +176,18 @@
 
 ## Architectural Constraints
 
-- **Threading:** Cloudflare Workers execution model — single-threaded per request, no persistent process state. `initializeDrizzleNeonDB` explicitly avoids module-level DB clients because "the Worker has no persistent globals you can rely on" (confirmed in `packages/api/src/db/index.ts:9-19`, comment in project `CLAUDE.md`).
-- **Global state:** `packages/api/src/index.ts` sets a module-level `port = 8787` constant only; no other module-level mutable state in the API. Frontend Zustand stores (`useTimerStore`, `useSoundsStore`, `useToDoStore`) are module-level singletons by design (Zustand's `create()` pattern) — safe in a browser SPA context but means any SSR-time read of these stores would leak between requests if ever attempted (currently avoided; stores are only touched in `'use client'` components).
-- **Dark-mode-only theming today:** `<html className='dark'>` is hardcoded in `apps/next/src/app/layout.tsx:18` alongside a working `next-themes` `ThemeProvider`/`DarkModeToggle` pair that is largely vestigial — `DarkModeToggle` is commented out of `MenuSettings.tsx:14`. Any customization feature adding a light theme must first decide whether to remove the hardcoded `dark` class.
-- **No `persist` middleware:** none of the three Zustand stores persist to `localStorage` today; all client state is lost on refresh except what `hydrateFromSettings` re-derives from the server. A guest-mode customization feature (per the design spec's localStorage sync strategy) has no existing localStorage-persistence pattern to imitate in this codebase — it would be new.
-- **Middleware order is load-bearing:** see `packages/api/src/lib/create-app.ts` — `requireAuth` is mounted last on `'*'`, so any new route mounted in `app.ts`'s `routes` array is auth-gated by default unless a handler for it is placed *before* `requireAuth` inside `createApp()` itself (as `/api/auth/**` is).
+- **Threading:** Cloudflare Workers execution model - single-threaded per request, no persistent process state. `initializeDrizzleNeonDB` explicitly avoids module-level DB clients because "the Worker has no persistent globals you can rely on" (confirmed in `packages/api/src/db/index.ts:9-19`, comment in project `CLAUDE.md`).
+- **Global state:** `packages/api/src/index.ts` sets a module-level `port = 8787` constant only; no other module-level mutable state in the API. Frontend Zustand stores (`useTimerStore`, `useSoundsStore`, `useToDoStore`) are module-level singletons by design (Zustand's `create()` pattern) - safe in a browser SPA context but means any SSR-time read of these stores would leak between requests if ever attempted (currently avoided; stores are only touched in `'use client'` components).
+- **Dark-mode-only theming today:** `<html className='dark'>` is hardcoded in `apps/next/src/app/layout.tsx:18` alongside a working `next-themes` `ThemeProvider`/`DarkModeToggle` pair that is largely vestigial - `DarkModeToggle` is commented out of `MenuSettings.tsx:14`. Any customization feature adding a light theme must first decide whether to remove the hardcoded `dark` class.
+- **No `persist` middleware:** none of the three Zustand stores persist to `localStorage` today; all client state is lost on refresh except what `hydrateFromSettings` re-derives from the server. A guest-mode customization feature (per the design spec's localStorage sync strategy) has no existing localStorage-persistence pattern to imitate in this codebase - it would be new.
+- **Middleware order is load-bearing:** see `packages/api/src/lib/create-app.ts` - `requireAuth` is mounted last on `'*'`, so any new route mounted in `app.ts`'s `routes` array is auth-gated by default unless a handler for it is placed *before* `requireAuth` inside `createApp()` itself (as `/api/auth/**` is).
 
 ## Anti-Patterns
 
 ### Duplicate settings hydration paths
 
 **What happens:** Both `DashboardShell` (server-fetched, mounted in the `(app)` layout) and `TimerInitializer` (client-fetched via TanStack Query, mounted in the dashboard page) independently call `useTimerStore.hydrateFromSettings(...)` on mount (`apps/next/src/hooks/DashboardShell.tsx:17-25` and `apps/next/src/components/timer/TimerInitializer.tsx:18-26`).
-**Why it's wrong:** Two independent fetches of the same resource (`/user/settings`) race to write the same store fields. `DashboardShell` guards with `isHydrated`, but `TimerInitializer`'s effect has no such guard beyond React Query's own `isSuccess` — if settings change between the two fetches (e.g. another tab updates them), the store can be hydrated twice with different values, and it is unclear which one "wins" depending on network timing.
+**Why it's wrong:** Two independent fetches of the same resource (`/user/settings`) race to write the same store fields. `DashboardShell` guards with `isHydrated`, but `TimerInitializer`'s effect has no such guard beyond React Query's own `isSuccess` - if settings change between the two fetches (e.g. another tab updates them), the store can be hydrated twice with different values, and it is unclear which one "wins" depending on network timing.
 **Do this instead:** Pick one hydration owner. Prefer keeping the server-fetched path in `DashboardShell` as the sole writer of `hydrateFromSettings`, and have `TimerInitializer` (or its replacement) only call `hydrateFromSettings` when its query result differs from the current store state, or remove `TimerInitializer`'s hydration responsibility entirely and let it just prefetch/cache the TanStack Query data. Any new customization store (e.g. `useCustomizeStore` per the design spec) should have exactly one hydration entry point from the start.
 
 ### Misnamed component file/export
@@ -207,14 +207,14 @@
 **Strategy:** Handlers return typed JSON error bodies with explicit HTTP status codes; there is no thrown-exception-to-500 middleware pattern beyond Hono's built-in `onError`.
 
 **Patterns:**
-- Route handlers manually check `if (!user || !session)` and return `c.json({ message: ... }, HttpStatusCodes.NOT_FOUND)` — 404 is used even for "not authenticated" in several handlers (e.g. `getUser`, `getUserSettings`), while `deleteUserSound` correctly returns 401 (`packages/api/src/routes/user/user.handler.ts:280-283`). Status code choice is inconsistent across handlers.
+- Route handlers manually check `if (!user || !session)` and return `c.json({ message: ... }, HttpStatusCodes.NOT_FOUND)` - 404 is used even for "not authenticated" in several handlers (e.g. `getUser`, `getUserSettings`), while `deleteUserSound` correctly returns 401 (`packages/api/src/routes/user/user.handler.ts:280-283`). Status code choice is inconsistent across handlers.
 - Body validation uses `schema.safeParse(body)` inline per-handler (not a shared validation middleware), returning 400 with `{ message, errors: parsed.error.format() }` on failure (e.g. `createUserSounds`, `createUserTask`).
 - Centralized fallbacks: `notFound` and `onError` middlewares registered once in `createApp()` (`packages/api/src/lib/middlewares/not-found.ts`, `on-error.ts`) catch unmatched routes and uncaught exceptions.
 - Frontend: TanStack Query mutations pair `onError` with a `sonner` `toast.error(...)` call (e.g. `apps/next/src/hooks/useSession.ts:52-55`); queries generally swallow failures by returning `null` or throwing to React Query's own error state without a shared error boundary.
 
 ## Cross-Cutting Concerns
 
-**Logging:** No structured logging in the API path currently active — `pino`/`hono-pino` are installed dependencies but the logger middleware is commented out in `createApp()` with a `// TODO` linking a Notion ticket (`packages/api/src/lib/create-app.ts:29-30`). Frontend has stray `console.log` debug statements left in server components (e.g. `apps/next/src/app/(app)/layout.tsx:8`).
+**Logging:** No structured logging in the API path currently active - `pino`/`hono-pino` are installed dependencies but the logger middleware is commented out in `createApp()` with a `// TODO` linking a Notion ticket (`packages/api/src/lib/create-app.ts:29-30`). Frontend has stray `console.log` debug statements left in server components (e.g. `apps/next/src/app/(app)/layout.tsx:8`).
 
 **Validation:** Zod schemas generated from Drizzle tables via `drizzle-zod` (`createSelectSchema`/`createInsertSchema`/`createUpdateSchema`) are the single source of truth for both API request/response shapes and DB row shapes. New tables should follow this pattern (see `packages/api/src/db/tables/settings.ts`) rather than hand-rolling parallel Zod schemas.
 
