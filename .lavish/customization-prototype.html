@@ -1,0 +1,1365 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>beFocus customization prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Tokens copied from packages/ui/src/globals.css (.dark block). */
+:root {
+  --background: 0 0% 6.3%;
+  --foreground: 60 9.1% 97.8%;
+  --card: 12 8% 8%;
+  --popover: 20 14.3% 4.1%;
+  --primary: 60 9.1% 97.8%;
+  --primary-foreground: 24 9.8% 10%;
+  --muted: 12 6.5% 15.1%;
+  --muted-foreground: 24 5.4% 63.9%;
+  --accent: 12 6.5% 15.1%;
+  --border: 12 6.5% 15.1%;
+  --input: 12 6.5% 15.1%;
+  --ring: 24 5.7% 82.9%;
+  --destructive: 0 62.8% 30.6%;
+  --warn: 38 92% 60%;
+  --ok: 142 60% 55%;
+  --radius: 0.5rem;
+  --font-app: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+:where(.grid, .flex, [style*="display: grid"], [style*="display:flex"]) > * { min-width: 0; }
+html, body { margin: 0; }
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-app);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+a { color: inherit; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 40px 16px 120px; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: hsl(var(--muted-foreground)); font-weight: 600; }
+h1 { font-size: clamp(30px, 4.4vw, 52px); font-weight: 700; font-style: italic; letter-spacing: -.025em; line-height: 1.05; margin: 8px 0 14px; }
+h2 { font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; font-style: italic; letter-spacing: -.02em; margin: 0 0 6px; }
+h3 { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+.lede { color: hsl(var(--muted-foreground)); max-width: 72ch; margin: 0; font-size: 16px; }
+.muted { color: hsl(var(--muted-foreground)); }
+.small { font-size: 13px; }
+section { margin-top: 64px; }
+.section-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.card { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: 14px; padding: 20px; }
+kbd { font-family: 'JetBrains Mono', monospace; font-size: 12px; border: 1px solid hsl(var(--border)); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; }
+code { font-family: 'JetBrains Mono', monospace; font-size: .86em; background: hsl(var(--muted)); padding: 1px 5px; border-radius: 4px; }
+
+/* ShadCN-ish buttons */
+.btn {
+  appearance: none; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 36px; padding: 0 14px; border-radius: var(--radius);
+  border: 1px solid hsl(var(--input)); background: transparent; color: hsl(var(--foreground));
+  transition: background .15s, border-color .15s, opacity .15s;
+}
+.btn:hover { background: hsl(var(--accent)); }
+.btn:focus-visible, .seg input:focus-visible + span, .pick input:focus-visible + .pick-body, .sw input:focus-visible + span { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: transparent; }
+.btn-primary:hover { background: hsl(var(--primary) / .88); }
+.btn-ghost { border-color: transparent; }
+.btn-sm { height: 30px; padding: 0 10px; font-size: 13px; }
+.btn-icon { width: 36px; padding: 0; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-danger:hover { background: hsl(var(--destructive) / .5); }
+
+.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: .02em; padding: 2px 8px; border-radius: 999px; border: 1px solid hsl(var(--border)); color: hsl(var(--muted-foreground)); white-space: nowrap; }
+.badge.on { color: hsl(var(--foreground)); border-color: hsl(var(--foreground) / .35); background: hsl(var(--foreground) / .07); }
+.badge.warn { color: hsl(var(--warn)); border-color: hsl(var(--warn) / .4); background: hsl(var(--warn) / .08); }
+.badge.ok { color: hsl(var(--ok)); border-color: hsl(var(--ok) / .35); background: hsl(var(--ok) / .08); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; display: inline-block; }
+
+/* Segmented control built on native radios */
+.seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 10px; background: hsl(var(--muted) / .7); border: 1px solid hsl(var(--border)); flex-wrap: wrap; }
+.seg label { position: relative; cursor: pointer; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; font-size: 13px; font-weight: 500; padding: 5px 12px; border-radius: 7px; color: hsl(var(--muted-foreground)); transition: background .15s, color .15s; white-space: nowrap; }
+.seg input:checked + span { background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 1px 2px rgb(0 0 0 / .4); }
+.seg.full { display: flex; }
+.seg.full label { flex: 1; text-align: center; }
+
+/* Intro */
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; align-items: end; }
+.howto { display: grid; gap: 10px; }
+.howto div { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; font-size: 14px; }
+.howto b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid hsl(var(--border)); font-size: 12px; }
+
+/* Phase map */
+.phases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.phase { display: grid; gap: 8px; align-content: start; text-decoration: none; }
+a.phase:hover { border-color: hsl(var(--foreground) / .3); }
+.phase .num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: hsl(var(--muted-foreground)); }
+.phase p { margin: 0; font-size: 13.5px; color: hsl(var(--muted-foreground)); }
+.phase .where { font-size: 12px; font-weight: 600; margin-top: 4px; }
+
+/* Prototype toolbar */
+.toolbar { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin-bottom: 14px; }
+.toolbar .grp { display: flex; align-items: center; gap: 10px; }
+.toolbar .lbl { font-size: 12px; color: hsl(var(--muted-foreground)); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+
+/* State strip */
+.strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid hsl(var(--border)); border-radius: 12px; overflow: hidden; margin-bottom: 14px; }
+.strip > div { padding: 10px 14px; border-right: 1px solid hsl(var(--border)); display: grid; gap: 2px; }
+.strip > div:last-child { border-right: 0; }
+.strip .k { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: hsl(var(--muted-foreground)); font-weight: 600; }
+.strip .v { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.stage-shell { display: flex; justify-content: center; }
+.stage-caption { margin-top: 10px; font-size: 13px; color: hsl(var(--muted-foreground)); text-align: center; }
+
+/* ================= The dashboard stage =================
+   The prototype writes the same custom properties the real store will write onto <html>. */
+.stage {
+  --bg-image: none;
+  --bg-solid: hsl(var(--background));
+  --bg-overlay-color: #000000;
+  --bg-overlay-opacity: 0;
+  --bg-blur: 0px;
+  --accent-c: #f5f5f4;
+  --text-contrast: 1;
+  --grain-opacity: .05;
+  --font-display: var(--font-app);
+  --fg: hsl(60 9.1% 97.8% / var(--text-contrast));
+  position: relative; overflow: hidden; isolation: isolate;
+  width: 100%; aspect-ratio: 16 / 10;
+  border-radius: 16px; border: 1px solid hsl(var(--border));
+  container-type: size;
+  background: var(--bg-solid);
+  color: var(--fg);
+  font-family: var(--font-display);
+  transition: background-color .4s;
+  box-shadow: 0 40px 120px -60px rgb(0 0 0 / .9);
+}
+.stage.mobile { width: 390px; max-width: 100%; aspect-ratio: 390 / 780; border-radius: 34px; border-width: 8px; border-color: #1c1917; }
+.stage[data-density="compact"] { --pad-x: 3cqw; --pad-y: 2.4cqh; --timer-scale: 1.07; }
+.stage[data-density="comfortable"] { --pad-x: 5cqw; --pad-y: 4cqh; --timer-scale: 1; }
+.stage[data-density="roomy"] { --pad-x: 8cqw; --pad-y: 7cqh; --timer-scale: .86; }
+
+.layer { position: absolute; pointer-events: none; }
+.bg-img { inset: -30px; background-image: var(--bg-image); background-size: cover; background-position: center; filter: blur(var(--bg-blur)); transition: filter .2s; }
+.bg-vid { inset: -30px; width: calc(100% + 60px); height: calc(100% + 60px); object-fit: cover; filter: blur(var(--bg-blur)); }
+.bg-tint { inset: 0; background: var(--bg-overlay-color); opacity: var(--bg-overlay-opacity); }
+.grain { inset: 0; width: 100%; height: 100%; opacity: var(--grain-opacity); mix-blend-mode: overlay; }
+
+.dash { position: absolute; inset: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: var(--pad-y) var(--pad-x); z-index: 1; }
+.d-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.sessions { display: grid; gap: 6px; justify-items: start; }
+.sessions .count { font-weight: 500; font-size: clamp(11px, 1.3cqw, 14px); font-variant-numeric: tabular-nums; color: color-mix(in srgb, var(--fg) 55%, transparent); }
+.sessions .rows { display: grid; gap: 3px; }
+.sessions .row { display: flex; gap: 3px; }
+/* GitHub contribution cells: filled squares, no outlines, accent intensity. Top row = focus, bottom row = break. */
+.sessions .blk { width: clamp(10px, 1.7cqw, 18px); aspect-ratio: 1; border-radius: 3px; background: color-mix(in srgb, var(--fg) 8%, transparent); transition: background-color .6s; }
+.sessions .blk.done { background: var(--accent-c); }
+.sessions .blk.now { background: color-mix(in srgb, var(--accent-c) calc(var(--lvl, 1) * 25%), color-mix(in srgb, var(--fg) 8%, transparent)); }
+/* The grid as it ships today, kept for the comparison card. */
+.sessions.classic { justify-items: center; }
+.sessions.classic .count { font-weight: 600; font-size: 15px; color: var(--fg); }
+.sessions.classic .blk { width: 26px; border-radius: 6px; background: none; border: 2px solid color-mix(in srgb, var(--fg) 25%, transparent); }
+.sessions.classic .blk.done { background: color-mix(in srgb, var(--fg) 55%, transparent); border-color: transparent; }
+.sessions.classic .blk.now { background: var(--fg); border-color: var(--fg); box-shadow: 0 0 0 3px color-mix(in srgb, var(--fg) 12%, transparent); }
+.grids { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.stage-look { --fg: hsl(60 9.1% 97.8% / var(--text-contrast, 1)); }
+.grid-card { display: grid; place-items: center; min-height: 150px; border-radius: 12px; background: var(--bg-solid); color: var(--fg); }
+
+/* Timer controls. Container carries data-controls = pill | bare | play | keys. */
+:is([data-controls="pill"], [data-controls="under-pill"]) .tbtns { background: hsl(var(--card)); border: 1px solid color-mix(in srgb, var(--fg) 8%, transparent); }
+[data-controls]:not([data-controls="pill"], [data-controls="under-pill"]) .tbtns { padding: 0; gap: 2px; }
+[data-controls="bare"] .tbtns .dbtn { border-color: transparent; width: clamp(34px, 4.4cqw, 44px); color: color-mix(in srgb, var(--fg) 50%, transparent); transition: color .15s, background .15s; }
+[data-controls="bare"] .tbtns .dbtn:hover, [data-controls="bare"] .tbtns .dbtn.play { color: var(--fg); }
+[data-controls="play"] .tbtns { align-items: center; gap: 6px; }
+[data-controls="play"] .tbtns .dbtn { border-color: transparent; width: 38px; height: 38px; color: color-mix(in srgb, var(--fg) 50%, transparent); }
+[data-controls="play"] .tbtns .dbtn:hover { color: var(--fg); }
+[data-controls="play"] .tbtns .dbtn.play { order: -1; width: 52px; height: 52px; margin-right: 6px; background: var(--accent-c); color: var(--bg-solid); }
+[data-controls="play"] .tbtns .dbtn.play:hover { background: color-mix(in srgb, var(--accent-c) 85%, var(--fg)); }
+:is([data-controls="keys"], [data-controls="under"]) .tbtns { gap: clamp(10px, 2cqw, 22px); }
+:is([data-controls="keys"], [data-controls="under"]) .tbtns .dbtn { width: auto; height: auto; padding: 4px 2px; border: 0; border-radius: 4px; display: flex; align-items: baseline; gap: 6px; background: none; font: 500 13px/1 'JetBrains Mono', ui-monospace, monospace; color: color-mix(in srgb, var(--fg) 45%, transparent); }
+:is([data-controls="keys"], [data-controls="under"]) .tbtns .dbtn svg { display: none; }
+:is([data-controls="keys"], [data-controls="under"]) .tbtns .dbtn::before { content: attr(data-key); padding: 2px 5px; border-radius: 4px; font-size: 11px; background: color-mix(in srgb, var(--fg) 8%, transparent); }
+:is([data-controls="keys"], [data-controls="under"]) .tbtns .dbtn::after { content: attr(data-label); }
+:is([data-controls="keys"], [data-controls="under"]) .tbtns .dbtn:hover, :is([data-controls="keys"], [data-controls="under"]) .tbtns .dbtn.play { color: var(--fg); }
+/* Keys under the timer: buttons move into the clock (under), or quiet hints sit there while the pill stays in the footer (under-pill). */
+[data-controls="under"] .center { z-index: 2; }
+.clock .tbtns { pointer-events: auto; margin-top: calc(1.4cqh * var(--timer-scale)); }
+.hints { display: none; gap: clamp(10px, 2cqw, 22px); font: 500 12px/1 'JetBrains Mono', ui-monospace, monospace; color: color-mix(in srgb, var(--fg) 40%, transparent); margin-top: calc(1.4cqh * var(--timer-scale)); }
+.hints span { display: flex; align-items: baseline; gap: 6px; }
+.hints kbd { font: inherit; font-size: 11px; padding: 2px 5px; border-radius: 4px; background: color-mix(in srgb, var(--fg) 8%, transparent); color: color-mix(in srgb, var(--fg) 60%, transparent); }
+[data-controls="under-pill"] .hints { display: flex; }
+.ctl-card .clock-mini { display: grid; justify-items: center; gap: 10px; }
+.ctl-card .clock-mini .num { font: 700 44px/1 var(--font-display, 'Inter Tight', sans-serif); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.stage[data-menu="bare"] :is(.menu, .pill) .dbtn { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; border-color: transparent; color: color-mix(in srgb, var(--fg) 50%, transparent); }
+.stage[data-menu="bare"] :is(.menu, .pill) .dbtn:hover { color: var(--fg); background: color-mix(in srgb, var(--fg) 8%, transparent); }
+.stage[data-menu="bare"] :is(.menu, .pill) .dbtn.customize { color: var(--accent-c); }
+.ctl-card { display: grid; place-items: center; align-content: center; gap: 14px; min-height: 120px; padding: 18px 12px; border-radius: 12px; background: var(--bg-solid); color: var(--fg); }
+
+/* Focus fade (Monkeytype-style): while running, only the timer and its progress stay. Pointer or keyboard brings chrome back. */
+.stage .d-head, .stage .d-foot, .stage .pill, .stage .m-gear, .clock .tbtns, .hints { transition: opacity .8s ease; }
+.stage.focusing:not(.woke):not(.open):not(:focus-within) :is(.d-head, .d-foot, .pill, .m-gear, .clock .tbtns, .hints) { opacity: 0; }
+.title { font-weight: 700; font-style: italic; letter-spacing: -.02em; font-size: clamp(20px, 5cqw, 72px); line-height: 1; }
+
+.center { position: absolute; inset: 0; display: grid; place-items: center; transition: transform .45s cubic-bezier(.2,.7,.2,1); pointer-events: none; }
+.digits { font-weight: 700; font-variant-numeric: tabular-nums; line-height: .9; letter-spacing: -.02em; font-size: calc(min(25cqw, 40cqh) * var(--timer-scale)); display: flex; align-items: center; }
+.digits .colon { padding: 0 .02em; transform: translateY(-.04em); }
+.clock { display: grid; justify-items: center; gap: calc(3.2cqh * var(--timer-scale)); }
+/* Progress designs. The stage carries data-progress = none | ruler | ink | edge. */
+.ruler { display: none; align-items: end; gap: calc(.55cqw * var(--timer-scale)); height: 3.4cqh; }
+.ruler i { width: 2px; height: 100%; border-radius: 2px; background: color-mix(in srgb, var(--fg) 22%, transparent); transform-origin: bottom; transform: scaleY(.42); transition: transform .4s cubic-bezier(.2,.7,.2,1), background-color .4s; }
+.ruler i:nth-child(5n) { transform: scaleY(.7); }
+.ruler i.done { background: var(--accent-c); }
+.ruler i.now { transform: none; background: var(--accent-c); }
+.stage[data-progress="ruler"] .ruler { display: flex; }
+.stage[data-progress="ink"] .digits { color: transparent; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(90deg, color-mix(in srgb, var(--accent-c) 30%, transparent) 0 var(--elapsed), var(--fg) var(--elapsed) 100%); }
+.edge { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 5; background: var(--accent-c); transform-origin: left; transform: scaleX(var(--elapsed-f)); transition: transform 1s linear; display: none; }
+.edge-track { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 4; background: color-mix(in srgb, var(--fg) 8%, transparent); display: none; }
+.stage[data-progress="edge"] .edge, .stage[data-progress="edge"] .edge-track { display: block; }
+.stage.mobile .digits { flex-direction: column; font-size: calc(46cqw * var(--timer-scale)); }
+.stage.mobile .digits .colon { display: none; }
+
+.d-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; position: relative; z-index: 2; }
+.glass { background: hsl(var(--card)); border: 1px solid color-mix(in srgb, var(--fg) 8%, transparent); box-shadow: 0 20px 60px -30px rgb(0 0 0 / .5); }
+.tbtns { display: flex; gap: 4px; padding: 5px 6px; border-radius: 999px; }
+.dbtn { appearance: none; cursor: pointer; display: grid; place-items: center; width: clamp(34px, 6cqw, 84px); height: clamp(30px, 4.6cqw, 44px); border-radius: 999px; border: 1px solid color-mix(in srgb, var(--fg) 14%, transparent); background: transparent; color: var(--fg); transition: background .15s; }
+.dbtn:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
+.dbtn svg { width: 18px; height: 18px; }
+.menu { display: flex; gap: 4px; }
+.menu .dbtn { width: clamp(34px, 4.6cqw, 44px); border-radius: 10px; }
+.dbtn.customize { border-color: color-mix(in srgb, var(--accent-c) 60%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-c) 16%, transparent); }
+.dbtn.customize[aria-expanded="true"] { background: color-mix(in srgb, var(--accent-c) 20%, transparent); }
+
+/* Entry: left glass pill (spec variant) */
+.pill { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: none; flex-direction: column; gap: 6px; padding: 8px 6px; border-radius: 999px; z-index: 3; }
+.pill .dbtn { width: 40px; height: 40px; border-radius: 50%; }
+.stage[data-entry="pill"]:not(.mobile) .pill { display: flex; }
+.stage[data-entry="pill"]:not(.mobile) .menu { display: none; }
+.m-gear { display: none; position: absolute; left: 14px; bottom: 14px; z-index: 3; }
+.m-gear .dbtn { width: 44px; height: 44px; border-radius: 50%; }
+.stage.mobile .m-gear { display: block; }
+.stage.mobile .menu { display: none; }
+.stage.mobile .d-foot { justify-content: center; padding-bottom: 54px; }
+.stage.mobile .d-head { flex-direction: column-reverse; align-items: stretch; gap: 14px; }
+.stage.mobile .title { text-align: right; font-size: 36px; }
+.stage.mobile .sessions .blk { width: 22px; }
+
+/* Stage chips and toasts */
+.bg-warn { position: absolute; left: 50%; transform: translateX(-50%); top: 12px; z-index: 4; display: none; align-items: center; gap: 8px; font-family: var(--font-app); font-size: 12.5px; font-weight: 500; padding: 6px 12px; border-radius: 999px; color: hsl(var(--warn)); background: hsl(var(--popover)); border: 1px solid hsl(var(--warn) / .35); white-space: nowrap; }
+.bg-warn.show { display: inline-flex; }
+.toast { position: absolute; left: 50%; top: 12px; transform: translate(-50%, -8px); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; font-family: var(--font-app); font-size: 13px; font-weight: 500; color: hsl(var(--foreground)); background: hsl(var(--popover) / .94); border: 1px solid hsl(var(--border)); border-radius: 10px; padding: 8px 14px; max-width: min(92%, 520px); text-align: center; box-shadow: 0 10px 40px -10px rgb(0 0 0 / .8); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.designs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.design { display: grid; gap: 12px; align-content: start; }
+.design .stage.mini { aspect-ratio: 16 / 9; border-radius: 12px; box-shadow: none; }
+.mini-center { position: absolute; inset: 0; display: grid; place-items: center; }
+.stage.mini .digits { font-size: min(21cqw, 38cqh); }
+.stage.mini .ruler { height: 5cqh; }
+.design-cap { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.design-cap h3 { margin: 0 0 2px; }
+.design-cap p { margin: 0; font-size: 13.5px; color: hsl(var(--muted-foreground)); max-width: 46ch; }
+.design.is-current :is(.stage.mini, .grid-card, .ctl-card) { outline: 2px solid hsl(var(--foreground) / .8); outline-offset: 3px; }
+
+/* ================= Customize panel ================= */
+.scrim { position: absolute; inset: 0; z-index: 9; background: rgb(0 0 0 / 0); pointer-events: none; transition: background .3s; }
+.stage.open .scrim { pointer-events: auto; }
+.stage.mobile.open .scrim { background: rgb(0 0 0 / .35); }
+.panel {
+  position: absolute; z-index: 10; top: 14px; bottom: 14px; width: min(390px, 40cqw); min-width: 320px;
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto;
+  font-family: var(--font-app); color: hsl(var(--foreground)); font-size: 14px;
+  background: hsl(var(--popover));
+  border: 1px solid hsl(var(--foreground) / .09); border-radius: 18px;
+  opacity: 0; pointer-events: none; transition: opacity .25s, transform .35s cubic-bezier(.2,.7,.2,1);
+}
+.stage[data-entry="footer"] .panel { right: 14px; transform: translateX(24px); }
+.stage[data-entry="pill"] .panel { left: 68px; transform: translateX(-24px); }
+.stage.open .panel { opacity: 1; pointer-events: auto; transform: none; }
+.stage.open[data-entry="footer"]:not(.mobile) .center { transform: translateX(-21cqw) scale(.72); }
+.stage.open[data-entry="pill"]:not(.mobile) .center { transform: translateX(23cqw) scale(.72); }
+.stage.mobile .panel { left: 0; right: 0; bottom: 0; top: auto; width: auto; min-width: 0; height: 66%; border-radius: 22px 22px 0 0; border-bottom: 0; transform: translateY(40px); }
+.stage.mobile.open .panel { transform: none; }
+.stage.mobile.open .center { transform: translateY(-19cqh) scale(.62); }
+.grab { display: none; width: 38px; height: 4px; border-radius: 4px; background: hsl(var(--foreground) / .25); margin: 8px auto 0; }
+.stage.mobile .grab { display: block; }
+
+.p-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px 8px; }
+.p-head h4 { margin: 0; font-size: 15px; font-weight: 600; }
+.p-head .sub { font-size: 12px; color: hsl(var(--muted-foreground)); }
+.tabs { display: flex; gap: 2px; padding: 0 12px; border-bottom: 1px solid hsl(var(--border)); overflow-x: auto; scrollbar-width: none; }
+.tab { appearance: none; background: none; border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 500; color: hsl(var(--muted-foreground)); padding: 9px 10px 10px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.tab[aria-selected="true"] { color: hsl(var(--foreground)); border-bottom-color: hsl(var(--foreground)); }
+.tab:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; border-radius: 6px; }
+.p-body { overflow-y: auto; padding: 14px 16px 18px; display: grid; gap: 18px; align-content: start; scrollbar-width: thin; }
+.p-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-top: 1px solid hsl(var(--border)); }
+.p-foot .r { display: flex; gap: 8px; }
+.fs { display: grid; gap: 8px; }
+.fs > .lab { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+.fs > .lab output { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0; text-transform: none; color: hsl(var(--foreground)); }
+.hint { font-size: 12px; color: hsl(var(--muted-foreground)); margin: 0; }
+
+input[type="range"] { width: 100%; accent-color: hsl(var(--foreground)); height: 18px; }
+input[type="color"] { appearance: none; -webkit-appearance: none; width: 36px; height: 30px; border: 1px solid hsl(var(--input)); border-radius: 8px; padding: 2px; background: transparent; cursor: pointer; }
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 5px; }
+.inp { font: inherit; font-size: 13.5px; height: 34px; padding: 0 10px; border-radius: var(--radius); border: 1px solid hsl(var(--input)); background: hsl(var(--background) / .6); color: hsl(var(--foreground)); width: 100%; }
+.inp:focus { outline: 2px solid hsl(var(--ring) / .7); outline-offset: 1px; }
+.row { display: flex; gap: 8px; align-items: center; }
+
+/* picker cards (native radios) */
+.picks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.picks.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pick { position: relative; cursor: pointer; display: block; }
+.pick input { position: absolute; opacity: 0; pointer-events: none; }
+.pick-body { display: grid; gap: 6px; border-radius: 12px; border: 1px solid hsl(var(--border)); padding: 6px; transition: border-color .15s, box-shadow .15s; background: hsl(var(--background) / .35); height: 100%; }
+.pick:hover .pick-body { border-color: hsl(var(--foreground) / .25); }
+.pick input:checked + .pick-body { border-color: hsl(var(--foreground) / .9); box-shadow: 0 0 0 1px hsl(var(--foreground) / .9); }
+.thumb { position: relative; aspect-ratio: 16 / 10; border-radius: 8px; overflow: hidden; background: hsl(var(--background)); display: grid; place-items: center; background-size: cover; background-position: center; }
+.thumb .mini { font-weight: 700; font-size: 20px; letter-spacing: -.02em; color: #fafaf9; text-shadow: 0 1px 8px rgb(0 0 0 / .4); }
+.thumb .acc { position: absolute; right: 6px; bottom: 6px; width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 0 2px rgb(0 0 0 / .4); }
+.thumb .lock { position: absolute; left: 6px; top: 6px; opacity: .8; color: #fff; }
+.thumb video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.thumb .kind { position: absolute; left: 6px; bottom: 6px; font-size: 10px; font-weight: 700; letter-spacing: .06em; padding: 1px 6px; border-radius: 4px; background: rgb(0 0 0 / .55); color: #fff; }
+.thumb .prog { position: absolute; left: 8px; right: 8px; bottom: 8px; height: 4px; border-radius: 4px; background: rgb(255 255 255 / .2); overflow: hidden; }
+.thumb .prog i { display: block; height: 100%; background: #fff; width: 0; }
+.thumb .del { position: absolute; right: 4px; top: 4px; width: 26px; height: 26px; border-radius: 7px; border: 0; background: rgb(0 0 0 / .55); color: #fff; display: grid; place-items: center; cursor: pointer; opacity: 0; transition: opacity .15s; }
+.pick:hover .del, .del:focus-visible { opacity: 1; }
+.pick-name { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 500; padding: 0 2px 2px; }
+.pick-name span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.type-sample { padding: 10px 8px 6px; display: grid; gap: 2px; }
+.type-sample .big { font-size: 30px; font-weight: 700; line-height: 1; letter-spacing: -.02em; }
+.type-sample .it { font-size: 15px; font-weight: 700; font-style: italic; }
+
+.swatches { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.sw { position: relative; cursor: pointer; }
+.sw input { position: absolute; opacity: 0; pointer-events: none; }
+.sw span { display: block; aspect-ratio: 1; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .12); transition: box-shadow .15s, transform .15s; }
+.sw input:checked + span { box-shadow: 0 0 0 2px hsl(var(--popover)), 0 0 0 4px hsl(var(--foreground)); }
+.sw:hover span { transform: scale(1.06); }
+
+.theme-row { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px; border-radius: 10px; border: 1px solid hsl(var(--border)); }
+.theme-row.base { border-color: hsl(var(--foreground) / .5); }
+.theme-row .thumb { aspect-ratio: 16/11; border-radius: 6px; }
+.theme-row .nm { display: grid; gap: 1px; }
+.theme-row .nm b { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.theme-row .acts { display: flex; gap: 2px; }
+.list { display: grid; gap: 6px; }
+
+.drop { display: grid; place-items: center; text-align: center; gap: 6px; padding: 18px 12px; border-radius: 12px; border: 1.5px dashed hsl(var(--foreground) / .22); color: hsl(var(--muted-foreground)); cursor: pointer; transition: border-color .15s, background .15s; font-size: 13px; }
+.drop:hover, .drop.over { border-color: hsl(var(--foreground) / .6); background: hsl(var(--foreground) / .04); color: hsl(var(--foreground)); }
+.drop b { color: hsl(var(--foreground)); font-weight: 600; }
+.quota { display: grid; gap: 6px; }
+.meter { height: 6px; border-radius: 6px; background: hsl(var(--muted)); overflow: hidden; }
+.meter i { display: block; height: 100%; background: hsl(var(--foreground) / .85); border-radius: 6px; }
+.meter.full i { background: hsl(var(--warn)); }
+.callout { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; padding: 10px 12px; border-radius: 10px; font-size: 12.5px; line-height: 1.45; border: 1px solid hsl(var(--border)); background: hsl(var(--background) / .5); }
+.callout.warn { border-color: hsl(var(--warn) / .35); background: hsl(var(--warn) / .07); color: hsl(var(--warn) / .95); }
+.callout.err { border-color: hsl(0 80% 60% / .4); background: hsl(0 80% 60% / .08); color: hsl(0 85% 75%); }
+.callout.ok { border-color: hsl(var(--ok) / .35); background: hsl(var(--ok) / .07); color: hsl(var(--ok)); }
+.callout svg { margin-top: 1px; }
+.signin { display: grid; gap: 10px; justify-items: start; padding: 16px; border-radius: 12px; border: 1px solid hsl(var(--border)); background: hsl(var(--background) / .5); }
+
+/* ================= Explainer + decision sections ================= */
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.plain-list { margin: 8px 0 0; padding-left: 18px; color: hsl(var(--muted-foreground)); font-size: 14px; display: grid; gap: 4px; }
+.plain-list b { color: hsl(var(--foreground)); font-weight: 600; }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+.flow div { border: 1px solid hsl(var(--border)); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+.flow div b { display: block; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: hsl(var(--muted-foreground)); margin-bottom: 2px; }
+
+.qs { display: grid; gap: 14px; }
+.q { display: grid; gap: 12px; }
+.q-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; flex-wrap: wrap; }
+.q-head p { margin: 2px 0 0; font-size: 13.5px; color: hsl(var(--muted-foreground)); max-width: 70ch; }
+.opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.opt { position: relative; cursor: pointer; }
+.opt input { position: absolute; opacity: 0; pointer-events: none; }
+.opt .ob { display: grid; gap: 4px; height: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid hsl(var(--border)); transition: border-color .15s, background .15s; }
+.opt .ob b { font-size: 14px; font-weight: 600; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.opt .ob span { font-size: 13px; color: hsl(var(--muted-foreground)); }
+.opt .ob .cost { color: hsl(var(--warn) / .9); }
+.opt:hover .ob { border-color: hsl(var(--foreground) / .3); }
+.opt input:checked + .ob { border-color: hsl(var(--foreground)); background: hsl(var(--foreground) / .05); }
+.opt input:focus-visible + .ob { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+.rec { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 1px 7px; border-radius: 999px; background: hsl(var(--foreground)); color: hsl(var(--background)); }
+.q-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid hsl(var(--border)); padding-top: 12px; }
+.q-state { font-size: 12.5px; color: hsl(var(--muted-foreground)); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 18px; }
+.checks label { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 14px; padding: 7px 4px; border-bottom: 1px solid hsl(var(--border) / .6); cursor: pointer; }
+.checks input { width: 16px; height: 16px; accent-color: hsl(var(--foreground)); }
+.checks .ph { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: hsl(var(--muted-foreground)); }
+.nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.nums label { display: grid; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+textarea.inp { height: auto; min-height: 84px; padding: 10px; resize: vertical; line-height: 1.5; }
+
+@media (max-width: 900px) {
+  .designs, .grids { grid-template-columns: minmax(0, 1fr); }
+  .hero-grid, .two { grid-template-columns: minmax(0, 1fr); }
+  .phases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stage:not(.mobile) { aspect-ratio: 4 / 5; }
+  .stage:not(.mobile) .panel { left: 8px !important; right: 8px !important; width: auto; min-width: 0; top: auto; bottom: 8px; height: 62%; }
+  .stage.open:not(.mobile) .center { transform: translateY(-22cqh) scale(.6) !important; }
+}
+@media (max-width: 640px) {
+  .phases, .opts, .checks, .nums, .strip { grid-template-columns: minmax(0, 1fr); }
+  .strip > div { border-right: 0; border-bottom: 1px solid hsl(var(--border)); }
+  .strip > div:last-child { border-bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= Intro ================= -->
+  <header class="hero-grid">
+    <div>
+      <div class="eyebrow">beFocus · feat/customize-v2 · scope review</div>
+      <h1>Make the dashboard yours.</h1>
+      <p class="lede">A working prototype of every customization feature in the milestone, rendered in beFocus's own
+        dark tokens and dashboard layout. Play with it, then confirm or cut scope at the bottom. Nothing here is
+        built yet - this is what Phases 2 to 6 would ship.</p>
+    </div>
+    <div class="card howto">
+      <div><b>1</b><span>Open Customize with the <b style="display:inline;border:0;width:auto;height:auto">palette</b> button on the dashboard below. Every control previews live.</span></div>
+      <div><b>2</b><span>Flip <i>Account</i> to Guest and back to see local storage and the one-time migration.</span></div>
+      <div><b>3</b><span>Answer the scope questions at the bottom and press <i>Queue answer</i> on each. Annotate anything that looks off.</span></div>
+    </div>
+  </header>
+
+  <!-- ================= Phase map ================= -->
+  <section id="phases" style="margin-top:44px">
+    <div class="phases">
+      <div class="card phase">
+        <span class="num">PHASE 1 · 5 reqs</span><h3>Foundation repair</h3>
+        <p>Prod cookie bug, real Tailwind dependency, clean <code>globals.css</code>, <code>bun run check</code> green, one hydration source.</p>
+        <a class="where muted" href="#no-ui">No UI · see explainer</a>
+      </div>
+      <a class="card phase" href="#prototype">
+        <span class="num">PHASE 2 · 20 reqs</span><h3>Engine + panel</h3>
+        <p>Store writes CSS vars, live preview, Apply / Cancel / Reset, all 5 tabs, mobile sheet, keyboard.</p>
+        <span class="where">Prototype · every tab</span>
+      </a>
+      <div class="card phase">
+        <span class="num">PHASE 3 · 5 reqs</span><h3>Persistence + sync</h3>
+        <p>Server-side for accounts, localStorage for guests, no flash of default styling, rapid Apply converges.</p>
+        <a class="where muted" href="#no-ui">Status strip + explainer</a>
+      </div>
+      <a class="card phase" href="#prototype" data-goto="theme">
+        <span class="num">PHASE 4 · 7 reqs</span><h3>Saved themes</h3>
+        <p>Save, switch, rename, delete. Curated presets are locked. Guest themes migrate on first sign-in.</p>
+        <span class="where">Prototype · Theme tab</span>
+      </a>
+      <a class="card phase" href="#prototype" data-goto="background" data-src="uploads">
+        <span class="num">PHASE 5 · 9 reqs</span><h3>Media uploads</h3>
+        <p>Image and video backgrounds via presigned R2 upload, progress, delete, 10-file quota, guests prompted to sign in.</p>
+        <span class="where">Prototype · Background › Uploads</span>
+      </a>
+      <a class="card phase" href="#prototype" data-goto="background" data-src="url">
+        <span class="num">PHASE 6 · 3 reqs</span><h3>URL backgrounds</h3>
+        <p>Paste an image or video link, warned it may break, falls back safely when it does.</p>
+        <span class="where">Prototype · Background › URL</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ================= Prototype ================= -->
+  <section id="timer-designs">
+    <div class="section-head">
+      <div>
+        <h2>Timer designs</h2>
+        <p class="lede small">Edge is the new default (outlined below). The other three stay as options under Style › Timer progress. All four run on the same countdown and pick up your current accent, font and background.</p>
+      </div>
+    </div>
+    <div class="designs">
+      <figure class="design" data-design="none" style="margin:0">
+        <div class="stage mini" data-progress="none" data-density="comfortable" aria-hidden="true"><div class="edge-track"></div><div class="edge"></div><div class="mini-center"><div class="clock"><div class="digits"><span class="js-mm">17</span><span class="colon">:</span><span class="js-ss">42</span></div><div class="ruler"></div></div></div></div>
+        <figcaption class="design-cap"><div><h3>Bare</h3><p>Just the numerals. The session title and grid already show where you are.</p></div><button class="btn btn-sm" type="button" data-try="none">Try on dashboard</button></figcaption>
+      </figure>
+      <figure class="design" data-design="ruler" style="margin:0">
+        <div class="stage mini" data-progress="ruler" data-density="comfortable" aria-hidden="true"><div class="edge-track"></div><div class="edge"></div><div class="mini-center"><div class="clock"><div class="digits"><span class="js-mm">17</span><span class="colon">:</span><span class="js-ss">42</span></div><div class="ruler"></div></div></div></div>
+        <figcaption class="design-cap"><div><h3>Ruler</h3><p>25 ticks, one per minute, under the digits. Elapsed minutes light in the accent; the current one stands tall. Readable at a glance, still quiet.</p></div><button class="btn btn-sm" type="button" data-try="ruler">Try on dashboard</button></figcaption>
+      </figure>
+      <figure class="design" data-design="ink" style="margin:0">
+        <div class="stage mini" data-progress="ink" data-density="comfortable" aria-hidden="true"><div class="edge-track"></div><div class="edge"></div><div class="mini-center"><div class="clock"><div class="digits"><span class="js-mm">17</span><span class="colon">:</span><span class="js-ss">42</span></div><div class="ruler"></div></div></div></div>
+        <figcaption class="design-cap"><div><h3>Ink</h3><p>The numerals fade from left to right as time passes, so progress needs no extra element.</p></div><button class="btn btn-sm" type="button" data-try="ink">Try on dashboard</button></figcaption>
+      </figure>
+      <figure class="design" data-design="edge" style="margin:0">
+        <div class="stage mini" data-progress="edge" data-density="comfortable" aria-hidden="true"><div class="edge-track"></div><div class="edge"></div><div class="mini-center"><div class="clock"><div class="digits"><span class="js-mm">17</span><span class="colon">:</span><span class="js-ss">42</span></div><div class="ruler"></div></div></div></div>
+        <figcaption class="design-cap"><div><h3>Edge</h3><p>A 3px line along the bottom edge of the screen that you notice from the corner of your eye.</p></div><button class="btn btn-sm" type="button" data-try="edge">Try on dashboard</button></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="session-grid">
+    <div class="section-head">
+      <div>
+        <h2>Session grid</h2>
+        <p class="lede small">Same data as today (top row focus, bottom row break, one column per session), drawn like a GitHub contribution graph: small filled cells, no outlines, your accent color. The current cell deepens in four steps as the session runs. The dashboard below uses the new one.</p>
+      </div>
+    </div>
+    <div class="grids">
+      <figure class="design" style="margin:0">
+        <div class="grid-card stage-look"><div class="sessions classic" aria-hidden="true"><div class="count">2 / 4</div><div class="rows"><div class="row"><i class="blk done"></i><i class="blk now"></i><i class="blk"></i><i class="blk"></i></div><div class="row"><i class="blk done"></i><i class="blk"></i><i class="blk"></i><i class="blk"></i></div></div></div></div>
+        <figcaption class="design-cap"><div><h3>Today</h3><p>Big outlined boxes in the text color. Reads fine but is the loudest thing on screen after the timer.</p></div></figcaption>
+      </figure>
+      <figure class="design is-current" style="margin:0">
+        <div class="grid-card stage-look"><div class="sessions" aria-hidden="true"><div class="count">2 / 4</div><div class="rows"><div class="row"><i class="blk done"></i><i class="blk now"></i><i class="blk"></i><i class="blk"></i></div><div class="row"><i class="blk done"></i><i class="blk"></i><i class="blk"></i><i class="blk"></i></div></div></div></div>
+        <figcaption class="design-cap"><div><h3>Contribution grid</h3><p>Quieter, themed, and progress lives in the cell color. Fades out with the rest of the chrome while you focus.</p></div></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="controls">
+    <div class="section-head">
+      <div>
+        <h2>Timer controls</h2>
+        <p class="lede small">Six takes on the play / reset / skip buttons, including your two combinations of Keys and today's pill. Each picks up your current accent and background. Try one on the dashboard, then choose in question 4. Space and R work on the dashboard in every design.</p>
+      </div>
+    </div>
+    <div class="designs">
+      <figure class="design" data-ctl="under-pill" style="margin:0">
+        <div class="ctl-card stage-look" inert data-controls="under-pill"><div class="clock-mini"><div class="num">17:42</div><div class="hints" aria-hidden="true"><span><kbd>space</kbd>start</span><span><kbd>r</kbd>reset</span><span><kbd>&#8592; &#8594;</kbd>skip</span></div></div><div class="tbtns"><button class="dbtn" aria-label="Skip to previous" data-ic="skipBack" data-label="prev" data-key="&#8592;"></button><button class="dbtn play" aria-label="Play" data-ic="play" data-label="start" data-key="space"></button><button class="dbtn" aria-label="Reset time" data-ic="rotate" data-label="reset" data-key="r"></button><button class="dbtn" aria-label="Skip to next" data-ic="skipFwd" data-label="next" data-key="&#8594;"></button></div></div>
+        <figcaption class="design-cap"><div><h3>Keys under timer + pill</h3><p>Shortcut hints sit quietly under the digits; the original pill stays in the footer for mouse users. Hints and pill both fade while you focus.</p></div><button class="btn btn-sm" type="button" data-try-ctl="under-pill">Try on dashboard</button></figcaption>
+      </figure>
+      <figure class="design" data-ctl="under" style="margin:0">
+        <div class="ctl-card stage-look" inert data-controls="under"><div class="clock-mini" data-controls="under"><div class="num">17:42</div><div class="tbtns"><button class="dbtn" aria-label="Skip to previous" data-ic="skipBack" data-label="prev" data-key="&#8592;"></button><button class="dbtn play" aria-label="Play" data-ic="play" data-label="start" data-key="space"></button><button class="dbtn" aria-label="Reset time" data-ic="rotate" data-label="reset" data-key="r"></button><button class="dbtn" aria-label="Skip to next" data-ic="skipFwd" data-label="next" data-key="&#8594;"></button></div></div></div>
+        <figcaption class="design-cap"><div><h3>Keys under timer</h3><p>The controls themselves move under the digits as clickable key commands. The footer keeps only the menu. Closest to Monkeytype.</p></div><button class="btn btn-sm" type="button" data-try-ctl="under">Try on dashboard</button></figcaption>
+      </figure>
+      <figure class="design" data-ctl="pill" style="margin:0">
+        <div class="ctl-card stage-look" inert data-controls="pill"><div class="tbtns"><button class="dbtn" aria-label="Skip to previous" data-ic="skipBack" data-label="prev" data-key="&#8592;"></button><button class="dbtn play" aria-label="Play" data-ic="play" data-label="start" data-key="space"></button><button class="dbtn" aria-label="Reset time" data-ic="rotate" data-label="reset" data-key="r"></button><button class="dbtn" aria-label="Skip to next" data-ic="skipFwd" data-label="next" data-key="&#8594;"></button></div></div>
+        <figcaption class="design-cap"><div><h3>Today</h3><p>Glass pill with four outlined buttons. Clear, but it is the heaviest object on the screen.</p></div><button class="btn btn-sm" type="button" data-try-ctl="pill">Try on dashboard</button></figcaption>
+      </figure>
+      <figure class="design" data-ctl="bare" style="margin:0">
+        <div class="ctl-card stage-look" inert data-controls="bare"><div class="tbtns"><button class="dbtn" aria-label="Skip to previous" data-ic="skipBack" data-label="prev" data-key="&#8592;"></button><button class="dbtn play" aria-label="Play" data-ic="play" data-label="start" data-key="space"></button><button class="dbtn" aria-label="Reset time" data-ic="rotate" data-label="reset" data-key="r"></button><button class="dbtn" aria-label="Skip to next" data-ic="skipFwd" data-label="next" data-key="&#8594;"></button></div></div>
+        <figcaption class="design-cap"><div><h3>Bare icons</h3><p>No container, no outlines. Icons sit in muted text, play stays bright. Closest to the Monkeytype feel.</p></div><button class="btn btn-sm" type="button" data-try-ctl="bare">Try on dashboard</button></figcaption>
+      </figure>
+      <figure class="design" data-ctl="play" style="margin:0">
+        <div class="ctl-card stage-look" inert data-controls="play"><div class="tbtns"><button class="dbtn" aria-label="Skip to previous" data-ic="skipBack" data-label="prev" data-key="&#8592;"></button><button class="dbtn play" aria-label="Play" data-ic="play" data-label="start" data-key="space"></button><button class="dbtn" aria-label="Reset time" data-ic="rotate" data-label="reset" data-key="r"></button><button class="dbtn" aria-label="Skip to next" data-ic="skipFwd" data-label="next" data-key="&#8594;"></button></div></div>
+        <figcaption class="design-cap"><div><h3>Play-led</h3><p>One accent-filled play button leads; skip and reset shrink to quiet icons beside it.</p></div><button class="btn btn-sm" type="button" data-try-ctl="play">Try on dashboard</button></figcaption>
+      </figure>
+      <figure class="design" data-ctl="keys" style="margin:0">
+        <div class="ctl-card stage-look" inert data-controls="keys"><div class="tbtns"><button class="dbtn" aria-label="Skip to previous" data-ic="skipBack" data-label="prev" data-key="&#8592;"></button><button class="dbtn play" aria-label="Play" data-ic="play" data-label="start" data-key="space"></button><button class="dbtn" aria-label="Reset time" data-ic="rotate" data-label="reset" data-key="r"></button><button class="dbtn" aria-label="Skip to next" data-ic="skipFwd" data-label="next" data-key="&#8594;"></button></div></div>
+        <figcaption class="design-cap"><div><h3>Keys</h3><p>Text commands with their shortcut, like Monkeytype's footer hints. Space starts, R resets, arrows skip.</p></div><button class="btn btn-sm" type="button" data-try-ctl="keys">Try on dashboard</button></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="prototype">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Phases 2 to 6</div>
+        <h2>Interactive prototype</h2>
+        <p class="lede small">Real file uploads work here (they stay in this browser tab). Esc or clicking outside the panel = Cancel.</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="grp"><span class="lbl">Viewport</span>
+        <div class="seg" role="radiogroup" aria-label="Viewport">
+          <label><input type="radio" name="tb-viewport" value="desktop" checked><span>Desktop</span></label>
+          <label><input type="radio" name="tb-viewport" value="mobile"><span>Mobile</span></label>
+        </div>
+      </div>
+      <div class="grp"><span class="lbl">Account</span>
+        <div class="seg" role="radiogroup" aria-label="Account">
+          <label><input type="radio" name="tb-account" value="user" checked><span>Signed in</span></label>
+          <label><input type="radio" name="tb-account" value="guest"><span>Guest</span></label>
+        </div>
+      </div>
+      <div class="grp"><span class="lbl">Entry point</span>
+        <div class="seg" role="radiogroup" aria-label="Entry point">
+          <label><input type="radio" name="tb-entry" value="footer" checked><span>Footer menu</span></label>
+          <label><input type="radio" name="tb-entry" value="pill"><span>Left pill (spec)</span></label>
+        </div>
+      </div>
+      <div class="grp"><span class="lbl">Menu buttons</span>
+        <div class="seg" role="radiogroup" aria-label="Menu buttons">
+          <label><input type="radio" name="tb-menu" value="today" checked><span>Today</span></label>
+          <label><input type="radio" name="tb-menu" value="bare"><span>Bare</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="strip" aria-live="polite">
+      <div><span class="k">Active theme</span><span class="v" id="st-active"></span></div>
+      <div><span class="k">Preview</span><span class="v" id="st-preview"></span></div>
+      <div><span class="k">Persisted</span><span class="v" id="st-persist"></span></div>
+    </div>
+
+    <div class="stage-shell">
+      <div class="stage" id="stage" data-density="comfortable" data-progress="ruler" data-entry="footer">
+        <div class="edge-track" aria-hidden="true"></div><div class="edge" aria-hidden="true"></div>
+        <div class="layer bg-img" aria-hidden="true"></div>
+        <video class="layer bg-vid" aria-hidden="true" muted loop playsinline hidden></video>
+        <div class="layer bg-tint" aria-hidden="true"></div>
+                <svg class="layer grain" aria-hidden="true"><filter id="grain-f"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#grain-f)"/></svg>
+
+        <div class="bg-warn" id="bg-warn" role="status"></div>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+        <div class="center">
+          <div class="clock"><div class="digits" id="digits" aria-hidden="true"><span class="js-mm">17</span><span class="colon">:</span><span class="js-ss">42</span></div><div class="ruler" aria-hidden="true"></div><div class="hints" aria-hidden="true"><span><kbd>space</kbd>start</span><span><kbd>r</kbd>reset</span><span><kbd>&#8592; &#8594;</kbd>skip</span></div></div>
+        </div>
+
+        <div class="dash">
+          <div class="d-head">
+            <div class="sessions" aria-label="Session 2 of 4">
+              <div class="count">2 / 4</div>
+              <div class="rows">
+                <div class="row"><i class="blk done"></i><i class="blk now"></i><i class="blk"></i><i class="blk"></i></div>
+                <div class="row"><i class="blk done"></i><i class="blk"></i><i class="blk"></i><i class="blk"></i></div>
+              </div>
+            </div>
+            <div class="title" id="title">Paused</div>
+          </div>
+          <div></div>
+          <div class="d-foot">
+            <div class="tbtns">
+              <button class="dbtn" aria-label="Skip to previous" data-ic="skipBack" data-label="prev" data-key="&#8592;"></button>
+              <button class="dbtn play" aria-label="Play" id="play" data-ic="play" data-label="start" data-key="space"></button>
+              <button class="dbtn" aria-label="Reset time" data-ic="rotate" data-label="reset" data-key="r"></button>
+              <button class="dbtn" aria-label="Skip to next" data-ic="skipFwd" data-label="next" data-key="&#8594;"></button>
+            </div>
+            <div class="menu">
+              <button class="dbtn glass" aria-label="To-do list" data-ic="list"></button>
+              <button class="dbtn glass" aria-label="Sounds" data-ic="volume"></button>
+              <button class="dbtn glass" aria-label="Session settings" data-ic="clock"></button>
+              <button class="dbtn glass" aria-label="Account" data-ic="user"></button>
+              <button class="dbtn glass customize" aria-label="Customize" aria-expanded="false" aria-controls="panel" data-open data-ic="palette"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pill glass" aria-label="Dashboard menu">
+          <button class="dbtn" aria-label="To-do list" data-ic="list"></button>
+          <button class="dbtn" aria-label="Sounds" data-ic="volume"></button>
+          <button class="dbtn" aria-label="Account" data-ic="user"></button>
+          <button class="dbtn customize" aria-label="Customize" aria-expanded="false" aria-controls="panel" data-open data-ic="palette"></button>
+        </div>
+        <div class="m-gear"><button class="dbtn glass customize" aria-label="Customize" aria-expanded="false" aria-controls="panel" data-open data-ic="palette"></button></div>
+
+        <div class="scrim" id="scrim"></div>
+        <div class="panel" id="panel" role="dialog" aria-modal="false" aria-labelledby="panel-title">
+          <div class="grab"></div>
+          <div>
+            <div class="p-head">
+              <div><h4 id="panel-title">Customize</h4><div class="sub" id="p-sub"></div></div>
+              <button class="btn btn-ghost btn-icon btn-sm" aria-label="Close (cancel)" id="p-close" data-ic="x"></button>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Customize sections" id="tabs"></div>
+          </div>
+          <div class="p-body" id="p-body" role="tabpanel"></div>
+          <div class="p-foot">
+            <button class="btn btn-ghost btn-sm" id="p-reset"><span data-ic="rotate"></span>Reset to default</button>
+            <div class="r">
+              <button class="btn btn-sm" id="p-cancel">Cancel</button>
+              <button class="btn btn-primary btn-sm" id="p-apply">Apply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="stage-caption">The prototype writes <code>--bg-image</code>, <code>--bg-overlay-*</code>, <code>--bg-blur</code>, accent, contrast, grain and font variables plus <code>data-progress</code> / <code>data-density</code> onto this frame. The real store writes the same set onto <code>&lt;html&gt;</code>.</p>
+  </section>
+
+  <!-- ================= No-UI phases ================= -->
+  <section id="no-ui">
+    <div class="section-head"><div><div class="eyebrow">Phases 1 and 3</div><h2>What you won't see, but will feel</h2></div></div>
+    <div class="two">
+      <div class="card">
+        <h3>Phase 1 · Foundation repair</h3>
+        <p class="muted small" style="margin:0">Customization sits directly on top of these. Fixing them first avoids rebuilding later.</p>
+        <ul class="plain-list">
+          <li><b>Prod settings never load.</b> <code>getUserSettings.ts</code> reads <code>better-auth.session_token</code>; prod sets <code>__Secure-better-auth.session_token</code>. Every theme would silently reset on refresh in prod.</li>
+          <li><b>No real Tailwind dependency.</b> <code>apps/next</code> depends on <code>tailwind@^4</code> (an unrelated package) and gets Tailwind 3 by accident. Pick 3 or 4 deliberately.</li>
+          <li><b>Lint is broken.</b> Biome 1.9.4 wrapper runs a 2.4.13 macOS binary. Fix the pin or migrate to Biome 2.</li>
+          <li><b>Two hydration paths race.</b> <code>TimerInitializer</code> re-fetches settings after the server already did.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Phase 3 · Persistence and sync</h3>
+        <p class="muted small" style="margin:0">The <i>Persisted</i> cell in the strip above shows this. Behavior:</p>
+        <div class="flow">
+          <div><b>Apply</b>Preview becomes the active theme</div>
+          <div><b>Signed in</b>PATCH to API, latest write wins</div>
+          <div><b>Guest</b>Written to localStorage</div>
+          <div><b>Next visit</b>Server paints theme on first render, no flash</div>
+        </div>
+        <ul class="plain-list">
+          <li>Same theme on every device after sign-in.</li>
+          <li>Hammering Apply sends at most one in-flight save; the last value wins.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Decisions ================= -->
+  <section id="decide">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Confirm before we build</div>
+        <h2>Scope and design decisions</h2>
+        <p class="lede small">Each question queues one answer. Changing your mind replaces the unsent answer. Press <i>Send</i> in the Lavish panel when done.</p>
+      </div>
+    </div>
+
+    <div class="qs">
+      <form class="card q" data-lavish-question="scope" data-q="scope">
+        <div class="q-head"><div><h3>1 · Which features ship in this milestone?</h3>
+          <p>All checked = the full spec you chose. Uncheck anything to cut it (it moves to v2). Dependencies: uploads and URL backgrounds both need the Background tab.</p></div></div>
+        <div class="checks">
+                    <label><input type="checkbox" name="f" value="Solid color backgrounds (8 swatches + picker)" checked><span>Solid color backgrounds</span><span class="ph">P2</span></label>
+          <label><input type="checkbox" name="f" value="Overlay tint, opacity, blur" checked><span>Overlay tint, opacity, blur</span><span class="ph">P2</span></label>
+          <label><input type="checkbox" name="f" value="Typography (4 families)" checked><span>Typography (4 families)</span><span class="ph">P2</span></label>
+          <label><input type="checkbox" name="f" value="Accent color + custom picker" checked><span>Accent color + custom picker</span><span class="ph">P2</span></label>
+          <label><input type="checkbox" name="f" value="Text contrast" checked><span>Text contrast</span><span class="ph">P2</span></label>
+          <label><input type="checkbox" name="f" value="Timer progress style" checked><span>Timer progress style</span><span class="ph">P2</span></label>
+          <label><input type="checkbox" name="f" value="Layout density" checked><span>Layout density</span><span class="ph">P2</span></label>
+          <label><input type="checkbox" name="f" value="Grain" checked><span>Grain</span><span class="ph">P2</span></label>
+          <label><input type="checkbox" name="f" value="Saved named themes" checked><span>Saved named themes</span><span class="ph">P4</span></label>
+          <label><input type="checkbox" name="f" value="Guest localStorage + migration on sign-in" checked><span>Guest storage + migration</span><span class="ph">P3/P4</span></label>
+          <label><input type="checkbox" name="f" value="Image uploads" checked><span>Image uploads</span><span class="ph">P5</span></label>
+          <label><input type="checkbox" name="f" value="Video uploads" checked><span>Video uploads</span><span class="ph">P5</span></label>
+          <label><input type="checkbox" name="f" value="URL backgrounds" checked><span>URL backgrounds</span><span class="ph">P6</span></label>
+        </div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="timer" data-q="timer">
+        <div class="q-head"><div><h3>2 · Which timer design replaces the ring?</h3>
+          <p>Pick the default everyone sees. Then decide whether the others ship as options in Style › Timer progress.</p></div></div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="v" value="Ruler"><span class="ob"><b>Ruler</b><span>Minute ticks under the digits.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Bare"><span class="ob"><b>Bare</b><span>Numerals only, no progress indicator.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Ink"><span class="ob"><b>Ink</b><span>Digits drain as time passes.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Edge" checked><span class="ob"><b>Edge</b><span>Thin line on the bottom edge of the screen.</span></span></label>
+        </div>
+        <div class="checks" style="grid-template-columns:minmax(0,1fr)"><label><input type="checkbox" name="others" checked><span>Offer the other three as options in Style › Timer progress</span><span></span></label></div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="grid" data-q="grid">
+        <div class="q-head"><div><h3>3 · Session grid and focus fade</h3>
+          <p>Compare in the Session grid section. Press play on the dashboard and keep the mouse still to see the fade.</p></div></div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="v" value="Contribution grid" checked><span class="ob"><b>Contribution grid <span class="rec">Recommended</span></b><span>Small filled cells in the accent color, current cell deepens as it runs.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Keep today's grid"><span class="ob"><b>Keep today's grid</b><span>Outlined boxes in the text color, as shipped.</span></span></label>
+        </div>
+        <div class="checks" style="grid-template-columns:minmax(0,1fr)"><label><input type="checkbox" name="fade" checked><span>Fade everything except the timer while it runs (pointer or keyboard brings it back)</span><span></span></label></div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="controls" data-q="controls">
+        <div class="q-head"><div><h3>4 · Timer controls</h3>
+          <p>Compare in the Timer controls section. The dashboard starts on Keys under timer + pill.</p></div></div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="v" value="Keys under timer + pill" checked><span class="ob"><b>Keys under timer + pill <span class="rec">Recommended</span></b><span>Hints under the digits, original pill in the footer.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Keys under timer"><span class="ob"><b>Keys under timer</b><span>Clickable key commands under the digits, no pill.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Bare icons"><span class="ob"><b>Bare icons</b><span>No container or outlines, muted icons, bright play.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Play-led"><span class="ob"><b>Play-led</b><span>Accent play button with quiet icons beside it.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Keys"><span class="ob"><b>Keys</b><span>Text commands with shortcut hints.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Today's pill"><span class="ob"><b>Today's pill</b><span>Glass pill with outlined buttons, as shipped.</span></span></label>
+        </div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="menu" data-q="menu">
+        <div class="q-head"><div><h3>5 · Menu buttons (to-do, sounds, settings, account, customize)</h3>
+          <p>Not restyled in the current plan: Phase 2 only adds the palette button to today's menu. Flip Menu buttons in the toolbar above the dashboard to compare.</p></div></div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="v" value="Bare, restyled in Phase 2"><span class="ob"><b>Bare, restyled in Phase 2 <span class="rec">Recommended</span></b><span>No outlines, muted icons, palette in accent. Matches keys and the quieter chrome. Small addition to Phase 2.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Keep today's buttons"><span class="ob"><b>Keep today's buttons</b><span>Outlined glass squares plus the new palette button. No extra work.</span></span></label>
+        </div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="entry" data-q="entry">
+        <div class="q-head"><div><h3>6 · Where does Customize open from on desktop?</h3>
+          <p>Try both with the <i>Entry point</i> toggle above the prototype. Mobile uses a bottom-left button and bottom sheet either way.</p></div></div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="v" value="Footer menu: add a palette button next to To-do / Sounds / Settings / Account; panel opens on the right" checked>
+            <span class="ob"><b>Footer menu <span class="rec">Recommended</span></b><span>One new button in the existing menu. Panel opens on the right, timer slides left.</span><span class="cost">Cost: none. Nav unchanged.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Left glass pill: move To-do / Sounds / Account + Customize into a vertical pill on the left edge (spec design); panel opens on the left">
+            <span class="ob"><b>Left glass pill (spec)</b><span>Moves the menu into a floating vertical pill on the left. Panel opens next to it.</span><span class="cost">Cost: nav redesign inside this milestone, more to test.</span></span></label>
+        </div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="commit" data-q="commit">
+        <div class="q-head"><div><h3>7 · How do changes commit?</h3>
+          <p>The prototype uses preview + Apply. Closing the panel without Apply reverts.</p></div></div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="v" value="Preview + explicit Apply / Cancel (closing the panel = Cancel)" checked>
+            <span class="ob"><b>Preview + Apply / Cancel <span class="rec">Recommended</span></b><span>Safe to experiment. One save per Apply.</span><span class="cost">Cost: one extra click; easy to lose changes if you close by accident.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Live autosave: every change saves immediately, no Apply/Cancel, Reset still available">
+            <span class="ob"><b>Live autosave</b><span>Every change sticks immediately, like a settings page.</span><span class="cost">Cost: no undo for experiments; many more writes to debounce.</span></span></label>
+        </div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="preset-edit" data-q="preset-edit">
+        <div class="q-head"><div><h3>8 · You tweak a curated preset (e.g. Quiet) and press Apply. Then what?</h3>
+          <p>Curated presets are locked. Try it: load Quiet, change the accent, Apply, and watch the <i>Active theme</i> cell.</p></div></div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="v" value="Tweaked preset becomes an unnamed 'Custom look' with a Save as theme nudge (as prototyped)" checked>
+            <span class="ob"><b>Unnamed "Custom look" <span class="rec">Recommended</span></b><span>Applies, labeled Custom. Saving as a named theme is a separate, optional step.</span><span class="cost">Cost: one custom slot; it is overwritten by the next tweak.</span></span></label>
+          <label class="opt"><input type="radio" name="v" value="Tweaked preset auto-forks into My themes as 'Quiet (copy)'">
+            <span class="ob"><b>Auto-fork into My themes</b><span>Creates "Quiet (copy)" automatically on Apply.</span><span class="cost">Cost: theme list fills with copies the user never meant to save.</span></span></label>
+        </div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="limits" data-q="limits">
+        <div class="q-head"><div><h3>9 · Upload limits</h3>
+          <p>Spec defaults shown. These bound R2 cost. The quota is a file count, enforced by the API as well as the UI.</p></div></div>
+        <div class="nums">
+          <label>Files per user<input class="inp" type="number" name="quota" min="1" max="100" value="10"></label>
+          <label>Max image (MB)<input class="inp" type="number" name="img" min="1" max="50" value="15"></label>
+          <label>Max video (MB / seconds)<input class="inp" type="text" name="vid" value="80 MB / 30 s"></label>
+        </div>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+
+      <form class="card q" data-lavish-question="notes" data-q="notes">
+        <div class="q-head"><div><h3>10 · Anything else?</h3>
+          <p>Presets you want, controls that feel pointless, visuals that look off. You can also annotate the prototype directly.</p></div></div>
+        <textarea class="inp" name="t" placeholder="e.g. Add a 'Rain' preset, drop grain, make the panel narrower..."></textarea>
+        <div class="q-foot"><span class="q-state" data-state></span><button class="btn btn-primary btn-sm" type="submit">Queue answer</button></div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<input type="file" id="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" multiple hidden>
+
+<script>
+/* ---------- icons (lucide paths) ---------- */
+const IC = {
+  play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+  pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+  skipBack: '<polygon points="19 20 9 12 19 4 19 20"/><line x1="5" x2="5" y1="19" y2="5"/>',
+  skipFwd: '<polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/>',
+  rotate: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  volume: '<path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.8"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  palette: '<circle cx="13.5" cy="6.5" r="1" fill="currentColor"/><circle cx="17.5" cy="10.5" r="1" fill="currentColor"/><circle cx="8.5" cy="7.5" r="1" fill="currentColor"/><circle cx="6.5" cy="12.5" r="1" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.55-2.5 5.55-5.55C21.97 6.01 17.46 2 12 2z"/>',
+  x: '<path d="M18 6 6 18M6 6l12 12"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>',
+  trash: '<path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>',
+  lock: '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  warn: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/>',
+  pencil: '<path d="M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5z"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+};
+const ic = (n, s = 16) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+const paintIcons = (root = document) => root.querySelectorAll('[data-ic]').forEach(el => {
+  if (el.dataset.painted) return; el.dataset.painted = 1; el.insertAdjacentHTML('afterbegin', ic(el.dataset.ic, el.classList.contains('dbtn') ? 18 : 15));
+});
+
+/* ---------- catalog ---------- */
+const FONTS = {
+  'inter-tight': { label: 'Inter Tight', stack: "'Inter Tight', system-ui, sans-serif", note: 'Current' },
+  'editorial-serif': { label: 'Editorial serif', stack: "'Fraunces', Georgia, serif" },
+  'mono': { label: 'Mono', stack: "'JetBrains Mono', ui-monospace, monospace" },
+  'display-sans': { label: 'Display sans', stack: "'Space Grotesk', system-ui, sans-serif" },
+};
+const SOLIDS = [['#0f0f0f', 'Ink'], ['#1c1b19', 'Stone'], ['#1a1d23', 'Slate'], ['#111a13', 'Moss'], ['#1f1420', 'Plum'], ['#241a12', 'Umber'], ['#0d1420', 'Night'], ['#1f1d1a', 'Paper dark']];
+const PROGRESS = [['none', 'None'], ['ruler', 'Ruler'], ['ink', 'Ink'], ['edge', 'Edge']];
+const ACCENTS = ['#f5f5f4', '#fca5a5', '#fdba74', '#fcd34d', '#bef264', '#86efac', '#5eead4', '#7dd3fc', '#93c5fd', '#c4b5fd', '#f0abfc', '#fda4af'];
+const DEFAULT_LOOK = { bg: { kind: 'none' }, overlayColor: '#000000', overlayOpacity: 0, blur: 0, font: 'inter-tight', accent: '#f5f5f4', contrast: 1, progress: 'edge', density: 'comfortable', grain: 0.05 };
+const L = p => ({ ...DEFAULT_LOOK, ...p });
+const CURATED = [
+  { id: 'default', name: 'Default', look: L({}) },
+  { id: 'quiet', name: 'Quiet', look: L({ bg: { kind: 'solid', color: '#1c1b19' }, font: 'editorial-serif', accent: '#e7e5e4', contrast: .9, progress: 'none', grain: .1 }) },
+  { id: 'sunlit', name: 'Sunlit', look: L({ bg: { kind: 'solid', color: '#241a12' }, font: 'display-sans', accent: '#fdba74', grain: .08, density: 'roomy', progress: 'ink' }) },
+  { id: 'midnight', name: 'Midnight', look: L({ bg: { kind: 'solid', color: '#0d1420' }, font: 'mono', accent: '#7dd3fc', progress: 'edge', density: 'compact', grain: .03 }) },
+  { id: 'forest', name: 'Forest', look: L({ bg: { kind: 'solid', color: '#111a13' }, font: 'inter-tight', accent: '#86efac', contrast: .92, progress: 'ruler', grain: .14 }) },
+];
+const QUOTA = 10, MB = 1024 * 1024;
+
+/* ---------- state ---------- */
+const clone = o => JSON.parse(JSON.stringify(o));
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const uid = () => Math.random().toString(36).slice(2, 9);
+const profiles = {
+  user: {
+    mine: [{ id: 'm-late', name: 'Late night', look: L({ bg: { kind: 'solid', color: '#1f1420' }, progress: 'ink', accent: '#c4b5fd', font: 'display-sans', grain: .09 }) }],
+    activeId: 'default', active: clone(DEFAULT_LOOK),
+    uploads: [],
+  },
+  guest: { mine: [], activeId: 'default', active: clone(DEFAULT_LOOK), uploads: [] },
+};
+const S = {
+  account: 'user', viewport: 'desktop', entry: 'footer',
+  open: false, tab: 'theme', bgSource: 'solid',
+  preview: null, base: null, save: 'saved',
+  url: { draft: '', status: null, msg: '' },
+  renaming: null, guestTouched: false, migrated: false, bgBroken: false,
+};
+const P = () => profiles[S.account];
+const current = () => S.preview || P().active;
+const allThemes = () => [...CURATED, ...P().mine];
+const findTheme = id => allThemes().find(t => t.id === id);
+
+/* ---------- stage rendering ---------- */
+const stage = document.getElementById('stage');
+const vid = stage.querySelector('.bg-vid');
+const bgWarn = document.getElementById('bg-warn');
+
+function bgSources(bg) {
+  if (bg.kind === 'upload') {
+    const u = P().uploads.find(x => x.id === bg.id) || profiles.user.uploads.find(x => x.id === bg.id);
+    if (!u) return { img: 'none', missing: true };
+    if (u.kind === 'video' && u.src) return { img: 'none', video: u.src };
+    return { img: u.css || `url("${u.src}")` };
+  }
+  if (bg.kind === 'url') return bg.media === 'video' ? { img: 'none', video: bg.url, remote: true } : { img: `url("${bg.url}")`, remote: bg.url };
+  return { img: 'none' };
+}
+let probeToken = 0;
+function showBgWarn(msg) { bgWarn.innerHTML = ic('warn', 14) + msg; bgWarn.classList.toggle('show', !!msg); }
+function applyLook(l) {
+  const s = stage.style, src = bgSources(l.bg);
+  s.setProperty('--bg-image', src.img);
+  s.setProperty('--bg-solid', l.bg.kind === 'solid' ? l.bg.color : 'hsl(var(--background))');
+  s.setProperty('--bg-overlay-color', l.overlayColor);
+  s.setProperty('--bg-overlay-opacity', l.overlayOpacity);
+  s.setProperty('--bg-blur', l.blur + 'px');
+  s.setProperty('--accent-c', l.accent);
+  s.setProperty('--text-contrast', l.contrast);
+  s.setProperty('--grain-opacity', l.grain);
+  s.setProperty('--font-display', FONTS[l.font].stack);
+  stage.dataset.progress = l.progress;
+  document.querySelectorAll('.stage.mini, .stage-look').forEach(m => ['--bg-solid', '--accent-c', '--text-contrast', '--font-display'].forEach(k => m.style.setProperty(k, s.getPropertyValue(k))));
+  document.querySelectorAll('.design').forEach(d => d.classList.toggle('is-current', d.dataset.design === l.progress));
+  stage.dataset.density = l.density;
+  showBgWarn('');
+  // URL-03: probe remote images; on failure fall back to the default background and say so.
+  const tok = ++probeToken;
+  if (src.remote && typeof src.remote === 'string' && l.bg.media !== 'video') {
+    const im = new Image();
+    im.onerror = () => { if (tok !== probeToken) return; s.setProperty('--bg-image', 'none'); showBgWarn("Background couldn't load. Showing default."); };
+    im.src = l.bg.url;
+  }
+  if (src.video) {
+    if (vid.getAttribute('src') !== src.video) { vid.src = src.video; }
+    vid.hidden = false;
+    vid.onerror = () => { if (tok !== probeToken) return; vid.hidden = true; showBgWarn("Video couldn't load. Showing default."); };
+    vid.play().catch(() => {});
+  } else { vid.hidden = true; vid.removeAttribute('src'); vid.load(); }
+}
+
+/* timer + progress */
+const TOTAL = 1500;
+let timeLeft = 1062, running = false, tInt = null;
+document.querySelectorAll('.ruler').forEach(r => { r.innerHTML = '<i></i>'.repeat(TOTAL / 60); });
+function renderTimer() {
+  const mm = String(Math.floor(timeLeft / 60)).padStart(2, '0'), ss = String(timeLeft % 60).padStart(2, '0');
+  document.querySelectorAll('.js-mm').forEach(e => { e.textContent = mm; });
+  document.querySelectorAll('.js-ss').forEach(e => { e.textContent = ss; });
+  const f = 1 - timeLeft / TOTAL, min = Math.floor((TOTAL - timeLeft) / 60);
+  document.documentElement.style.setProperty('--elapsed', (f * 100).toFixed(2) + '%');
+  document.documentElement.style.setProperty('--elapsed-f', f.toFixed(4));
+  document.querySelectorAll('.ruler').forEach(r => r.querySelectorAll('i').forEach((t, i) => { t.className = i < min ? 'done' : i === min && timeLeft ? 'now' : ''; }));
+  document.documentElement.style.setProperty('--lvl', Math.min(4, Math.max(1, Math.ceil(f * 4))));
+  stage.classList.toggle('focusing', running);
+  document.getElementById('title').textContent = running ? 'Focus' : timeLeft === TOTAL ? 'Be Focus' : 'Paused';
+  const pb = document.getElementById('play');
+  pb.innerHTML = ic(running ? 'pause' : 'play', 18); pb.setAttribute('aria-label', running ? 'Pause' : 'Play'); pb.dataset.label = running ? 'pause' : 'start';
+}
+document.getElementById('play').addEventListener('click', () => {
+  running = !running; clearInterval(tInt);
+  if (running) tInt = setInterval(() => { timeLeft = Math.max(0, timeLeft - 1); if (!timeLeft) { running = false; clearInterval(tInt); } renderTimer(); }, 1000);
+  renderTimer();
+});
+let wakeT;
+stage.addEventListener('pointermove', () => { stage.classList.add('woke'); clearTimeout(wakeT); wakeT = setTimeout(() => stage.classList.remove('woke'), 1800); });
+stage.querySelector('[aria-label="Reset time"]').addEventListener('click', () => { timeLeft = TOTAL; renderTimer(); });
+
+/* toast */
+let toastT;
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 3200); }
+
+/* ---------- status strip ---------- */
+const diffCount = () => S.preview ? Object.keys(S.preview).filter(k => !same(S.preview[k], P().active[k])).length : 0;
+function activeLabel() {
+  const p = P();
+  if (p.activeId === 'custom') return 'Custom look';
+  const t = findTheme(p.activeId); return t ? t.name : 'Default';
+}
+function renderStrip() {
+  const p = P(), t = findTheme(p.activeId);
+  document.getElementById('st-active').innerHTML = `${activeLabel()} ${t && CURATED.includes(t) ? '<span class="badge">curated</span>' : p.activeId === 'custom' ? '<span class="badge warn">not saved as a theme</span>' : '<span class="badge on">my theme</span>'}`;
+  const n = diffCount();
+  document.getElementById('st-preview').innerHTML = !S.open ? '<span class="muted" style="font-weight:500">Panel closed</span>'
+    : n ? `<span class="badge warn"><i class="dot"></i>${n} unsaved change${n > 1 ? 's' : ''}</span>` : '<span class="muted" style="font-weight:500">Matches active theme</span>';
+  document.getElementById('st-persist').innerHTML = S.save === 'saving'
+    ? `<span class="badge"><i class="dot"></i>Saving...</span>`
+    : S.account === 'user' ? `<span class="badge ok">${ic('check', 12)}Synced to account</span>` : `<span class="badge on">${ic('check', 12)}Saved in this browser</span><span class="muted small" style="font-weight:500">localStorage</span>`;
+  document.getElementById('p-sub').textContent = S.base && findTheme(S.base) ? `Editing from: ${findTheme(S.base).name}` : 'Editing: Custom look';
+  const apply = document.getElementById('p-apply'); apply.disabled = !n;
+}
+
+/* ---------- panel ---------- */
+const TABS = [['theme', 'Theme'], ['background', 'Background'], ['type', 'Type'], ['color', 'Color'], ['style', 'Style']];
+const tabsEl = document.getElementById('tabs'), body = document.getElementById('p-body');
+function renderTabs() {
+  tabsEl.innerHTML = TABS.map(([id, n]) => `<button class="tab" role="tab" id="tab-${id}" aria-selected="${S.tab === id}" tabindex="${S.tab === id ? 0 : -1}" data-tab="${id}">${n}</button>`).join('');
+  body.setAttribute('aria-labelledby', 'tab-' + S.tab);
+}
+tabsEl.addEventListener('click', e => { const b = e.target.closest('[data-tab]'); if (b) { S.tab = b.dataset.tab; renderPanel(); } });
+tabsEl.addEventListener('keydown', e => {
+  if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+  const i = TABS.findIndex(t => t[0] === S.tab), j = (i + (e.key === 'ArrowRight' ? 1 : -1) + TABS.length) % TABS.length;
+  S.tab = TABS[j][0]; renderPanel(); tabsEl.querySelector(`[data-tab="${S.tab}"]`).focus();
+});
+
+const range = (k, label, min, max, step, fmt) => { const v = current()[k]; return `<div class="fs"><label class="lab" for="r-${k}">${label}<output id="o-${k}">${fmt(v)}</output></label><input type="range" id="r-${k}" data-k="${k}" min="${min}" max="${max}" step="${step}" value="${v}"></div>`; };
+const seg = (k, label, opts) => `<div class="fs"><span class="lab">${label}</span><div class="seg full" role="radiogroup" aria-label="${label}">${opts.map(([v, n]) => `<label><input type="radio" name="${k}" value="${v}" ${current()[k] === v ? 'checked' : ''}><span>${n}</span></label>`).join('')}</div></div>`;
+function thumbFor(look) {
+  const src = bgSources(look.bg);
+  const bgc = look.bg.kind === 'solid' ? look.bg.color : '#101010';
+  return `<div class="thumb" style="background:${src.img !== 'none' ? src.img + ',' : ''}${bgc};font-family:${FONTS[look.font].stack.replace(/"/g, "'")}"><span class="mini">25:00</span><span class="acc" style="background:${look.accent}"></span></div>`;
+}
+
+function renderPanel() {
+  renderTabs();
+  const l = current(), p = P();
+  let h = '';
+  if (S.tab === 'theme') {
+    h += `<div class="fs"><span class="lab">Curated presets</span><p class="hint">Loads into the editor as a preview. Nothing changes until Apply.</p>
+      <div class="picks">${CURATED.map(t => `<label class="pick"><input type="radio" name="load" value="${t.id}" ${S.base === t.id ? 'checked' : ''}><span class="pick-body">${thumbFor(t.look).replace('<span class="mini">', `<span class="lock">${ic('lock', 12)}</span><span class="mini">`)}<span class="pick-name"><span>${t.name}</span>${p.activeId === t.id ? '<span class="badge on">Active</span>' : ''}</span></span></label>`).join('')}</div></div>`;
+    h += `<div class="fs"><span class="lab">My themes <span style="text-transform:none;letter-spacing:0;font-weight:500">${S.account === 'guest' ? 'in this browser' : 'synced'}</span></span>
+      <div class="list">${p.mine.length ? p.mine.map(t => `<div class="theme-row ${S.base === t.id ? 'base' : ''}">${thumbFor(t.look)}
+        <div class="nm">${S.renaming === t.id ? `<input class="inp" style="height:28px" data-rename="${t.id}" value="${t.name.replace(/"/g, '&quot;')}" aria-label="Theme name">` : `<b>${t.name}</b>`}
+        <span class="small muted">${p.activeId === t.id ? 'Active' : S.base === t.id ? 'In editor' : '&nbsp;'}</span></div>
+        <div class="acts"><button class="btn btn-ghost btn-sm" data-load="${t.id}">Load</button><button class="btn btn-ghost btn-icon btn-sm" aria-label="Rename ${t.name}" data-ren="${t.id}">${ic('pencil', 14)}</button><button class="btn btn-ghost btn-icon btn-sm btn-danger" aria-label="Delete ${t.name}" data-delt="${t.id}">${ic('trash', 14)}</button></div></div>`).join('')
+        : '<p class="hint">No saved themes yet.</p>'}</div></div>`;
+    h += `<div class="fs"><label class="lab" for="save-name">Save current look as theme</label><div class="row"><input class="inp" id="save-name" placeholder="Theme name" maxlength="40"><button class="btn btn-sm" id="save-btn">Save</button></div><p class="hint">Saving also applies it.</p></div>`;
+  }
+  if (S.tab === 'background') {
+    h += `<div class="seg full" role="radiogroup" aria-label="Background source">${[['solid', 'Solid'], ['uploads', 'Uploads'], ['url', 'URL']].map(([v, n]) => `<label><input type="radio" name="bgsrc" value="${v}" ${S.bgSource === v ? 'checked' : ''}><span>${n}</span></label>`).join('')}</div>`;
+    if (S.bgSource === 'uploads') {
+      if (S.account === 'guest') {
+        h += `<div class="signin"><b>Sign in to upload your own backgrounds</b><span class="small muted">Images and short videos, up to ${QUOTA} files, synced to every device. Your current look carries over.</span><button class="btn btn-primary btn-sm" data-signin>Sign in</button></div>`;
+      } else {
+        const n = p.uploads.length, full = n >= QUOTA;
+        h += `<div class="drop" id="drop" role="button" tabindex="0" aria-label="Upload a background"><span>${ic('upload', 20)}</span><span><b>Drop a file</b> or click to browse</span><span class="small">JPEG, PNG, WebP up to 15 MB · MP4, WebM up to 80 MB, 30 s</span></div>
+        <div class="quota"><div class="lab" style="display:flex;justify-content:space-between;font-size:12px;color:hsl(var(--muted-foreground))"><span>${n} of ${QUOTA} files</span>${full ? '<span style="color:hsl(var(--warn))">Limit reached, delete one to upload more</span>' : ''}</div><div class="meter ${full ? 'full' : ''}"><i style="width:${n / QUOTA * 100}%"></i></div></div>
+        <div class="picks">${p.uploads.map(u => `<label class="pick"><input type="radio" name="bgu" value="${u.id}" ${u.progress != null ? 'disabled' : ''} ${l.bg.kind === 'upload' && l.bg.id === u.id ? 'checked' : ''}><span class="pick-body"><span class="thumb" style="background:${u.css || (u.kind === 'image' ? `url('${u.src}') center/cover` : '#111')}">${u.kind === 'video' && u.src ? `<video src="${u.src}" muted loop autoplay playsinline></video>` : ''}<span class="kind">${u.kind === 'video' ? 'VIDEO' : 'IMAGE'}</span>${u.progress != null ? `<span class="prog"><i style="width:${u.progress}%"></i></span>` : `<button type="button" class="del" aria-label="Delete ${u.name}" data-delu="${u.id}">${ic('trash', 13)}</button>`}</span><span class="pick-name"><span>${u.name}</span>${u.progress != null ? `<span class="small muted">${u.progress}%</span>` : ''}</span></span></label>`).join('')}</div>
+        <p class="hint">${ic('info', 12)} Prototype simulates progress. Real flow: API validates type and size, issues a presigned R2 URL, browser uploads directly.</p>`;
+      }
+    }
+    if (S.bgSource === 'solid') {
+      const c = l.bg.kind === 'solid' ? l.bg.color : '#101010';
+      h += `<div class="fs"><span class="lab">Color</span><div class="picks three">${[['none', 'Default'], ...SOLIDS].map(([v, n]) => `<label class="pick"><input type="radio" name="solidsw" value="${v}" ${(v === 'none' ? l.bg.kind === 'none' : l.bg.kind === 'solid' && l.bg.color === v) ? 'checked' : ''}><span class="pick-body"><span class="thumb" style="aspect-ratio:16/8;background:${v === 'none' ? 'hsl(var(--background))' : v}"></span><span class="pick-name"><span>${n}</span></span></span></label>`).join('')}</div>
+      <div class="row"><input type="color" id="solid" value="${c}" aria-label="Custom background color"><span class="small ${l.bg.kind === 'solid' && !SOLIDS.some(x => x[0] === l.bg.color) ? '' : 'muted'}">Custom color</span></div></div>`;
+    }
+    if (S.bgSource === 'url') {
+      const u = S.url;
+      h += `<div class="fs"><label class="lab" for="url-in">Image or video URL</label><div class="row"><input class="inp" id="url-in" type="url" placeholder="https://..." value="${u.draft.replace(/"/g, '&quot;')}"><button class="btn btn-sm" id="url-go">Preview</button></div>
+        <div class="row" style="flex-wrap:wrap;gap:6px"><span class="small muted">Try:</span><button class="btn btn-ghost btn-sm" data-sample="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=1800&q=80">Working image</button><button class="btn btn-ghost btn-sm" data-sample="https://example.com/this-image-does-not-exist.jpg">Broken link</button></div></div>
+        <div class="callout warn">${ic('warn', 16)}<span>Links from other sites can stop working at any time (hotlink blocking, deleted files, expired links). If that happens beFocus falls back to the default background and tells you. Upload the file for something that lasts.</span></div>
+        ${u.status === 'loading' ? `<div class="callout">${ic('clock', 16)}<span>Checking link...</span></div>` : ''}
+        ${u.status === 'ok' ? `<div class="callout ok">${ic('check', 16)}<span>${u.msg}</span></div>` : ''}
+        ${u.status === 'error' ? `<div class="callout err">${ic('warn', 16)}<span>${u.msg}</span></div>` : ''}`;
+    }
+    if (S.bgSource !== 'solid') h += `<div class="fs" style="border-top:1px solid hsl(var(--border));padding-top:14px"><span class="lab">Overlay tint</span><div class="row"><input type="color" id="ov-color" value="${l.overlayColor}" aria-label="Overlay tint color"><span class="small muted">Darkens or tints the background for legibility.</span></div></div>`;
+    if (S.bgSource !== 'solid') {
+      h += range('overlayOpacity', 'Overlay opacity', 0, 1, .01, v => Math.round(v * 100) + '%');
+      h += range('blur', 'Blur', 0, 40, 1, v => v + 'px');
+    }
+  }
+  if (S.tab === 'type') {
+    h += `<div class="fs"><span class="lab">Typeface</span><div class="picks">${Object.entries(FONTS).map(([k, f]) => `<label class="pick"><input type="radio" name="font" value="${k}" ${l.font === k ? 'checked' : ''}><span class="pick-body"><span class="type-sample" style="font-family:${f.stack.replace(/"/g, "'")}"><span class="big">25:00</span><span class="it">Be Focus</span></span><span class="pick-name"><span>${f.label}</span>${f.note ? `<span class="badge">${f.note}</span>` : ''}</span></span></label>`).join('')}</div><p class="hint">Applies to the timer, session title and dashboard text. Panels and menus keep Inter Tight.</p></div>`;
+  }
+  if (S.tab === 'color') {
+    const custom = !ACCENTS.includes(l.accent);
+    h += `<div class="fs"><span class="lab">Accent</span><div class="swatches">${ACCENTS.map(a => `<label class="sw"><input type="radio" name="accent" value="${a}" ${l.accent === a ? 'checked' : ''} aria-label="Accent ${a}"><span style="background:${a}"></span></label>`).join('')}</div>
+      <div class="row"><input type="color" id="accent-custom" value="${l.accent}" aria-label="Custom accent"><span class="small ${custom ? '' : 'muted'}">${custom ? 'Custom ' + l.accent : 'Custom color'}</span></div><p class="hint">Used for the progress ring and the background glow.</p></div>`;
+    h += range('contrast', 'Text contrast', .6, 1, .01, v => Math.round(v * 100) + '%');
+    h += '<p class="hint" style="margin-top:-10px">Lower = softer, dimmer digits. Useful on bright backgrounds with a dark overlay.</p>';
+  }
+  if (S.tab === 'style') {
+    h += seg('progress', 'Timer progress', PROGRESS);
+    h += '<p class="hint" style="margin-top:-10px">Compare all four side by side in the gallery above the prototype.</p>';
+    h += seg('density', 'Density', [['compact', 'Compact'], ['comfortable', 'Comfortable'], ['roomy', 'Roomy']]);
+    h += range('grain', 'Grain', 0, 1, .01, v => Math.round(v * 100) + '%');
+  }
+  body.innerHTML = h;
+  renderStrip();
+  bindDrop();
+}
+
+function sync(rerender = true) { applyLook(current()); if (rerender && S.open) renderPanel(); else renderStrip(); }
+function setPreview(patch, rerender = true) { if (!S.preview) { S.preview = clone(P().active); S.base = P().activeId; } Object.assign(S.preview, clone(patch)); sync(rerender); }
+
+/* panel delegation */
+body.addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.k) { const v = parseFloat(t.value); document.getElementById('o-' + t.dataset.k).textContent = t.dataset.k === 'blur' ? v + 'px' : Math.round(v * 100) + '%'; setPreview({ [t.dataset.k]: v }, false); }
+  if (t.id === 'ov-color') setPreview({ overlayColor: t.value }, false);
+  if (t.id === 'solid') setPreview({ bg: { kind: 'solid', color: t.value } }, false);
+  if (t.id === 'accent-custom') setPreview({ accent: t.value }, false);
+  if (t.id === 'url-in') S.url.draft = t.value;
+});
+body.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'solid' || t.id === 'accent-custom') return renderPanel();
+  if (t.name === 'load') return loadTheme(t.value);
+  if (t.name === 'bgsrc') { S.bgSource = t.value; return renderPanel(); }
+  if (t.name === 'bgu') return setPreview({ bg: { kind: 'upload', id: t.value } });
+  if (t.name === 'solidsw') return setPreview({ bg: t.value === 'none' ? { kind: 'none' } : { kind: 'solid', color: t.value } });
+  if (['font', 'accent', 'progress', 'density'].includes(t.name)) return setPreview({ [t.name]: t.value });
+});
+body.addEventListener('click', e => {
+  const b = e.target.closest('button,[data-signin]'); if (!b) return;
+  if (b.dataset.load) loadTheme(b.dataset.load);
+  if (b.dataset.ren) { S.renaming = b.dataset.ren; renderPanel(); const i = body.querySelector('[data-rename]'); i.focus(); i.select(); }
+  if (b.dataset.delt) deleteTheme(b.dataset.delt);
+  if (b.dataset.delu) { e.preventDefault(); deleteUpload(b.dataset.delu); }
+  if (b.id === 'save-btn') saveTheme();
+  if (b.dataset.signin !== undefined) setAccount('user');
+  if (b.dataset.sample) { S.url.draft = b.dataset.sample; tryUrl(); }
+  if (b.id === 'url-go') tryUrl();
+});
+body.addEventListener('keydown', e => {
+  if (e.target.dataset.rename && (e.key === 'Enter' || e.key === 'Escape')) { e.preventDefault(); e.stopPropagation(); if (e.key === 'Enter') commitRename(e.target); else { S.renaming = null; renderPanel(); } }
+  if (e.target.id === 'save-name' && e.key === 'Enter') saveTheme();
+  if (e.target.id === 'url-in' && e.key === 'Enter') tryUrl();
+  if (e.target.id === 'drop' && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openPicker(); }
+});
+body.addEventListener('focusout', e => { if (e.target.dataset.rename) commitRename(e.target); });
+
+function loadTheme(id) { const t = findTheme(id); if (!t) return; S.preview = clone(t.look); S.base = id; sync(); }
+function commitRename(inp) {
+  if (!S.renaming) return; const t = P().mine.find(x => x.id === inp.dataset.rename), v = inp.value.trim();
+  if (t && v) t.name = v; S.renaming = null; persist(); renderPanel();
+}
+function deleteTheme(id) {
+  const p = P(), t = p.mine.find(x => x.id === id); p.mine = p.mine.filter(x => x.id !== id);
+  if (p.activeId === id) { p.activeId = 'default'; p.active = clone(DEFAULT_LOOK); toast(`Deleted "${t.name}". It was active, so you're back on Default.`); }
+  else toast(`Deleted "${t.name}".`);
+  if (S.base === id) { S.preview = clone(p.active); S.base = p.activeId; }
+  persist(); sync();
+}
+function saveTheme() {
+  const inp = document.getElementById('save-name'), name = (inp.value || '').trim();
+  if (!name) { inp.focus(); toast('Give the theme a name first.'); return; }
+  const t = { id: 'm-' + uid(), name, look: clone(current()) }; P().mine.push(t);
+  P().activeId = t.id; P().active = clone(t.look); S.preview = clone(t.look); S.base = t.id;
+  persist(); toast(`Saved and applied "${name}".`); sync();
+}
+
+/* uploads */
+const fileIn = document.getElementById('file');
+function openPicker() { if (P().uploads.length >= QUOTA) return toast(`Upload limit reached (${QUOTA} files). Delete one first.`); fileIn.click(); }
+function bindDrop() {
+  const d = document.getElementById('drop'); if (!d) return;
+  d.onclick = openPicker;
+  d.ondragover = e => { e.preventDefault(); d.classList.add('over'); };
+  d.ondragleave = () => d.classList.remove('over');
+  d.ondrop = e => { e.preventDefault(); d.classList.remove('over'); handleFiles(e.dataTransfer.files); };
+}
+fileIn.addEventListener('change', () => { handleFiles(fileIn.files); fileIn.value = ''; });
+const videoDuration = url => new Promise(res => { const v = document.createElement('video'); v.preload = 'metadata'; v.onloadedmetadata = () => res(v.duration); v.onerror = () => res(NaN); v.src = url; });
+async function handleFiles(files) {
+  for (const f of files) {
+    const img = ['image/jpeg', 'image/png', 'image/webp'].includes(f.type), video = ['video/mp4', 'video/webm'].includes(f.type);
+    if (!img && !video) { toast(`${f.name}: only JPEG, PNG, WebP, MP4 or WebM.`); continue; }
+    if (img && f.size > 15 * MB) { toast(`${f.name} is ${(f.size / MB).toFixed(1)} MB. Images max out at 15 MB.`); continue; }
+    if (video && f.size > 80 * MB) { toast(`${f.name} is ${(f.size / MB).toFixed(0)} MB. Videos max out at 80 MB.`); continue; }
+    if (P().uploads.length >= QUOTA) { toast(`Upload limit reached (${QUOTA} files). Delete one to add more.`); break; }
+    const src = URL.createObjectURL(f);
+    if (video) { const d = await videoDuration(src); if (d > 30.5) { toast(`${f.name} is ${Math.round(d)} s. Videos max out at 30 s.`); URL.revokeObjectURL(src); continue; } }
+    const u = { id: 'u-' + uid(), name: f.name, kind: video ? 'video' : 'image', src, progress: 0 };
+    P().uploads.push(u); renderPanel();
+    const step = setInterval(() => {
+      u.progress = Math.min(100, u.progress + 6 + Math.round(Math.random() * 12));
+      const bar = body.querySelector(`input[value="${u.id}"] + .pick-body .prog i`); if (bar) bar.style.width = u.progress + '%';
+      if (u.progress >= 100) { clearInterval(step); u.progress = null; setPreview({ bg: { kind: 'upload', id: u.id } }); toast(`${f.name} uploaded. Previewing it now.`); }
+    }, 110);
+  }
+}
+function deleteUpload(id) {
+  const p = P(), u = p.uploads.find(x => x.id === id); p.uploads = p.uploads.filter(x => x.id !== id);
+  let fell = false;
+  if (p.active.bg.kind === 'upload' && p.active.bg.id === id) { p.active.bg = { kind: 'none' }; fell = true; if (p.activeId !== 'custom') p.activeId = 'custom'; persist(); }
+  if (S.preview && S.preview.bg.kind === 'upload' && S.preview.bg.id === id) S.preview.bg = { kind: 'none' };
+  p.mine.forEach(t => { if (t.look.bg.kind === 'upload' && t.look.bg.id === id) t.look.bg = { kind: 'none' }; });
+  toast(fell ? `Deleted ${u.name}. It was your background, so it fell back to none.` : `Deleted ${u.name} (file removed from storage too).`);
+  sync();
+}
+
+/* URL backgrounds */
+function tryUrl() {
+  const url = S.url.draft.trim();
+  if (!/^https:\/\//i.test(url)) { S.url = { draft: url, status: 'error', msg: 'Use an https:// link.' }; return renderPanel(); }
+  const isVideo = /\.(mp4|webm)(\?|$)/i.test(url);
+  S.url.status = 'loading'; renderPanel();
+  const done = ok => {
+    if (ok) { S.url = { draft: url, status: 'ok', msg: 'Loaded. Previewing it as your background.' }; setPreview({ bg: { kind: 'url', url, media: isVideo ? 'video' : 'image' } }); }
+    else { S.url = { draft: url, status: 'error', msg: "That link didn't load (blocked, missing, or not an image or video). Your background wasn't changed." }; renderPanel(); }
+  };
+  if (isVideo) { const v = document.createElement('video'); v.onloadeddata = () => done(true); v.onerror = () => done(false); v.muted = true; v.preload = 'auto'; v.src = url; }
+  else { const im = new Image(); im.onload = () => done(true); im.onerror = () => done(false); im.src = url; }
+}
+
+/* open / close / apply */
+const openers = () => stage.querySelectorAll('[data-open]');
+function openPanel(tab) {
+  if (tab) S.tab = tab;
+  if (!S.open) { S.open = true; S.preview = clone(P().active); S.base = P().activeId === 'custom' ? null : P().activeId; }
+  stage.classList.add('open'); openers().forEach(b => b.setAttribute('aria-expanded', 'true'));
+  renderPanel(); applyLook(current());
+  setTimeout(() => tabsEl.querySelector('[aria-selected="true"]').focus({ preventScroll: true }), 50);
+}
+function closePanel(reason) {
+  if (!S.open) return;
+  const had = diffCount();
+  S.open = false; S.preview = null; S.base = null; S.renaming = null;
+  stage.classList.remove('open'); openers().forEach(b => b.setAttribute('aria-expanded', 'false'));
+  applyLook(P().active); renderStrip();
+  if (reason === 'cancel' && had) toast('Changes discarded.');
+}
+function apply() {
+  const p = P(), look = clone(S.preview), mineT = p.mine.find(t => t.id === S.base);
+  if (mineT) { mineT.look = clone(look); p.activeId = mineT.id; }
+  else { const match = CURATED.find(t => same(t.look, look)) || p.mine.find(t => same(t.look, look)); p.activeId = match ? match.id : 'custom'; }
+  p.active = look;
+  persist();
+  closePanel('apply');
+  toast(p.activeId === 'custom' ? 'Applied as Custom look. Save it as a theme from the Theme tab to keep it by name.' : `Applied ${activeLabel()}.`);
+}
+function persist() {
+  if (S.account === 'guest') S.guestTouched = true;
+  S.save = 'saving'; renderStrip();
+  clearTimeout(persist.t); persist.t = setTimeout(() => { S.save = 'saved'; renderStrip(); }, S.account === 'user' ? 650 : 150);
+}
+stage.addEventListener('click', e => { if (e.target.closest('[data-open]')) S.open ? closePanel('cancel') : openPanel(); });
+document.getElementById('scrim').addEventListener('click', () => closePanel('cancel'));
+document.getElementById('p-close').addEventListener('click', () => closePanel('cancel'));
+document.getElementById('p-cancel').addEventListener('click', () => closePanel('cancel'));
+document.getElementById('p-apply').addEventListener('click', apply);
+document.getElementById('p-reset').addEventListener('click', () => { S.preview = clone(DEFAULT_LOOK); S.base = 'default'; sync(); toast('Reset to default in preview. Apply to keep it.'); });
+stage.addEventListener('keydown', e => { if (e.key === 'Escape' && S.open) { closePanel('cancel'); stage.querySelector('.customize:not([hidden])')?.focus(); } });
+
+/* toolbar */
+function setAccount(acc) {
+  if (S.open) closePanel();
+  const from = S.account; S.account = acc;
+  document.querySelector(`input[name="tb-account"][value="${acc}"]`).checked = true;
+  if (from === 'guest' && acc === 'user') {
+    const g = profiles.guest, u = profiles.user;
+    if (S.migrated) toast('Welcome back. Guest data was already moved to your account once, so nothing new was imported.');
+    else if (S.guestTouched) {
+      S.migrated = true;
+      const moved = g.mine.map(t => ({ ...clone(t), id: 'm-' + uid() }));
+      u.mine.push(...moved);
+      if (g.activeId !== 'default' || !same(g.active, DEFAULT_LOOK)) { u.active = clone(g.active); const idx = g.mine.findIndex(t => t.id === g.activeId); u.activeId = idx >= 0 ? moved[idx].id : g.activeId; }
+      toast(`Signed in. Moved ${moved.length} theme${moved.length === 1 ? '' : 's'} and your current look from this browser to your account.`);
+      S.save = 'saving'; setTimeout(() => { S.save = 'saved'; renderStrip(); }, 650);
+    } else toast('Signed in. Your synced look is loaded.');
+  }
+  if (acc === 'guest') toast('Guest mode: changes save to this browser only.');
+  sync();
+}
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.name === 'tb-viewport') { S.viewport = t.value; stage.classList.toggle('mobile', t.value === 'mobile'); }
+  if (t.name === 'tb-account') setAccount(t.value);
+  if (t.name === 'tb-menu') stage.dataset.menu = t.value;
+  if (t.name === 'tb-entry') { S.entry = t.value; stage.dataset.entry = t.value; }
+});
+document.querySelectorAll('[data-goto]').forEach(a => a.addEventListener('click', () => {
+  if (a.dataset.src) S.bgSource = a.dataset.src;
+  setTimeout(() => { if (S.open) { S.tab = a.dataset.goto; renderPanel(); } else openPanel(a.dataset.goto); }, 350);
+}));
+
+const tbtnsEl = stage.querySelector('.tbtns'), dFoot = stage.querySelector('.d-foot'), clockEl = stage.querySelector('.center .clock');
+function setControls(k) {
+  stage.dataset.controls = k;
+  if (k === 'under') clockEl.appendChild(tbtnsEl); else dFoot.prepend(tbtnsEl);
+  markCtl();
+}
+const markCtl = () => document.querySelectorAll('[data-ctl]').forEach(d => d.classList.toggle('is-current', d.dataset.ctl === stage.dataset.controls));
+setControls('under-pill');
+document.querySelectorAll('[data-try-ctl]').forEach(b => b.addEventListener('click', () => {
+  setControls(b.dataset.tryCtl);
+  document.getElementById('prototype').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}));
+document.addEventListener('keydown', e => {
+  if (S.open || e.metaKey || e.ctrlKey || e.altKey || e.target.closest('input, textarea, select, button, [contenteditable]')) return;
+  const r = stage.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
+  if (e.code === 'Space') { e.preventDefault(); document.getElementById('play').click(); }
+  else if (e.key === 'r') stage.querySelector('[aria-label="Reset time"]').click();
+});
+document.querySelectorAll('[data-try]').forEach(b => b.addEventListener('click', () => {
+  document.getElementById('prototype').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => { openPanel('style'); setPreview({ progress: b.dataset.try }); }, 350);
+}));
+
+/* ---------- decision forms (lavish input playbook) ---------- */
+function answerOf(form) {
+  const q = form.dataset.q, fd = new FormData(form);
+  if (q === 'scope') {
+    const all = [...form.querySelectorAll('input[name="f"]')], cut = all.filter(i => !i.checked).map(i => i.value);
+    return { text: cut.length ? `Scope: cut ${cut.length}` : 'Scope: keep everything', prompt: cut.length
+      ? `Scope decision for the customization milestone. KEEP: ${all.filter(i => i.checked).map(i => i.value).join('; ')}. CUT to v2: ${cut.join('; ')}. Update REQUIREMENTS.md and ROADMAP.md accordingly (move cut items to v2, drop empty phases).`
+      : 'Scope decision: keep the full spec, every feature in the prototype ships in this milestone. No roadmap changes.' };
+  }
+  if (q === 'limits') {
+    const v = `quota ${fd.get('quota')} files, images max ${fd.get('img')} MB, video ${fd.get('vid')}`;
+    return { text: 'Limits: ' + v, prompt: `Upload limits decision: ${v}. Update MED requirements and the spec limits if they differ from 10 files / 15 MB / 80 MB, 30 s.` };
+  }
+  if (q === 'notes') { const t = (fd.get('t') || '').trim(); return t ? { text: 'Note: ' + t.slice(0, 60), prompt: 'Additional prototype feedback: ' + t } : null; }
+  const v = fd.get('v'); if (!v) return null;
+  if (q === 'grid') {
+    const fade = !!fd.get('fade');
+    return { text: `Grid: ${v}${fade ? ' + focus fade' : ''}`, prompt: `Session grid decision: ${v}. Focus fade while the timer runs: ${fade ? 'yes' : 'no'}.` };
+  }
+  if (q === 'timer') {
+    const others = !!fd.get('others');
+    return { text: `Timer: ${v}${others ? ' + others as options' : ' only'}`, prompt: `Timer design decision: replace the progress ring with "${v}" as the default. ${others ? 'Ship the other designs (None/Ruler/Ink/Edge minus the default) as options in Style > Timer progress.' : 'Do not ship the others; drop the Timer progress control.'} Backgrounds are solid color only for now (no gradients, no atmosphere glow).` };
+  }
+  const titles = { menu: 'Menu buttons', controls: 'Timer controls', entry: 'Customize entry point', commit: 'Commit model', 'preset-edit': 'Editing a curated preset' };
+  return { text: `${titles[q]}: ${v.split(':')[0].split('(')[0].trim()}`, prompt: `${titles[q]} decision: ${v}.` };
+}
+function renderQState(form, queued) {
+  const a = answerOf(form), el = form.querySelector('[data-state]');
+  const sel = a ? `<span>Selected: <b style="color:hsl(var(--foreground));font-weight:600">${a.text.replace(/^[^:]+:\s*/, '')}</b></span>` : '<span>Nothing selected yet</span>';
+  const st = form.dataset.queued ? (form.dataset.queued === JSON.stringify(a) ? `<span class="badge ok">${ic('check', 12)}Queued</span>` : '<span class="badge warn">Changed since queued, queue again</span>') : '';
+  el.innerHTML = sel + st;
+}
+document.querySelectorAll('form.q').forEach(form => {
+  renderQState(form);
+  form.addEventListener('input', () => renderQState(form));
+  form.addEventListener('change', () => renderQState(form));
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const a = answerOf(form); if (!a) return;
+    if (window.lavish && window.lavish.queuePrompt) {
+      window.lavish.queuePrompt(a.prompt, { tag: 'choice', text: a.text, element: form, queueKey: form.dataset.q, data: { question: form.dataset.q } });
+      form.dataset.queued = JSON.stringify(a);
+    } else { form.dataset.queued = JSON.stringify(a); }
+    renderQState(form);
+  });
+});
+
+/* ---------- boot ---------- */
+paintIcons();
+renderTimer();
+sync();
+</script>
+</body>
+</html>

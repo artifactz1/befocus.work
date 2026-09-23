@@ -80,12 +80,12 @@ customizable surfaces, seeing the dashboard react the instant a control moves, t
 Apply or throw it away with Cancel. Nothing survives a refresh yet; Phase 3 adds that.
 **Mode:** mvp
 **Depends on**: Phase 1
-**Requirements**: ENG-01, ENG-02, ENG-03, ENG-04, CTL-01, CTL-02, CTL-03, CTL-04, CTL-05, CTL-06, CTL-07, CTL-08, CTL-09, CTL-10, UX-01, UX-02, UX-03, UX-04, UX-05, UX-06
+**Requirements**: ENG-01, ENG-02, ENG-03, ENG-04, CTL-01, CTL-02, CTL-03, CTL-04, CTL-05, CTL-06, CTL-07, CTL-08, CTL-09, CTL-10, CTL-11, CTL-12, CTL-13, UX-01, UX-02, UX-03, UX-04, UX-05, UX-06
 **Success Criteria** (what must be TRUE):
   1. User opens the customize panel from the dashboard, finds it organized into Theme, Background,
      Type, Color and Style sections, and every control already shows the value currently in effect.
-  2. Moving any control - curated background, solid colour, overlay tint, overlay opacity, blur,
-     font family, accent colour, text contrast, ring style, density, grain - changes the dashboard
+  2. Moving any control - solid background swatch, overlay tint, overlay opacity, blur,
+     font family, accent colour, text contrast, timer progress style, density, grain - changes the dashboard
      immediately, before anything is committed.
   3. Apply keeps the new look; Cancel or closing the panel snaps the dashboard back to exactly how
      it looked before the panel opened.
@@ -101,7 +101,11 @@ Notes for planning:
   `--bg-image-size`, `--bg-image-position`, `--bg-overlay-color`, `--bg-overlay-opacity` and
   `--bg-blur` already exist in `packages/ui/src/globals.css` and are consumed by
   `AppBackground.tsx`. The store is the missing writer. `--accent`, `--text-contrast`,
-  `--grain-opacity`, `--font-*` and the `data-ring-style` / `data-density` attributes are new.
+  `--grain-opacity`, `--font-*` and the `data-progress` / `data-density` attributes are new.
+- Decisions locked in the prototype review (`.lavish/customization-prototype.html`): Edge progress
+  is the default and the circular ring is gone; backgrounds are solid only (no gradients); the
+  session grid becomes an accent contribution grid with focus fade; keyboard hints sit under the
+  timer with the footer pill kept; menu buttons go bare. The panel itself is a solid surface.
 - The Theme section exists structurally here but is only populated in Phase 4. Build the section so
   Phase 4 fills it rather than restructures the panel.
 - `apps/next/src/components/settings/SoundSettings.tsx` hardcodes hex colours that bypass the token
@@ -217,14 +221,14 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Requirements | Count |
 |-------|--------------|-------|
 | 1. Foundation Repair | FND-01..05 | 5 |
-| 2. Customization Engine and Panel | ENG-01..04, CTL-01..10, UX-01..06 | 20 |
+| 2. Customization Engine and Panel | ENG-01..04, CTL-01..13, UX-01..06 | 23 |
 | 3. Persistence and Sync | ENG-05, SYN-01, SYN-02, SYN-03, SYN-05 | 5 |
 | 4. Saved Themes | THM-01..06, SYN-04 | 7 |
 | 5. Media Uploads | MED-01..09 | 9 |
 | 6. URL Backgrounds | URL-01..03 | 3 |
-| **Total** | | **49** |
+| **Total** | | **52** |
 
-All 49 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
+All 52 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
 
 ## Verification Note
 

@@ -23,7 +23,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Customization Engine
 
 - [ ] **ENG-01**: A customization state store writes the full token set (`--bg-*`, `--accent`,
-      `--text-contrast`, `--grain-opacity`, `--font-*`) and data attributes (`data-ring-style`,
+      `--text-contrast`, `--grain-opacity`, `--font-*`) and data attributes (`data-progress`,
       `data-density`) onto the document root
 - [ ] **ENG-02**: Changing any control updates the dashboard live, before anything is persisted
 - [ ] **ENG-03**: Three states are distinct and correct: active theme, unsaved preview, persisted
@@ -35,16 +35,19 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Customization Controls
 
-- [ ] **CTL-01**: User can set the background to one of at least 6 curated options
+- [ ] **CTL-01**: User can set the background to one of 8 solid preset swatches (no curated image backgrounds)
 - [ ] **CTL-02**: User can set the background to a solid color of their choosing
 - [ ] **CTL-03**: User can adjust background overlay tint, overlay opacity and blur
 - [ ] **CTL-04**: User can choose among 4 typography families and see the dashboard change
 - [ ] **CTL-05**: User can pick an accent color from swatches or a custom color picker
 - [ ] **CTL-06**: User can adjust foreground text contrast
-- [ ] **CTL-07**: User can set the timer ring style to dashed, solid or off
+- [ ] **CTL-07**: User can set the timer progress style to Edge (default), Ruler, Ink or None; the circular ring is removed
 - [ ] **CTL-08**: User can set layout density to compact, comfortable or roomy
 - [ ] **CTL-09**: User can adjust atmospheric grain intensity
 - [ ] **CTL-10**: User can reset everything to default with one action
+- [ ] **CTL-11**: The session tracker renders as an accent-colored contribution grid (no outlines), and dashboard chrome fades while a session runs, returning on pointer move or focus
+- [ ] **CTL-12**: Timer controls show keyboard hints under the digits alongside the footer pill; Space plays/pauses and R resets
+- [ ] **CTL-13**: Dashboard menu buttons use a bare style (no outlines, muted icons, customize icon in accent)
 
 ### Persistence & Sync
 
@@ -159,6 +162,9 @@ Which phases cover which requirements. Populated during roadmap creation.
 | CTL-08 | Phase 2 - Customization Engine and Panel | Pending |
 | CTL-09 | Phase 2 - Customization Engine and Panel | Pending |
 | CTL-10 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-11 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-12 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-13 | Phase 2 - Customization Engine and Panel | Pending |
 | SYN-01 | Phase 3 - Persistence and Sync | Pending |
 | SYN-02 | Phase 3 - Persistence and Sync | Pending |
 | SYN-03 | Phase 3 - Persistence and Sync | Pending |
@@ -190,8 +196,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | UX-06 | Phase 2 - Customization Engine and Panel | Pending |
 
 **Coverage:**
-- v1 requirements: 49 total
-- Mapped to phases: 49
+- v1 requirements: 52 total
+- Mapped to phases: 52
 - Unmapped: 0
 
 Every v1 requirement maps to exactly one phase. No orphans, no duplicates.

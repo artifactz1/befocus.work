@@ -4,7 +4,7 @@
 
 beFocus is a focus/pomodoro timer web app with ambient sound mixing and a to-do list, usable
 signed-in or as a guest. This milestone makes the dashboard personalizable: users pick their
-background (curated, uploaded, pasted URL, or solid color), typography, accent color, timer ring
+background (solid color, uploaded, or pasted URL), typography, accent color, timer progress
 style, layout density and atmospheric grain, and save those combinations as named themes they can
 switch between. Signed-in users get persistent cross-device storage and media uploads; guests get
 the same controls persisted locally.
@@ -41,9 +41,9 @@ they open it - signed in on any device, or as a guest on the same browser.
 **Customization**
 
 - [ ] User can open a customize panel from the dashboard and change the background
-- [ ] User can choose from curated backgrounds, a solid color, or a pasted URL
+- [ ] User can choose a solid color background or a pasted URL
 - [ ] User can upload their own background images and videos, within a quota
-- [ ] User can change typography, accent color, text contrast, timer ring style, layout density and grain
+- [ ] User can change typography, accent color, text contrast, timer progress style, layout density and grain
 - [ ] User sees changes live as a preview, and commits or discards them explicitly
 - [ ] User can save the current look as a named theme and switch between saved themes
 - [ ] User can start from a curated theme preset and reset to default
@@ -131,6 +131,10 @@ customization is a product requirement, not a nicety.
 | Per-user customization synced via API, not device-local | Matches the existing `/user/settings` pattern and the product promise of cross-device persistence | - Pending |
 | Full spec scope including R2 uploads and URL-paste backgrounds | Uploads are the feature users actually want; curated-only backgrounds are a demo, not a product | - Pending |
 | Guests customize with localStorage, migrating on sign-in | `/guest` is a real dashboard; withholding customization there removes the main reason to sign up | - Pending |
+| Solid backgrounds only; no curated images or gradients | Prototype review: gradients read as noise; Monkeytype-style minimalism with deep customization is the target | - Pending |
+| Edge timer progress replaces the ring; Ruler, Ink and None offered | Prototype review: the circle behind the timer was rejected | - Pending |
+| Panel opens from footer menu; Preview then Apply/Cancel; tweaked preset becomes unnamed Custom look | Prototype review recommendations, accepted | - Pending |
+| Limits: 10 saved themes, 15 MB per upload, 80 MB quota, 30 s video | Prototype review recommendations, accepted | - Pending |
 | Dark-only, no light theme | Untangling the hardcoded `dark` class is a separate project; bundling it would double this milestone | - Pending |
 
 ## Evolution
