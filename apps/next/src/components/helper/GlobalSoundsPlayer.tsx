@@ -1,11 +1,11 @@
 'use client'
 
-import ReactPlayer from 'react-player'
-import { useSoundsStore } from '~/store/useSoundsStore'
 
 import { useEffect } from 'react'
+import ReactPlayer from 'react-player'
 import type { OnProgressProps } from 'react-player/base'
 import { useUserSounds } from '~/hooks/useSounds'
+import { useSoundsStore } from '~/store/useSoundsStore'
 
 const GlobalPlayer = () => {
   // Use selective subscriptions to prevent unnecessary re-renders
@@ -42,29 +42,29 @@ const GlobalPlayer = () => {
   }
 
   useEffect(() => {
-    if (!userSounds) return;
+    if (!userSounds) return
 
-    const existing = sounds; // Use the sounds from the hook subscription
+    const existing = sounds // Use the sounds from the hook subscription
 
     for (const s of userSounds) {
       if (!existing[s.id]) {
-        addSound(s.id, s.name, s.url, s.isCustom, s.soundType);
+        addSound(s.id, s.name, s.url, s.isCustom, s.soundType)
       }
     }
-  }, [userSounds, addSound, sounds]); // Add sounds to dependencies
+  }, [userSounds, addSound, sounds]) // Add sounds to dependencies
 
   return (
     <>
       {soundKeys
         .filter(key => sounds[key]?.soundType !== 'alarm')
-        .map((key) => {
+        .map(key => {
           const sound = sounds[key]
 
           if (!sound) return null
 
           return (
             <ReactPlayer
-              ref={(player) => {
+              ref={player => {
                 if (player) {
                   handleReady(key, player)
                 }
@@ -72,10 +72,7 @@ const GlobalPlayer = () => {
               config={{
                 youtube: {
                   playerVars: {
-                    origin:
-                      typeof window !== 'undefined'
-                        ? window.location.origin
-                        : undefined,
+                    origin: typeof window !== 'undefined' ? window.location.origin : undefined,
                     enablejsapi: 1,
                   },
                   embedOptions: {
@@ -91,11 +88,11 @@ const GlobalPlayer = () => {
               muted={!sound.playing}
               width='0'
               height='0'
-              onReady={() => { }} // Remove console.log to prevent re-renders
-              onStart={() => { }} // Remove console.log to prevent re-renders
-              onProgress={(state) => handleProgress(key, state)}
-              onDuration={(duration) => handleDuration(key, duration)}
-            // onError={(error) => console.error(`[${key}] Player error:`, error)}
+              onReady={() => {}} // Remove console.log to prevent re-renders
+              onStart={() => {}} // Remove console.log to prevent re-renders
+              onProgress={state => handleProgress(key, state)}
+              onDuration={duration => handleDuration(key, duration)}
+              // onError={(error) => console.error(`[${key}] Player error:`, error)}
             />
           )
         })}

@@ -15,12 +15,8 @@ export default function ToggleAddMode() {
   }
 
   return (
-
     <Toggle disabled={isDeleteMode} onClick={handleSubmit}>
-      {
-        isDeleteMode ? '' : isAddMode ? 'Cancel' :
-          <Plus />
-      }
+      {isDeleteMode ? '' : isAddMode ? 'Cancel' : <Plus />}
     </Toggle>
   )
 }

@@ -51,7 +51,12 @@ export default function SignIn() {
         className='pointer-events-none fixed inset-0 z-[1] h-full w-full opacity-[0.06] mix-blend-overlay'
       >
         <filter id='grain'>
-          <feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' />
+          <feTurbulence
+            type='fractalNoise'
+            baseFrequency='0.9'
+            numOctaves='2'
+            stitchTiles='stitch'
+          />
           <feColorMatrix type='saturate' values='0' />
         </filter>
         <rect width='100%' height='100%' filter='url(#grain)' />
@@ -120,7 +125,8 @@ export default function SignIn() {
             transition={{ duration: 0.7, ease, delay: 0.7 }}
             className='mt-10 max-w-md text-base font-light leading-relaxed text-muted-foreground md:text-lg'
           >
-            A simple ritual — twenty-five minutes at a time. Sign in to keep your sessions, sounds, and tasks in sync wherever you are.
+            A simple ritual — twenty-five minutes at a time. Sign in to keep your sessions, sounds,
+            and tasks in sync wherever you are.
           </motion.p>
         </section>
 
@@ -231,7 +237,13 @@ export default function SignIn() {
                         fill='none'
                         xmlns='http://www.w3.org/2000/svg'
                       >
-                        <path d='M1 5h19M16 1l4 4-4 4' stroke='currentColor' strokeWidth='1.2' strokeLinecap='round' strokeLinejoin='round' />
+                        <path
+                          d='M1 5h19M16 1l4 4-4 4'
+                          stroke='currentColor'
+                          strokeWidth='1.2'
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                        />
                       </svg>
                     </span>
                   </button>
@@ -263,8 +275,20 @@ export default function SignIn() {
                   className='text-foreground/40 transition-all group-hover:translate-x-1 group-hover:text-foreground/80'
                   aria-hidden
                 >
-                  <svg width='18' height='10' viewBox='0 0 22 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M1 5h19M16 1l4 4-4 4' stroke='currentColor' strokeWidth='1.2' strokeLinecap='round' strokeLinejoin='round' />
+                  <svg
+                    width='18'
+                    height='10'
+                    viewBox='0 0 22 10'
+                    fill='none'
+                    xmlns='http://www.w3.org/2000/svg'
+                  >
+                    <path
+                      d='M1 5h19M16 1l4 4-4 4'
+                      stroke='currentColor'
+                      strokeWidth='1.2'
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                    />
                   </svg>
                 </span>
               </button>

@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@repo/ui/accordion'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@repo/ui/accordion'
 import { Checkbox } from '@repo/ui/checkbox'
 import { Input } from '@repo/ui/input'
 import { stagger, useAnimate } from 'framer-motion'
@@ -13,8 +8,8 @@ import { NotebookPen } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useCreateUserTask, useUserTasks } from '~/hooks/useTasks'
 import { useTodoStore } from '~/store/useToDoStore'
-import TaskItem from '../to-do-list/TaskItem'
 import Divider from '../helper/Divider'
+import TaskItem from '../to-do-list/TaskItem'
 
 export default function TaskList() {
   const [ref, animate] = useAnimate()
@@ -63,7 +58,7 @@ export default function TaskList() {
       <div className='hidden sm:block'>
         <NotebookPen />
         <div className='mb-2 mt-4 text-lg font-bold'>befocus/todolist</div>
-        <Divider/>
+        <Divider />
       </div>
 
       <div className='sm:flex sm:min-h-full sm:flex-col sm:items-center sm:justify-center'>
@@ -94,7 +89,6 @@ export default function TaskList() {
           </div>
 
           <div>
-
             <div ref={ref} className='w-full pl-1'>
               {tasks
                 .filter(task => !task.archived)
@@ -103,9 +97,8 @@ export default function TaskList() {
                 ))}
             </div>
             <div>
-
               {tasks.some(task => task.archived) && (
-                <Accordion type='single' collapsible className="overflow-x-hidden">
+                <Accordion type='single' collapsible className='overflow-x-hidden'>
                   <AccordionItem value='item-1' className='border-0'>
                     <AccordionTrigger className='font-bold'>Archived</AccordionTrigger>
                     <AccordionContent className='pl-1'>
@@ -121,11 +114,7 @@ export default function TaskList() {
                 </Accordion>
               )}
             </div>
-
-
           </div>
-
-
         </div>
       </div>
     </div>

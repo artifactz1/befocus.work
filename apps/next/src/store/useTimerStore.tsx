@@ -1,9 +1,9 @@
 'use client'
 
 import type { Settings } from '@repo/api/db/schemas'
-import { type ReactNode, createContext, useContext, useState } from 'react'
-import { createStore } from 'zustand/vanilla'
+import { createContext, type ReactNode, useContext, useState } from 'react'
 import { useStore } from 'zustand/react'
+import { createStore } from 'zustand/vanilla'
 
 interface TimerState {
   sessions: number

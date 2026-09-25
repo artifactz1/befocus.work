@@ -1,5 +1,3 @@
-import { Timer } from 'lucide-react'
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,13 +10,6 @@ import {
   AlertDialogTrigger,
 } from '@repo/ui/alert-dialog'
 import { Button } from '@repo/ui/button'
-import { useState } from 'react'
-import { toast } from 'sonner'
-import { useTimerStore } from '~/store/useTimerStore'
-import { BreakDurationInput } from '../input/BreakDurationInput'
-import { SessionsInput } from '../input/SessionsInput'
-import { WorkDurationInput } from '../input/WorkDurationInput'
-
 import {
   Drawer,
   DrawerContent,
@@ -27,7 +18,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@repo/ui/drawer'
+import { Timer } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { useTimerStore } from '~/store/useTimerStore'
 import Divider from '../helper/Divider'
+import { BreakDurationInput } from '../input/BreakDurationInput'
+import { SessionsInput } from '../input/SessionsInput'
+import { WorkDurationInput } from '../input/WorkDurationInput'
 
 export default function SessionSettingsMobile() {
   const { sessions, workDuration, breakDuration, reset, updateSettings } = useTimerStore()

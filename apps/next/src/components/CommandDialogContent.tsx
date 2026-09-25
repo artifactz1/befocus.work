@@ -1,9 +1,37 @@
 'use client'
 
 import { Button } from '@repo/ui/button'
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@repo/ui/command'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@repo/ui/dialog'
-import { Coffee, Hash, LogOut, Moon, Pause, Play, RotateCcw, SkipBack, SkipForward, Sun, Timer, User } from 'lucide-react'
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@repo/ui/command'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@repo/ui/dialog'
+import {
+  Coffee,
+  Hash,
+  LogOut,
+  Moon,
+  Pause,
+  Play,
+  RotateCcw,
+  SkipBack,
+  SkipForward,
+  Sun,
+  Timer,
+  User,
+} from 'lucide-react'
 import React from 'react'
 import {
   useAuthActions,
@@ -12,10 +40,9 @@ import {
   useCommandMenuKeyboard,
   useSettingsDialog,
   useThemeActions,
-  useTimerActions
+  useTimerActions,
 } from '~/hooks/useCommandMenuHooks'
 import { useParsedCommands } from '~/hooks/useParsedCommands'
-
 
 export default function CommandDialogConent() {
   const [open, setOpen] = React.useState(false)
@@ -25,8 +52,14 @@ export default function CommandDialogConent() {
   useCommandMenuKeyboard(setOpen)
   const { isDarkMode, toggleTheme } = useThemeActions()
   const { session, isPending, handleSignOut, handleSignIn } = useAuthActions()
-  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } = useTimerActions()
-  const { workDuration: workDurationMinutes, breakDuration: breakDurationMinutes, sessions: sessionsCount, numberOnly } = useParsedCommands(searchValue)
+  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } =
+    useTimerActions()
+  const {
+    workDuration: workDurationMinutes,
+    breakDuration: breakDurationMinutes,
+    sessions: sessionsCount,
+    numberOnly,
+  } = useParsedCommands(searchValue)
   const autocompleteSuggestions = useAutocompleteSuggestions(searchValue)
   const {
     alertOpen,
@@ -35,7 +68,7 @@ export default function CommandDialogConent() {
     isSaving,
     handleSettingUpdate,
     confirmSettingUpdate,
-    cancelSettingUpdate
+    cancelSettingUpdate,
   } = useSettingsDialog()
   const { handleCommand } = useCommandHandler(setOpen)
 
@@ -55,7 +88,11 @@ export default function CommandDialogConent() {
     setOpen(false)
   }
 
-  const handleSettingUpdateWithClose = (type: 'work' | 'break' | 'sessions', value: number, label: string) => {
+  const handleSettingUpdateWithClose = (
+    type: 'work' | 'break' | 'sessions',
+    value: number,
+    label: string,
+  ) => {
     handleSettingUpdate(type, value, label)
     setOpen(false)
   }
@@ -73,26 +110,26 @@ export default function CommandDialogConent() {
   return (
     <>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <DialogTitle className="p-5">
-          Command Menu
-        </DialogTitle>
+        <DialogTitle className='p-5'>Command Menu</DialogTitle>
         <CommandInput
-          placeholder="Type a command or search..."
+          placeholder='Type a command or search...'
           value={searchValue}
           onValueChange={setSearchValue}
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
 
-          <CommandGroup heading="Help">
+          <CommandGroup heading='Help'>
             <CommandItem disabled>
-              <span className="text-muted-foreground">Try: typing &apos;set&apos; or a number to update sessions </span>
+              <span className='text-muted-foreground'>
+                Try: typing &apos;set&apos; or a number to update sessions{' '}
+              </span>
             </CommandItem>
           </CommandGroup>
 
           <CommandGroup>
             {/* Autocomplete suggestions */}
-            {autocompleteSuggestions.map((suggestion) => (
+            {autocompleteSuggestions.map(suggestion => (
               <CommandItem
                 key={suggestion.id}
                 onSelect={() => {
@@ -103,7 +140,7 @@ export default function CommandDialogConent() {
               >
                 <Timer />
                 <span>{suggestion.text}</span>
-                <span className="text-muted-foreground ml-auto text-sm">
+                <span className='text-muted-foreground ml-auto text-sm'>
                   {suggestion.description}
                 </span>
               </CommandItem>
@@ -112,7 +149,7 @@ export default function CommandDialogConent() {
 
           <CommandSeparator />
 
-          <CommandGroup heading="Actions">
+          <CommandGroup heading='Actions'>
             <CommandItem onSelect={() => handleCommand(skipToPrevSession)}>
               <SkipBack />
               <span>Previous Session</span>
@@ -133,13 +170,13 @@ export default function CommandDialogConent() {
 
           <CommandSeparator />
 
-          <CommandGroup heading="Account">
+          <CommandGroup heading='Account'>
             <CommandItem onSelect={handleToggleTheme}>
               {isDarkMode ? <Sun /> : <Moon />}
               <span>{isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
             </CommandItem>
-            {!isPending && (
-              session === null ? (
+            {!isPending &&
+              (session === null ? (
                 <CommandItem onSelect={handleSignInWithClose}>
                   <User />
                   <span>Sign In</span>
@@ -149,19 +186,22 @@ export default function CommandDialogConent() {
                   <LogOut />
                   <span>Sign Out</span>
                 </CommandItem>
-              )
-            )}
+              ))}
           </CommandGroup>
 
           <CommandSeparator />
 
-          <CommandGroup heading="Session Settings">
+          <CommandGroup heading='Session Settings'>
             <CommandItem
               disabled={!workDurationMinutes}
               keywords={['set', 'work']}
               onSelect={() => {
                 if (workDurationMinutes) {
-                  handleSettingUpdateWithClose('work', workDurationMinutes, `work duration to ${workDurationMinutes} minutes`)
+                  handleSettingUpdateWithClose(
+                    'work',
+                    workDurationMinutes,
+                    `work duration to ${workDurationMinutes} minutes`,
+                  )
                 }
               }}
             >
@@ -174,7 +214,11 @@ export default function CommandDialogConent() {
               keywords={['set', 'break']}
               onSelect={() => {
                 if (breakDurationMinutes) {
-                  handleSettingUpdateWithClose('break', breakDurationMinutes, `break duration to ${breakDurationMinutes} minutes`)
+                  handleSettingUpdateWithClose(
+                    'break',
+                    breakDurationMinutes,
+                    `break duration to ${breakDurationMinutes} minutes`,
+                  )
                 }
               }}
             >
@@ -187,7 +231,11 @@ export default function CommandDialogConent() {
               keywords={['set', 'session', 'sessions']}
               onSelect={() => {
                 if (sessionsCount) {
-                  handleSettingUpdateWithClose('sessions', sessionsCount, `session to ${sessionsCount}`)
+                  handleSettingUpdateWithClose(
+                    'sessions',
+                    sessionsCount,
+                    `session to ${sessionsCount}`,
+                  )
                 }
               }}
             >
@@ -197,17 +245,41 @@ export default function CommandDialogConent() {
 
             {numberOnly && !workDurationMinutes && !breakDurationMinutes && !sessionsCount && (
               <>
-                <CommandItem onSelect={() => handleSettingUpdateWithClose('work', numberOnly, `work duration to ${numberOnly} minutes`)}>
+                <CommandItem
+                  onSelect={() =>
+                    handleSettingUpdateWithClose(
+                      'work',
+                      numberOnly,
+                      `work duration to ${numberOnly} minutes`,
+                    )
+                  }
+                >
                   <Timer />
                   <span>Set work duration to {numberOnly} minutes</span>
                 </CommandItem>
 
-                <CommandItem onSelect={() => handleSettingUpdateWithClose('break', numberOnly, `break duration to ${numberOnly} minutes`)}>
+                <CommandItem
+                  onSelect={() =>
+                    handleSettingUpdateWithClose(
+                      'break',
+                      numberOnly,
+                      `break duration to ${numberOnly} minutes`,
+                    )
+                  }
+                >
                   <Coffee />
                   <span>Set break duration to {numberOnly} minutes</span>
                 </CommandItem>
 
-                <CommandItem onSelect={() => handleSettingUpdateWithClose('sessions', numberOnly, `session total to ${numberOnly}`)}>
+                <CommandItem
+                  onSelect={() =>
+                    handleSettingUpdateWithClose(
+                      'sessions',
+                      numberOnly,
+                      `session total to ${numberOnly}`,
+                    )
+                  }
+                >
                   <Hash />
                   <span>Set sessions to {numberOnly}</span>
                 </CommandItem>
@@ -223,18 +295,15 @@ export default function CommandDialogConent() {
           <DialogHeader>
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete your current
-              session and update your {pendingUpdate?.label}! Make sure this is what you want before continuing.
+              This action cannot be undone. This will permanently delete your current session and
+              update your {pendingUpdate?.label}! Make sure this is what you want before continuing.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={handleCancelSettingUpdate}>
+            <Button variant='outline' onClick={handleCancelSettingUpdate}>
               Cancel
             </Button>
-            <Button
-              onClick={handleConfirmSettingUpdate}
-              disabled={isSaving}
-            >
+            <Button onClick={handleConfirmSettingUpdate} disabled={isSaving}>
               {isSaving ? 'Saving...' : 'Continue'}
             </Button>
           </DialogFooter>

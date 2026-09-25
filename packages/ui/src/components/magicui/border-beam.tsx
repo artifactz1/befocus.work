@@ -1,49 +1,49 @@
-"use client";
+'use client'
 
-import { cn } from "@repo/ui/lib/utils";
-import { motion, MotionStyle, Transition } from "motion/react";
+import { cn } from '@repo/ui/lib/utils'
+import { MotionStyle, motion, Transition } from 'motion/react'
 
 interface BorderBeamProps {
   /**
    * The size of the border beam.
    */
-  size?: number;
+  size?: number
   /**
    * The duration of the border beam.
    */
-  duration?: number;
+  duration?: number
   /**
    * The delay of the border beam.
    */
-  delay?: number;
+  delay?: number
   /**
    * The color of the border beam from.
    */
-  colorFrom?: string;
+  colorFrom?: string
   /**
    * The color of the border beam to.
    */
-  colorTo?: string;
+  colorTo?: string
   /**
    * The motion transition of the border beam.
    */
-  transition?: Transition;
+  transition?: Transition
   /**
    * The class name of the border beam.
    */
-  className?: string;
+  className?: string
   /**
    * The style of the border beam.
    */
-  style?: React.CSSProperties;
+  style?: React.CSSProperties
   /**
    * Whether to reverse the animation direction.
    */
-  reverse?: boolean;
+  reverse?: boolean
   /**
    * The initial offset position (0-100).
    */
-  initialOffset?: number;
+  initialOffset?: number
 }
 
 export const BorderBeam = ({
@@ -51,27 +51,27 @@ export const BorderBeam = ({
   size = 50,
   delay = 0,
   duration = 6,
-  colorFrom = "#ffaa40",
-  colorTo = "#9c40ff",
+  colorFrom = '#ffaa40',
+  colorTo = '#9c40ff',
   transition,
   style,
   reverse = false,
   initialOffset = 0,
 }: BorderBeamProps) => {
   return (
-    <div className="pointer-events-none absolute inset-0 rounded-[inherit] border border-transparent [mask-clip:padding-box,border-box] [mask-composite:intersect] [mask-image:linear-gradient(transparent,transparent),linear-gradient(#000,#000)]">
+    <div className='pointer-events-none absolute inset-0 rounded-[inherit] border border-transparent [mask-clip:padding-box,border-box] [mask-composite:intersect] [mask-image:linear-gradient(transparent,transparent),linear-gradient(#000,#000)]'>
       <motion.div
         className={cn(
-          "absolute aspect-square",
-          "bg-gradient-to-l from-[var(--color-from)] via-[var(--color-to)] to-transparent",
+          'absolute aspect-square',
+          'bg-gradient-to-l from-[var(--color-from)] via-[var(--color-to)] to-transparent',
           className,
         )}
         style={
           {
             width: size,
             offsetPath: `rect(0 auto auto 0 round ${size}px)`,
-            "--color-from": colorFrom,
-            "--color-to": colorTo,
+            '--color-from': colorFrom,
+            '--color-to': colorTo,
             ...style,
           } as MotionStyle
         }
@@ -83,12 +83,12 @@ export const BorderBeam = ({
         }}
         transition={{
           repeat: Infinity,
-          ease: "linear",
+          ease: 'linear',
           duration,
           delay: -delay,
           ...transition,
         }}
       />
     </div>
-  );
-};
+  )
+}

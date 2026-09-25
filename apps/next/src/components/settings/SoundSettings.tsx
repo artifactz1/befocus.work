@@ -33,7 +33,7 @@ export default function SoundSettings() {
               </MenuButton>
             </PopoverTrigger>
           </TooltipTrigger>
-          <TooltipContent className="font-bold" side="top" sideOffset={8}>
+          <TooltipContent className='font-bold' side='top' sideOffset={8}>
             <p>Open Sound Settings</p>
           </TooltipContent>
         </Tooltip>
@@ -47,36 +47,28 @@ export default function SoundSettings() {
             <div className='mb-2 mt-4 text-lg font-bold'>befocus/sounds</div>
             <Divider />
             <TabsList className='flex w-full bg-[#d0d1d0] dark:bg-[#2A2523]'>
-              <TabsTrigger className="flex-1" value="music">
+              <TabsTrigger className='flex-1' value='music'>
                 Music
               </TabsTrigger>
-              <TabsTrigger className="flex-1" value="ambient">
+              <TabsTrigger className='flex-1' value='ambient'>
                 Ambient
               </TabsTrigger>
-              <TabsTrigger className="flex-1" value="alarm">
+              <TabsTrigger className='flex-1' value='alarm'>
                 Alarm
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="music">
-              {isAddMode ? (
-                <AddSoundButton type="bgMusic" />
-              ) : (
-                <BgMusicSoundsButton />
-              )}
+            <TabsContent value='music'>
+              {isAddMode ? <AddSoundButton type='bgMusic' /> : <BgMusicSoundsButton />}
               <ConfigureSounds />
             </TabsContent>
 
-            <TabsContent value="ambient">
-              {isAddMode ? (
-                <AddSoundButton type="ambient" />
-              ) : (
-                <AmbientSoundsButton />
-              )}
+            <TabsContent value='ambient'>
+              {isAddMode ? <AddSoundButton type='ambient' /> : <AmbientSoundsButton />}
               <ConfigureSounds />
             </TabsContent>
 
-            <TabsContent value="alarm">
+            <TabsContent value='alarm'>
               <AlarmSoundsButton />
             </TabsContent>
           </Tabs>

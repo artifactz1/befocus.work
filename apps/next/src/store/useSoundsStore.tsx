@@ -6,8 +6,8 @@ const soundTypes = ['alarm', 'ambient', 'bgMusic'] as const
 type SoundType = (typeof soundTypes)[number]
 
 export interface Sound {
-  id: string         // unique key
-  name: string       // display name
+  id: string // unique key
+  name: string // display name
   playing: boolean
   volume: number
   url: string
@@ -100,8 +100,8 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
           return {
             sounds: {
               ...state.sounds,
-              [id]: { ...sound, playing: !sound.playing }
-            }
+              [id]: { ...sound, playing: !sound.playing },
+            },
           }
         }
         return state
@@ -114,8 +114,8 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
           return {
             sounds: {
               ...state.sounds,
-              [id]: { ...sound, volume }
-            }
+              [id]: { ...sound, volume },
+            },
           }
         }
         return state
@@ -135,11 +135,9 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
         return { sounds: newSounds }
       }),
 
-    toggleDeleteMode: () =>
-      set(state => ({ isDeleteMode: !state.isDeleteMode })),
+    toggleDeleteMode: () => set(state => ({ isDeleteMode: !state.isDeleteMode })),
 
-    toggleAddMode: () =>
-      set(state => ({ isAddMode: !state.isAddMode })),
+    toggleAddMode: () => set(state => ({ isAddMode: !state.isAddMode })),
 
     editModes: {},
     toggleEditMode: id =>
@@ -149,8 +147,8 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
 
     editSound: (id, newName) =>
       set(state => {
-        const sound = state.sounds[id];
-        if (!sound) return state;
+        const sound = state.sounds[id]
+        if (!sound) return state
 
         return {
           sounds: {
@@ -160,7 +158,7 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
               name: newName,
             },
           },
-        };
+        }
       }),
 
     currentTimes: {},
@@ -198,15 +196,15 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
         set(prevState => ({
           currentTimes: {
             ...prevState.currentTimes,
-            [id]: time
-          }
+            [id]: time,
+          },
         }))
       }
     },
 
     seekingStates: {},
     setSeeking: (id, state) =>
-      set((prevState) => ({
+      set(prevState => ({
         seekingStates: {
           ...prevState.seekingStates,
           [id]: state,
@@ -219,6 +217,18 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
 const custom = useSoundsStore.getState().addSound
 custom('rain', 'Rain Ambience', 'https://www.youtube.com/watch?v=yIQd2Ya0Ziw', true, 'ambient')
 custom('jazz', 'Smooth Jazz', 'https://www.youtube.com/watch?v=VwR3LBbL6Jk', true, 'bgMusic')
-custom('lofi1', 'Lofi Hip Hop', 'https://www.youtube.com/watch?v=617L_MOB37k&ab_channel=thebootlegboy2', true, 'bgMusic')
+custom(
+  'lofi1',
+  'Lofi Hip Hop',
+  'https://www.youtube.com/watch?v=617L_MOB37k&ab_channel=thebootlegboy2',
+  true,
+  'bgMusic',
+)
 custom('library', 'Library Murmurs', 'https://www.youtube.com/watch?v=4vIQON2fDWM', true, 'ambient')
-custom('fireplace', 'Crackling Fireplace', 'https://www.youtube.com/watch?v=UgHKb_7884o', true, 'ambient')
+custom(
+  'fireplace',
+  'Crackling Fireplace',
+  'https://www.youtube.com/watch?v=UgHKb_7884o',
+  true,
+  'ambient',
+)

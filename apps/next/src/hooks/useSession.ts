@@ -34,7 +34,7 @@ export const useUserSettings = () => {
 // Hook to create user settings
 export const useCreateUserSettings = () => {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: async (settings: UserSettingsInput) => {
       const response = await api.user.settings.$post({
@@ -51,7 +51,7 @@ export const useCreateUserSettings = () => {
         description: 'Your preferences have been saved.',
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast.error('Failed to create settings')
       console.error('Error creating settings:', error)
     },
@@ -61,7 +61,7 @@ export const useCreateUserSettings = () => {
 // Hook to update user settings
 export const useUpdateUserSettings = () => {
   const queryClient = useQueryClient()
-  
+
   return useMutation({
     mutationFn: async (settings: UserSettingsInput) => {
       const response = await api.user.settings.$put({
@@ -78,7 +78,7 @@ export const useUpdateUserSettings = () => {
         description: 'Your preferences have been saved.',
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast.error('Failed to update settings')
       console.error('Error updating settings:', error)
     },
@@ -118,7 +118,7 @@ export const useSaveUserSettings = () => {
         description: 'Your preferences have been updated.',
       })
     },
-    onError: (error) => {
+    onError: error => {
       toast.error('Failed to save settings')
       console.error('Error saving settings:', error)
     },

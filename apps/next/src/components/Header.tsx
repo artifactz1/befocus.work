@@ -1,8 +1,8 @@
 'use client'
 
 import SessionMobileCount from './sessions/SessionMobileCount'
-import SessionTitleDisplay from './sessions/SessionTitleDisplay'
 import SessionsUI from './sessions/SessionsUI'
+import SessionTitleDisplay from './sessions/SessionTitleDisplay'
 
 function Timer() {
   return (

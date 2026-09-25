@@ -127,44 +127,36 @@ export default function SoundSettingsMobile() {
 
           <div className='overflow-y-auto px-5'>
             <Tabs defaultValue='music' className='w-full'>
-              <TabsList className="flex w-full">
-                <TabsTrigger className="flex-1" value="music">
+              <TabsList className='flex w-full'>
+                <TabsTrigger className='flex-1' value='music'>
                   Music
                 </TabsTrigger>
-                <TabsTrigger className="flex-1" value="ambient">
+                <TabsTrigger className='flex-1' value='ambient'>
                   Ambient
                 </TabsTrigger>
-                <TabsTrigger className="flex-1" value="alarm">
+                <TabsTrigger className='flex-1' value='alarm'>
                   Alarm
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="music">
-                {isAddMode ? (
-                  <AddSoundButton type='bgMusic' />
-                ) : (
-                  <BgMusicSoundsButton />
-                )}
+              <TabsContent value='music'>
+                {isAddMode ? <AddSoundButton type='bgMusic' /> : <BgMusicSoundsButton />}
                 <ConfigureSounds />
               </TabsContent>
 
-              <TabsContent value="ambient">
-                {isAddMode ? (
-                  <AddSoundButton type='ambient' />
-                ) : (
-                  <AmbientSoundsButton />
-                )}
+              <TabsContent value='ambient'>
+                {isAddMode ? <AddSoundButton type='ambient' /> : <AmbientSoundsButton />}
                 <ConfigureSounds />
               </TabsContent>
 
-              <TabsContent value="alarm">
+              <TabsContent value='alarm'>
                 <AlarmSoundsButton />
               </TabsContent>
             </Tabs>
           </div>
 
           {/* No need to render AddSoundButton here if already handled in tabs */}
-          <DrawerFooter className="py-t" />
+          <DrawerFooter className='py-t' />
           {/* <div className='mt-4 flex w-full items-center justify-center space-x-2'>
               <ToggleAddMode />
               <ToggleDeleteModeButton />

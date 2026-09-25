@@ -25,8 +25,9 @@ export default function SessionTitleDisplay() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 0 }}
         transition={{ duration: 0.25, ease: 'easeInOut' }}
-        className={`text-right text-4xl tracking-tight ${isIdle ? 'font-bold italic text-foreground/85' : 'font-bold italic text-foreground'
-          } ${isLandscape ? 'pt-10 sm:text-4xl' : 'sm:text-5xl'} lg:text-7xl`}
+        className={`text-right text-4xl tracking-tight ${
+          isIdle ? 'font-bold italic text-foreground/85' : 'font-bold italic text-foreground'
+        } ${isLandscape ? 'pt-10 sm:text-4xl' : 'sm:text-5xl'} lg:text-7xl`}
       >
         {text}
       </motion.p>

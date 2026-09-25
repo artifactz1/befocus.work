@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react'
 import { useTimerStore } from '~/store/useTimerStore'
 import MenuButton from '../helper/MenuButtons'
 
-
 const iconSize = 'md:h-5 xl:h-6 '
 
 export default function TimerButtons() {
-  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } = useTimerStore()
+  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } =
+    useTimerStore()
 
   const [isSmallScreen, setIsSmallScreen] = useState(false)
 
@@ -49,7 +49,7 @@ export default function TimerButtons() {
             <MenuButton
               onClick={toggleTimer}
               variant={buttonVariant}
-            // size={window.length < 640 ? "sm" : "lg"}
+              // size={window.length < 640 ? "sm" : "lg"}
             >
               {isRunning ? (
                 <Pause className={`${iconSize}`} strokeWidth={2} />
@@ -91,7 +91,6 @@ export default function TimerButtons() {
           <TooltipContent className='font-bold'>Skip To Next</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-
 
       {/* <AccountButton /> */}
     </div>

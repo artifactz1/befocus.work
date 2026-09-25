@@ -1,5 +1,7 @@
 'use client'
 
+import { Cloud, MoreVertical, Plus, Server } from 'lucide-react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -24,8 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Cloud, MoreVertical, Plus, Server } from 'lucide-react'
-import { useState } from 'react'
 
 // Mock data for existing VMs
 const mockVMs = [

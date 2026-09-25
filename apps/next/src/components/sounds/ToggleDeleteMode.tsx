@@ -14,12 +14,8 @@ export default function ToggleDeleteModeButton() {
   }
 
   return (
-
     <Toggle disabled={isAddMode} onClick={handleSubmit}>
-      {
-        isAddMode ? '' : isDeleteMode ? 'Done' :
-          <Minus />
-      }
+      {isAddMode ? '' : isDeleteMode ? 'Done' : <Minus />}
     </Toggle>
   )
 }

@@ -1,14 +1,5 @@
 'use client'
 
-import { Button } from '@repo/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@repo/ui/tooltip'
-import { Timer } from 'lucide-react'
 
 import {
   AlertDialog,
@@ -21,6 +12,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@repo/ui/alert-dialog'
+import { Button } from '@repo/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui/tooltip'
+import { Timer } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSaveUserSettings, useUserSettings } from '~/hooks/useSession'
 import { useTimerStore } from '~/store/useTimerStore'
@@ -77,7 +72,7 @@ export const SessionSettings: React.FC = () => {
               </MenuButton>
             </PopoverTrigger>
           </TooltipTrigger>
-          <TooltipContent className="font-bold" side="top" sideOffset={8}>
+          <TooltipContent className='font-bold' side='top' sideOffset={8}>
             <p>Open Session Settings</p>
           </TooltipContent>
         </Tooltip>
@@ -93,7 +88,10 @@ export const SessionSettings: React.FC = () => {
             <div className='flex flex-col space-y-6'>
               <div>
                 <WorkDurationInput value={workTime / 60} onChange={value => setWorkTime(value)} />
-                <BreakDurationInput value={breakTime / 60} onChange={value => setBreakTime(value)} />
+                <BreakDurationInput
+                  value={breakTime / 60}
+                  onChange={value => setBreakTime(value)}
+                />
                 <SessionsInput value={session} onChange={value => setSession(value)} />
               </div>
 
@@ -114,10 +112,7 @@ export const SessionSettings: React.FC = () => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={handleSaveSettings}
-                        disabled={isSaving}
-                      >
+                      <AlertDialogAction onClick={handleSaveSettings} disabled={isSaving}>
                         Continue
                       </AlertDialogAction>
                     </AlertDialogFooter>

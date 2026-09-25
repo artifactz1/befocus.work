@@ -9,12 +9,9 @@ export async function getUserSettings(): Promise<Settings | null> {
   if (!cookie) return null
 
   try {
-    const { data: settings, error } = await betterFetch<Settings>(
-      `${env.API_URL}/user/settings`,
-      {
-        headers: { cookie },
-      },
-    )
+    const { data: settings, error } = await betterFetch<Settings>(`${env.API_URL}/user/settings`, {
+      headers: { cookie },
+    })
 
     if (error) {
       if (error.status === 404) return null

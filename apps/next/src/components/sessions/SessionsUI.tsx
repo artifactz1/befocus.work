@@ -10,8 +10,7 @@ export default function SessionsUI() {
   // const { sessions, currentSession, isWorking, timeLeft, workDuration, breakDuration } =
   //   useTimerStore()
 
-  const { sessions, currentSession, isWorking, } =
-    useTimerStore()
+  const { sessions, currentSession, isWorking } = useTimerStore()
 
   const isLandscape = useIsLandscape() // Get Zustand state & function
 
