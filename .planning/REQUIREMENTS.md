@@ -17,7 +17,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **FND-03**: `globals.css` contains no syntax the installed Tailwind version silently ignores,
       and no duplicate conflicting token definitions
 - [ ] **FND-04**: `bun run check` (format + lint + organize-imports) exits clean on a fresh install
-- [ ] **FND-05**: User settings hydrate from exactly one source, with no competing client-side
+- [x] **FND-05**: User settings hydrate from exactly one source, with no competing client-side
       re-fetch racing the server-fetched values
 
 ### Customization Engine
@@ -146,7 +146,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | FND-02 | Phase 1 - Foundation Repair | Complete |
 | FND-03 | Phase 1 - Foundation Repair | Complete |
 | FND-04 | Phase 1 - Foundation Repair | Pending |
-| FND-05 | Phase 1 - Foundation Repair | Pending |
+| FND-05 | Phase 1 - Foundation Repair | Complete |
 | ENG-01 | Phase 2 - Customization Engine and Panel | Pending |
 | ENG-02 | Phase 2 - Customization Engine and Panel | Pending |
 | ENG-03 | Phase 2 - Customization Engine and Panel | Pending |

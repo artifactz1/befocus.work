@@ -64,7 +64,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 01-03-PLAN.md - Per-request seeded timer store + server-seeded query cache: one read, zero flash (FND-05)
+- [x] 01-03-PLAN.md - Per-request seeded timer store + server-seeded query cache: one read, zero flash (FND-05)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -272,7 +272,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation Repair | 2/5 | In Progress|  |
+| 1. Foundation Repair | 3/5 | In Progress|  |
 | 2. Customization Engine and Panel | 0/TBD | Not started | - |
 | 3. Persistence and Sync | 0/TBD | Not started | - |
 | 4. Saved Themes | 0/TBD | Not started | - |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-09-25T09:35:50.096Z"
+stopped_at: Completed 01-03-PLAN.md
+last_updated: "2026-09-25T10:03:30.510Z"
 last_activity: 2026-09-25
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -27,11 +27,11 @@ the next time they open it - signed in on any device, or as a guest on the same 
 ## Current Position
 
 Phase: 01 (foundation-repair) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-09-25
 
-Progress: [████░░░░░░] 40%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Progress: [████░░░░░░] 40%
 *Updated after each plan completion*
 | Phase 01-foundation-repair P01 | 45min | 2 tasks | 1 files |
 | Phase 01 P02 | 30min | 2 tasks | 4 files |
+| Phase 01-foundation-repair P03 | 16min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase 01-01]: getUserSettings.ts now forwards the raw Cookie header via next/headers instead of a hardcoded cookie name, fixing production settings hydration under __Secure- cookies (FND-01)
 - [Phase 01]: apps/next now depends on real tailwindcss@^3.4.13 (same range as packages/ui); the unrelated tailwind@4 streaming library and its legacy dependency tree are gone from package.json and bun.lock (FND-02)
 - [Phase 01]: globals.css --border is single-sourced (0 0% 69% light, 0 0% 25% dark) and shine keyframes/animation moved into tailwind.config.ts theme.extend, removing the v4-only @theme block Tailwind 3 was silently leaving inert (FND-03)
+- [Phase 01-foundation-repair]: Combined Task 1 (per-request timer store) and Task 2 (single hydration owner) into one commit - Task 1 alone would fail tsc since it removes isHydrated/hydrateFromSettings that TimerInitializer.tsx and useTimer.ts (deleted only in Task 2) still referenced; plan explicitly permits combining these tasks
+- [Phase 01-foundation-repair]: useSaveUserSettings tries PUT first, falls back to POST on 404 (D-08) - the seeded query cache can be null either because there is no settings row or because the seed itself failed; only the server 404 can disambiguate that reliably
 
 ### Pending Todos
 
@@ -102,6 +105,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-25T09:35:50.090Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-09-25T10:03:30.503Z
+Stopped at: Completed 01-03-PLAN.md
 Resume file: None
