@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 1 context gathered
-last_updated: "2026-09-25T08:58:16.908Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-09-25T09:35:50.096Z"
 last_activity: 2026-09-25
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
+  completed_plans: 2
   percent: 0
 ---
 
@@ -27,11 +27,11 @@ the next time they open it - signed in on any device, or as a guest on the same 
 ## Current Position
 
 Phase: 01 (foundation-repair) — EXECUTING
-Plan: 2 of 5
+Plan: 3 of 5
 Status: Ready to execute
 Last activity: 2026-09-25
 
-Progress: [██░░░░░░░░] 20%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Progress: [██░░░░░░░░] 20%
 
 *Updated after each plan completion*
 | Phase 01-foundation-repair P01 | 45min | 2 tasks | 1 files |
+| Phase 01 P02 | 30min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 
 - Project: Start clean on `feat/customize-v2`; the April design spec is reference, not contract.
 - [Phase 01-01]: getUserSettings.ts now forwards the raw Cookie header via next/headers instead of a hardcoded cookie name, fixing production settings hydration under __Secure- cookies (FND-01)
+- [Phase 01]: apps/next now depends on real tailwindcss@^3.4.13 (same range as packages/ui); the unrelated tailwind@4 streaming library and its legacy dependency tree are gone from package.json and bun.lock (FND-02)
+- [Phase 01]: globals.css --border is single-sourced (0 0% 69% light, 0 0% 25% dark) and shine keyframes/animation moved into tailwind.config.ts theme.extend, removing the v4-only @theme block Tailwind 3 was silently leaving inert (FND-03)
 
 ### Pending Todos
 
@@ -99,6 +102,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-25T08:58:16.904Z
-Stopped at: Phase 1 context gathered
+Last session: 2026-09-25T09:35:50.090Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None

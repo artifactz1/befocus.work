@@ -12,9 +12,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 - [x] **FND-01**: Server-fetched user settings reach the dashboard in production (the `__Secure-`
       cookie prefix is handled), verified against the live deployment
-- [ ] **FND-02**: `apps/next` declares a real Tailwind dependency; the bogus `tailwind@^4.0.0`
+- [x] **FND-02**: `apps/next` declares a real Tailwind dependency; the bogus `tailwind@^4.0.0`
       package is gone and the app compiles against one known Tailwind version
-- [ ] **FND-03**: `globals.css` contains no syntax the installed Tailwind version silently ignores,
+- [x] **FND-03**: `globals.css` contains no syntax the installed Tailwind version silently ignores,
       and no duplicate conflicting token definitions
 - [ ] **FND-04**: `bun run check` (format + lint + organize-imports) exits clean on a fresh install
 - [ ] **FND-05**: User settings hydrate from exactly one source, with no competing client-side
@@ -143,8 +143,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | FND-01 | Phase 1 - Foundation Repair | Complete |
-| FND-02 | Phase 1 - Foundation Repair | Pending |
-| FND-03 | Phase 1 - Foundation Repair | Pending |
+| FND-02 | Phase 1 - Foundation Repair | Complete |
+| FND-03 | Phase 1 - Foundation Repair | Complete |
 | FND-04 | Phase 1 - Foundation Repair | Pending |
 | FND-05 | Phase 1 - Foundation Repair | Pending |
 | ENG-01 | Phase 2 - Customization Engine and Panel | Pending |
