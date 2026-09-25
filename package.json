@@ -8,7 +8,7 @@
     "check": "npm run format:check && npm run lint && npm run fix:check",
     "format:check": "bun x @biomejs/biome format ./packages ./apps",
     "lint": "bun x @biomejs/biome lint ./packages ./apps",
-    "fix:check": "bun x @biomejs/biome check --formatter-enabled=false --linter-enabled=false --organize-imports-enabled=true ./packages ./apps",
+    "fix:check": "bun x @biomejs/biome check --formatter-enabled=false --linter-enabled=false --assist-enabled=true ./packages ./apps",
     "generate": "cd packages/api && bun db:generate",
     "turbo:dev": "turbo dev",
     "turbo:lint": "turbo run lint",
@@ -28,7 +28,7 @@
   "packageManager": "bun@1.1.20",
   "workspaces": ["apps/*", "packages/*"],
   "dependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2",
     "@paralleldrive/cuid2": "^2.2.2",
     "better-auth": "^1.1.18",
     "framer-motion": "^12.4.7",

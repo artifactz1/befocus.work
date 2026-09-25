@@ -6,7 +6,7 @@
     "dev": "next dev --turbo --port 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint",
+    "lint": "bun x @biomejs/biome lint .",
     "clean": "git clean -xdf .next node_modules"
   },
   "dependencies": {

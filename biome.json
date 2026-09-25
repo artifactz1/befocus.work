@@ -1,26 +1,30 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.3.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
   "files": {
     "ignoreUnknown": true,
-    "ignore": [
-      "**/.wrangler/**",
-      "**/tamagui.css",
-      "**/workbox*.js",
-      "**/sw*.js",
-      "**/service-worker.js",
-      "**/fallback*.js",
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/build/**",
-      "**/ios/**",
-      "**/.git/**",
-      "**/.vscode/**",
-      "**/.android/**",
-      "**/.DS_Store/**",
-      "**/Thumbs.db/**",
-      "**/.tamagui*",
-      "**/.next*",
-      "**/packages/typescript-config/nextjs.json"
+    "includes": [
+      "**",
+      "!**/.wrangler/**",
+      "!**/tamagui.css",
+      "!**/workbox*.js",
+      "!**/sw*.js",
+      "!**/service-worker.js",
+      "!**/fallback*.js",
+      "!**/node_modules/**",
+      "!**/dist/**",
+      "!**/build/**",
+      "!**/ios/**",
+      "!**/.git/**",
+      "!**/.vscode/**",
+      "!**/.android/**",
+      "!**/.DS_Store/**",
+      "!**/Thumbs.db/**",
+      "!**/.tamagui*",
+      "!**/.next*",
+      "!**/packages/typescript-config/nextjs.json",
+      "!**/src/db/drizzle",
+      "!**/next-env.d.ts",
+      "!**/CHANGELOG.md"
     ]
   },
   "formatter": {
@@ -46,10 +50,15 @@
       "allowTrailingCommas": false
     }
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "style": {
         "useTemplate": "warn"
       },
@@ -65,7 +74,5 @@
       }
     }
   },
-  "organizeImports": {
-    "enabled": true
-  }
+  "assist": { "actions": { "source": { "organizeImports": "on" } } }
 }

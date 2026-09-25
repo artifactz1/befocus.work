@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "validate": "biome .",
-    "fix": "biome --fix . && prettier '**/*.{json,yaml}' --write --ignore-path .gitignore",
+    "validate": "bun x @biomejs/biome check .",
+    "fix": "bun x @biomejs/biome check --write .",
     "deploy": "wrangler deploy --minify",
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
