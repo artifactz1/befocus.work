@@ -9,6 +9,20 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
 const round = (n: number) => Math.round(n * 1000) / 1000
 
+const TICKS = Array.from({ length: 12 }, (_, i) => {
+  const angle = (i / 12) * Math.PI * 2
+  const major = i % 3 === 0
+  const inner = RADIUS - (major ? 26 : 14)
+  return {
+    id: `tick-${i}`,
+    major,
+    x1: round(CENTER + Math.cos(angle) * RADIUS),
+    y1: round(CENTER + Math.sin(angle) * RADIUS),
+    x2: round(CENTER + Math.cos(angle) * inner),
+    y2: round(CENTER + Math.sin(angle) * inner),
+  }
+})
+
 export default function TimerProgressRing() {
   const timeLeft = useTimerStore(s => s.timeLeft)
   const workDuration = useTimerStore(s => s.workDuration)
@@ -25,6 +39,7 @@ export default function TimerProgressRing() {
       className='pointer-events-none absolute inset-0 flex items-center justify-center'
     >
       <svg
+        aria-hidden
         viewBox={`0 0 ${VIEWBOX} ${VIEWBOX}`}
         className='-rotate-90 h-[min(72vh,92vw)] w-[min(72vh,92vw)]'
       >
@@ -58,27 +73,18 @@ export default function TimerProgressRing() {
           strokeLinecap='round'
           style={{ transition: 'stroke-dashoffset 1s linear' }}
         />
-        {Array.from({ length: 12 }).map((_, i) => {
-          const angle = (i / 12) * Math.PI * 2
-          const major = i % 3 === 0
-          const inner = RADIUS - (major ? 26 : 14)
-          const x1 = round(CENTER + Math.cos(angle) * RADIUS)
-          const y1 = round(CENTER + Math.sin(angle) * RADIUS)
-          const x2 = round(CENTER + Math.cos(angle) * inner)
-          const y2 = round(CENTER + Math.sin(angle) * inner)
-          return (
-            <line
-              key={i}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke={`hsl(var(--foreground) / ${major ? 0.3 : 0.15})`}
-              strokeWidth={major ? 1.2 : 0.7}
-              strokeLinecap='round'
-            />
-          )
-        })}
+        {TICKS.map(tick => (
+          <line
+            key={tick.id}
+            x1={tick.x1}
+            y1={tick.y1}
+            x2={tick.x2}
+            y2={tick.y2}
+            stroke={`hsl(var(--foreground) / ${tick.major ? 0.3 : 0.15})`}
+            strokeWidth={tick.major ? 1.2 : 0.7}
+            strokeLinecap='round'
+          />
+        ))}
       </svg>
     </div>
   )

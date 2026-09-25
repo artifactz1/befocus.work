@@ -24,7 +24,8 @@
       "!**/packages/typescript-config/nextjs.json",
       "!**/src/db/drizzle",
       "!**/next-env.d.ts",
-      "!**/CHANGELOG.md"
+      "!**/CHANGELOG.md",
+      "!**/apps/next/public/**"
     ]
   },
   "formatter": {
@@ -64,7 +65,13 @@
       },
       "suspicious": {
         "noEmptyInterface": "off",
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "noUnknownAtRules": {
+          "level": "error",
+          "options": {
+            "ignore": ["tailwind"]
+          }
+        }
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"

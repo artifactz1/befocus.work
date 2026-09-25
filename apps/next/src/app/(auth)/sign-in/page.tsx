@@ -39,6 +39,19 @@ const providers = [
 
 const ease = [0.22, 1, 0.36, 1] as const
 
+const RING_TICKS = Array.from({ length: 12 }, (_, i) => {
+  const angle = (i / 12) * Math.PI * 2 - Math.PI / 2
+  const major = i % 3 === 0
+  return {
+    id: `tick-${i}`,
+    major,
+    x1: 120 + Math.cos(angle) * 102,
+    y1: 120 + Math.sin(angle) * 102,
+    x2: 120 + Math.cos(angle) * (major ? 90 : 96),
+    y2: 120 + Math.sin(angle) * (major ? 90 : 96),
+  }
+})
+
 export default function SignIn() {
   const router = useRouter()
   const homePageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/`
@@ -165,25 +178,18 @@ export default function SignIn() {
                 strokeDasharray='1.5 12'
                 strokeLinecap='round'
               />
-              {Array.from({ length: 12 }).map((_, i) => {
-                const angle = (i / 12) * Math.PI * 2 - Math.PI / 2
-                const x1 = 120 + Math.cos(angle) * 102
-                const y1 = 120 + Math.sin(angle) * 102
-                const x2 = 120 + Math.cos(angle) * (i % 3 === 0 ? 90 : 96)
-                const y2 = 120 + Math.sin(angle) * (i % 3 === 0 ? 90 : 96)
-                return (
-                  <line
-                    key={i}
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    stroke='hsl(var(--foreground) / 0.30)'
-                    strokeWidth={i % 3 === 0 ? 1 : 0.7}
-                    strokeLinecap='round'
-                  />
-                )
-              })}
+              {RING_TICKS.map(tick => (
+                <line
+                  key={tick.id}
+                  x1={tick.x1}
+                  y1={tick.y1}
+                  x2={tick.x2}
+                  y2={tick.y2}
+                  stroke='hsl(var(--foreground) / 0.30)'
+                  strokeWidth={tick.major ? 1 : 0.7}
+                  strokeLinecap='round'
+                />
+              ))}
             </motion.svg>
           </motion.div>
 
@@ -231,6 +237,7 @@ export default function SignIn() {
                       aria-hidden
                     >
                       <svg
+                        aria-hidden
                         width='22'
                         height='10'
                         viewBox='0 0 22 10'
@@ -276,6 +283,7 @@ export default function SignIn() {
                   aria-hidden
                 >
                   <svg
+                    aria-hidden
                     width='18'
                     height='10'
                     viewBox='0 0 22 10'

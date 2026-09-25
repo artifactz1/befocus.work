@@ -56,7 +56,7 @@ export function parseCommand(input: string): ParsedCommand[] {
     for (const pattern of config.patterns) {
       const match = trimmedInput.match(pattern)
       if (match?.[1]) {
-        const value = Number.parseInt(match[1])
+        const value = Number.parseInt(match[1], 10)
         const isValid = value >= config.min && value <= config.max
 
         results.push({
@@ -78,8 +78,6 @@ export function parseCommand(input: string): ParsedCommand[] {
 
 // Alternative: Class-based approach for more complex scenarios
 export class CommandParser {
-  private configs = COMMAND_CONFIGS
-
   parse(input: string): ParsedCommand[] {
     return parseCommand(input)
   }
