@@ -46,7 +46,14 @@ and trustworthy again.
   4. `apps/next` builds against a single declared Tailwind version, and the dashboard renders with
      no rule the installed version silently ignores and no design token defined twice with
      conflicting values.
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 01-01-PLAN.md - Reproduce `__Secure-` cookie bug locally, forward raw Cookie header in getUserSettings (FND-01)
+- [ ] 01-02-PLAN.md - Real Tailwind 3.4 dependency, drop `@theme`, shine in config, single `--border` (FND-02, FND-03)
+- [ ] 01-03-PLAN.md - Per-request seeded timer store + server-seeded query cache: one read, zero flash (FND-05)
+- [ ] 01-04-PLAN.md - Biome 2 upgrade, churn commit, lint fixes, fresh-install gate (FND-04)
+- [ ] 01-05-PLAN.md - Human deploy + production verification (FND-01, FND-05)
 
 Notes for planning:
 - FND-01 is `apps/next/src/lib/server/getUserSettings.ts`, which hardcodes the cookie name
