@@ -1,6 +1,5 @@
 'use client'
 
-
 import { useEffect } from 'react'
 import ReactPlayer from 'react-player'
 import type { OnProgressProps } from 'react-player/base'
