@@ -56,7 +56,7 @@ and trustworthy again.
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md - Reproduce `__Secure-` cookie bug locally, forward raw Cookie header in getUserSettings (FND-01)
+- [x] 01-01-PLAN.md - Reproduce `__Secure-` cookie bug locally, forward raw Cookie header in getUserSettings (FND-01)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -272,7 +272,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation Repair | 0/TBD | Not started | - |
+| 1. Foundation Repair | 1/5 | In Progress|  |
 | 2. Customization Engine and Panel | 0/TBD | Not started | - |
 | 3. Persistence and Sync | 0/TBD | Not started | - |
 | 4. Saved Themes | 0/TBD | Not started | - |

@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 1 context gathered
-last_updated: "2026-09-25T02:09:52.453Z"
-last_activity: 2026-09-25 -- Phase 01 planning complete
+last_updated: "2026-09-25T08:58:16.908Z"
+last_activity: 2026-09-25
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 5
-  completed_plans: 0
+  completed_plans: 1
   percent: 0
 ---
 
@@ -22,16 +22,16 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** A user can change how their focus dashboard looks and have that look still be there
 the next time they open it - signed in on any device, or as a guest on the same browser.
-**Current focus:** Phase 1 - Foundation Repair
+**Current focus:** Phase 01 — foundation-repair
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation Repair)
-Plan: 0 of TBD in current phase
+Phase: 01 (foundation-repair) — EXECUTING
+Plan: 2 of 5
 Status: Ready to execute
-Last activity: 2026-09-25 -- Phase 01 planning complete
+Last activity: 2026-09-25
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 *Updated after each plan completion*
+| Phase 01-foundation-repair P01 | 45min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,7 @@ Recent decisions affecting current work:
   Phase 5 rather than spread across phases.
 
 - Project: Start clean on `feat/customize-v2`; the April design spec is reference, not contract.
+- [Phase 01-01]: getUserSettings.ts now forwards the raw Cookie header via next/headers instead of a hardcoded cookie name, fixing production settings hydration under __Secure- cookies (FND-01)
 
 ### Pending Todos
 
@@ -97,6 +99,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-25T00:06:35.102Z
+Last session: 2026-09-25T08:58:16.904Z
 Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/BFC-01-foundation-repair/01-CONTEXT.md
+Resume file: None
