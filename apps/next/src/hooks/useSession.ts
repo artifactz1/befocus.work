@@ -26,6 +26,8 @@ export const useUserSettings = () => {
       if (!response.ok) return null
       return await response.json()
     },
+    // The server layout seeds this query via HydrationBoundary - never refetch on mount/focus.
+    staleTime: Number.POSITIVE_INFINITY,
   })
 }
 
@@ -83,32 +85,32 @@ export const useUpdateUserSettings = () => {
   })
 }
 
-// Combined hook to save settings (create or update based on existence)
+// Combined hook to save settings (create or update based on existence).
+// Tries PUT first; a 404 means the user has no settings row yet, so it falls
+// back to POST. This avoids depending on useUserSettings' (possibly seeded-null,
+// per D-08) cache state to decide create vs. update.
 export const useSaveUserSettings = () => {
   const queryClient = useQueryClient()
-  const { data: existingSettings } = useUserSettings()
-  
+
   return useMutation({
     mutationFn: async (settings: UserSettingsInput) => {
-      if (existingSettings) {
-        // Update existing settings
-        const response = await api.user.settings.$put({
-          json: settings,
-        })
-        if (!response.ok) {
-          throw new Error('Failed to update settings')
-        }
-        return response
-      }  
-        // Create new settings
-        const response = await api.user.settings.$post({
-          json: settings,
-        })
-        if (!response.ok) {
-          throw new Error('Failed to create settings')
-        }
-        return await response.json()
-      
+      const putResponse = await api.user.settings.$put({
+        json: settings,
+      })
+      if (putResponse.ok) {
+        return await putResponse.json()
+      }
+      if (putResponse.status !== 404) {
+        throw new Error('Failed to update settings')
+      }
+
+      const postResponse = await api.user.settings.$post({
+        json: settings,
+      })
+      if (!postResponse.ok) {
+        throw new Error('Failed to create settings')
+      }
+      return await postResponse.json()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSettings'] })

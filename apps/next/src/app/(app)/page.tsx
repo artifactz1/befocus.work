@@ -8,13 +8,11 @@ import { SessionCompleteModal } from '~/components/SessionCompleteModal'
 import GlobalSoundsPlayer from '~/components/helper/GlobalSoundsPlayer'
 import PrefetchUserTasks from '~/components/helper/PrefetchUserTasks'
 import Timer from '~/components/timer/Timer'
-import { TimerInitializer } from '~/components/timer/TimerInitializer'
 
 export default function Dashboard() {
   return (
     <div>
       <GlobalSoundsPlayer />
-      <TimerInitializer />
       <PrefetchUserTasks />
       <SessionCompleteModal />
       <CommandMenu />

@@ -1,15 +1,16 @@
-import DashboardShell from '~/hooks/DashboardShell'
+import { HydrationBoundary, QueryClient, dehydrate } from '@tanstack/react-query'
 import { getUserSettings } from '~/lib/server/getUserSettings'
+import { TimerStoreProvider } from '~/store/useTimerStore'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  // Server action of getting settings
-  const data = await getUserSettings()
+  const settings = await getUserSettings()
 
-  console.log("FETCHED FROM SERVER COMPONENT", data)
+  const queryClient = new QueryClient()
+  queryClient.setQueryData(['userSettings'], settings)
 
   return (
-    <DashboardShell initialSettings={data}>
-      {children}
-    </DashboardShell>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <TimerStoreProvider initialSettings={settings}>{children}</TimerStoreProvider>
+    </HydrationBoundary>
   )
 }
