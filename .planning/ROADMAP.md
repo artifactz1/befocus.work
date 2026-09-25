@@ -69,6 +69,7 @@ Plans:
 **Wave 4** *(blocked on Wave 3 completion)*
 
 - [x] 01-04-PLAN.md - Biome 2 upgrade, churn commit, lint fixes, fresh-install gate (FND-04)
+  - FND-04 verified: bun 1.2.23 on macOS, all `node_modules` removed, `bun install --frozen-lockfile` exit 0, `bun run check` exit 0. The earlier `bun.lock` esbuild failure was not reproducible; regenerating `bun.lock` gave a worse lockfile (integrity hashes dropped, still no darwin esbuild entry), so `bun.lock` is unchanged.
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
