@@ -54,7 +54,7 @@
     --destructive: 0 65% 50%;          /* Red fallback */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 60 4% 80%;               /* #d8d8d3 blend */
+    --border: 0 0% 69%;                /* translates to #E5E3DD */
     --input: 60 4% 90%;
     --ring: 210 4% 70%;
 
@@ -84,7 +84,7 @@
     --accent-foreground: 60 9.1% 97.8%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 60 9.1% 97.8%;
-    --border: 12 6.5% 15.1%;
+    --border: 0 0% 25%;                /* a neutral dark border for dark mode */
     --input: 12 6.5% 15.1%;
     --ring: 24 5.7% 82.9%;
     --chart-1: 220 70% 50%;
@@ -92,9 +92,6 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-  }
-  .theme {
-    --animate-shine: shine var(--duration) infinite linear;
   }
 }
 @layer base {
@@ -198,26 +195,4 @@
   src: url("/Supreme_Complete/Fonts/OTF/Supreme-ThinItalic.otf") format("opentype");
   font-weight: 100;
   font-style: italic;
-}
-
-:root {
-  --border: 0 0% 69%; /* translates to #E5E3DD */
-}
-
-.dark {
-  --border: 0 0% 25%; /* a neutral dark border for dark mode */
-}
-
-@theme inline {
-  @keyframes shine {
-  0% {
-    background-position: 0% 0%;
-    }
-  50% {
-    background-position: 100% 100%;
-    }
-  to {
-    background-position: 0% 0%;
-    }
-  }
 }
