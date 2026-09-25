@@ -16,7 +16,7 @@ Requirements for this milestone. Each maps to roadmap phases.
       package is gone and the app compiles against one known Tailwind version
 - [x] **FND-03**: `globals.css` contains no syntax the installed Tailwind version silently ignores,
       and no duplicate conflicting token definitions
-- [ ] **FND-04**: `bun run check` (format + lint + organize-imports) exits clean on a fresh install
+- [x] **FND-04**: `bun run check` (format + lint + organize-imports) exits clean on a fresh install
 - [x] **FND-05**: User settings hydrate from exactly one source, with no competing client-side
       re-fetch racing the server-fetched values
 
@@ -145,7 +145,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | FND-01 | Phase 1 - Foundation Repair | Complete |
 | FND-02 | Phase 1 - Foundation Repair | Complete |
 | FND-03 | Phase 1 - Foundation Repair | Complete |
-| FND-04 | Phase 1 - Foundation Repair | Pending |
+| FND-04 | Phase 1 - Foundation Repair | Complete |
 | FND-05 | Phase 1 - Foundation Repair | Complete |
 | ENG-01 | Phase 2 - Customization Engine and Panel | Pending |
 | ENG-02 | Phase 2 - Customization Engine and Panel | Pending |

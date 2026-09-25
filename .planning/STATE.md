@@ -82,7 +82,7 @@ Recent decisions affecting current work:
 - [Phase 01-foundation-repair]: useSaveUserSettings tries PUT first, falls back to POST on 404 (D-08) - the seeded query cache can be null either because there is no settings row or because the seed itself failed; only the server 404 can disambiguate that reliably
 - [Phase ?]: Excluded apps/next/public/** from biome.json files.includes to resolve noSvgWithoutTitle on confirmed-dead static SVG boilerplate, rather than adding title/aria-label to unused files
 - [Phase 01-foundation-repair]: Fixed noDocumentCookie on packages/app/provider/auth/cookie-store.ts (dead legacy auth code) by rewriting to the async Cookie Store API instead of deleting the file, because git rm was denied by sandbox tooling; deletion recommended as a follow-up
-- [Phase 01-foundation-repair]: Did not mark FND-04 complete - the fresh bun install --frozen-lockfile gate cannot be verified due to a pre-existing bun.lock corruption bug in esbuild platform metadata, unrelated to Biome
+- [Phase 01-foundation-repair]: FND-04 marked complete after re-verification - bun 1.2.23 on macOS, clean node_modules removal, `bun install --frozen-lockfile` exit 0, `bun run check` exit 0. Original esbuild bun.lock failure not reproducible; regenerating bun.lock dropped integrity hashes and still had no darwin esbuild entry, so bun.lock left unchanged
 
 ### Pending Todos
 
@@ -90,8 +90,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- `bun run check` currently fails on `biome.json` schema version, not on code. Lint is not a usable
-  signal until Phase 1 clears it (FND-04).
+- Resolved (FND-04): `bun run check` exits clean on a fresh install.
 
 - FND-01 can only be verified against the live deployment, since the `__Secure-` cookie prefix only
   appears when cookies are secure.
