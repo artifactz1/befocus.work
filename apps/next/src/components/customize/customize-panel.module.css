@@ -25,38 +25,76 @@
   --panel-hair: rgb(255 255 255 / 0.07);
   font-family: var(--font-app);
   color: hsl(var(--foreground));
-}
-
-.dock {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 520px;
-  z-index: 40;
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  padding-left: 120px;
-  background: linear-gradient(90deg, transparent, var(--panel-surface) 120px);
   transition: background-color 0.35s;
   display: flex;
   flex-direction: column;
 }
 
-.dock::before {
+.panel::before {
   content: "";
   position: absolute;
   z-index: -1;
+  pointer-events: none;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.dock {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 520px;
+  z-index: 40;
+  padding-left: 120px;
+  background: linear-gradient(90deg, transparent, var(--panel-surface) 120px);
+}
+
+.dock::before {
   left: 0;
   top: 0;
   bottom: 0;
   width: 150px;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
   -webkit-mask: linear-gradient(90deg, transparent, #000 80%, transparent);
   mask: linear-gradient(90deg, transparent, #000 80%, transparent);
-  pointer-events: none;
+}
+
+/* Mobile sheet (< 1024px, D-20 mobile). Transcribed from .m[data-dir="D"] on the board. */
+.sheet {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 60dvh;
+  z-index: 50;
+  padding-top: 34px;
+  background: linear-gradient(180deg, transparent, var(--panel-surface) 64px);
+  outline: none;
+}
+
+.sheet::before {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 48px;
+  -webkit-mask: linear-gradient(180deg, transparent, #000 70%, transparent);
+  mask: linear-gradient(180deg, transparent, #000 70%, transparent);
+}
+
+.grab {
+  width: 40px;
+  height: 5px;
+  border-radius: 5px;
+  background: hsl(var(--foreground) / 0.25);
+  margin: 0 auto;
+}
+
+.sheet[data-vaul-drawer] {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .head {
@@ -466,6 +504,36 @@
   animation: bf-ping 0.9s ease-out;
 }
 
+.sheet .head {
+  padding: 8px 16px 6px;
+}
+
+.sheet .tabs {
+  padding: 4px 16px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sheet .tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.sheet .body {
+  padding: 2px 16px 20px;
+}
+
+.sheet .foot {
+  padding: 16px 16px 20px;
+}
+
+.sheet .foot button {
+  height: 40px;
+}
+
+.sheet .swatches {
+  gap: 10px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .body > *,
   .dot[data-ping="true"] {
@@ -473,6 +541,11 @@
   }
 
   .dock {
+    transition: none;
+  }
+
+  .sheet[data-vaul-drawer] {
+    animation: none;
     transition: none;
   }
 }

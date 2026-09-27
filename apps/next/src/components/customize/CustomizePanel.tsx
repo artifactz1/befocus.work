@@ -2,8 +2,10 @@
 
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef } from 'react'
+import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useCustomizeStore } from '~/store/useCustomizeStore'
 import CustomizePanelDesktop from './CustomizePanelDesktop'
+import CustomizePanelMobile from './CustomizePanelMobile'
 import { useCustomizeActions } from './useCustomizeActions'
 
 export default function CustomizePanel() {
@@ -11,7 +13,9 @@ export default function CustomizePanel() {
   const { discard } = useCustomizeActions()
   const pathname = usePathname()
   const prevPathname = useRef(pathname)
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: rerun on isDesktop so focus moves to the heading when the shell swaps
   useEffect(() => {
     if (!panelOpen) return
 
@@ -20,7 +24,7 @@ export default function CustomizePanel() {
     })
 
     return () => cancelAnimationFrame(frame)
-  }, [panelOpen])
+  }, [panelOpen, isDesktop])
 
   useEffect(() => {
     if (panelOpen) return
@@ -54,5 +58,5 @@ export default function CustomizePanel() {
     prevPathname.current = pathname
   }, [pathname, panelOpen, discard])
 
-  return <CustomizePanelDesktop />
+  return isDesktop ? <CustomizePanelDesktop /> : <CustomizePanelMobile />
 }
