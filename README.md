@@ -217,9 +217,15 @@ bun run start        # Start production server
 bun run dev          # Start API dev server with hot reload
 bun run deploy       # Deploy to Cloudflare Workers
 bun run db:studio    # Open database management UI
+
+# In apps/next/
+bun run preview      # Build with OpenNext and preview the Worker locally
+bun run deploy       # Deploy to Cloudflare Workers via OpenNext
 ```
 
 ## Deployment
+
+Both the API and the web app deploy to Cloudflare Workers.
 
 ### API Deployment (Cloudflare Workers)
 
@@ -241,13 +247,26 @@ bun run db:studio    # Open database management UI
    bun run deploy
    ```
 
-### Web App Deployment
+### Web App Deployment (Cloudflare Workers via OpenNext)
 
-The Next.js app can be deployed to various platforms:
+The Next.js app deploys with the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare), the same way the API deploys.
 
-- **Vercel:** `npx vercel --prod`
-- **Netlify:** Build command: `bun run build`, Publish directory: `apps/next/.next`
-- **Docker:** Use the included Dockerfile
+1. **Configure Cloudflare:**
+   ```bash
+   cd apps/next
+   bunx wrangler login
+   ```
+
+2. **Set production environment variables** (see `apps/next/wrangler.jsonc` for the full list):
+   ```bash
+   bunx wrangler secret put API_URL
+   ```
+   `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_API_URL` are inlined at build time, so set them in the environment that runs `bun run deploy` (or in `apps/next/.env.local` for local builds).
+
+3. **Deploy:**
+   ```bash
+   bun run deploy
+   ```
 
 ## Contributing
 

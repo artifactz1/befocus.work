@@ -1,0 +1,3 @@
+# Copy to .dev.vars for `bun run preview` (runtime vars for the local Worker)
+API_URL=
+NEXTJS_ENV=development
