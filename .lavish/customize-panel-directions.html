@@ -67,7 +67,7 @@ kbd { font-family: var(--mono); font-size: 11.5px; border: 1px solid hsl(var(--b
 .hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 32px; align-items: end; }
 .try { display: grid; gap: 10px; font-size: 14px; }
 .try div { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; }
-.try b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid hsl(var(--border)); font-size: 12px; }
+.try div > b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid hsl(var(--border)); font-size: 12px; }
 
 .today { display: grid; grid-template-columns: minmax(0, 1fr) 236px; gap: 16px; align-items: start; }
 .shot { margin: 0; display: grid; gap: 8px; }
@@ -393,7 +393,7 @@ td.bad::before { content: ''; display: inline-block; width: 7px; height: 7px; bo
   <div>
     <div class="eyebrow">BeFocus - Phase 2 - Customization Engine and Panel</div>
     <h1>Where should the customize panel live?</h1>
-    <p class="lede">Phase 2 builds the panel that changes every customizable surface with live preview and Apply / Cancel. The controls, their order and the preview-then-commit flow are already decided. What's still open is the <b>shape</b> of the panel on desktop and mobile. This board compares four working directions on a replica of the real dashboard. <b>D, which restyles A after the reference you shared, is recommended.</b></p>
+    <p class="lede">Phase 2 builds the panel that changes every customizable surface with live preview and Apply / Cancel. The controls, their order and the preview-then-commit flow are already decided. What's still open is the <b>shape</b> of the panel on desktop and mobile. This board compared four working directions on a replica of the real dashboard.</p>
     <p class="lede"><span class="badge lock">Decided 2026-09-27</span> The owner picked <b>D - Feathered dock</b>. It is recorded as D-20 in the Phase 2 CONTEXT and specified in 02-UI-SPEC.md.</p>
   </div>
   <div class="card try">
@@ -596,7 +596,7 @@ td.bad::before { content: ''; display: inline-block; width: 7px; height: 7px; bo
   <div class="section-head"><div><h2>Pick a direction</h2><p>Your choice goes into the Phase 2 CONTEXT and UI-SPEC, and the plans get written against it.</p></div></div>
   <form class="card decide" data-lavish-question="panel-direction" id="decide-form">
     <div class="opts" role="radiogroup" aria-label="Panel direction">
-      <label class="opt"><input type="radio" name="dir" value="D - Feathered dock" checked><span class="ob"><b>D - Feathered dock <span class="badge rec">Recommended</span></b><span>A's layout with no panel edge, a feathered seam, a surface that follows your background, and the timer kept centered. From your reference.</span></span></label>
+      <label class="opt"><input type="radio" name="dir" value="D - Feathered dock" checked><span class="ob"><b>D - Feathered dock <span class="badge lock">Chosen</span></b><span>A's layout with no panel edge, a feathered seam, a surface that follows your background, and the timer kept centered. From your reference.</span></span></label>
       <label class="opt"><input type="radio" name="dir" value="A - Docked side panel"><span class="ob"><b>A - Docked side panel</b><span>Right aside on desktop and a bottom sheet on mobile. Timer at 72%.</span></span></label>
       <label class="opt"><input type="radio" name="dir" value="B - Bottom tray"><span class="ob"><b>B - Bottom tray</b><span>Full-width tray with centered composition and one shell. Timer at 62%.</span></span></label>
       <label class="opt"><input type="radio" name="dir" value="C - Floating card"><span class="ob"><b>C - Floating card</b><span>Card above the footer that sizes by section, with 3 snap points on mobile.</span></span></label>
