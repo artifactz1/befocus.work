@@ -22,11 +22,11 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Customization Engine
 
-- [ ] **ENG-01**: A customization state store writes the full token set (`--bg-*`, `--user-accent`,
+- [x] **ENG-01**: A customization state store writes the full token set (`--bg-*`, `--user-accent`,
       `--text-contrast`, `--grain-opacity`, `--font-*`) and data attributes (`data-progress`,
       `data-density`) onto the document root
 - [ ] **ENG-02**: Changing any control updates the dashboard live, before anything is persisted
-- [ ] **ENG-03**: Three states are distinct and correct: active theme, unsaved preview, persisted
+- [x] **ENG-03**: Three states are distinct and correct: active theme, unsaved preview, persisted
       state
 - [ ] **ENG-04**: Apply commits the preview; Cancel or closing the panel reverts to the active theme
       without persisting
@@ -147,9 +147,9 @@ Which phases cover which requirements. Populated during roadmap creation.
 | FND-03 | Phase 1 - Foundation Repair | Complete |
 | FND-04 | Phase 1 - Foundation Repair | Complete |
 | FND-05 | Phase 1 - Foundation Repair | Complete |
-| ENG-01 | Phase 2 - Customization Engine and Panel | Pending |
+| ENG-01 | Phase 2 - Customization Engine and Panel | Complete |
 | ENG-02 | Phase 2 - Customization Engine and Panel | Pending |
-| ENG-03 | Phase 2 - Customization Engine and Panel | Pending |
+| ENG-03 | Phase 2 - Customization Engine and Panel | Complete |
 | ENG-04 | Phase 2 - Customization Engine and Panel | Pending |
 | ENG-05 | Phase 3 - Persistence and Sync | Pending |
 | CTL-01 | Phase 2 - Customization Engine and Panel | Pending |

@@ -136,7 +136,7 @@ Apply or throw it away with Cancel. Nothing survives a refresh yet; Phase 3 adds
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md - Look schema, catalog, customize store and painter, tokens, fonts, Toaster, AppBackground on tokens (ENG-01, ENG-03)
+- [x] 02-01-PLAN.md - Look schema, catalog, customize store and painter, tokens, fonts, Toaster, AppBackground on tokens (ENG-01, ENG-03)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -295,7 +295,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation Repair | 4/5 | In Progress|  |
-| 2. Customization Engine and Panel | 0/8 | Planned | - |
+| 2. Customization Engine and Panel | 1/8 | In Progress|  |
 | 3. Persistence and Sync | 0/TBD | Not started | - |
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |
