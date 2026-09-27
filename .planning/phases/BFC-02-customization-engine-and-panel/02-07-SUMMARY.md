@@ -140,3 +140,7 @@ None - no external service configuration required.
 - FOUND: apps/next/src/lib/customize/timer-scale.ts
 - FOUND: .planning/phases/BFC-02-customization-engine-and-panel/02-07-SUMMARY.md
 - FOUND commits: 3414ea2, 77b6e6c, 1fd7e79
+
+## Orchestrator follow-up
+
+The owner note above (1440x900 taking the fallback because the real timer is 1038px wide) contradicted the reviewed layout and the PR 106 promise that 1440x900 never flips. Fixed in `0f500cb`: the fallback threshold is now 336px of rendered width instead of a 0.4 scale ratio. The free width between centre and feather does not depend on the timer, so 1440x900 always renders a centred 352px timer (verified live: `scale(0.339)`, centred), and the switch sits at about 1423px wide.
