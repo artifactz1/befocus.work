@@ -77,22 +77,6 @@ export default function Timer() {
   }, [timeLeft, playAlarm, stopAlarm])
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null
-
-    if (isRunning && timeLeft > 0) {
-      interval = setInterval(() => {
-        decrementTime()
-      }, 1000)
-    } else if (interval) {
-      clearInterval(interval)
-    }
-
-    return () => {
-      if (interval) clearInterval(interval)
-    }
-  }, [isRunning, decrementTime, timeLeft])
-
-  useEffect(() => {
     const mins = Math.floor(timeLeft / 60)
     const secs = timeLeft % 60
     setMinutes(mins)
@@ -114,13 +98,19 @@ export default function Timer() {
 
   return (
     <div className='relative z-0 flex h-[70vh] items-center justify-center'>
+      <span role='timer' aria-label='Time remaining' className='sr-only'>
+        {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
+      </span>
       <TimerProgressRing />
-      <div className='absolute hidden h-[70vh] items-center justify-center font-bold sm:flex'>
+      <div
+        aria-hidden
+        className='absolute hidden h-[70vh] items-center justify-center font-bold sm:flex'
+      >
         <TimerUI value={minutes} fontSize={isLandscape ? '30vh' : widthSize} />
         <p className={`flex h-full items-center ${isLandscape ? 'text-[30vh]' : textSize}`}>:</p>
         <TimerUI value={seconds} fontSize={isLandscape ? '30vh' : widthSize} />
       </div>
-      <div className='absolute flex-row items-center text-[25vw] font-bold sm:hidden'>
+      <div aria-hidden className='absolute flex-row items-center text-[25vw] font-bold sm:hidden'>
         <TimerUI value={minutes} fontSize={widthSize} />
         <TimerUI value={seconds} fontSize={widthSize} />
       </div>
