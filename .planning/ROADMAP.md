@@ -147,7 +147,7 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [x] 02-05-PLAN.md - Type, Color and Style sections (CTL-04 to CTL-09, UX-03)
-- [ ] 02-06-PLAN.md - Mobile feathered bottom sheet, breakpoint switch, mobile trigger, mobile chrome fade (UX-04, UX-05, UX-06)
+- [x] 02-06-PLAN.md - Mobile feathered bottom sheet, breakpoint switch, mobile trigger, mobile chrome fade (UX-04, UX-05, UX-06)
 - [ ] 02-07-PLAN.md - Timer scales and moves out of the panel's way at every viewport (UX-05)
 
 **Wave 4** *(blocked on Wave 3 completion)*
@@ -295,7 +295,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation Repair | 4/5 | In Progress|  |
-| 2. Customization Engine and Panel | 5/8 | In Progress|  |
+| 2. Customization Engine and Panel | 6/8 | In Progress|  |
 | 3. Persistence and Sync | 0/TBD | Not started | - |
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |

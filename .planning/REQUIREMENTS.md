@@ -98,8 +98,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **UX-01**: User can open the customize panel from the dashboard and close it again
 - [x] **UX-02**: The panel opens showing the active theme's current values in every control
 - [x] **UX-03**: The panel is organized into Theme, Background, Type, Color and Style sections
-- [ ] **UX-04**: On mobile, every control is reachable and usable through a bottom sheet
-- [ ] **UX-05**: The panel does not obstruct the timer to the point of unusability at any supported
+- [x] **UX-04**: On mobile, every control is reachable and usable through a bottom sheet
+- [x] **UX-05**: The panel does not obstruct the timer to the point of unusability at any supported
       viewport size
 - [x] **UX-06**: The panel is keyboard navigable and its controls are labelled for screen readers
 
@@ -191,8 +191,8 @@ Which phases cover which requirements. Populated during roadmap creation.
 | UX-01 | Phase 2 - Customization Engine and Panel | Complete |
 | UX-02 | Phase 2 - Customization Engine and Panel | Complete |
 | UX-03 | Phase 2 - Customization Engine and Panel | Complete |
-| UX-04 | Phase 2 - Customization Engine and Panel | Pending |
-| UX-05 | Phase 2 - Customization Engine and Panel | Pending |
+| UX-04 | Phase 2 - Customization Engine and Panel | Complete |
+| UX-05 | Phase 2 - Customization Engine and Panel | Complete |
 | UX-06 | Phase 2 - Customization Engine and Panel | Complete |
 
 **Coverage:**
