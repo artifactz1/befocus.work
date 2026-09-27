@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Customize Panel Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Tokens copied from packages/ui/src/globals.css (.dark block), same set the prototype uses. */
+:root {
+  --background: 0 0% 6.3%;
+  --foreground: 60 9.1% 97.8%;
+  --card: 12 8% 8%;
+  --popover: 20 14.3% 4.1%;
+  --primary: 60 9.1% 97.8%;
+  --primary-foreground: 24 9.8% 10%;
+  --muted: 12 6.5% 15.1%;
+  --muted-foreground: 24 5.4% 63.9%;
+  --accent: 12 6.5% 15.1%;
+  --border: 12 6.5% 15.1%;
+  --input: 12 6.5% 15.1%;
+  --ring: 24 5.7% 82.9%;
+  --warn: 38 92% 60%;
+  --ok: 142 60% 55%;
+  --radius: 0.5rem;
+  --font-app: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+:where(.grid2, .flex, .row, .cols, .dir-body, .cards, .notes) > * { min-width: 0; }
+html, body { margin: 0; }
+body { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: var(--font-app); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 44px 16px 140px; }
+.eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: hsl(var(--muted-foreground)); font-weight: 600; }
+h1 { font-size: clamp(30px, 4.4vw, 52px); font-weight: 700; font-style: italic; letter-spacing: -.025em; line-height: 1.05; margin: 8px 0 14px; }
+h2 { font-size: clamp(22px, 2.6vw, 30px); font-weight: 700; font-style: italic; letter-spacing: -.02em; margin: 0 0 6px; }
+h3 { font-size: 15px; font-weight: 600; margin: 0 0 6px; }
+.lede { color: hsl(var(--muted-foreground)); max-width: 76ch; margin: 0; font-size: 16px; }
+.muted { color: hsl(var(--muted-foreground)); }
+section.block { margin-top: 72px; }
+.section-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.section-head p { margin: 0; max-width: 72ch; color: hsl(var(--muted-foreground)); font-size: 14.5px; }
+.card { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: 14px; padding: 18px 20px; }
+code { font-family: var(--mono); font-size: .86em; background: hsl(var(--muted)); padding: 1px 5px; border-radius: 4px; }
+kbd { font-family: var(--mono); font-size: 11.5px; border: 1px solid hsl(var(--border)); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: .02em; padding: 2px 9px; border-radius: 999px; border: 1px solid hsl(var(--border)); color: hsl(var(--muted-foreground)); white-space: nowrap; }
+.badge.rec { background: hsl(var(--foreground)); color: hsl(var(--background)); border-color: transparent; letter-spacing: .08em; text-transform: uppercase; font-size: 10.5px; font-weight: 700; }
+.badge.lock { color: hsl(var(--ok)); border-color: hsl(var(--ok) / .35); background: hsl(var(--ok) / .07); }
+.badge.open { color: hsl(var(--warn)); border-color: hsl(var(--warn) / .4); background: hsl(var(--warn) / .08); }
+
+.btn { appearance: none; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: var(--radius); border: 1px solid hsl(var(--input)); background: transparent; color: hsl(var(--foreground)); transition: background .15s, border-color .15s, opacity .15s; white-space: nowrap; }
+.btn:hover { background: hsl(var(--accent)); }
+.btn:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+.btn-primary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: transparent; }
+.btn-primary:hover { background: hsl(var(--primary) / .88); }
+.btn-ghost { border-color: transparent; color: hsl(var(--muted-foreground)); }
+.btn-ghost:hover { color: hsl(var(--foreground)); }
+.btn-sm { height: 32px; padding: 0 12px; font-size: 13px; }
+.btn-icon { width: 32px; padding: 0; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn:disabled:hover { background: transparent; }
+.btn-primary:disabled:hover { background: hsl(var(--primary)); }
+
+/* ---------- Intro ---------- */
+.hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 32px; align-items: end; }
+.try { display: grid; gap: 10px; font-size: 14px; }
+.try div { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; }
+.try b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid hsl(var(--border)); font-size: 12px; }
+
+.today { display: grid; grid-template-columns: minmax(0, 1fr) 236px; gap: 16px; align-items: start; }
+.shot { margin: 0; display: grid; gap: 8px; }
+.shot img { width: 100%; display: block; border-radius: 12px; border: 1px solid hsl(var(--border)); }
+.shot.phone img { border-radius: 26px; border: 6px solid #1c1917; }
+.shot figcaption { font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+
+.locked { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.locked div { border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: hsl(var(--muted-foreground)); }
+.locked div b { display: block; color: hsl(var(--foreground)); font-size: 13.5px; font-weight: 600; margin-bottom: 2px; }
+
+/* ---------- Direction blocks ---------- */
+.dir { border-top: 1px solid hsl(var(--border)); padding-top: 28px; }
+.dir + .dir { margin-top: 64px; }
+.dir-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; flex-wrap: wrap; margin-bottom: 16px; }
+.dir-head .l { display: grid; gap: 6px; max-width: 76ch; }
+.dir-head .tag { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.dir-head .letter { font-family: var(--mono); font-size: 12px; color: hsl(var(--muted-foreground)); }
+.dir-head p { margin: 0; color: hsl(var(--muted-foreground)); font-size: 14.5px; }
+.dir-head .ctrls { display: flex; gap: 8px; flex-wrap: wrap; }
+.dir-body { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 20px; margin-top: 18px; align-items: start; }
+.notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.notes .card { padding: 14px 16px; }
+.notes ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; font-size: 13.5px; color: hsl(var(--muted-foreground)); }
+.notes ul b { color: hsl(var(--foreground)); font-weight: 600; }
+.notes .pro h3 { color: hsl(var(--ok)); }
+.notes .con h3 { color: hsl(var(--warn)); }
+.notes .wide { grid-column: 1 / -1; }
+.cap { font-size: 12.5px; color: hsl(var(--muted-foreground)); margin-top: 8px; display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+
+/* ---------- Frames: true-size stages scaled to fit ---------- */
+.frame { position: relative; width: 100%; aspect-ratio: 1440 / 900; overflow: hidden; border-radius: 14px; border: 1px solid hsl(var(--border)); box-shadow: 0 40px 120px -60px rgb(0 0 0 / .9); background: #0f0f0f; }
+.frame.phone { box-sizing: content-box; width: calc(100% - 16px); aspect-ratio: 390 / 844; border-radius: 40px; border: 8px solid #1c1917; }
+
+.stage {
+  --bg-solid: #101010;
+  --accent-c: #f5f5f4;
+  --text-contrast: 1;
+  --grain-opacity: .05;
+  --tint: #000000;
+  --tint-o: 0;
+  --font-display: var(--font-app);
+  --fg: hsl(60 9.1% 97.8% / var(--text-contrast));
+  --fg-mute: color-mix(in srgb, var(--fg) 55%, transparent);
+  position: absolute; left: 0; top: 0; width: 1440px; height: 900px; overflow: hidden; isolation: isolate;
+  transform-origin: 0 0; transform: scale(var(--k, .5));
+  background: var(--bg-solid); color: var(--fg); font-family: var(--font-display);
+  transition: background-color .35s;
+}
+.stage.m { width: 390px; height: 844px; }
+.layer { position: absolute; inset: 0; pointer-events: none; }
+.tint { background: var(--tint); opacity: var(--tint-o); z-index: 0; }
+.glow { background: radial-gradient(60% 50% at 50% 55%, color-mix(in srgb, var(--accent-c) 5%, transparent), transparent 70%); z-index: 0; }
+.grain { width: 100%; height: 100%; opacity: var(--grain-opacity); z-index: 0; }
+
+.chrome { transition: opacity .35s; }
+.count { position: absolute; left: 72px; width: 356px; top: 20px; text-align: center; font-weight: 700; font-size: 24px; line-height: 1; font-variant-numeric: tabular-nums; z-index: 1; }
+.cells { position: absolute; left: 72px; top: 64px; display: grid; grid-template-columns: repeat(6, 56px); gap: 4px; z-index: 1; }
+.cells i { width: 56px; height: 56px; border-radius: 6px; background: color-mix(in srgb, var(--fg) 8%, transparent); transition: background-color .4s; }
+.cells i.done { background: var(--accent-c); }
+.cells i.now { background: color-mix(in srgb, var(--accent-c) 45%, color-mix(in srgb, var(--fg) 8%, transparent)); }
+.title { position: absolute; right: 66px; top: 50px; font-weight: 700; font-style: italic; font-size: 72px; line-height: 1; letter-spacing: -.045em; z-index: 1; }
+
+.center { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; transition: transform .45s cubic-bezier(.2,.7,.2,1), opacity .3s; pointer-events: none; }
+.clock { position: relative; display: grid; justify-items: center; transform: scale(var(--dz, 1)); transition: transform .35s; }
+.digits { font-weight: 700; font-size: 360px; line-height: .78; letter-spacing: -.02em; font-variant-numeric: tabular-nums; display: flex; align-items: center; }
+.digits .colon { padding: 0 .02em; transform: translateY(-.03em); }
+.under { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); display: grid; justify-items: center; gap: 18px; margin-top: 34px; }
+.ruler { display: none; align-items: end; gap: 8px; height: 30px; }
+.ruler i { width: 3px; height: 100%; border-radius: 2px; background: color-mix(in srgb, var(--fg) 22%, transparent); transform-origin: bottom; transform: scaleY(.42); }
+.ruler i:nth-child(5n) { transform: scaleY(.7); }
+.ruler i.done { background: var(--accent-c); }
+.ruler i.now { transform: none; background: var(--accent-c); }
+.stage[data-progress="ruler"] .ruler { display: flex; }
+.stage[data-progress="ink"] .digits { color: transparent; -webkit-background-clip: text; background-clip: text; background-image: linear-gradient(90deg, color-mix(in srgb, var(--accent-c) 32%, transparent) 0 29%, var(--fg) 29% 100%); }
+.hints { display: flex; gap: 22px; font: 500 15px/1 var(--mono); color: color-mix(in srgb, var(--fg) 42%, transparent); white-space: nowrap; }
+.hints span { display: flex; align-items: baseline; gap: 7px; }
+.hints kbd { font: inherit; font-size: 13px; padding: 3px 6px; border-radius: 5px; border: 0; background: color-mix(in srgb, var(--fg) 8%, transparent); color: color-mix(in srgb, var(--fg) 62%, transparent); }
+.edge-track, .edge { position: absolute; left: 0; bottom: 0; height: 4px; z-index: 2; display: none; }
+.edge-track { right: 0; background: color-mix(in srgb, var(--fg) 8%, transparent); }
+.edge { width: 29.2%; background: var(--accent-c); }
+.stage[data-progress="edge"] :is(.edge, .edge-track) { display: block; }
+
+.foot-l, .foot-r { position: absolute; top: 809px; display: flex; gap: 4px; z-index: 1; }
+.foot-l { left: 80px; }
+.foot-r { right: 72px; }
+.b { appearance: none; font: inherit; width: 128px; height: 48px; border-radius: 6px; display: grid; place-items: center; background: transparent; cursor: pointer; border: 1px solid color-mix(in srgb, var(--fg) 13%, transparent); color: var(--fg); transition: background .15s, color .15s; }
+.b svg { width: 22px; height: 22px; }
+.b:hover { background: color-mix(in srgb, var(--fg) 7%, transparent); }
+.foot-r .b { border-color: transparent; color: var(--fg-mute); }
+.foot-r .b:hover { color: var(--fg); }
+.b.cz { color: var(--accent-c) !important; }
+.b.cz[aria-expanded="true"] { background: color-mix(in srgb, var(--accent-c) 16%, transparent); }
+.b.acct { font: 600 15px var(--font-app); }
+
+/* Phone replica, measured from the 390x844 guest screenshot */
+.m .title { left: 40px; right: auto; top: 40px; font-size: 40px; }
+.m .count { left: auto; right: 40px; width: auto; top: 50px; }
+.m .cells { left: 40px; top: 106px; grid-template-columns: repeat(6, 48px); }
+.m .cells i { width: 48px; height: 48px; border-radius: 5px; }
+.m .digits { flex-direction: column; font-size: 205px; line-height: .84; }
+.m .digits .colon { display: none; }
+.m .under { display: none; }
+.m .foot-l { top: 694px; left: 73px; }
+.m .foot-r { top: 760px; left: 9px; right: auto; }
+.m .foot-l .b { width: 58px; height: 40px; }
+.m .foot-r .b { width: 90px; height: 44px; }
+
+/* ---------- Panel (shared) ---------- */
+.panel {
+  position: absolute; z-index: 10; display: flex; flex-direction: column;
+  font-family: var(--font-app); color: hsl(var(--foreground)); font-size: 14px; line-height: 1.45;
+  background: hsl(var(--popover)); border: 1px solid hsl(0 0% 100% / .08);
+  box-shadow: 0 30px 80px -30px rgb(0 0 0 / .8);
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s, transform .4s cubic-bezier(.2,.7,.2,1), height .4s cubic-bezier(.2,.7,.2,1);
+}
+.stage.open .panel { opacity: 1; pointer-events: auto; }
+.grab { display: none; width: 40px; height: 5px; border-radius: 5px; background: hsl(var(--foreground) / .25); margin: 8px auto 0; border: 0; padding: 0; cursor: grab; }
+.m .grab { display: block; }
+.p-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px 10px; }
+.p-head .t { display: grid; gap: 1px; }
+.p-head h4 { margin: 0; font-size: 15px; font-weight: 600; }
+.p-state { font-size: 12px; color: hsl(var(--muted-foreground)); display: flex; align-items: center; gap: 6px; }
+.p-state i { width: 7px; height: 7px; border-radius: 50%; background: hsl(var(--muted-foreground) / .6); }
+.dirty .p-state { color: hsl(var(--foreground)); }
+.dirty .p-state i { background: var(--accent-c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-c) 25%, transparent); }
+.p-actions { display: flex; gap: 8px; align-items: center; }
+.tabs { display: flex; gap: 2px; padding: 0 12px; border-bottom: 1px solid hsl(var(--border)); overflow-x: auto; scrollbar-width: none; }
+.tab { appearance: none; background: none; border: 0; cursor: pointer; font: inherit; font-size: 13.5px; font-weight: 500; color: hsl(var(--muted-foreground)); padding: 9px 10px 10px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.tab:hover { color: hsl(var(--foreground)); }
+.tab[aria-selected="true"] { color: hsl(var(--foreground)); border-bottom-color: hsl(var(--foreground)); }
+.tab:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: -2px; border-radius: 6px; }
+.p-body { flex: 1; min-height: 0; overflow-y: auto; padding: 16px 16px 20px; display: grid; gap: 20px; align-content: start; scrollbar-width: thin; }
+.p-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-top: 1px solid hsl(var(--border)); }
+.p-foot .r { display: flex; gap: 8px; }
+
+.fs { display: grid; gap: 9px; }
+.fs > .lab { display: flex; justify-content: space-between; align-items: baseline; font-size: 11.5px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+.fs > .lab output { font-family: var(--mono); font-size: 12px; letter-spacing: 0; text-transform: none; color: hsl(var(--foreground)); }
+.hint { font-size: 12px; color: hsl(var(--muted-foreground)); margin: 0; }
+.swatches { display: grid; grid-template-columns: repeat(8, minmax(0, 36px)); justify-content: space-between; gap: 8px; }
+.swatches.acc { grid-template-columns: repeat(6, minmax(0, 40px)); row-gap: 10px; }
+.sw { position: relative; cursor: pointer; }
+.sw input { position: absolute; opacity: 0; pointer-events: none; }
+.sw span { display: block; aspect-ratio: 1; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(255 255 255 / .14); transition: box-shadow .15s, transform .15s; }
+.sw input:checked + span { box-shadow: 0 0 0 2px hsl(var(--popover)), 0 0 0 4px hsl(var(--foreground)); }
+.sw input:focus-visible + span { outline: 2px solid hsl(var(--ring)); outline-offset: 5px; }
+.sw:hover span { transform: scale(1.07); }
+.custom { display: flex; align-items: center; gap: 10px; font-size: 13px; color: hsl(var(--muted-foreground)); }
+input[type="color"] { appearance: none; -webkit-appearance: none; width: 38px; height: 30px; border: 1px solid hsl(var(--input)); border-radius: 8px; padding: 2px; background: transparent; cursor: pointer; }
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 5px; }
+input[type="range"] { width: 100%; accent-color: hsl(var(--foreground)); height: 18px; margin: 0; }
+.seg { display: flex; padding: 3px; gap: 2px; border-radius: 10px; background: hsl(var(--muted) / .7); border: 1px solid hsl(var(--border)); }
+.seg label { position: relative; cursor: pointer; flex: 1; text-align: center; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; font-size: 13px; font-weight: 500; padding: 5px 8px; border-radius: 7px; color: hsl(var(--muted-foreground)); white-space: nowrap; transition: background .15s, color .15s; }
+.seg input:checked + span { background: hsl(var(--background)); color: hsl(var(--foreground)); box-shadow: 0 1px 2px rgb(0 0 0 / .4); }
+.seg input:focus-visible + span { outline: 2px solid hsl(var(--ring)); }
+.picks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.pick { position: relative; cursor: pointer; display: block; }
+.pick input { position: absolute; opacity: 0; pointer-events: none; }
+.pick-body { display: grid; gap: 4px; border-radius: 12px; border: 1px solid hsl(var(--border)); padding: 10px 10px 8px; background: hsl(var(--background) / .35); transition: border-color .15s, box-shadow .15s; }
+.pick:hover .pick-body { border-color: hsl(var(--foreground) / .25); }
+.pick input:checked + .pick-body { border-color: hsl(var(--foreground) / .9); box-shadow: 0 0 0 1px hsl(var(--foreground) / .9); }
+.pick input:focus-visible + .pick-body { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+.pick .big { font-size: 30px; font-weight: 700; line-height: 1; letter-spacing: -.02em; }
+.pick .nm { font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+.empty { display: grid; gap: 8px; padding: 14px; border-radius: 12px; border: 1.5px dashed hsl(var(--foreground) / .18); font-size: 13px; color: hsl(var(--muted-foreground)); }
+.empty b { color: hsl(var(--foreground)); font-weight: 600; }
+.lookrow { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; align-items: center; padding: 6px; border-radius: 10px; border: 1px solid hsl(var(--foreground) / .5); }
+.lookrow .th { aspect-ratio: 16 / 11; border-radius: 6px; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.lookrow .nm b { display: block; font-size: 13.5px; font-weight: 600; }
+.lookrow .nm span { font-size: 12px; color: hsl(var(--muted-foreground)); }
+
+.toast { position: absolute; left: 50%; top: 18px; transform: translate(-50%, -8px); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; font: 500 14px var(--font-app); color: hsl(var(--foreground)); background: hsl(var(--popover) / .96); border: 1px solid hsl(var(--border)); border-radius: 10px; padding: 9px 16px; white-space: nowrap; box-shadow: 0 10px 40px -10px rgb(0 0 0 / .8); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.m .toast { top: 14px; font-size: 13px; white-space: normal; width: max-content; max-width: 340px; text-align: center; }
+
+/* ---------- Direction A: docked side panel ---------- */
+.stage[data-dir="A"]:not(.m) .panel { top: 16px; right: 16px; bottom: 16px; width: 400px; border-radius: 18px; transform: translateX(28px); }
+.stage[data-dir="A"].open:not(.m) .panel { transform: none; }
+.stage[data-dir="A"].open:not(.m) .center { transform: translateX(-208px) scale(.72); }
+
+/* ---------- Direction B: bottom tray ---------- */
+.stage[data-dir="B"]:not(.m) .panel { display: grid; left: 0; right: 0; bottom: 0; height: 330px; border-radius: 22px 22px 0 0; border-bottom: 0; transform: translateY(40px); grid-template-columns: 188px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+.stage[data-dir="B"].open:not(.m) .panel { transform: none; }
+.stage[data-dir="B"]:not(.m) .p-head { grid-column: 1 / -1; padding: 14px 24px 12px; border-bottom: 1px solid hsl(var(--border)); }
+.stage[data-dir="B"]:not(.m) .tabs { flex-direction: column; border-bottom: 0; border-right: 1px solid hsl(var(--border)); padding: 12px 10px; gap: 2px; }
+.stage[data-dir="B"]:not(.m) .tab { text-align: left; border-bottom: 0; border-radius: 8px; margin: 0; padding: 8px 12px; }
+.stage[data-dir="B"]:not(.m) .tab[aria-selected="true"] { background: hsl(var(--muted)); }
+.stage[data-dir="B"]:not(.m) .p-body { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 28px; padding: 18px 24px; }
+.stage[data-dir="B"]:not(.m) .p-body .full { grid-column: 1 / -1; }
+.stage[data-dir="B"]:not(.m) .swatches { justify-content: start; }
+.stage[data-dir="B"]:not(.m) .picks { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.stage[data-dir="B"].open:not(.m) .center { transform: translateY(-78px) scale(.62); }
+.stage[data-dir="B"].open:not(.m) .foot-l, .stage[data-dir="B"].open:not(.m) .foot-r { opacity: 0; }
+
+/* ---------- Direction C: floating card ---------- */
+.stage[data-dir="C"]:not(.m) .panel { left: 50%; bottom: 100px; width: 460px; height: var(--ch, 380px); border-radius: 18px; transform: translate(-50%, 18px); }
+.stage[data-dir="C"].open:not(.m) .panel { transform: translate(-50%, 0); }
+
+/* ---------- Direction D: feathered dock (A's layout in the reference's language) ---------- */
+@keyframes bf-in { from { opacity: 0; filter: blur(6px); transform: translateY(6px); } }
+@keyframes bf-ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-c) 60%, transparent); } 100% { box-shadow: 0 0 0 9px transparent; } }
+.stage[data-dir="D"] { --surf: color-mix(in srgb, var(--bg-solid), #fff 3.5%); --soft: rgb(255 255 255 / .045); --lift: rgb(255 255 255 / .085); --hair: rgb(255 255 255 / .07); }
+.stage[data-dir="D"] .panel { border: 0; border-radius: 0; box-shadow: none; transition: opacity .3s, transform .45s cubic-bezier(.2,.7,.2,1), background-color .35s; }
+.stage[data-dir="D"] .panel::before { content: ''; position: absolute; pointer-events: none; z-index: -1; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.stage[data-dir="D"]:not(.m) .panel { top: 0; right: 0; bottom: 0; width: 520px; padding-left: 120px; background: linear-gradient(90deg, transparent, var(--surf) 120px); transform: translateX(40px); }
+.stage[data-dir="D"]:not(.m) .panel::before { left: 0; top: 0; bottom: 0; width: 150px; -webkit-mask: linear-gradient(90deg, transparent, #000 80%, transparent); mask: linear-gradient(90deg, transparent, #000 80%, transparent); }
+.stage[data-dir="D"].open:not(.m) .panel { transform: none; }
+.stage[data-dir="D"].open:not(.m) .center { transform: scale(.42); }
+/* at 42% the key hints drop to ~5px, so they step out while editing */
+.stage[data-dir="D"] .hints { transition: opacity .25s; }
+.stage[data-dir="D"].open:not(.m) .hints { opacity: 0; }
+.stage[data-dir="D"] .p-head { padding: 30px 28px 10px 0; }
+.stage[data-dir="D"] .p-head h4 { font-size: 16px; letter-spacing: -.01em; }
+.stage[data-dir="D"].dirty .p-state i { animation: bf-ping .9s ease-out 1; }
+.stage[data-dir="D"] .tabs { border-bottom: 0; gap: 4px; padding: 6px 28px 12px 0; }
+.stage[data-dir="D"] .tab { border: 0; margin: 0; border-radius: 10px; padding: 7px 11px; transition: background-color .2s, color .2s; }
+.stage[data-dir="D"] .tab[aria-selected="true"] { background: var(--lift); }
+.stage[data-dir="D"] .p-body { padding: 4px 28px 24px 0; gap: 10px; }
+.stage[data-dir="D"] .fs { background: var(--soft); border-radius: 18px; padding: 14px 16px 16px; gap: 12px; }
+.stage[data-dir="D"] .fs > .lab { font-size: 12.5px; letter-spacing: 0; text-transform: none; font-weight: 500; }
+.stage[data-dir="D"] .hint { padding: 0 6px; }
+.stage[data-dir="D"] .seg { background: rgb(0 0 0 / .22); border: 0; border-radius: 12px; }
+.stage[data-dir="D"] .seg span { border-radius: 9px; }
+.stage[data-dir="D"] .seg input:checked + span { background: var(--lift); box-shadow: 0 6px 16px -8px rgb(0 0 0 / .7), inset 0 0 0 1px var(--hair); }
+.stage[data-dir="D"] .pick-body { border: 1px solid var(--hair); background: transparent; border-radius: 14px; }
+.stage[data-dir="D"] .pick input:checked + .pick-body { border-color: transparent; background: var(--lift); box-shadow: 0 14px 30px -14px rgb(0 0 0 / .8), inset 0 0 0 1px rgb(255 255 255 / .12); }
+.stage[data-dir="D"] .sw input:checked + span { box-shadow: 0 0 0 2px var(--surf), 0 0 0 4px hsl(var(--foreground)); }
+.stage[data-dir="D"] .lookrow { border: 0; background: var(--lift); border-radius: 14px; padding: 8px 14px 8px 8px; grid-template-columns: 52px minmax(0, 1fr) auto; box-shadow: 0 14px 30px -14px rgb(0 0 0 / .8), inset 0 0 0 1px rgb(255 255 255 / .1); }
+.stage[data-dir="D"] .lookrow .go { color: hsl(var(--muted-foreground)); }
+.stage[data-dir="D"] .empty { border: 1px solid var(--hair); border-radius: 14px; background: transparent; }
+.stage[data-dir="D"] input[type="color"] { border-color: var(--hair); }
+.stage[data-dir="D"] .p-foot { border-top: 0; padding: 18px 28px 26px 0; background: linear-gradient(0deg, var(--surf) 70%, transparent); margin-top: -18px; position: relative; }
+.stage[data-dir="D"] .p-body > .rv { animation: bf-in .5s cubic-bezier(.2,.7,.2,1) both; }
+.stage[data-dir="D"] .p-body > .rv:nth-child(2) { animation-delay: .06s; }
+.stage[data-dir="D"] .p-body > .rv:nth-child(3) { animation-delay: .12s; }
+.stage[data-dir="D"] .p-body > .rv:nth-child(4) { animation-delay: .18s; }
+.stage[data-dir="D"] .p-body > .rv:nth-child(n+5) { animation-delay: .24s; }
+.m[data-dir="D"] .panel { height: var(--sh, 60%); padding-top: 34px; background: linear-gradient(180deg, transparent, var(--surf) 64px); }
+.m[data-dir="D"] .panel::before { left: 0; right: 0; top: 0; height: 48px; -webkit-mask: linear-gradient(180deg, transparent, #000 70%, transparent); mask: linear-gradient(180deg, transparent, #000 70%, transparent); }
+.m[data-dir="D"] .grab { margin-top: 0; }
+.m[data-dir="D"] .p-head { padding: 8px 16px 6px; }
+.m[data-dir="D"] .tabs { padding: 4px 16px 10px; }
+.m[data-dir="D"] .p-body { padding: 2px 16px 20px; }
+.m[data-dir="D"] .p-foot { padding: 16px 16px 20px; }
+@media (prefers-reduced-motion: reduce) {
+  .stage[data-dir="D"] .p-body > .rv, .stage[data-dir="D"].dirty .p-state i { animation: none; }
+}
+
+/* ---------- Mobile sheets ---------- */
+.m .panel { left: 0; right: 0; bottom: 0; height: var(--sh, 56%); border-radius: 22px 22px 0 0; border-bottom: 0; transform: translateY(48px); }
+.m.open .panel { transform: none; }
+.m.open .head, .m.open :is(.edge, .edge-track) { opacity: 0; }
+.m.open :is(.foot-l, .foot-r) { opacity: 0; pointer-events: none; }
+.m .p-head { padding: 8px 16px 8px; }
+.m .swatches { gap: 10px; }
+.m .p-foot { padding: 10px 14px 18px; }
+.m .p-foot .btn { height: 40px; }
+.m[data-dir="B"] .p-body { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.m[data-dir="B"] .p-head { flex-wrap: wrap; row-gap: 8px; }
+.m[data-dir="B"] .p-actions { width: 100%; justify-content: space-between; }
+.m[data-dir="B"] .p-actions .btn { height: 36px; }
+.m[data-dir="B"] .p-body .full { grid-column: 1 / -1; }
+.detents { display: flex; gap: 4px; }
+.detents button { appearance: none; border: 1px solid hsl(var(--border)); background: transparent; color: hsl(var(--muted-foreground)); font: 500 11.5px var(--font-app); border-radius: 999px; padding: 3px 9px; cursor: pointer; }
+.detents button[aria-pressed="true"] { color: hsl(var(--foreground)); border-color: hsl(var(--foreground) / .6); }
+
+/* ---------- Scorecard + decision ---------- */
+.tbl-wrap { overflow-x: auto; border: 1px solid hsl(var(--border)); border-radius: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 760px; }
+th, td { text-align: left; vertical-align: top; padding: 11px 14px; border-bottom: 1px solid hsl(var(--border)); }
+tr:last-child td { border-bottom: 0; }
+thead th { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: hsl(var(--muted-foreground)); font-weight: 600; background: hsl(var(--card)); }
+td:first-child { color: hsl(var(--muted-foreground)); width: 22%; }
+td.win { color: hsl(var(--foreground)); }
+td.win::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: hsl(var(--ok)); margin-right: 8px; transform: translateY(-1px); }
+td.meh { color: hsl(var(--muted-foreground)); }
+td.bad::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: hsl(var(--warn)); margin-right: 8px; transform: translateY(-1px); }
+
+.opts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.opt { position: relative; cursor: pointer; }
+.opt input { position: absolute; opacity: 0; pointer-events: none; }
+.opt .ob { display: grid; gap: 4px; height: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid hsl(var(--border)); transition: border-color .15s, background .15s; }
+.opt .ob b { font-size: 14px; font-weight: 600; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.opt .ob span { font-size: 13px; color: hsl(var(--muted-foreground)); }
+.opt:hover .ob { border-color: hsl(var(--foreground) / .3); }
+.opt input:checked + .ob { border-color: hsl(var(--foreground)); background: hsl(var(--foreground) / .05); }
+.opt input:focus-visible + .ob { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+.decide { display: grid; gap: 14px; }
+.decide textarea { font: inherit; font-size: 14px; min-height: 84px; padding: 10px 12px; border-radius: var(--radius); border: 1px solid hsl(var(--input)); background: hsl(var(--background) / .6); color: hsl(var(--foreground)); resize: vertical; width: 100%; line-height: 1.5; }
+.decide textarea:focus { outline: 2px solid hsl(var(--ring) / .7); outline-offset: 1px; }
+.q-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid hsl(var(--border)); padding-top: 12px; }
+.q-state { font-size: 12.5px; color: hsl(var(--muted-foreground)); }
+.ref-shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.ref-shots img { aspect-ratio: 4 / 3; object-fit: cover; object-position: top; }
+.ref-read { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 12px; margin-top: 16px; }
+.ref-read ol, .ref-read ul { margin: 0; padding-left: 20px; display: grid; gap: 7px; font-size: 13.5px; color: hsl(var(--muted-foreground)); }
+.ref-read b { color: hsl(var(--foreground)); font-weight: 600; }
+.ref-read h3 + ol, .ref-read h3 + ul { margin-top: 4px; }
+.ref-read ul + h3 { margin-top: 16px; }
+.also { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.also div { border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: hsl(var(--muted-foreground)); }
+.also div b { display: block; color: hsl(var(--foreground)); font-weight: 600; font-size: 13.5px; }
+
+@media (max-width: 960px) {
+  .hero, .today, .dir-body, .ref-shots, .ref-read { grid-template-columns: minmax(0, 1fr); }
+  .today .shot.phone, .dir-body .phone-col { max-width: 300px; }
+  .locked, .opts { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+  .notes, .also { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div>
+    <div class="eyebrow">BeFocus - Phase 2 - Customization Engine and Panel</div>
+    <h1>Where should the customize panel live?</h1>
+    <p class="lede">Phase 2 builds the panel that changes every customizable surface with live preview and Apply / Cancel. The controls, their order and the preview-then-commit flow are already decided. What's still open is the <b>shape</b> of the panel on desktop and mobile. This board compares four working directions on a replica of the real dashboard. <b>D, which restyles A after the reference you shared, is recommended.</b></p>
+    <p class="lede"><span class="badge lock">Decided 2026-09-27</span> The owner picked <b>D - Feathered dock</b>. It is recorded as D-20 in the Phase 2 CONTEXT and specified in 02-UI-SPEC.md.</p>
+  </div>
+  <div class="card try">
+    <div><b>1</b><span>Each stage below is interactive. Pick a swatch, font or progress style and watch the dashboard behind the panel change.</span></div>
+    <div><b>2</b><span><b>Cancel</b>, the close button or <kbd>Esc</kbd> snaps back to the last applied look. <b>Apply</b> keeps it. The palette button in the footer reopens the panel.</span></div>
+    <div><b>3</b><span>Annotate anything you want changed, then pick a direction at the bottom and queue it.</span></div>
+  </div>
+</header>
+
+<section class="block">
+  <div class="section-head">
+    <div>
+      <h2>Today's dashboard</h2>
+      <p>Screenshots of the running app (<code>/guest</code>, 1440x900 and 390x844). The stages below are measured from these screenshots. They also show the chrome changes Phase 2 already commits to: a filled accent contribution grid, bare menu buttons, a customize button in accent (it replaces the sun toggle on mobile, because the app is dark only), keyboard hints under the digits, and Edge progress on the bottom edge.</p>
+    </div>
+  </div>
+  <div class="today">
+    <figure class="shot"><img src="assets/guest-desktop.png" alt="Current BeFocus dashboard at 1440 by 900: session grid top left, Be Focus wordmark top right, large 25:00 timer, transport buttons bottom left and menu buttons bottom right"><figcaption>Desktop today: outlined session boxes, outlined menu buttons and no customize entry. The bolt at the bottom left is the Next.js dev indicator, not the app.</figcaption></figure>
+    <figure class="shot phone"><img src="assets/guest-mobile.png" alt="Current BeFocus dashboard at 390 by 844 with stacked 25 and 00 digits"><figcaption>Mobile today: stacked digits and a four-button menu row.</figcaption></figure>
+  </div>
+  <div class="locked">
+    <div><b>Opens from the footer menu</b>Prototype review, accepted in PROJECT.md key decisions.</div>
+    <div><b>Preview, then Apply or Cancel</b>ENG-04: closing the panel is the same as Cancel.</div>
+    <div><b>Theme / Background / Type / Color / Style</b>UX-03. Theme ships as structure now. Phase 4 fills it.</div>
+    <div><b>Opaque behind controls</b>No glass under the controls, so they stay readable on any background. D feathers only the panel's edge.</div>
+    <div><b>Bottom sheet on mobile</b>UX-04. Every control is reachable.</div>
+    <div><b>Timer stays usable</b>UX-05. The panel may move or scale the timer but must not hide it.</div>
+  </div>
+</section>
+
+<section class="block" id="reference">
+  <div class="section-head">
+    <div>
+      <h2>Your reference: the AI Companion sidebar</h2>
+      <p>From the post you shared (an AI sidebar by @gabriell_lab, via bestdesignsonx). Frames pulled from the 7-second clip, before and after the sidebar opens. Direction D below applies this language to the customize panel.</p>
+    </div>
+  </div>
+  <div class="ref-shots">
+    <figure class="shot"><img src="assets/ref-closed.jpg" alt="Reference at 0 seconds: a light canvas with image cards and a top bar holding Search, an avatar and an AI Companion chip"><figcaption>0.0s: canvas only.</figcaption></figure>
+    <figure class="shot"><img src="assets/ref-open.jpg" alt="Reference at 5 seconds: the sidebar is open on the right with a prompt bubble, a result card and numbered follow-up rows, and no visible panel edge"><figcaption>5.0s: sidebar open. There is no panel edge anywhere.</figcaption></figure>
+    <figure class="shot"><img src="assets/ref-detail.jpg" alt="Close-up of the seam: the painting fades into the sidebar surface and the dot grid stops; the result card is the only raised element"><figcaption>Detail: the painting dissolves and the dot grid stops at the seam. Only the result card is lifted.</figcaption></figure>
+  </div>
+  <div class="ref-read">
+    <div class="card">
+      <h3>What makes it work</h3>
+      <ol>
+        <li><b>No edge.</b> The sidebar has no border, radius or shadow. It's the same material as the canvas, one step lighter. Space is split by light, not lines.</li>
+        <li><b>A feathered seam.</b> Over about 120px, canvas content fades into the sidebar surface and blurs as it goes. It reads as depth instead of a cut.</li>
+        <li><b>Soft fills, one lift.</b> Groups sit on a faint tint with 16-20px radii, and rows get a hairline. One element per view, the result card, is lifted with a lighter fill and a soft shadow, so the eye knows where to land.</li>
+        <li><b>Staged motion.</b> Content un-blurs into place, then items stagger in from the top. A one-time shimmer on "ready" marks the state change.</li>
+        <li><b>Quiet type.</b> One family at 13-15px, muted second lines, truncated descriptions and generous gaps. Numbered keycaps on each row double as shortcuts.</li>
+        <li><b>Anchored trigger.</b> The sidebar hangs under its top-bar chip, and the chip fills while the sidebar is open.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>What D carries over</h3>
+      <ul>
+        <li>The feathered left edge with a blur ramp. The controls still sit on an opaque surface.</li>
+        <li>A panel surface made from your background color plus 3.5% light, so the panel is the same material as the dashboard and follows the look as you preview.</li>
+        <li>Soft-filled control groups, pill section chips, and one lifted element (the selected card or the current look).</li>
+        <li>A blur-in stagger when opening or switching sections, and a one-shot ping on the "Previewing changes" dot. Both turn off under reduced motion.</li>
+      </ul>
+      <h3>What it leaves out</h3>
+      <ul>
+        <li><b>Light theme:</b> BeFocus is dark only.</li>
+        <li><b>Top-bar trigger:</b> the footer palette button is the locked entry point. It fills with the accent while open, echoing the chip.</li>
+        <li><b>Text shimmer:</b> replaced by the dot ping, because animated text competes with the timer.</li>
+        <li><b>Numbered shortcuts:</b> optional later (<kbd>1</kbd>-<kbd>5</kbd> jump between sections while the panel is open), left out of the demo.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="directions">
+  <div class="section-head">
+    <div>
+      <h2>Four directions</h2>
+      <p>Same controls and the same preview engine in all four. Only the container, its surface, the timer's motion and where Apply / Cancel sit are different.</p>
+    </div>
+  </div>
+
+  <article class="dir" id="dir-D" data-dir="D">
+    <div class="dir-head">
+      <div class="l">
+        <div class="tag"><span class="letter">D</span><h2 style="margin:0">Feathered dock</h2><span class="badge lock">Chosen</span><span class="badge">From your reference</span></div>
+        <p>A's layout in the language of your reference. The panel docks right with no border. The dashboard fades and blurs into it over 120px, and its surface is your background color one step lighter, so it reads as part of the dashboard instead of a card on top. The timer never leaves the center. It only scales down until it clears the feather. On mobile the top edge of the sheet feathers the same way.</p>
+      </div>
+      <div class="ctrls"><button class="btn btn-sm" data-toggle="D">Close panel</button></div>
+    </div>
+    <div class="frame" data-mount="D-d"></div>
+    <div class="cap"><span>Desktop 1440x900. Panel 520px, of which 120px is feather and 372px is controls. Timer stays centered at <code>scale(.42)</code>, and the key hints hide while the panel is open.</span><span>Switch sections to see the blur-in. Pick another background to see the panel follow.</span></div>
+    <div class="dir-body">
+      <div class="phone-col"><div class="frame phone" data-mount="D-m"></div><div class="cap"><span>Sheet at 60%, with the top 34px feathered and no scrim.</span></div></div>
+      <div class="notes">
+        <div class="card"><h3>Live preview</h3><ul><li>The panel surface follows the previewed background, so picking Moss or Plum re-tints the panel too. The preview feels continuous instead of framed.</li><li>The timer stays at the center of the screen and only scales, so the composition you edit is the one you get after Apply.</li></ul></div>
+        <div class="card"><h3>Apply / Cancel</h3><ul><li><b>Same as A:</b> Reset on the left, Cancel and Apply on the right, in a footer that fades the scrolling content out instead of drawing a line.</li><li>The "Previewing changes" dot pings once when the first change lands.</li></ul></div>
+        <div class="card pro"><h3>Why it wins</h3><ul><li>A's room for Phases 4-6 and the prototype's shape, with a centered composition like B and C.</li><li><b>Calmer:</b> no hard edge and one lifted element, and the panel belongs to your look instead of sitting on it. That suits a focus app.</li><li>Built from the same parts as A, so the build cost is about the same.</li></ul></div>
+        <div class="card con"><h3>What it costs</h3><ul><li><b>Smaller timer while editing:</b> centered, it has to clear the panel from the middle, so it drops to 42% at 1440 (digits about 118px tall). The timer is sized by viewport height and the free space grows with width, so a 1920x1080 screen already gets the full 72%.</li><li><code>backdrop-filter</code> over a moving timer costs GPU on low-end laptops. The fallback is the gradient alone, which still reads well.</li><li>With image and video backgrounds (Phase 5), the surface has to come from a neutral dark tone instead of the background color. It's planned for, not a redesign.</li><li>The wordmark and menu still sit under the panel, as in A.</li></ul></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="dir" id="dir-A" data-dir="A">
+    <div class="dir-head">
+      <div class="l">
+        <div class="tag"><span class="letter">A</span><h2 style="margin:0">Docked side panel</h2></div>
+        <p>A full-height solid panel docks on the right. The timer slides into the free space and scales to 72%, so the whole background, accent and type stay visible at full bleed while you edit. On mobile the same sections sit in a bottom sheet and the timer rises above it. This is the shape already walked through in the customization prototype.</p>
+      </div>
+      <div class="ctrls"><button class="btn btn-sm" data-toggle="A">Close panel</button></div>
+    </div>
+    <div class="frame" data-mount="A-d"></div>
+    <div class="cap"><span>Desktop 1440x900. Panel 400px wide, inset 16px. Timer <code>translateX(-208px) scale(.72)</code>.</span><span>Close the panel to see the timer glide back.</span></div>
+    <div class="dir-body">
+      <div class="phone-col"><div class="frame phone" data-mount="A-m"></div><div class="cap"><span>Sheet at 56% height with no scrim, so the preview stays visible.</span></div></div>
+      <div class="notes">
+        <div class="card"><h3>Live preview</h3><ul><li>Background, grain, accent and type repaint the whole viewport behind the panel.</li><li>The timer shrinks to 72% and shifts left. Its composition is not 1:1 while editing, but it snaps back on close.</li><li>Header and footer controls stay where they are. The panel covers the wordmark and menu while it's open.</li></ul></div>
+        <div class="card"><h3>Apply / Cancel</h3><ul><li><b>Sticky footer:</b> Reset on the left, Cancel and Apply on the right.</li><li>Apply stays disabled until something changes. The header shows "Previewing changes" with an accent dot.</li><li>Close, <kbd>Esc</kbd> and Cancel all revert. Apply commits and closes.</li></ul></div>
+        <div class="card pro"><h3>Strengths</h3><ul><li><b>Most room:</b> sections scroll vertically, so Phase 4 themes, Phase 5 uploads and quota, and Phase 6 URL input append without a redesign. The roadmap requires that Phase 4 "fills rather than restructures".</li><li>The timer keeps the most size of any option (72%).</li><li>Desktop and mobile share one section stack. Only the shell differs.</li><li>The owner has already seen and accepted this shape in the prototype.</li></ul></div>
+        <div class="card con"><h3>What it costs</h3><ul><li>The composition sits off-center while editing, so a density preview is read on a shifted layout.</li><li>Two shells: a desktop aside plus a mobile Drawer. <code>packages/ui</code> has <code>drawer</code> (vaul) but no <code>sheet</code>, so the desktop aside is new.</li><li>Covers the wordmark and menu while open. That's fine, since the menu is the entry point.</li></ul></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="dir" id="dir-B" data-dir="B">
+    <div class="dir-head">
+      <div class="l">
+        <div class="tag"><span class="letter">B</span><h2 style="margin:0">Bottom tray</h2></div>
+        <p>A full-width tray slides up over the footer. The sections become a left rail, and the controls lay out in columns. The timer stays centered and scales to 62% above the tray, so the composition keeps its symmetry. On mobile the same tray becomes the sheet, which means one shell for both.</p>
+      </div>
+      <div class="ctrls"><button class="btn btn-sm" data-toggle="B">Close panel</button></div>
+    </div>
+    <div class="frame" data-mount="B-d"></div>
+    <div class="cap"><span>Desktop 1440x900. Tray 330px tall. Timer <code>translateY(-78px) scale(.62)</code>. Footer hidden while open.</span><span>Apply / Cancel sit in the tray header.</span></div>
+    <div class="dir-body">
+      <div class="phone-col"><div class="frame phone" data-mount="B-m"></div><div class="cap"><span>Sheet at 50%, with actions in the sheet header and a 2-column body.</span></div></div>
+      <div class="notes">
+        <div class="card"><h3>Live preview</h3><ul><li>The layout stays centered, so it's closer to what you'll get once the panel closes.</li><li>The timer drops to 62%, and the transport pill is hidden under the tray (<kbd>Space</kbd> still works).</li></ul></div>
+        <div class="card"><h3>Apply / Cancel</h3><ul><li><b>Tray header, right:</b> Reset, Cancel, Apply. No close button. Cancel is the close.</li><li>The actions sit next to the section rail, so they're always in view without a footer.</li></ul></div>
+        <div class="card pro"><h3>Strengths</h3><ul><li>Symmetric composition while editing.</li><li>One shell for desktop and mobile.</li><li>Feels like a distinct "edit mode".</li></ul></div>
+        <div class="card con"><h3>What it costs</h3><ul><li>The fixed 330px height forces controls into columns. Font cards, sliders and the future upload dropzone, quota meter and URL warning all get cramped, and Phase 5 / 6 would likely need a taller tray, which would be a restructure.</li><li>The timer is smaller (62%), and the footer controls disappear while editing.</li><li>A 2-column mobile body squeezes the font cards and sliders.</li></ul></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="dir" id="dir-C" data-dir="C">
+    <div class="dir-head">
+      <div class="l">
+        <div class="tag"><span class="letter">C</span><h2 style="margin:0">Floating card</h2></div>
+        <p>A compact card floats centered above the footer, following the April spec's "inline panel above the pill". Its height follows the active section: slim for Color and Style, taller for Background, Type and Theme. The timer rises and rescales to fit above it. On mobile it's a sheet with three snap points: peek, half and full.</p>
+      </div>
+      <div class="ctrls"><button class="btn btn-sm" data-toggle="C">Close panel</button></div>
+    </div>
+    <div class="frame" data-mount="C-d"></div>
+    <div class="cap"><span>Desktop 1440x900. Card 460px wide, 330-440px tall by section. Timer scale 0.8 to 0.42.</span><span>Switch tabs to see the timer resize.</span></div>
+    <div class="dir-body">
+      <div class="phone-col"><div class="frame phone" data-mount="C-m"></div><div class="cap"><span>Snap points peek 34%, half 56% and full 90%. Use the chips or tap the handle.</span></div></div>
+      <div class="notes">
+        <div class="card"><h3>Live preview</h3><ul><li>The footer transport and menu stay visible and usable. The timer only moves vertically.</li><li>Switching sections changes the card's height, and the timer rescales each time (0.8 to 0.42). That's motion noise while comparing looks.</li></ul></div>
+        <div class="card"><h3>Apply / Cancel</h3><ul><li><b>Card footer:</b> Reset on the left, Cancel and Apply on the right, the same order as A.</li><li>At the full snap point on mobile the timer is hidden, so you preview by dropping back to peek.</li></ul></div>
+        <div class="card pro"><h3>Strengths</h3><ul><li>The lightest touch. It reads like a popover from the menu.</li><li>The chrome stays usable, so you can start a session mid-edit.</li><li>A peek snap point gives the biggest mobile preview of any option.</li></ul></div>
+        <div class="card con"><h3>What it costs</h3><ul><li>Tall sections (Theme, and later uploads) squeeze the timer to about 42%.</li><li>Variable height, plus three snap points on mobile, adds the most motion and gesture complexity. It's also the hardest to keep UX-05 true at 1024x640.</li><li>The card sits between two footer groups, so its anchor to the palette button is weak.</li></ul></div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="block">
+  <div class="section-head"><div><h2>Side by side</h2><p>A green dot is the best of the four, an amber dot is a real cost, and no dot means acceptable.</p></div></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Criterion</th><th>D - Feathered dock</th><th>A - Docked side panel</th><th>B - Bottom tray</th><th>C - Floating card</th></tr></thead>
+      <tbody>
+        <tr><td>Timer size while editing (desktop)</td><td class="meh">42% at 1440x900, 72% at 1920x1080</td><td class="win">72%</td><td class="meh">62%</td><td class="bad">80% to 42%, by section</td></tr>
+        <tr><td>Composition fidelity during preview</td><td class="win">Centered</td><td class="meh">Shifted left</td><td class="win">Centered</td><td class="meh">Centered, moves per tab</td></tr>
+        <tr><td>Room for controls, now and in Phases 4-6</td><td class="win">Full-height vertical scroll</td><td class="win">Full-height vertical scroll</td><td class="bad">Fixed 330px, columns</td><td class="meh">Card grows, timer shrinks</td></tr>
+        <tr><td>Dashboard chrome while open</td><td class="meh">Wordmark and menu fade under the feather</td><td class="meh">Wordmark and menu covered</td><td class="bad">Footer hidden</td><td class="win">All visible</td></tr>
+        <tr><td>Mobile preview area</td><td class="meh">40% above sheet</td><td class="meh">44% above sheet</td><td class="meh">50% above sheet</td><td class="win">66% at peek</td></tr>
+        <tr><td>Motion and gesture complexity</td><td class="meh">One slide, one scale, blur-in stagger</td><td class="win">One slide, one scale</td><td class="win">One slide, one scale</td><td class="bad">Per-tab resize, 3 snap points</td></tr>
+        <tr><td>Build surface</td><td class="meh">Desktop aside + vaul Drawer, backdrop-filter</td><td class="meh">Desktop aside + vaul Drawer</td><td class="win">One tray component</td><td class="meh">Card + Drawer with snapPoints</td></tr>
+        <tr><td>Visual weight while editing</td><td class="win">No edge, panel matches your background</td><td class="meh">Solid card with a border</td><td class="meh">Solid tray</td><td class="meh">Solid card</td></tr>
+        <tr><td>Already reviewed by owner</td><td class="win">Your reference</td><td class="win">Yes, prototype</td><td class="meh">No</td><td class="meh">April spec only</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="block">
+  <div class="section-head"><div><h2>Also settled on this board</h2><p>These apply to whichever direction wins. Annotate any of them to change it.</p></div></div>
+  <div class="also">
+    <div><b>Closing never asks</b>Close, <kbd>Esc</kbd>, Cancel and navigating away all revert silently (ENG-04). No "discard changes?" dialog. The dirty dot is the warning.</div>
+    <div><b>Apply commits and closes</b>A single, clear end to the edit. Reopen to keep tweaking. In Phase 2, the look lasts until refresh.</div>
+    <div><b>No scrim</b>Dimming the dashboard would falsify the preview. The panel is non-modal. Focus moves into it on open and returns to the palette button on close.</div>
+    <div><b>Dashboard stays live</b><kbd>Space</kbd> and <kbd>R</kbd> keep working while the panel is open, except when focus is in a text or color input.</div>
+    <div><b>Tweaking a preset makes a Custom look</b>The Theme section shows the current look, which becomes "Custom look (unsaved)" once you change anything. Saving a named theme is Phase 4.</div>
+    <div><b>Reset is a preview too</b>Reset to default fills the controls with defaults as a preview. It still needs Apply.</div>
+  </div>
+</section>
+
+<section class="block" id="decide">
+  <div class="section-head"><div><h2>Pick a direction</h2><p>Your choice goes into the Phase 2 CONTEXT and UI-SPEC, and the plans get written against it.</p></div></div>
+  <form class="card decide" data-lavish-question="panel-direction" id="decide-form">
+    <div class="opts" role="radiogroup" aria-label="Panel direction">
+      <label class="opt"><input type="radio" name="dir" value="D - Feathered dock" checked><span class="ob"><b>D - Feathered dock <span class="badge rec">Recommended</span></b><span>A's layout with no panel edge, a feathered seam, a surface that follows your background, and the timer kept centered. From your reference.</span></span></label>
+      <label class="opt"><input type="radio" name="dir" value="A - Docked side panel"><span class="ob"><b>A - Docked side panel</b><span>Right aside on desktop and a bottom sheet on mobile. Timer at 72%.</span></span></label>
+      <label class="opt"><input type="radio" name="dir" value="B - Bottom tray"><span class="ob"><b>B - Bottom tray</b><span>Full-width tray with centered composition and one shell. Timer at 62%.</span></span></label>
+      <label class="opt"><input type="radio" name="dir" value="C - Floating card"><span class="ob"><b>C - Floating card</b><span>Card above the footer that sizes by section, with 3 snap points on mobile.</span></span></label>
+    </div>
+    <label for="decide-notes" class="eyebrow">Changes to the chosen direction (optional)</label>
+    <textarea id="decide-notes" name="notes" placeholder="e.g. D, but keep a hairline edge; mobile sheet at 56%"></textarea>
+    <div class="q-foot"><span class="q-state" id="q-state">Selected: D - Feathered dock. Not queued yet.</span><button class="btn btn-primary" type="submit">Queue this direction</button></div>
+  </form>
+</section>
+
+</div>
+
+<script>
+/* ---------- catalog (same values as .lavish/customization-prototype.html) ---------- */
+const FONTS = {
+  'inter-tight': { label: 'Inter Tight', stack: "'Inter Tight', system-ui, sans-serif", note: 'Current' },
+  'editorial-serif': { label: 'Editorial serif', stack: "'Fraunces', Georgia, serif" },
+  'mono': { label: 'Mono', stack: "'JetBrains Mono', ui-monospace, monospace" },
+  'display-sans': { label: 'Display sans', stack: "'Space Grotesk', system-ui, sans-serif" },
+};
+const SOLIDS = [['#101010', 'Ink'], ['#1c1b19', 'Stone'], ['#1a1d23', 'Slate'], ['#111a13', 'Moss'], ['#1f1420', 'Plum'], ['#241a12', 'Umber'], ['#0d1420', 'Night'], ['#1f1d1a', 'Paper dark']];
+const ACCENTS = ['#f5f5f4', '#fca5a5', '#fdba74', '#fcd34d', '#bef264', '#86efac', '#5eead4', '#7dd3fc', '#93c5fd', '#c4b5fd', '#f0abfc', '#fda4af'];
+const DEFAULT = { bg: '#101010', tint: '#000000', tintO: 0, blur: 0, font: 'inter-tight', accent: '#f5f5f4', contrast: 1, progress: 'edge', density: 'comfortable', grain: 0.05 };
+const TABS = [['theme', 'Theme'], ['background', 'Background'], ['type', 'Type'], ['color', 'Color'], ['style', 'Style']];
+const C_HEIGHT = { theme: 440, background: 430, type: 400, color: 400, style: 330 };
+
+const I = {
+  back: '<polygon points="19 20 9 12 19 4 19 20"/><line x1="5" x2="5" y1="19" y2="5"/>',
+  play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+  reset: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  fwd: '<polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/>',
+  todo: '<path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>',
+  sound: '<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>',
+  timer: '<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
+  palette: '<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  arrow: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
+};
+const ic = (k, s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
+const esc = s => String(s).replace(/"/g, '&quot;');
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+const stages = {};
+
+function stageHTML(id, dir, mobile) {
+  const cells = Array.from({ length: 12 }, (_, i) => `<i class="${i === 0 ? 'now' : ''}"></i>`).join('');
+  const ticks = Array.from({ length: 25 }, (_, i) => `<i class="${i < 7 ? 'done' : i === 7 ? 'now' : ''}"></i>`).join('');
+  const digits = mobile ? '<span>17</span><span>42</span>' : '<span>17</span><span class="colon">:</span><span>42</span>';
+  const menu = mobile
+    ? `<button class="b" aria-label="To-do list">${ic('todo')}</button><button class="b" aria-label="Sounds">${ic('sound')}</button><button class="b" aria-label="Session settings">${ic('timer')}</button><button class="b cz" data-act="open" aria-label="Customize" aria-expanded="true">${ic('palette')}</button>`
+    : `<button class="b" aria-label="To-do list">${ic('todo')}</button><button class="b" aria-label="Sounds">${ic('sound')}</button><button class="b" aria-label="Session settings">${ic('timer')}</button><button class="b cz" data-act="open" aria-label="Customize" aria-expanded="true">${ic('palette')}</button><button class="b acct">Sign In</button>`;
+  const actions = `<button class="btn btn-ghost btn-sm" type="button" data-act="reset">Reset to default</button><div class="r"><button class="btn btn-sm" type="button" data-act="cancel">Cancel</button><button class="btn btn-primary btn-sm" type="button" data-act="apply">Apply</button></div>`;
+  const inHeader = dir === 'B';
+  const detents = dir === 'C' && mobile ? `<div class="detents" role="group" aria-label="Sheet height"><button type="button" data-snap="34%">Peek</button><button type="button" data-snap="56%">Half</button><button type="button" data-snap="90%">Full</button></div>` : '';
+  return `<div class="stage ${mobile ? 'm' : 'd'} open" id="${id}" data-dir="${dir}" data-progress="edge" data-density="comfortable">
+    <div class="layer tint"></div><div class="layer glow"></div>
+    <svg class="layer grain" xmlns="http://www.w3.org/2000/svg"><filter id="n-${id}"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#n-${id})"/></svg>
+    <div class="chrome head"><div class="count">1/6</div><div class="cells">${cells}</div><div class="title">Be Focus</div></div>
+    <div class="center"><div class="clock"><div class="digits">${digits}</div><div class="under"><div class="ruler">${ticks}</div><div class="hints"><span><kbd>Space</kbd>pause</span><span><kbd>R</kbd>reset</span></div></div></div></div>
+    <div class="edge-track"></div><div class="edge"></div>
+    <div class="chrome foot-l"><button class="b" aria-label="Previous">${ic('back')}</button><button class="b" aria-label="Play">${ic('play')}</button><button class="b" aria-label="Reset timer">${ic('reset')}</button><button class="b" aria-label="Next">${ic('fwd')}</button></div>
+    <div class="chrome foot-r">${menu}</div>
+    <section class="panel" role="dialog" aria-modal="false" aria-labelledby="${id}-h">
+      <button class="grab" type="button" data-act="cycle" aria-label="Resize sheet"></button>
+      <header class="p-head"><div class="t"><h4 id="${id}-h">Customize</h4><span class="p-state"><i></i><span class="p-state-t">Showing your current look</span></span></div>${detents}${inHeader ? `<div class="p-actions">${actions}</div>` : `<button class="btn btn-ghost btn-icon" type="button" data-act="cancel" aria-label="Close and discard changes">${ic('x', 18)}</button>`}</header>
+      <nav class="tabs" role="tablist" aria-label="Customize sections">${TABS.map(([k, l]) => `<button class="tab" type="button" role="tab" data-tab="${k}" aria-selected="false">${l}</button>`).join('')}</nav>
+      <div class="p-body" role="tabpanel"></div>
+      ${inHeader ? '' : `<footer class="p-foot">${actions}</footer>`}
+    </section>
+    <div class="toast" role="status"></div>
+  </div>`;
+}
+
+function body(st) {
+  const L = st.preview, n = st.id, t = st.tab;
+  const range = (k, label, min, max, step, fmt) => `<div class="fs"><span class="lab"><label for="${n}-${k}">${label}</label><output>${fmt(L[k])}</output></span><input id="${n}-${k}" type="range" min="${min}" max="${max}" step="${step}" value="${L[k]}" data-k="${k}"></div>`;
+  const seg = (k, label, opts) => `<div class="fs full"><span class="lab">${label}</span><div class="seg" role="radiogroup" aria-label="${label}">${opts.map(([v, l]) => `<label><input type="radio" name="${n}-${k}" value="${v}" data-k="${k}" ${L[k] === v ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div></div>`;
+  if (t === 'theme') {
+    const dirty = !same(st.preview, st.committed);
+    return `<div class="fs full"><span class="lab">Current look</span><div class="lookrow"><div class="th" style="background:${L.bg};color:${L.accent};font-family:${esc(FONTS[L.font].stack)}">17</div><div class="nm"><b>${dirty ? 'Custom look (unsaved)' : 'Default'}</b><span>${dirty ? 'Apply keeps it. Saving it by name comes in Phase 4.' : 'This is what the dashboard shows now.'}</span></div>${st.dir === 'D' ? `<span class="go">${ic('arrow', 18)}</span>` : ''}</div></div>
+      <div class="empty full"><b>Presets and saved themes</b>This section ships as structure in Phase 2. Phase 4 adds curated presets and up to 10 saved themes here, without restructuring the panel.</div>`;
+  }
+  if (t === 'background') {
+    const custom = !SOLIDS.some(([c]) => c === L.bg);
+    return `<div class="fs full"><span class="lab">Solid color</span><div class="swatches" role="radiogroup" aria-label="Background color">${SOLIDS.map(([c, l]) => `<label class="sw" title="${l}"><input type="radio" name="${n}-bg" value="${c}" data-k="bg" aria-label="${l}" ${L.bg === c ? 'checked' : ''}><span style="background:${c}"></span></label>`).join('')}</div>
+      <label class="custom"><input type="color" value="${L.bg}" data-k="bg" aria-label="Custom background color"> ${custom ? `Custom <code>${L.bg}</code>` : 'Custom color'}</label></div>
+      <div class="fs"><span class="lab"><label for="${n}-tint">Overlay tint</label><output>${L.tint}</output></span><input id="${n}-tint" type="color" value="${L.tint}" data-k="tint" style="width:100%"></div>
+      ${range('tintO', 'Overlay opacity', 0, 0.8, 0.02, v => Math.round(v * 100) + '%')}
+      ${range('blur', 'Blur', 0, 24, 1, v => v + 'px')}
+      <p class="hint full">Blur shows on image and video backgrounds (Phase 5). On solids it is stored but has no visible effect.</p>`;
+  }
+  if (t === 'type') {
+    return `<div class="fs full"><span class="lab">Typeface</span><div class="picks" role="radiogroup" aria-label="Typeface">${Object.entries(FONTS).map(([k, f]) => `<label class="pick"><input type="radio" name="${n}-font" value="${k}" data-k="font" ${L.font === k ? 'checked' : ''}><span class="pick-body"><span class="big" style="font-family:${esc(f.stack)}">17:42</span><span class="nm">${f.label}${f.note ? ' - ' + f.note : ''}</span></span></label>`).join('')}</div><p class="hint">Applies to the timer, wordmark and dashboard text. The panel and menus keep Inter Tight.</p></div>`;
+  }
+  if (t === 'color') {
+    const custom = !ACCENTS.includes(L.accent);
+    return `<div class="fs full"><span class="lab">Accent</span><div class="swatches acc" role="radiogroup" aria-label="Accent color">${ACCENTS.map(a => `<label class="sw"><input type="radio" name="${n}-accent" value="${a}" data-k="accent" aria-label="Accent ${a}" ${L.accent === a ? 'checked' : ''}><span style="background:${a}"></span></label>`).join('')}</div>
+      <label class="custom"><input type="color" value="${L.accent}" data-k="accent" aria-label="Custom accent color"> ${custom ? `Custom <code>${L.accent}</code>` : 'Custom color'}</label></div>
+      ${range('contrast', 'Text contrast', 0.55, 1, 0.01, v => Math.round(v * 100) + '%')}`;
+  }
+  return `${seg('progress', 'Timer progress', [['edge', 'Edge'], ['ruler', 'Ruler'], ['ink', 'Ink'], ['none', 'None']])}
+    ${seg('density', 'Density', [['compact', 'Compact'], ['comfortable', 'Comfortable'], ['roomy', 'Roomy']])}
+    ${range('grain', 'Grain', 0, 0.25, 0.01, v => Math.round(v * 100) + '%')}`;
+}
+
+function paint(st) {
+  const L = st.preview, el = st.el, s = el.style;
+  s.setProperty('--bg-solid', L.bg);
+  s.setProperty('--accent-c', L.accent);
+  s.setProperty('--text-contrast', L.contrast);
+  s.setProperty('--grain-opacity', L.grain);
+  s.setProperty('--tint', L.tint);
+  s.setProperty('--tint-o', L.tintO);
+  s.setProperty('--font-display', FONTS[L.font].stack);
+  s.setProperty('--dz', { compact: 1.07, comfortable: 1, roomy: .86 }[L.density]);
+  el.dataset.progress = L.progress;
+  el.dataset.density = L.density;
+  const dirty = !same(st.preview, st.committed);
+  el.classList.toggle('dirty', dirty);
+  el.querySelector('.p-state-t').textContent = dirty ? 'Previewing changes' : 'Showing your current look';
+  el.querySelector('[data-act="apply"]').disabled = !dirty;
+  el.querySelector('[data-act="reset"]').disabled = same(st.preview, DEFAULT);
+  layout(st);
+}
+
+function layout(st) {
+  const el = st.el, center = el.querySelector('.center');
+  el.querySelector('.b.cz').setAttribute('aria-expanded', String(st.open));
+  const btn = document.querySelector(`[data-toggle="${st.dir}"]`);
+  if (btn && !st.mobile) btn.textContent = st.open ? 'Close panel' : 'Open panel';
+  center.style.transform = '';
+  center.style.opacity = '';
+  if (!st.open) return;
+  if (st.mobile) {
+    const pct = parseFloat(st.snap) / 100, sheet = 844 * pct, cy = (844 - sheet) / 2;
+    el.style.setProperty('--sh', st.snap);
+    if (pct > .8) { center.style.opacity = '0'; center.style.transform = 'translateY(-300px) scale(.4)'; return; }
+    const sc = Math.min(.72, (844 - sheet - 40) / 400);
+    center.style.transform = `translateY(${Math.round(cy - 422)}px) scale(${sc.toFixed(2)})`;
+    el.querySelectorAll('.detents button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.snap === st.snap)));
+    return;
+  }
+  if (st.dir === 'C') {
+    const h = C_HEIGHT[st.tab], top = 200, bottom = 800 - h - 20;
+    const sc = Math.min(.8, (bottom - top) / 400), cy = (top + bottom) / 2 - 20;
+    el.style.setProperty('--ch', h + 'px');
+    center.style.transform = `translateY(${Math.round(cy - 450)}px) scale(${sc.toFixed(2)})`;
+  }
+}
+
+function render(st, reveal) {
+  st.el.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === st.tab)));
+  const pb = st.el.querySelector('.p-body');
+  pb.innerHTML = body(st);
+  if (reveal) [...pb.children].forEach(c => c.classList.add('rv'));
+  paint(st);
+}
+
+function toast(st, msg) {
+  const t = st.el.querySelector('.toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(st.tt); st.tt = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function setOpen(st, open) {
+  st.open = open;
+  st.el.classList.toggle('open', open);
+  if (open) { st.preview = { ...st.committed }; render(st, true); } else paint(st);
+}
+
+function mount(key) {
+  const host = document.querySelector(`[data-mount="${key}"]`);
+  const [dir, dev] = key.split('-'), mobile = dev === 'm', id = 'st-' + key;
+  host.innerHTML = stageHTML(id, dir, mobile);
+  const st = { id, dir, mobile, el: host.firstElementChild, open: true, tab: dir === 'C' && !mobile ? 'color' : dir === 'D' && !mobile ? 'type' : 'background', snap: { A: '56%', B: '50%', C: '34%', D: '60%' }[dir], committed: { ...DEFAULT }, preview: { ...DEFAULT } };
+  stages[key] = st;
+  const fit = () => st.el.style.setProperty('--k', host.clientWidth / (mobile ? 390 : 1440));
+  new ResizeObserver(fit).observe(host); fit();
+
+  const onInput = e => {
+    const k = e.target.dataset.k; if (!k) return;
+    const v = e.target.type === 'range' ? Number(e.target.value) : e.target.value;
+    st.preview = { ...st.preview, [k]: v };
+    const out = e.target.closest('.fs')?.querySelector('output');
+    if (out && e.target.type === 'range') out.textContent = { tintO: Math.round(v * 100) + '%', blur: v + 'px', contrast: Math.round(v * 100) + '%', grain: Math.round(v * 100) + '%' }[k];
+    else if (out) out.textContent = v;
+    if (e.type === 'change' && e.target.type !== 'range') render(st); else paint(st);
+  };
+  st.el.addEventListener('input', onInput);
+  st.el.addEventListener('change', onInput);
+  st.el.addEventListener('click', e => {
+    const tab = e.target.closest('[data-tab]');
+    if (tab) { st.tab = tab.dataset.tab; render(st, true); return; }
+    const snap = e.target.closest('[data-snap]');
+    if (snap) { st.snap = snap.dataset.snap; layout(st); return; }
+    const act = e.target.closest('[data-act]')?.dataset.act;
+    if (act === 'open') setOpen(st, !st.open);
+    if (act === 'cycle' && st.dir === 'C') { const s = ['34%', '56%', '90%']; st.snap = s[(s.indexOf(st.snap) + 1) % 3]; layout(st); }
+    if (act === 'cancel') { const was = !same(st.preview, st.committed); st.preview = { ...st.committed }; setOpen(st, false); if (was) toast(st, 'Reverted to your last applied look'); }
+    if (act === 'apply') { st.committed = { ...st.preview }; setOpen(st, false); toast(st, 'Applied. Phase 3 makes it survive a refresh.'); }
+    if (act === 'reset') { st.preview = { ...DEFAULT }; render(st); }
+  });
+  st.el.addEventListener('keydown', e => { if (e.key === 'Escape' && st.open) st.el.querySelector('[data-act="cancel"]').click(); });
+  render(st, true);
+}
+
+['D-d', 'D-m', 'A-d', 'A-m', 'B-d', 'B-m', 'C-d', 'C-m'].forEach(mount);
+document.querySelectorAll('[data-toggle]').forEach(b => b.addEventListener('click', () => {
+  const st = stages[b.dataset.toggle + '-d'];
+  if (st.open) st.el.querySelector('[data-act="cancel"]').click(); else setOpen(st, true);
+}));
+
+const form = document.getElementById('decide-form'), qs = document.getElementById('q-state');
+form.addEventListener('change', () => { qs.textContent = 'Selected: ' + new FormData(form).get('dir') + '. Not queued yet.'; });
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const fd = new FormData(form), dir = fd.get('dir'), notes = String(fd.get('notes') || '').trim();
+  if (!window.lavish) { qs.textContent = 'Open this board through Lavish to queue a choice.'; return; }
+  window.lavish.queuePrompt(`Customize panel direction: ${dir}.${notes ? ' Changes: ' + notes : ''} Record it in the Phase 2 CONTEXT and UI-SPEC and plan against it.`, { tag: 'choice', text: 'Panel direction: ' + dir, element: form, queueKey: 'panel-direction', data: { question: 'panel-direction', answer: dir, notes } });
+  qs.textContent = 'Queued: ' + dir + '. Press Send to Agent in the Lavish bar.';
+});
+</script>
+</body>
+</html>
