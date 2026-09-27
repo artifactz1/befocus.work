@@ -1,5 +1,6 @@
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import { getUserSettings } from '~/lib/server/getUserSettings'
+import { CustomizeStoreProvider } from '~/store/useCustomizeStore'
 import { TimerStoreProvider } from '~/store/useTimerStore'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -10,7 +11,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <TimerStoreProvider initialSettings={settings}>{children}</TimerStoreProvider>
+      <TimerStoreProvider initialSettings={settings}>
+        <CustomizeStoreProvider initialLook={null}>{children}</CustomizeStoreProvider>
+      </TimerStoreProvider>
     </HydrationBoundary>
   )
 }
