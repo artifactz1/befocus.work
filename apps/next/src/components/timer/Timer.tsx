@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTimerKeyboard } from '~/hooks/useTimerKeyboard'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
@@ -41,6 +42,8 @@ export default function Timer() {
   const [seconds, setSeconds] = useState<number>(0)
   const isLandscape = useIsLandscape()
   const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  useTimerKeyboard()
 
   const workerRef = useRef<Worker | null>(null)
 
@@ -167,7 +170,14 @@ export default function Timer() {
                 />
               ))}
             </div>
-            <div className={`${styles.hints} bf-chrome`} />
+            <div aria-hidden className={`${styles.hints} bf-chrome`}>
+              <span>
+                <kbd>Space</kbd>pause/start
+              </span>
+              <span>
+                <kbd>R</kbd>reset
+              </span>
+            </div>
           </div>
         </div>
 

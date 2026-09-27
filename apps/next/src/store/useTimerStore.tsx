@@ -173,3 +173,13 @@ export function useTimerStore<T = TimerState>(selector?: (state: TimerState) => 
   }
   return useStore(store, selector ?? (identity as unknown as (state: TimerState) => T))
 }
+
+// Escape hatch for effects (e.g. keyboard listeners) that must read fresh
+// actions without re-binding on every state change.
+export function useTimerStoreApi(): TimerStoreApi {
+  const store = useContext(TimerStoreContext)
+  if (!store) {
+    throw new Error('useTimerStoreApi must be used within a TimerStoreProvider')
+  }
+  return store
+}
