@@ -231,10 +231,10 @@ Add `<CustomizeButton />` before `<AccountButton />` per D-07 ("before Sign In /
 ```
 apps/next/src/components/settings/MenuSettingsMobile.tsx:3,14   <- delete this usage
 apps/next/src/components/settings/MenuSettings.tsx:14            <- already dead (commented out)
-apps/next/src/components/AccountButton.tsx:17,88                <- ALSO RENDERS IT, live usage
+apps/next/src/components/AccountButton.tsx:17,88                <- commented out (import and JSX), dead
 apps/next/src/components/DarkModeToggle.tsx:9                    <- definition
 ```
-**Important correction to CONTEXT.md D-07's premise:** `AccountButton.tsx:88` renders `<DarkModeToggle />` inside what is presumably an account dropdown/menu - this is a second, currently-live call site CONTEXT.md did not mention. D-07 says "The `DarkModeToggle` component is deleted if nothing else uses it" - it is NOT safe to delete outright without also removing/replacing this `AccountButton.tsx` usage. Flag for planner: either (a) remove the `AccountButton.tsx:88` render too (app is dark-only per PROJECT.md, so this is likely equally dead weight), or (b) keep `DarkModeToggle.tsx` alive solely for `AccountButton.tsx` and only remove it from `MenuSettingsMobile.tsx`.
+**Correction (verified by the plan checker against source):** the `AccountButton.tsx` import (line 17) and `<DarkModeToggle />` render (lines 86-89) are both inside comments, so the only live call site is `MenuSettingsMobile.tsx`. D-07 holds: once 02-06 replaces that usage with `<CustomizeButton />`, `DarkModeToggle.tsx` can be deleted, along with the dead commented references.
 
 **Analog for the new `CustomizeButton` component itself:** `MenuButton` (`apps/next/src/components/helper/MenuButtons.tsx`, full file, 18 lines) is the shared button wrapper every menu icon button uses:
 ```typescript
@@ -456,7 +456,7 @@ export default function useIsLandscape() {
 **Files scanned:** 24 read in full; grep sweeps for `sonner`/`Toaster`, `DarkModeToggle`, `@repo/types`, `keydown`/`matchMedia`, `zod` dependency location.
 **Key gaps found during verification (not assumed from CONTEXT.md):**
 - `sonner`'s `<Toaster />` is defined but never mounted anywhere - D-15 needs this fixed as part of this phase.
-- `DarkModeToggle` has a second live call site (`AccountButton.tsx:88`) that CONTEXT.md's D-07 did not mention - deleting the component outright would break that file.
+- `DarkModeToggle` references in `AccountButton.tsx` are commented out; `MenuSettingsMobile.tsx` is the only live call site (D-07 holds).
 - `zod` is not a declared dependency of `apps/next` or `packages/types` (only reachable via Bun's hoisting from `packages/api`) - the new `look.ts` schema file depends on this transitive resolution continuing to work.
 - `next/font/google` is fully compatible with the Cloudflare-Workers-via-OpenNext deploy target already in place (`apps/next/wrangler.jsonc`, `open-next.config.ts`) - no blocker for the four-font loading requirement.
 **Pattern extraction date:** 2026-09-27
