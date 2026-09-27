@@ -23,6 +23,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { useTimerStore } from '~/store/useTimerStore'
 import Divider from '../helper/Divider'
+import MenuButton from '../helper/MenuButtons'
 import { BreakDurationInput } from '../input/BreakDurationInput'
 import { SessionsInput } from '../input/SessionsInput'
 import { WorkDurationInput } from '../input/WorkDurationInput'
@@ -37,9 +38,9 @@ export default function SessionSettingsMobile() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant='outline' size='lg' className='lg:h-12 lg:w-32'>
+        <MenuButton size='lg' className='lg:h-12 lg:w-32'>
           <Timer />
-        </Button>
+        </MenuButton>
       </DrawerTrigger>
       <DrawerContent className='max-h-screen px-2'>
         <DrawerHeader>

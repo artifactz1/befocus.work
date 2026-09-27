@@ -33,12 +33,7 @@ export const DarkModeToggle = () => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <MenuButton
-            onClick={handleToggle}
-            variant='outline'
-            size='lg'
-            className='lg:w-24 lg:h-12 xl:h-12 xl:w-32'
-          >
+          <MenuButton onClick={handleToggle} size='lg' className='lg:w-24 lg:h-12 xl:h-12 xl:w-32'>
             {isDarkMode ? <Sun strokeWidth={2} /> : <Moon strokeWidth={2} />}
           </MenuButton>
         </TooltipTrigger>

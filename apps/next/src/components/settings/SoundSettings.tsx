@@ -46,7 +46,7 @@ export default function SoundSettings() {
             <Volume2 />
             <div className='mb-2 mt-4 text-lg font-bold'>befocus/sounds</div>
             <Divider />
-            <TabsList className='flex w-full bg-[#d0d1d0] dark:bg-[#2A2523]'>
+            <TabsList className='flex w-full bg-muted'>
               <TabsTrigger className='flex-1' value='music'>
                 Music
               </TabsTrigger>

@@ -1,5 +1,4 @@
 'use client'
-import { Button } from '@repo/ui/button'
 import {
   Drawer,
   DrawerContent,
@@ -12,6 +11,7 @@ import { Toggle } from '@repo/ui/toggle'
 import { NotebookPen, Plus } from 'lucide-react'
 import { useTodoStore } from '~/store/useToDoStore'
 import Divider from '../helper/Divider'
+import MenuButton from '../helper/MenuButtons'
 import TaskList from '../to-do-list/TaskList'
 
 export default function ToDoListMobile() {
@@ -21,9 +21,9 @@ export default function ToDoListMobile() {
     <main className='block sm:hidden'>
       <Drawer>
         <DrawerTrigger asChild>
-          <Button variant='outline' size='lg' className='lg:h-12 lg:w-32'>
+          <MenuButton size='lg' className='lg:h-12 lg:w-32'>
             <NotebookPen />
-          </Button>
+          </MenuButton>
         </DrawerTrigger>
         <DrawerContent className='px-2'>
           <DrawerHeader>
