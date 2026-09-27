@@ -148,7 +148,14 @@ const EPS = 0.01
 
 // closed panel returns identity regardless of viewport
 assert.deepEqual(
-  computeTimerTransform({ panelOpen: false, vw: 1440, vh: 900, timerW: 838, timerH: 250, centerY: 450 }),
+  computeTimerTransform({
+    panelOpen: false,
+    vw: 1440,
+    vh: 900,
+    timerW: 838,
+    timerH: 250,
+    centerY: 450,
+  }),
   { tx: 0, ty: 0, scale: 1 },
   'closed panel must return identity',
 )
@@ -165,7 +172,10 @@ assert.deepEqual(
   })
   assert.equal(tx, 0, '1440x900 must not translate x')
   assert.equal(ty, 0, '1440x900 must not translate y')
-  assert.ok(Math.abs(scale - 0.42) < 0.005, `1440x900 scale must be within 0.005 of 0.42, got ${scale}`)
+  assert.ok(
+    Math.abs(scale - 0.42) < 0.005,
+    `1440x900 scale must be within 0.005 of 0.42, got ${scale}`,
+  )
 }
 
 // 1920x1080: cap at exactly 0.72, centred
@@ -228,12 +238,26 @@ assert.deepEqual(
 
 // an unmeasured timer (0 width or height) returns identity even while open
 assert.deepEqual(
-  computeTimerTransform({ panelOpen: true, vw: 1440, vh: 900, timerW: 0, timerH: 250, centerY: 450 }),
+  computeTimerTransform({
+    panelOpen: true,
+    vw: 1440,
+    vh: 900,
+    timerW: 0,
+    timerH: 250,
+    centerY: 450,
+  }),
   { tx: 0, ty: 0, scale: 1 },
   'zero timerW must return identity',
 )
 assert.deepEqual(
-  computeTimerTransform({ panelOpen: true, vw: 1440, vh: 900, timerW: 838, timerH: 0, centerY: 450 }),
+  computeTimerTransform({
+    panelOpen: true,
+    vw: 1440,
+    vh: 900,
+    timerW: 838,
+    timerH: 0,
+    centerY: 450,
+  }),
   { tx: 0, ty: 0, scale: 1 },
   'zero timerH must return identity',
 )
