@@ -131,7 +131,28 @@ Apply or throw it away with Cancel. Nothing survives a refresh yet; Phase 3 adds
   5. On a phone every control is reachable and usable in a bottom sheet, the timer stays usable at
      every supported viewport, and the whole panel can be driven from the keyboard with controls
      that announce themselves to a screen reader.
-**Plans**: TBD
+**Plans**: 8 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md - Look schema, catalog, customize store and painter, tokens, fonts, Toaster, AppBackground on tokens (ENG-01, ENG-03)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md - Controls kit, Feathered dock, Theme and Background sections, Apply/Cancel/Reset flow, Customize trigger (UX-01, UX-02, UX-03, UX-06, ENG-02, ENG-04, CTL-01, CTL-02, CTL-03, CTL-10)
+- [ ] 02-03-PLAN.md - Timer on tokens, Edge/Ruler/Ink/None progress, double-tick fix, Space/R shortcuts and hints (CTL-07, CTL-08, CTL-12)
+- [ ] 02-04-PLAN.md - Session contribution grid, chrome idle fade and density padding, bare menu buttons (CTL-08, CTL-11, CTL-13)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-05-PLAN.md - Type, Color and Style sections (CTL-04 to CTL-09, UX-03)
+- [ ] 02-06-PLAN.md - Mobile feathered bottom sheet, breakpoint switch, mobile trigger, mobile chrome fade (UX-04, UX-05, UX-06)
+- [ ] 02-07-PLAN.md - Timer scales and moves out of the panel's way at every viewport (UX-05)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 02-08-PLAN.md - Integrated gates, end-to-end viewport and keyboard walkthrough, owner review (ENG-02, ENG-04, UX-05, UX-06)
 **UI hint**: yes
 
 Notes for planning:
@@ -274,7 +295,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation Repair | 4/5 | In Progress|  |
-| 2. Customization Engine and Panel | 0/TBD | Not started | - |
+| 2. Customization Engine and Panel | 0/8 | Planned | - |
 | 3. Persistence and Sync | 0/TBD | Not started | - |
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |
