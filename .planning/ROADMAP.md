@@ -140,7 +140,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md - Controls kit, Feathered dock, Theme and Background sections, Apply/Cancel/Reset flow, Customize trigger (UX-01, UX-02, UX-03, UX-06, ENG-02, ENG-04, CTL-01, CTL-02, CTL-03, CTL-10)
+- [x] 02-02-PLAN.md - Controls kit, Feathered dock, Theme and Background sections, Apply/Cancel/Reset flow, Customize trigger (UX-01, UX-02, UX-03, UX-06, ENG-02, ENG-04, CTL-01, CTL-02, CTL-03, CTL-10)
 - [ ] 02-03-PLAN.md - Timer on tokens, Edge/Ruler/Ink/None progress, double-tick fix, Space/R shortcuts and hints (CTL-07, CTL-08, CTL-12)
 - [ ] 02-04-PLAN.md - Session contribution grid, chrome idle fade and density padding, bare menu buttons (CTL-08, CTL-11, CTL-13)
 
@@ -295,7 +295,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation Repair | 4/5 | In Progress|  |
-| 2. Customization Engine and Panel | 1/8 | In Progress|  |
+| 2. Customization Engine and Panel | 2/8 | In Progress|  |
 | 3. Persistence and Sync | 0/TBD | Not started | - |
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |
