@@ -13,7 +13,6 @@ export default function MenuSettings() {
       <SessionSettings />
       <CustomizeButton />
       <AccountButton />
-      {/* <DarkModeToggle /> */}
     </main>
   )
 }
