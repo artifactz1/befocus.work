@@ -45,9 +45,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **CTL-08**: User can set layout density to compact, comfortable or roomy
 - [ ] **CTL-09**: User can adjust atmospheric grain intensity
 - [x] **CTL-10**: User can reset everything to default with one action
-- [ ] **CTL-11**: The session tracker renders as an accent-colored contribution grid (no outlines), and dashboard chrome fades while a session runs, returning on pointer move or focus
+- [x] **CTL-11**: The session tracker renders as an accent-colored contribution grid (no outlines), and dashboard chrome fades while a session runs, returning on pointer move or focus
 - [x] **CTL-12**: Timer controls show keyboard hints under the digits alongside the footer pill; Space plays/pauses and R resets
-- [ ] **CTL-13**: Dashboard menu buttons use a bare style (no outlines, muted icons, customize icon in accent)
+- [x] **CTL-13**: Dashboard menu buttons use a bare style (no outlines, muted icons, customize icon in accent)
 
 ### Persistence & Sync
 
@@ -162,9 +162,9 @@ Which phases cover which requirements. Populated during roadmap creation.
 | CTL-08 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-09 | Phase 2 - Customization Engine and Panel | Pending |
 | CTL-10 | Phase 2 - Customization Engine and Panel | Complete |
-| CTL-11 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-11 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-12 | Phase 2 - Customization Engine and Panel | Complete |
-| CTL-13 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-13 | Phase 2 - Customization Engine and Panel | Complete |
 | SYN-01 | Phase 3 - Persistence and Sync | Pending |
 | SYN-02 | Phase 3 - Persistence and Sync | Pending |
 | SYN-03 | Phase 3 - Persistence and Sync | Pending |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed BFC-02-02-PLAN.md
-last_updated: "2026-09-27T21:47:03.899Z"
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-09-27T22:08:28.372Z"
 last_activity: 2026-09-27
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 13
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -27,11 +27,11 @@ the next time they open it - signed in on any device, or as a guest on the same 
 ## Current Position
 
 Phase: 02 (customization-engine-and-panel) — EXECUTING
-Plan: 4 of 8
+Plan: 5 of 8
 Status: Ready to execute
 Last activity: 2026-09-27
 
-Progress: [█████░░░░░] 54%
+Progress: [██████░░░░] 62%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [█████░░░░░] 54%
 | Phase 02 P01 | 30min | 3 tasks | 13 files |
 | Phase 02 P02 | 28min | 3 tasks | 13 files |
 | Phase BFC-02 P03 | 70min | 3 tasks | 6 files |
+| Phase 02-customization-engine-and-panel P04 | 55min | 3 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,9 @@ Recent decisions affecting current work:
 - [Phase BFC-02]: Ink progress design uses a two-layer clip-path overlay instead of background-clip:text, since the digits wrapper has no own text nodes
 - [Phase BFC-02]: Added useTimerStoreApi() escape hatch to useTimerStore.tsx for effects needing store.getState() without re-binding
 - [Phase BFC-02]: biome.json noUnknownPseudoClass now ignores :global() to support CSS Modules global escape hatch
+- [Phase 02-04]: useChromeIdle mounted once in Header (not a shared provider) since Header is the only component both (app) and guest routes mount
+- [Phase 02-04]: MenuButton gained appearance prop (bare default, outline) with Omit<ButtonProps, 'variant'> to force callers off raw shadcn variant strings
+- [Phase 02-04]: AccountButton Light/Dark toggle left as-is - full theming beyond dark mode deferred per 02-CONTEXT.md, owner flag documented in 02-04-SUMMARY.md
 
 ### Pending Todos
 
@@ -120,6 +124,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-27T21:42:41.364Z
-Stopped at: Completed BFC-02-02-PLAN.md
+Last session: 2026-09-27T22:08:28.367Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None
