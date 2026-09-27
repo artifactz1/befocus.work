@@ -34,13 +34,12 @@ export default function SessionsUI() {
         >
           <p
             className={`${isLandscape ? 'text-lg' : 'text-2xl'} font-display font-bold text-dash tabular-nums`}
-            aria-label={`Session ${currentSession} of ${sessions}`}
           >
             {currentSession} / {sessions}
           </p>
           <div className='space-y-1' aria-hidden>
             <div className='flex space-x-1'>
-              {indices.map((index) => (
+              {indices.map(index => (
                 <div
                   key={`focus-${index}`}
                   data-state={focusState(index)}
@@ -52,7 +51,7 @@ export default function SessionsUI() {
               ))}
             </div>
             <div className='flex space-x-1'>
-              {indices.map((index) => (
+              {indices.map(index => (
                 <div
                   key={`break-${index}`}
                   data-state={breakState(index)}
@@ -77,7 +76,7 @@ export default function SessionsUI() {
             }}
             aria-hidden
           >
-            {indices.map((index) => (
+            {indices.map(index => (
               <div
                 key={`m-${index}`}
                 data-state={focusState(index)}
@@ -94,7 +93,7 @@ export default function SessionsUI() {
             }}
             aria-hidden
           >
-            {indices.map((index) => (
+            {indices.map(index => (
               <div
                 key={`m-break-${index}`}
                 data-state={breakState(index)}
