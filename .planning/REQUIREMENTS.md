@@ -38,12 +38,12 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **CTL-01**: User can set the background to one of 8 solid preset swatches (no curated image backgrounds)
 - [x] **CTL-02**: User can set the background to a solid color of their choosing
 - [x] **CTL-03**: User can adjust background overlay tint, overlay opacity and blur
-- [ ] **CTL-04**: User can choose among 4 typography families and see the dashboard change
-- [ ] **CTL-05**: User can pick an accent color from swatches or a custom color picker
-- [ ] **CTL-06**: User can adjust foreground text contrast
+- [x] **CTL-04**: User can choose among 4 typography families and see the dashboard change
+- [x] **CTL-05**: User can pick an accent color from swatches or a custom color picker
+- [x] **CTL-06**: User can adjust foreground text contrast
 - [x] **CTL-07**: User can set the timer progress style to Edge (default), Ruler, Ink or None; the circular ring is removed
 - [x] **CTL-08**: User can set layout density to compact, comfortable or roomy
-- [ ] **CTL-09**: User can adjust atmospheric grain intensity
+- [x] **CTL-09**: User can adjust atmospheric grain intensity
 - [x] **CTL-10**: User can reset everything to default with one action
 - [x] **CTL-11**: The session tracker renders as an accent-colored contribution grid (no outlines), and dashboard chrome fades while a session runs, returning on pointer move or focus
 - [x] **CTL-12**: Timer controls show keyboard hints under the digits alongside the footer pill; Space plays/pauses and R resets
@@ -155,12 +155,12 @@ Which phases cover which requirements. Populated during roadmap creation.
 | CTL-01 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-02 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-03 | Phase 2 - Customization Engine and Panel | Complete |
-| CTL-04 | Phase 2 - Customization Engine and Panel | Pending |
-| CTL-05 | Phase 2 - Customization Engine and Panel | Pending |
-| CTL-06 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-04 | Phase 2 - Customization Engine and Panel | Complete |
+| CTL-05 | Phase 2 - Customization Engine and Panel | Complete |
+| CTL-06 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-07 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-08 | Phase 2 - Customization Engine and Panel | Complete |
-| CTL-09 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-09 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-10 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-11 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-12 | Phase 2 - Customization Engine and Panel | Complete |
