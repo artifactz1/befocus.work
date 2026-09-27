@@ -11,7 +11,11 @@ export const SHEET_FRACTION = 0.6
 export const DESKTOP_MIN_WIDTH = 1024
 export const TIMER_GUTTER = 24
 export const TIMER_MAX_SCALE = 0.72
-export const CENTERED_MIN_SCALE = 0.4
+// Rendered width (px) below which the centred timer is too small and the fallback takes over.
+// Pixel-based because the free width between centre and feather is fixed by the viewport, not the
+// timer: 1440 wide always leaves 352px, the size the owner reviewed, so it never flips. The switch
+// sits at about 1423px wide.
+export const CENTERED_MIN_WIDTH = 336
 
 export interface TimerTransformInput {
   panelOpen: boolean
@@ -47,12 +51,10 @@ export function computeTimerTransform({
 
   if (isDesktop) {
     const featherStart = vw - DOCK_WIDTH
-    const centered = Math.min(
-      TIMER_MAX_SCALE,
-      ((featherStart - vw / 2 - TIMER_GUTTER) * 2) / timerW,
-    )
+    const centeredWidth = (featherStart - vw / 2 - TIMER_GUTTER) * 2
 
-    if (centered >= CENTERED_MIN_SCALE) {
+    if (centeredWidth >= CENTERED_MIN_WIDTH) {
+      const centered = Math.min(TIMER_MAX_SCALE, centeredWidth / timerW)
       return { tx: 0, ty: 0, scale: Math.max(MIN_SCALE, centered) }
     }
 

@@ -178,6 +178,33 @@ assert.deepEqual(
   )
 }
 
+// 1440x900 with the real measured timer (1038px wide): still centred, 352px rendered
+{
+  const { tx, scale } = computeTimerTransform({
+    panelOpen: true,
+    vw: 1440,
+    vh: 900,
+    timerW: 1038,
+    timerH: 310,
+    centerY: 450,
+  })
+  assert.equal(tx, 0, '1440x900 must stay centred whatever the timer base width')
+  assert.ok(Math.abs(scale * 1038 - 352) < 0.5, `1440x900 rendered width must be 352, got ${scale}`)
+}
+
+// 1400x900: centred would render only 312px, so the fallback applies
+{
+  const { tx } = computeTimerTransform({
+    panelOpen: true,
+    vw: 1400,
+    vh: 900,
+    timerW: 1038,
+    timerH: 310,
+    centerY: 450,
+  })
+  assert.equal(tx, 880 / 2 - 700, '1400x900 must use the narrow-desktop fallback')
+}
+
 // 1920x1080: cap at exactly 0.72, centred
 {
   const { tx, ty, scale } = computeTimerTransform({
@@ -207,7 +234,7 @@ assert.deepEqual(
   assert.equal(scale, 0.72, '1024x640 fallback scale must hit the 0.72 cap')
 }
 
-// 1280x800: centred would be about .26 (below the 0.4 floor), so fallback also applies
+// 1280x800: centred would render only 192px (below 336px), so fallback also applies
 {
   const { tx, scale } = computeTimerTransform({
     panelOpen: true,
