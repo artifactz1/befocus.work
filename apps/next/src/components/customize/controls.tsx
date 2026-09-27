@@ -55,7 +55,7 @@ export function SwatchGroup({
               onChange={() => onChange(option.value)}
               aria-label={option.label}
             />
-            <span style={{ backgroundColor: option.color }} />
+            <span className={styles.swDot} style={{ backgroundColor: option.color }} />
           </label>
         ))}
       </div>
@@ -161,7 +161,7 @@ export function SegmentedControl({
               checked={option.value === value}
               onChange={() => onChange(option.value)}
             />
-            <span>{option.label}</span>
+            <span className={styles.segLabel}>{option.label}</span>
           </label>
         ))}
       </div>

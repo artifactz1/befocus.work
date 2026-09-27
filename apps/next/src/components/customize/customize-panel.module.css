@@ -47,6 +47,7 @@
 .dock::before {
   content: "";
   position: absolute;
+  z-index: -1;
   left: 0;
   top: 0;
   bottom: 0;
@@ -207,7 +208,7 @@
   cursor: pointer;
 }
 
-.sw span {
+.swDot {
   display: block;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -217,17 +218,17 @@
     transform 0.15s;
 }
 
-.sw:hover span {
+.sw:hover .swDot {
   transform: scale(1.07);
 }
 
-.sw input:checked + span {
+.sw input:checked + .swDot {
   box-shadow:
     0 0 0 2px var(--panel-surface),
     0 0 0 4px hsl(var(--foreground));
 }
 
-.sw input:focus-visible + span {
+.sw input:focus-visible + .swDot {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 5px;
 }
@@ -304,7 +305,7 @@
   cursor: pointer;
 }
 
-.segItem span {
+.segLabel {
   display: block;
   text-align: center;
   font-size: 13.5px;
@@ -318,7 +319,7 @@
     box-shadow 0.2s;
 }
 
-.segItem input:checked + span {
+.segItem input:checked + .segLabel {
   background: var(--panel-lift);
   box-shadow:
     0 6px 16px -8px rgb(0 0 0 / 0.7),
@@ -326,7 +327,7 @@
   color: hsl(var(--foreground));
 }
 
-.segItem input:focus-visible + span {
+.segItem input:focus-visible + .segLabel {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
