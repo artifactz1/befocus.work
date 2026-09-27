@@ -59,6 +59,10 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        // --user-accent is a raw hex custom property (D-04), not an HSL triplet like the tokens
+        // above, so it is not wrapped in hsl(var(...)). Tailwind's /NN opacity modifiers do not
+        // work on it - use color-mix(in srgb, var(--user-accent) NN%, transparent) instead.
+        'user-accent': 'var(--user-accent)',
       },
       borderRadius: {
         lg: 'var(--radius)',
