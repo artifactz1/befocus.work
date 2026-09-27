@@ -136,6 +136,37 @@ html[data-density="roomy"] {
   .text-dash {
     color: hsl(var(--foreground) / var(--text-contrast));
   }
+
+  /* Session tracker contribution-grid cell (D-17, plan 02-04) */
+  .bf-cell {
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--fg) 8%, transparent);
+    transition: background-color 0.4s;
+  }
+
+  .bf-cell[data-state="done"] {
+    background: var(--user-accent);
+  }
+
+  .bf-cell[data-state="now"] {
+    background: color-mix(
+      in srgb,
+      var(--user-accent) 45%,
+      color-mix(in srgb, var(--fg) 8%, transparent)
+    );
+  }
+}
+
+@media (max-width: 639px) {
+  .bf-cell {
+    border-radius: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-cell {
+    transition: none;
+  }
 }
 
 @font-face {
