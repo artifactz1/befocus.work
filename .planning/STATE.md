@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed BFC-02-02-PLAN.md
-last_updated: "2026-09-27T21:14:14.485Z"
+last_updated: "2026-09-27T21:47:03.899Z"
 last_activity: 2026-09-27
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 13
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -27,11 +27,11 @@ the next time they open it - signed in on any device, or as a guest on the same 
 ## Current Position
 
 Phase: 02 (customization-engine-and-panel) — EXECUTING
-Plan: 3 of 8
+Plan: 4 of 8
 Status: Ready to execute
 Last activity: 2026-09-27
 
-Progress: [█████░░░░░] 46%
+Progress: [█████░░░░░] 54%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [█████░░░░░] 46%
 | Phase 01-foundation-repair P04 | 95 | 3 tasks | 79 files |
 | Phase 02 P01 | 30min | 3 tasks | 13 files |
 | Phase 02 P02 | 28min | 3 tasks | 13 files |
+| Phase BFC-02 P03 | 70min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,9 @@ Recent decisions affecting current work:
 - [Phase 02-01]: next.config.mjs externalDir was not needed; existing tsconfig path alias resolved @repo/types/look
 - [Phase 02]: Use twMerge-conflicting reset strings (LIST_RESET/TAB_RESET) to force CSS module styling over Radix Tabs default Tailwind classes
 - [Phase 02]: CustomizePanelBody seeds section tab state with literal 'theme' instead of CUSTOMIZE_SECTIONS[0].id to satisfy noUncheckedIndexedAccess
+- [Phase BFC-02]: Ink progress design uses a two-layer clip-path overlay instead of background-clip:text, since the digits wrapper has no own text nodes
+- [Phase BFC-02]: Added useTimerStoreApi() escape hatch to useTimerStore.tsx for effects needing store.getState() without re-binding
+- [Phase BFC-02]: biome.json noUnknownPseudoClass now ignores :global() to support CSS Modules global escape hatch
 
 ### Pending Todos
 
@@ -116,6 +120,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-27T21:14:14.479Z
+Last session: 2026-09-27T21:42:41.364Z
 Stopped at: Completed BFC-02-02-PLAN.md
 Resume file: None

@@ -41,12 +41,12 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **CTL-04**: User can choose among 4 typography families and see the dashboard change
 - [ ] **CTL-05**: User can pick an accent color from swatches or a custom color picker
 - [ ] **CTL-06**: User can adjust foreground text contrast
-- [ ] **CTL-07**: User can set the timer progress style to Edge (default), Ruler, Ink or None; the circular ring is removed
-- [ ] **CTL-08**: User can set layout density to compact, comfortable or roomy
+- [x] **CTL-07**: User can set the timer progress style to Edge (default), Ruler, Ink or None; the circular ring is removed
+- [x] **CTL-08**: User can set layout density to compact, comfortable or roomy
 - [ ] **CTL-09**: User can adjust atmospheric grain intensity
 - [x] **CTL-10**: User can reset everything to default with one action
 - [ ] **CTL-11**: The session tracker renders as an accent-colored contribution grid (no outlines), and dashboard chrome fades while a session runs, returning on pointer move or focus
-- [ ] **CTL-12**: Timer controls show keyboard hints under the digits alongside the footer pill; Space plays/pauses and R resets
+- [x] **CTL-12**: Timer controls show keyboard hints under the digits alongside the footer pill; Space plays/pauses and R resets
 - [ ] **CTL-13**: Dashboard menu buttons use a bare style (no outlines, muted icons, customize icon in accent)
 
 ### Persistence & Sync
@@ -158,12 +158,12 @@ Which phases cover which requirements. Populated during roadmap creation.
 | CTL-04 | Phase 2 - Customization Engine and Panel | Pending |
 | CTL-05 | Phase 2 - Customization Engine and Panel | Pending |
 | CTL-06 | Phase 2 - Customization Engine and Panel | Pending |
-| CTL-07 | Phase 2 - Customization Engine and Panel | Pending |
-| CTL-08 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-07 | Phase 2 - Customization Engine and Panel | Complete |
+| CTL-08 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-09 | Phase 2 - Customization Engine and Panel | Pending |
 | CTL-10 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-11 | Phase 2 - Customization Engine and Panel | Pending |
-| CTL-12 | Phase 2 - Customization Engine and Panel | Pending |
+| CTL-12 | Phase 2 - Customization Engine and Panel | Complete |
 | CTL-13 | Phase 2 - Customization Engine and Panel | Pending |
 | SYN-01 | Phase 3 - Persistence and Sync | Pending |
 | SYN-02 | Phase 3 - Persistence and Sync | Pending |
