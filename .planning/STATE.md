@@ -22,11 +22,11 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** A user can change how their focus dashboard looks and have that look still be there
 the next time they open it - signed in on any device, or as a guest on the same browser.
-**Current focus:** Phase 02 — customization-engine-and-panel
+**Current focus:** Phase 02 - customization-engine-and-panel
 
 ## Current Position
 
-Phase: 02 (customization-engine-and-panel) — EXECUTING
+Phase: 02 (customization-engine-and-panel) - EXECUTING
 Plan: 8 of 8
 Status: Ready to execute
 Last activity: 2026-09-27
