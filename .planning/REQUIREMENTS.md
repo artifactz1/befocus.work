@@ -22,7 +22,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Customization Engine
 
-- [ ] **ENG-01**: A customization state store writes the full token set (`--bg-*`, `--accent`,
+- [ ] **ENG-01**: A customization state store writes the full token set (`--bg-*`, `--user-accent`,
       `--text-contrast`, `--grain-opacity`, `--font-*`) and data attributes (`data-progress`,
       `data-density`) onto the document root
 - [ ] **ENG-02**: Changing any control updates the dashboard live, before anything is persisted
