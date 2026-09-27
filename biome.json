@@ -77,7 +77,13 @@
         "noDangerouslySetInnerHtml": "off"
       },
       "correctness": {
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "warn",
+        "noUnknownPseudoClass": {
+          "level": "error",
+          "options": {
+            "ignore": ["global"]
+          }
+        }
       }
     }
   },

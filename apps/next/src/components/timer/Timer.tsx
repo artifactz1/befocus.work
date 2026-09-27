@@ -1,15 +1,41 @@
 'use client'
 
+import type { CSSProperties } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore } from '~/store/useTimerStore'
-import TimerProgressRing from '../dashboard/TimerProgressRing'
 import useIsLandscape from '../helper/useIsMobileLandscape'
 import TimerUI from './TimeUI'
+import styles from './timer-progress.module.css'
+
+const RULER_TICKS = Array.from({ length: 25 }, (_, i) => i)
+
+type ProgressStyle = CSSProperties & Record<'--progress', string>
+
+function DesktopDigits({
+  minutes,
+  seconds,
+  fontSize,
+}: {
+  minutes: number
+  seconds: number
+  fontSize: string
+}) {
+  return (
+    <>
+      <TimerUI value={minutes} fontSize={fontSize} />
+      <p className='flex h-full items-center' style={{ fontSize, lineHeight: '1em' }}>
+        :
+      </p>
+      <TimerUI value={seconds} fontSize={fontSize} />
+    </>
+  )
+}
 
 export default function Timer() {
   const { sounds, alarmId } = useSoundsStore()
-  const { timeLeft, isRunning, decrementTime } = useTimerStore()
+  const { timeLeft, isRunning, decrementTime, workDuration, breakDuration, isWorking } =
+    useTimerStore()
 
   const [minutes, setMinutes] = useState<number>(timeLeft / 60)
   const [seconds, setSeconds] = useState<number>(0)
@@ -84,36 +110,79 @@ export default function Timer() {
   }, [timeLeft])
 
   const [widthSize, setWidthSize] = useState('25vw')
-  const [textSize, setTextSize] = useState('text-[25vw]')
 
   useEffect(() => {
     const handleResize = () => {
       setWidthSize(window.innerWidth < 640 ? '50vw' : '25vw')
-      setTextSize(window.innerWidth < 640 ? 'text-[50vw]' : 'text-[25vw]')
     }
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  const total = isWorking ? workDuration : breakDuration
+  const elapsed = total > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / total)) : 0
+  const nowIndex = Math.floor(elapsed * 25)
+
+  const desktopFontSize = `calc(${isLandscape ? '30vh' : widthSize} * var(--timer-scale, 1))`
+  const mobileFontSize = `calc(${widthSize} * var(--timer-scale, 1))`
+
+  const rootStyle: ProgressStyle = { '--progress': String(elapsed) }
+
   return (
-    <div className='relative z-0 flex h-[70vh] items-center justify-center'>
+    <div
+      className='relative z-0 flex h-[70vh] items-center justify-center font-display text-dash'
+      style={rootStyle}
+    >
       <span role='timer' aria-label='Time remaining' className='sr-only'>
         {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
       </span>
-      <TimerProgressRing />
-      <div
-        aria-hidden
-        className='absolute hidden h-[70vh] items-center justify-center font-bold sm:flex'
-      >
-        <TimerUI value={minutes} fontSize={isLandscape ? '30vh' : widthSize} />
-        <p className={`flex h-full items-center ${isLandscape ? 'text-[30vh]' : textSize}`}>:</p>
-        <TimerUI value={seconds} fontSize={isLandscape ? '30vh' : widthSize} />
+
+      <div data-timer-clock className='absolute inset-0 flex items-center justify-center'>
+        <div
+          aria-hidden
+          className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}
+          data-timer-digits
+        >
+          <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
+          <div
+            aria-hidden
+            className={`absolute inset-0 items-center justify-center ${styles.inkOverlay}`}
+          >
+            <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
+          </div>
+
+          <div className={styles.under}>
+            <div aria-hidden className={styles.ruler}>
+              {RULER_TICKS.map(i => (
+                <i
+                  key={`tick-${i}`}
+                  className={
+                    i < nowIndex
+                      ? styles.done
+                      : i === nowIndex && timeLeft > 0
+                        ? styles.now
+                        : undefined
+                  }
+                />
+              ))}
+            </div>
+            <div className={`${styles.hints} bf-chrome`} />
+          </div>
+        </div>
+
+        <div
+          aria-hidden
+          className={`absolute flex-row items-center font-bold sm:hidden ${styles.digits}`}
+          data-timer-digits
+        >
+          <TimerUI value={minutes} fontSize={mobileFontSize} />
+          <TimerUI value={seconds} fontSize={mobileFontSize} />
+        </div>
       </div>
-      <div aria-hidden className='absolute flex-row items-center text-[25vw] font-bold sm:hidden'>
-        <TimerUI value={minutes} fontSize={widthSize} />
-        <TimerUI value={seconds} fontSize={widthSize} />
-      </div>
+
+      <div aria-hidden data-edge-progress className={styles.edgeTrack} />
+      <div aria-hidden data-edge-progress className={styles.edgeFill} />
     </div>
   )
 }
