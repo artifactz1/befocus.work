@@ -206,7 +206,7 @@ export default function Timer() {
       <div
         ref={clockRef}
         data-timer-clock
-        className='absolute inset-0 flex items-center justify-center transition-transform duration-[450ms] ease-[cubic-bezier(.2,.7,.2,1)] motion-reduce:transition-none'
+        className={`absolute inset-0 flex items-center justify-center ${styles.clockTransition}`}
         style={clockStyle}
       >
         <div
