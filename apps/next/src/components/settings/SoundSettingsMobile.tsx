@@ -75,7 +75,6 @@
 
 'use client'
 
-import { Button } from '@repo/ui/button'
 import {
   Drawer,
   DrawerContent,
@@ -89,6 +88,7 @@ import { Volume2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import Divider from '../helper/Divider'
+import MenuButton from '../helper/MenuButtons'
 import AddSoundButton from '../sounds/AddSoundButton'
 import AlarmSoundsButton from '../sounds/AlarmSoundsButton'
 import AmbientSoundsButton from '../sounds/AmbientSoundsMenu'
@@ -107,14 +107,13 @@ export default function SoundSettingsMobile() {
     <main>
       <Drawer>
         <DrawerTrigger asChild>
-          <Button
-            variant='outline'
+          <MenuButton
             size='lg'
             className='lg:h-12 lg:w-32'
             onClick={() => setIsSoundOpen(!isSoundOpen)}
           >
             <Volume2 />
-          </Button>
+          </MenuButton>
         </DrawerTrigger>
         <DrawerContent className='max-h-screen px-2'>
           <DrawerHeader>

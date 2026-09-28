@@ -49,7 +49,6 @@ export function SessionCompleteModal() {
         setShow(true)
       }, 1000) // Show modal after fireworks start
     }
-    console.log('CHECKK', currentSession, sessions)
   }, [currentSession, sessions])
 
   const handleContinue = () => {

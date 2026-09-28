@@ -1,0 +1,143 @@
+/* Anchored to the glyph row (1em tall, centred in the 70vh box), not the box bottom, which sits
+   over the footer. */
+.under {
+  position: absolute;
+  top: calc(50% + var(--digit-size) / 2);
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  margin-top: calc(3.8vh * var(--timer-scale, 1));
+}
+
+.ruler {
+  display: none;
+  align-items: end;
+  gap: 8px;
+  height: 30px;
+}
+
+.ruler i {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--fg) 22%, transparent);
+  transform-origin: bottom;
+  transform: scaleY(0.42);
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+    background-color 0.4s;
+}
+
+.ruler i:nth-child(5n) {
+  transform: scaleY(0.7);
+}
+
+.ruler i.done {
+  background: var(--user-accent);
+}
+
+.ruler i.now {
+  transform: none;
+  background: var(--user-accent);
+}
+
+:global(html[data-progress="ruler"]) .ruler {
+  display: flex;
+}
+
+/*
+ * Ink fallback (two-layer overlay): background-clip:text on the .digits
+ * wrapper renders blank, because the wrapper has no text nodes of its own -
+ * the glyphs live many levels deep inside the rolling-digit spans. Instead,
+ * a second copy of the same digit markup is stacked on top and clip-path
+ * reveals only the elapsed fraction, tinted with the accent color.
+ */
+.inkOverlay {
+  display: none;
+  color: color-mix(in srgb, var(--user-accent) 32%, transparent);
+  clip-path: inset(0 calc(100% - var(--progress) * 100%) 0 0);
+  pointer-events: none;
+}
+
+:global(html[data-progress="ink"]) .inkOverlay {
+  display: flex;
+}
+
+.edgeTrack,
+.edgeFill {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  display: none;
+  pointer-events: none;
+}
+
+.edgeTrack {
+  z-index: 4;
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.edgeFill {
+  z-index: 5;
+  background: var(--user-accent);
+  transform-origin: left;
+  transform: scaleX(var(--progress));
+  transition: transform 1s linear;
+}
+
+:global(html[data-progress="edge"]) :is(.edgeTrack, .edgeFill) {
+  display: block;
+}
+
+.hints {
+  display: flex;
+  gap: 22px;
+  font: 500 15px / 1 var(--font-mono);
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--fg) 42%, transparent);
+  transition: opacity 0.25s;
+}
+
+.hints span {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.hints kbd {
+  font: inherit;
+  font-size: 13px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  border: 0;
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+  color: color-mix(in srgb, var(--fg) 62%, transparent);
+}
+
+:global(html[data-panel="open"]) .hints {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ruler i,
+  .edgeFill {
+    transition: none;
+  }
+}
+
+/* D-20 timer transform (Timer.tsx clockRef). A plain CSS transition instead of Tailwind's
+ * duration-[450ms] ease-[cubic-bezier(...)] arbitrary values, which next build flags as
+ * ambiguous class-vs-content matches. */
+.clockTransition {
+  transition: transform 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clockTransition {
+    transition: none;
+  }
+}

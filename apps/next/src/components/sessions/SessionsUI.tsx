@@ -1,83 +1,63 @@
 'use client'
 
+import { cn } from '@repo/ui/lib/utils'
 import { useMemo } from 'react'
-import { v4 as uuidv4 } from 'uuid'
-import { cn } from '~/lib/utils'
 import { useTimerStore } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
 
-export default function SessionsUI() {
-  // const { sessions, currentSession, isWorking, timeLeft, workDuration, breakDuration } =
-  //   useTimerStore()
+type CellState = 'done' | 'now' | 'todo'
 
+export default function SessionsUI() {
   const { sessions, currentSession, isWorking } = useTimerStore()
 
-  const isLandscape = useIsLandscape() // Get Zustand state & function
+  const isLandscape = useIsLandscape()
 
-  // const opacitySession = Math.round((1 - timeLeft / workDuration) * 100) // Clamp between 0 and 1
-  // const opacitySessionBrk = Math.round((1 - timeLeft / breakDuration) * 100) // Clamp between 0 and 1
+  const indices = useMemo(() => Array.from({ length: sessions }, (_, i) => i), [sessions])
 
-  // Map opacitySession to Tailwind opacity classes
-  // const getOpacityClass = (opacity: number) => {
-  //   if (opacity <= 0) return "";
-  //   if (opacity <= 10) return "bg-pink-500/10 ";
-  //   if (opacity <= 20) return "bg-pink-500/20 ";
-  //   if (opacity <= 30) return "bg-pink-500/30 ";
-  //   if (opacity <= 40) return "bg-pink-500/40 ";
-  //   if (opacity <= 50) return "bg-pink-500/50 ";
-  //   if (opacity <= 60) return "bg-pink-500/60 ";
-  //   if (opacity <= 70) return "bg-pink-500/70 ";
-  //   if (opacity <= 80) return "bg-pink-500/80 ";
-  //   if (opacity <= 90) return "bg-pink-500/90 ";
-  //   return "bg-pink-500 ";
-  // };
+  const focusState = (index: number): CellState => {
+    if (isWorking && index === currentSession - 1) return 'now'
+    if (index <= currentSession - 1) return 'done'
+    return 'todo'
+  }
 
-  // const opacityClass = getOpacityClass(opacitySession);
-  // const opacityClassBrk = getOpacityClass(opacitySessionBrk);
-
-  const sessionKeys = useMemo(() => Array.from({ length: sessions }, () => uuidv4()), [sessions])
+  const breakState = (index: number): CellState => {
+    if (index < currentSession - 1) return 'done'
+    if (!isWorking && index === currentSession - 1) return 'now'
+    return 'todo'
+  }
 
   return (
     <main>
-      <div className='hidden h-[15vh] sm:block'>
-        {/* <div className="mx-auto flex w-full flex-col items-center justify-center space-y-3"> */}
+      <div className='hidden h-[calc(11vh+var(--pad-y))] sm:block'>
         <div
           className={`mx-auto flex w-full flex-col items-center justify-center ${isLandscape ? 'space-y-1' : 'space-y-3'}`}
         >
-          <p className={`${isLandscape ? 'text-lg' : 'text-2xl'} font-semibold`}>
+          <p
+            className={`${isLandscape ? 'text-lg' : 'text-2xl'} font-display font-bold text-dash tabular-nums`}
+          >
             {currentSession} / {sessions}
           </p>
-          <div className='space-y-1'>
+          <div className='space-y-1' aria-hidden>
             <div className='flex space-x-1'>
-              {sessionKeys.map((key, index) => (
+              {indices.map(index => (
                 <div
-                  key={key}
+                  key={`focus-${index}`}
+                  data-state={focusState(index)}
                   className={cn(
-                    `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
-                    // 'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
-                    'border-foreground/15 dark:border-foreground/25',
-                    index <= currentSession - 1
-                      ? isWorking && currentSession - 1 === index
-                        ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
-                        : 'bg-foreground/55 border-foreground/55'
-                      : '',
+                    'bf-cell',
+                    `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 lg:h-14 lg:w-14`,
                   )}
                 />
               ))}
             </div>
             <div className='flex space-x-1'>
-              {sessionKeys.map((key, index) => (
+              {indices.map(index => (
                 <div
-                  key={key}
+                  key={`break-${index}`}
+                  data-state={breakState(index)}
                   className={cn(
-                    `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 rounded-lg border-2 transition-all duration-300 lg:h-14 lg:w-14`,
-                    // 'border-gray-300 dark:border-white/80', // Light mode: black, Dark mode: white
-                    'border-foreground/15 dark:border-foreground/25',
-                    index < currentSession - 1
-                      ? 'bg-foreground/55 border-foreground/55'
-                      : !isWorking && currentSession - 1 === index
-                        ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
-                        : 'bg-transparent',
+                    'bf-cell',
+                    `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 lg:h-14 lg:w-14`,
                   )}
                 />
               ))}
@@ -94,20 +74,13 @@ export default function SessionsUI() {
               gridTemplateColumns: `repeat(${Math.max(sessions, 4)}, minmax(0, 1fr))`,
               gridAutoRows: '1fr',
             }}
+            aria-hidden
           >
-            {sessionKeys.map((key, index) => (
+            {indices.map(index => (
               <div
-                key={key}
-                className={cn(
-                  'aspect-square rounded-lg border-2 transition-all duration-300',
-                  // 'border-gray-300 dark:border-white/80',
-                  'border-foreground/15 dark:border-foreground/25',
-                  index <= currentSession - 1
-                    ? isWorking && currentSession - 1 === index
-                      ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
-                      : 'bg-foreground/55 border-foreground/55'
-                    : '',
-                )}
+                key={`m-${index}`}
+                data-state={focusState(index)}
+                className='bf-cell aspect-square'
               />
             ))}
           </div>
@@ -118,77 +91,18 @@ export default function SessionsUI() {
               gridTemplateColumns: `repeat(${Math.max(sessions, 4)}, minmax(0, 1fr))`,
               gridAutoRows: '1fr',
             }}
+            aria-hidden
           >
-            {sessionKeys.map((key, index) => (
+            {indices.map(index => (
               <div
-                key={key}
-                className={cn(
-                  'aspect-square rounded-lg border-2 transition-all duration-300',
-                  // 'border-gray-300 dark:border-white/80',
-                  'border-foreground/15 dark:border-foreground/25',
-                  index < currentSession - 1
-                    ? 'bg-foreground/55 border-foreground/55'
-                    : !isWorking && currentSession - 1 === index
-                      ? 'bg-foreground border-foreground shadow-[0_0_0_4px_hsl(var(--foreground)/0.12)]'
-                      : 'bg-transparent',
-                )}
+                key={`m-break-${index}`}
+                data-state={breakState(index)}
+                className='bf-cell aspect-square'
               />
             ))}
           </div>
         </div>
       </div>
-
-      {/* <div className='block sm:hidden'>
-        <div className='flex w-full flex-col items-center justify-center space-y-1 sm:mx-auto sm:p-6'>
-          <div
-            className='grid w-full gap-1'
-            style={{
-              gridTemplateColumns: `repeat(${sessions}, minmax(0, 1fr))`,
-              gridAutoRows: '1fr',
-            }}
-          >
-            {sessionKeys.map((key, index) => (
-              <div
-                key={key}
-                className={cn(
-                  'aspect-square rounded-lg border-2 transition-all duration-300',
-                  'border-gray-300 dark:border-white/80',
-                  index <= currentSession - 1
-                    ? isWorking && currentSession - 1 === index
-                      ? // ? `${opacityClass}`
-                      'bg-pink-500'
-                      : 'bg-green-500'
-                    : '',
-                )}
-              />
-            ))}
-          </div>
-
-          <div
-            className='grid w-full gap-1'
-            style={{
-              gridTemplateColumns: `repeat(${sessions}, minmax(0, 1fr))`,
-              gridAutoRows: '1fr',
-            }}
-          >
-            {sessionKeys.map((key, index) => (
-              <div
-                key={key}
-                className={cn(
-                  'aspect-square rounded-lg border-2 transition-all duration-300',
-                  'border-gray-300 dark:border-white/80',
-                  index < currentSession - 1
-                    ? 'bg-green-500'
-                    : !isWorking && currentSession - 1 === index
-                      ? // ? `${opacityClassBrk}`
-                      'bg-pink-500'
-                      : 'bg-transparent',
-                )}
-              />
-            ))}
-          </div>
-        </div>
-      </div> */}
     </main>
   )
 }
