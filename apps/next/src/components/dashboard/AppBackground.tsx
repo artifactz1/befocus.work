@@ -30,16 +30,6 @@ export default function AppBackground() {
         }}
       />
 
-      {/* Soft radial atmosphere */}
-      <div
-        aria-hidden
-        className='pointer-events-none fixed inset-0 z-0'
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 50% at 75% 30%, color-mix(in srgb, var(--user-accent) 10%, transparent), transparent 70%), radial-gradient(ellipse 50% 40% at 15% 90%, hsl(var(--muted) / 0.14), transparent 70%)',
-        }}
-      />
-
       {/* Grain */}
       <svg
         aria-hidden
