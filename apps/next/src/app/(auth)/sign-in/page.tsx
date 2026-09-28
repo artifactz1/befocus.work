@@ -85,7 +85,7 @@ export default function SignIn() {
         }}
       />
 
-      {/* Top bar — single anchor */}
+      {/* Top bar - single anchor */}
       <header className='relative z-[3] flex items-center justify-between px-8 pt-8 md:px-16 md:pt-10'>
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -108,7 +108,7 @@ export default function SignIn() {
             transition={{ duration: 0.6, ease, delay: 0.15 }}
             className='mb-8 text-[11px] font-medium uppercase tracking-[0.4em] text-muted-foreground'
           >
-            Session — 01 / Sign in
+            Session - 01 / Sign in
           </motion.p>
 
           <h1
@@ -138,14 +138,14 @@ export default function SignIn() {
             transition={{ duration: 0.7, ease, delay: 0.7 }}
             className='mt-10 max-w-md text-base font-light leading-relaxed text-muted-foreground md:text-lg'
           >
-            A simple ritual — twenty-five minutes at a time. Sign in to keep your sessions, sounds,
+            A simple ritual - twenty-five minutes at a time. Sign in to keep your sessions, sounds,
             and tasks in sync wherever you are.
           </motion.p>
         </section>
 
         {/* Sign-in column */}
         <aside className='relative md:col-span-5'>
-          {/* Decorative timer ring — smaller, quieter */}
+          {/* Decorative timer ring - smaller, quieter */}
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
