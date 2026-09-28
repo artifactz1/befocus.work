@@ -135,7 +135,7 @@ Out of this phase:
 
 ### Reusable Assets
 - `packages/ui/src/globals.css`: `--bg-image*`, `--bg-overlay-color`, `--bg-overlay-opacity` and `--bg-blur` already exist. The store becomes their writer.
-- `apps/next/src/components/dashboard/AppBackground.tsx`: consumes the bg vars. It needs a solid layer reading `--bg-solid`, and its grain `opacity-[0.05]` changes to `var(--grain-opacity)`. Its radial atmosphere reads the ShadCN `--accent` and should read the user accent.
+- `apps/next/src/components/dashboard/AppBackground.tsx`: consumes the bg vars. It needs a solid layer reading `--bg-solid`, and its grain `opacity-[0.05]` changes to `var(--grain-opacity)`. Its radial atmosphere gradient is removed (owner review on PR 107: no background gradient); the background is the plain `--bg-solid` layer plus the optional image, overlay and grain.
 - `packages/ui/src/components/ui/`: `drawer` (vaul), `tabs`, `slider`, `toggle`, `sonner`, `button` and `tooltip` exist. There is no `sheet`.
 - `apps/next/src/store/useTimerStore.tsx`: the provider and context pattern to copy.
 
