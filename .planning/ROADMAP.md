@@ -23,7 +23,7 @@ remote URLs with a safe fallback when a host blocks them.
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Foundation Repair** - Production settings hydration, one Tailwind, clean tokens, working lint gate
-- [ ] **Phase 2: Customization Engine and Panel** - Every control, live preview, Apply and Cancel, desktop and mobile
+- [ ] **Phase 2: Customization Engine and Panel** - Every control, live preview, Apply and Cancel, desktop and mobile (all plans executed, owner review checkpoint outstanding)
 - [ ] **Phase 3: Persistence and Sync** - A look survives refresh, follows the account, and sticks for guests
 - [ ] **Phase 4: Saved Themes** - Name, switch, rename and delete looks; curated presets; guest migration
 - [ ] **Phase 5: Media Uploads** - Upload your own images and videos to R2 behind the timer
@@ -152,7 +152,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 02-08-PLAN.md - Integrated gates, end-to-end viewport and keyboard walkthrough, owner review (ENG-02, ENG-04, UX-05, UX-06)
+- [ ] 02-08-PLAN.md - Integrated gates, end-to-end viewport and keyboard walkthrough, owner review (ENG-02, ENG-04, UX-05, UX-06) - Tasks 1-2 done, Task 3 owner checkpoint outstanding
 **UI hint**: yes
 
 Notes for planning:
@@ -295,7 +295,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation Repair | 4/5 | In Progress|  |
-| 2. Customization Engine and Panel | 7/8 | In Progress|  |
+| 2. Customization Engine and Panel | 8/8 | Owner review pending |  |
 | 3. Persistence and Sync | 0/TBD | Not started | - |
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |
