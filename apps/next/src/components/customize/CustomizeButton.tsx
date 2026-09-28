@@ -12,7 +12,10 @@ export default function CustomizeButton({ className }: { className?: string }) {
 
   return (
     <TooltipProvider>
-      <Tooltip>
+      {/* open forced false while the panel is open: Radix's tooltip DismissableLayer
+          keeps a document-capture Escape listener mounted after the trigger click,
+          which swallows the panel's own Escape-to-close handler (D-11) */}
+      <Tooltip open={panelOpen ? false : undefined}>
         <TooltipTrigger asChild>
           <MenuButton
             className={className}
