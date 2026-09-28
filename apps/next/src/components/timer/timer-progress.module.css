@@ -1,6 +1,8 @@
+/* Anchored to the glyph row (1em tall, centred in the 70vh box), not the box bottom, which sits
+   over the footer. */
 .under {
   position: absolute;
-  top: 100%;
+  top: calc(50% + var(--digit-size) / 2);
   left: 50%;
   transform: translateX(-50%);
   display: grid;

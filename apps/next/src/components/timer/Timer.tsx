@@ -14,6 +14,7 @@ import styles from './timer-progress.module.css'
 const RULER_TICKS = Array.from({ length: 25 }, (_, i) => i)
 
 type ProgressStyle = CSSProperties & Record<'--progress', string>
+type DigitsStyle = CSSProperties & Record<'--digit-size', string>
 
 function DesktopDigits({
   minutes,
@@ -188,6 +189,7 @@ export default function Timer() {
   const mobileFontSize = `calc(${widthSize} * var(--timer-scale, 1))`
 
   const rootStyle: ProgressStyle = { '--progress': String(elapsed) }
+  const digitsStyle: DigitsStyle = { '--digit-size': desktopFontSize }
 
   const clockStyle: CSSProperties = transform
     ? { transform: `translate(${transform.tx}px, ${transform.ty}px) scale(${transform.scale})` }
@@ -212,6 +214,7 @@ export default function Timer() {
         <div
           aria-hidden
           className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}
+          style={digitsStyle}
           data-timer-digits
         >
           <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
