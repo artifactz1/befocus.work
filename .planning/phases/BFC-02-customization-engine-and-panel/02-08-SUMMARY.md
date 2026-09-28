@@ -252,3 +252,15 @@ Carried over from earlier plans plus this plan's new finding, per the plan's Tas
 ## Self-Check: PASSED
 
 All files and commit hashes referenced in this SUMMARY were verified present in the working tree and git log.
+
+## Orchestrator follow-up (post-checkpoint pixel review)
+
+Found while reviewing the PR screenshots, fixed and re-verified live on :3100 plus build, check, tsc and customize.check:
+
+| Fix | File | How it was caught |
+|---|---|---|
+| Key hints sat below the 70vh digit box, over the footer, so "Space" was clipped by the transport buttons at 1440x900. `.under` now anchors to the glyph row via `--digit-size` (hints at y 664-683, footer at 809). The Ruler style shares the anchor. | `Timer.tsx`, `timer-progress.module.css` | 1440x900 closed screenshot |
+| The focus-return effect ran on mount, so every page load focused Customize and opened its tooltip. It now fires only on an open -> closed transition; Esc still returns focus to Customize. | `CustomizePanel.tsx` | Fresh-load screenshot showed the tooltip; `document.activeElement` was the trigger |
+| The heading (tabindex -1 focus target) showed a browser focus ring on open. The outline is now removed on that heading only. | `customize-panel.module.css` | 1440x900 open screenshot |
+
+Pre-existing and left alone: the soft dark footer backdrop behind the transport buttons (present in `.lavish/assets/guest-desktop.png` before this phase), the Next.js dev indicator at bottom-left (dev only), and the `next build` tooling warnings about the dual lockfile (swc patch) and stale browserslist data.
