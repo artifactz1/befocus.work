@@ -26,8 +26,12 @@ export default function CustomizePanel() {
     return () => cancelAnimationFrame(frame)
   }, [panelOpen, isDesktop])
 
+  // Return focus only on an open -> closed transition, never on mount.
+  const wasOpen = useRef(panelOpen)
   useEffect(() => {
-    if (panelOpen) return
+    const closed = wasOpen.current && !panelOpen
+    wasOpen.current = panelOpen
+    if (!closed) return
 
     const trigger = document.querySelectorAll<HTMLElement>('[data-customize-trigger]')
     for (const el of trigger) {
