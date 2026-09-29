@@ -268,6 +268,27 @@ The Next.js app deploys with the [OpenNext Cloudflare adapter](https://opennext.
    bun run deploy
    ```
 
+### Automatic Deploys (GitHub Actions)
+
+`.github/workflows/deploy.yml` runs on every push to `master` (and manually via `workflow_dispatch`): lint + typecheck, then `bun run deploy` for `packages/api` and `apps/next`. Nobody deploys production by hand.
+
+One-time setup in GitHub (Settings > Environments > `production`):
+
+| Kind | Name | Value |
+| --- | --- | --- |
+| Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare API token (permissions below) |
+| Secret | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare dashboard > Workers & Pages > Account ID |
+| Variable | `NEXT_PUBLIC_APP_URL` | Public web URL, e.g. `https://befocus.work` |
+| Variable | `NEXT_PUBLIC_API_URL` | Public API URL |
+| Variable | `API_URL` | Same API URL (`next build` validates it) |
+
+Token permissions: Account > Workers Scripts > Edit. (The Workers Builds/Routes permission is only needed once custom routes or domains are managed from wrangler config; add Zone > Workers Routes > Edit if so.)
+
+Runtime Worker secrets are NOT pushed by CI. They persist across deploys and must already exist, set once with `bunx wrangler secret put <NAME>`:
+
+- Web (`befocus-web`, run in `apps/next`): `API_URL`
+- API (`befocus`, run in `packages/api`): `DATABASE_URL`, `WORKER_ENV`, `BETTER_AUTH_SECRET`, `API_DOMAIN`, `WEB_DOMAIN`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `APPLE_CLIENT_ID`, `APPLE_PRIVATE_KEY`, `APPLE_TEAM_ID`, `APPLE_WEB_CLIENT_ID`, `APPLE_KEY_ID`
+
 ## Contributing
 
 1. Fork the repository
