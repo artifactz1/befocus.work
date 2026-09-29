@@ -270,7 +270,9 @@ The Next.js app deploys with the [OpenNext Cloudflare adapter](https://opennext.
 
 ### Automatic Deploys (GitHub Actions)
 
-`.github/workflows/deploy.yml` runs on every push to `master` (and manually via `workflow_dispatch`): lint + typecheck, then `bun run deploy` for `packages/api` and `apps/next`. Nobody deploys production by hand.
+`.github/workflows/deploy.yml` runs on every push to `master` (and manually via `workflow_dispatch`): lint + typecheck, then `bun run deploy` for `packages/api`, then `apps/next` once the API deploy succeeds. The deploy jobs only run on `master`; a manual run on any other ref runs lint + typecheck only. Nobody deploys production by hand.
+
+For an extra guard, restrict the `production` environment to `master` (Settings > Environments > `production` > Deployment branches and tags > Selected branches > `master`).
 
 One-time setup in GitHub (Settings > Environments > `production`):
 
