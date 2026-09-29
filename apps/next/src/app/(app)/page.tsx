@@ -4,17 +4,15 @@ import CommandMenu from '~/components/CommandMenu'
 import AppBackground from '~/components/dashboard/AppBackground'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
-import { SessionCompleteModal } from '~/components/SessionCompleteModal'
 import GlobalSoundsPlayer from '~/components/helper/GlobalSoundsPlayer'
 import PrefetchUserTasks from '~/components/helper/PrefetchUserTasks'
+import { SessionCompleteModal } from '~/components/SessionCompleteModal'
 import Timer from '~/components/timer/Timer'
-import { TimerInitializer } from '~/components/timer/TimerInitializer'
 
 export default function Dashboard() {
   return (
     <div>
       <GlobalSoundsPlayer />
-      <TimerInitializer />
       <PrefetchUserTasks />
       <SessionCompleteModal />
       <CommandMenu />

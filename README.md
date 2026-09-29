@@ -212,6 +212,8 @@ Navigate to the specific package directory and run:
 bun run dev          # Start Next.js dev server
 bun run build        # Build Next.js app
 bun run start        # Start production server
+bun run preview      # Build with OpenNext and preview the Worker locally
+bun run deploy       # Deploy to Cloudflare Workers via OpenNext
 
 # In packages/api/
 bun run dev          # Start API dev server with hot reload
@@ -220,6 +222,8 @@ bun run db:studio    # Open database management UI
 ```
 
 ## Deployment
+
+Both the API and the web app deploy to Cloudflare Workers.
 
 ### API Deployment (Cloudflare Workers)
 
@@ -232,8 +236,8 @@ bun run db:studio    # Open database management UI
 2. **Set production environment variables:**
    ```bash
    bunx wrangler secret put DATABASE_URL
-   bunx wrangler secret put JWT_SECRET
-   # ... add other secrets
+   bunx wrangler secret put BETTER_AUTH_SECRET
+   # ... add the other secrets listed under "Automatic Deploys" below
    ```
 
 3. **Deploy:**
@@ -241,13 +245,49 @@ bun run db:studio    # Open database management UI
    bun run deploy
    ```
 
-### Web App Deployment
+### Web App Deployment (Cloudflare Workers via OpenNext)
 
-The Next.js app can be deployed to various platforms:
+The Next.js app deploys with the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare), the same way the API deploys.
 
-- **Vercel:** `npx vercel --prod`
-- **Netlify:** Build command: `bun run build`, Publish directory: `apps/next/.next`
-- **Docker:** Use the included Dockerfile
+1. **Configure Cloudflare:**
+   ```bash
+   cd apps/next
+   bunx wrangler login
+   ```
+
+2. **Set production environment variables** (see `apps/next/wrangler.jsonc` for the full list):
+   ```bash
+   bunx wrangler secret put API_URL
+   ```
+   `NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_API_URL` are inlined at build time, so set them in the environment that runs `bun run deploy` (or in `apps/next/.env.local` for local builds).
+
+3. **Deploy:**
+   ```bash
+   bun run deploy
+   ```
+
+### Automatic Deploys (GitHub Actions)
+
+`.github/workflows/deploy.yml` runs on every push to `master` (and manually via `workflow_dispatch`): lint + typecheck, then `bun run deploy` for `packages/api`, then `apps/next` once the API deploy succeeds. The deploy jobs only run on `master`; a manual run on any other ref runs lint + typecheck only. Nobody deploys production by hand.
+
+For an extra guard, restrict the `production` environment to `master` (Settings > Environments > `production` > Deployment branches and tags > Selected branches > `master`).
+
+One-time setup in GitHub (Settings > Environments > `production`):
+
+| Kind | Name | Value |
+| --- | --- | --- |
+| Secret | `CLOUDFLARE_API_TOKEN` | Cloudflare API token (permissions below) |
+| Secret | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare dashboard > Workers & Pages > Account ID |
+| Variable | `NEXT_PUBLIC_APP_URL` | Public web URL, e.g. `https://befocus.work` |
+| Variable | `NEXT_PUBLIC_API_URL` | Public API URL |
+| Variable | `API_URL` | Same API URL (`next build` validates it) |
+
+Token permissions: Account > Workers Scripts > Edit. (The Workers Builds/Routes permission is only needed once custom routes or domains are managed from wrangler config; add Zone > Workers Routes > Edit if so.)
+
+Runtime Worker secrets are NOT pushed by CI. They persist across deploys and must already exist, set once with `bunx wrangler secret put <NAME>`:
+
+- Web (`befocus-web`, run in `apps/next`): `API_URL`
+- API (`befocus`, run in `packages/api`): `DATABASE_URL`, `WORKER_ENV`, `BETTER_AUTH_SECRET`, `API_DOMAIN`, `WEB_DOMAIN`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `APPLE_CLIENT_ID`, `APPLE_PRIVATE_KEY`, `APPLE_TEAM_ID`, `APPLE_WEB_CLIENT_ID`, `APPLE_KEY_ID`
 
 ## Contributing
 

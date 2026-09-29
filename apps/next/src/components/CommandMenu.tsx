@@ -5,12 +5,8 @@ import { ClientOnly } from './helper/ClientOnly'
 
 export default function CommandMenu() {
   return (
-    <>
-      <ClientOnly fallback={null}>
-        <CommandDialogConent />
-      </ClientOnly>
-
-    </>
-
+    <ClientOnly fallback={null}>
+      <CommandDialogConent />
+    </ClientOnly>
   )
 }

@@ -10,6 +10,4 @@ export default function ConfigureSounds() {
       </div>
     </div>
   )
-
-
 }

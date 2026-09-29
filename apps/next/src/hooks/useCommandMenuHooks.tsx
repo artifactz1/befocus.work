@@ -1,5 +1,5 @@
-import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
+import { useTheme } from 'next-themes'
 import React from 'react'
 import { useSaveUserSettings } from '~/hooks/useSession'
 import { signOut, useSession } from '~/lib/auth.client'
@@ -7,16 +7,15 @@ import { useTimerStore } from '~/store/useTimerStore'
 
 // Hook for keyboard shortcuts
 export function useCommandMenuKeyboard(setOpen: React.Dispatch<React.SetStateAction<boolean>>) {
-
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
+      if (e.key === 'j' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         setOpen((open: boolean) => !open)
       }
     }
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
+    document.addEventListener('keydown', down)
+    return () => document.removeEventListener('keydown', down)
   }, [setOpen])
 }
 
@@ -31,7 +30,7 @@ export function useThemeActions() {
 
   return {
     isDarkMode,
-    toggleTheme
+    toggleTheme,
   }
 }
 
@@ -57,7 +56,7 @@ export function useAuthActions() {
     session,
     isPending,
     handleSignOut,
-    handleSignIn
+    handleSignIn,
   }
 }
 
@@ -73,7 +72,7 @@ export function useTimerActions() {
     reset,
     workDuration,
     breakDuration,
-    sessions
+    sessions,
   } = useTimerStore()
 
   return {
@@ -86,7 +85,7 @@ export function useTimerActions() {
     reset,
     workDuration,
     breakDuration,
-    sessions
+    sessions,
   }
 }
 
@@ -114,21 +113,21 @@ export function useAutocompleteSuggestions(input: string) {
         text: 'set work duration to ',
         description: 'Suggestion',
         keywords: ['set', 'work'],
-        fullText: 'set work duration to'
+        fullText: 'set work duration to',
       },
       {
         id: 'break-duration-autocomplete',
         text: 'set break duration to ',
         description: 'Suggestion',
         keywords: ['set', 'break'],
-        fullText: 'set break duration to'
+        fullText: 'set break duration to',
       },
       {
         id: 'sessions-autocomplete',
         text: 'set sessions to ',
         description: 'Suggestion',
         keywords: ['set', 'session', 'sessions'],
-        fullText: 'set sessions to'
+        fullText: 'set sessions to',
       },
     ]
 
@@ -147,7 +146,7 @@ export function useAutocompleteSuggestions(input: string) {
         // Partial match after "set "
         (trimmedInput.startsWith('set ') &&
           template.keywords.some(keyword =>
-            keyword.startsWith(trimmedInput.replace('set ', '').trim())
+            keyword.startsWith(trimmedInput.replace('set ', '').trim()),
           ))
 
       if (shouldShow) {
@@ -156,7 +155,7 @@ export function useAutocompleteSuggestions(input: string) {
           type: 'autocomplete',
           text: template.text,
           keywords: template.keywords,
-          description: template.description
+          description: template.description,
         })
       }
     }
@@ -170,54 +169,57 @@ export function useSettingsUpdate() {
   const { updateSettings, reset, workDuration, breakDuration, sessions } = useTimerStore()
   const { mutateAsync: saveSettings, isPending: isSaving } = useSaveUserSettings()
 
-  const handleSaveSettings = React.useCallback(async (workTime: number, breakTime: number, sessionCount: number) => {
-    try {
-      await saveSettings({
-        workDuration: workTime,
-        breakDuration: breakTime,
-        numberOfSessions: sessionCount,
-      })
-      // Update timer store with new settings
-      updateSettings('workDuration', workTime)
-      updateSettings('breakDuration', breakTime)
-      updateSettings('sessions', sessionCount)
-      reset()
-    } catch (error) {
-      console.error('Failed to save settings:', error)
-    }
-  }, [saveSettings, updateSettings, reset])
+  const handleSaveSettings = React.useCallback(
+    async (workTime: number, breakTime: number, sessionCount: number) => {
+      try {
+        await saveSettings({
+          workDuration: workTime,
+          breakDuration: breakTime,
+          numberOfSessions: sessionCount,
+        })
+        // Update timer store with new settings
+        updateSettings('workDuration', workTime)
+        updateSettings('breakDuration', breakTime)
+        updateSettings('sessions', sessionCount)
+        reset()
+      } catch (error) {
+        console.error('Failed to save settings:', error)
+      }
+    },
+    [saveSettings, updateSettings, reset],
+  )
 
-  const confirmUpdate = React.useCallback(async (
-    type: 'work' | 'break' | 'sessions',
-    value: number
-  ) => {
-    const currentWorkTime = workDuration
-    const currentBreakTime = breakDuration
-    const currentSessions = sessions
+  const confirmUpdate = React.useCallback(
+    async (type: 'work' | 'break' | 'sessions', value: number) => {
+      const currentWorkTime = workDuration
+      const currentBreakTime = breakDuration
+      const currentSessions = sessions
 
-    let newWorkTime = currentWorkTime
-    let newBreakTime = currentBreakTime
-    let newSessions = currentSessions
+      let newWorkTime = currentWorkTime
+      let newBreakTime = currentBreakTime
+      let newSessions = currentSessions
 
-    // Update the appropriate setting
-    switch (type) {
-      case 'work':
-        newWorkTime = value * 60 // Convert to seconds
-        break
-      case 'break':
-        newBreakTime = value * 60 // Convert to seconds
-        break
-      case 'sessions':
-        newSessions = value
-        break
-    }
+      // Update the appropriate setting
+      switch (type) {
+        case 'work':
+          newWorkTime = value * 60 // Convert to seconds
+          break
+        case 'break':
+          newBreakTime = value * 60 // Convert to seconds
+          break
+        case 'sessions':
+          newSessions = value
+          break
+      }
 
-    await handleSaveSettings(newWorkTime, newBreakTime, newSessions)
-  }, [workDuration, breakDuration, sessions, handleSaveSettings])
+      await handleSaveSettings(newWorkTime, newBreakTime, newSessions)
+    },
+    [workDuration, breakDuration, sessions, handleSaveSettings],
+  )
 
   return {
     isSaving,
-    confirmUpdate
+    confirmUpdate,
   }
 }
 
@@ -233,14 +235,13 @@ export function useSettingsDialog() {
   const { resetCurrentTime } = useTimerStore()
   const { isSaving, confirmUpdate } = useSettingsUpdate()
 
-  const handleSettingUpdate = React.useCallback((
-    type: 'work' | 'break' | 'sessions',
-    value: number,
-    label: string
-  ) => {
-    setPendingUpdate({ type, value, label })
-    setAlertOpen(true)
-  }, [])
+  const handleSettingUpdate = React.useCallback(
+    (type: 'work' | 'break' | 'sessions', value: number, label: string) => {
+      setPendingUpdate({ type, value, label })
+      setAlertOpen(true)
+    },
+    [],
+  )
 
   const confirmSettingUpdate = React.useCallback(async () => {
     if (!pendingUpdate) return
@@ -264,16 +265,19 @@ export function useSettingsDialog() {
     isSaving,
     handleSettingUpdate,
     confirmSettingUpdate,
-    cancelSettingUpdate
+    cancelSettingUpdate,
   }
 }
 
 // Generic command handler hook
 export function useCommandHandler(setOpen: (open: boolean) => void) {
-  const handleCommand = React.useCallback((action: () => void) => {
-    action()
-    setOpen(false)
-  }, [setOpen])
+  const handleCommand = React.useCallback(
+    (action: () => void) => {
+      action()
+      setOpen(false)
+    },
+    [setOpen],
+  )
 
   return { handleCommand }
 }

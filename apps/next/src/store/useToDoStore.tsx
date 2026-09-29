@@ -1,6 +1,5 @@
-import { create } from 'zustand'
-
 import type { Task } from '@repo/types/tasks'
+import { create } from 'zustand'
 
 interface TodoStore {
   addMode: boolean

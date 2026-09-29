@@ -6,10 +6,14 @@
     "dev": "next dev --turbo --port 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint",
-    "clean": "git clean -xdf .next node_modules"
+    "lint": "bun x @biomejs/biome lint .",
+    "clean": "git clean -xdf .next node_modules",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.20.6",
     "@repo/ui": "*",
     "@tanstack/react-query": "^5.80.6",
     "axios": "^1.7.9",
@@ -18,6 +22,9 @@
     "next-themes": "^0.4.6",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "sonner": "^2.0.1",
+    "vaul": "^1.1.2",
+    "zod": "^3.24.1",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
@@ -28,7 +35,8 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
-    "tailwind": "^4.0.0",
-    "typescript": "^5"
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5",
+    "wrangler": "^4.141.0"
   }
 }

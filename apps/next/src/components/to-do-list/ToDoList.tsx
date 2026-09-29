@@ -20,7 +20,7 @@ export default function ToDoList() {
               </MenuButton>
             </PopoverTrigger>
           </TooltipTrigger>
-          <TooltipContent className="font-bold" side="top">
+          <TooltipContent className='font-bold' side='top'>
             <p>Open To-Do List</p>
           </TooltipContent>
         </Tooltip>
@@ -29,11 +29,11 @@ export default function ToDoList() {
           align='start'
           className='min-h-[50vh] flex flex-col gap-3 rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 sm:-ml-7 sm:min-h-[392px] sm:w-[392px] md:ml-0'
         >
-          <div className="flex-grow overflow-auto">
+          <div className='flex-grow overflow-auto'>
             <TaskList />
           </div>
 
-          <div className="mt-auto pt-2">
+          <div className='mt-auto pt-2'>
             <Toggle onClick={() => toggleAdd()} className='-ml-1 pt-1 pr-2 pl-1'>
               <Plus />
               <p>New Reminder</p>

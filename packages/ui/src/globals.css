@@ -4,15 +4,40 @@
 
 :root {
   --font-display: var(--font-app), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-app), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* Background customization contract — settings page writes to these */
+  /* Customization contract - written by CustomizeStoreProvider (useCustomizeStore.tsx) */
   --bg-image: none;
   --bg-image-size: cover;
   --bg-image-position: center;
-  --bg-overlay-color: 0 0% 0%;
+  --bg-solid: hsl(0 0% 6.3%);
+  --bg-overlay-color: #000000;
   --bg-overlay-opacity: 0;
   --bg-blur: 0px;
+  --user-accent: #f5f5f4;
+  --text-contrast: 1;
+  --grain-opacity: 0.05;
+  --fg: hsl(var(--foreground));
+}
+
+/* Density (CTL-08) - drives dashboard padding and timer scale */
+:root,
+html[data-density="comfortable"] {
+  --timer-scale: 1;
+  --pad-x: 5vw;
+  --pad-y: 4vh;
+}
+
+html[data-density="compact"] {
+  --timer-scale: 1.07;
+  --pad-x: 3vw;
+  --pad-y: 2.4vh;
+}
+
+html[data-density="roomy"] {
+  --timer-scale: 0.86;
+  --pad-x: 8vw;
+  --pad-y: 7vh;
 }
 
 ::-webkit-scrollbar {
@@ -30,47 +55,47 @@
 
 @layer base {
   :root {
-    --background: 60 40% 96%;          /* #f8f9f3 (Spring Wood) */
-    --foreground: 75 3% 15%;           /* #32322c (Tuatara) */
+    --background: 60 40% 96%; /* #f8f9f3 (Spring Wood) */
+    --foreground: 75 3% 15%; /* #32322c (Tuatara) */
 
-    --card: 60 30% 97%;                /* #fcfcf4 (Bianca) */
+    --card: 60 30% 97%; /* #fcfcf4 (Bianca) */
     --card-foreground: 75 3% 15%;
 
     --popover: 60 40% 96%;
     --popover-foreground: 75 3% 15%;
 
-    --primary: 210 4% 70%;             /* #b1b1ac (Delta) */
+    --primary: 210 4% 70%; /* #b1b1ac (Delta) */
     --primary-foreground: 75 3% 15%;
 
-    --secondary: 40 6% 72%;            /* #a9a8a3 (Delta alt / cloudy) */
+    --secondary: 40 6% 72%; /* #a9a8a3 (Delta alt / cloudy) */
     --secondary-foreground: 75 3% 15%;
 
-    --muted: 40 5% 85%;                /* #e3e2dd blend */
-    --muted-foreground: 60 2% 40%;     /* #6e6e69 (Ironside Gray) */
+    --muted: 40 5% 85%; /* #e3e2dd blend */
+    --muted-foreground: 60 2% 40%; /* #6e6e69 (Ironside Gray) */
 
-    --accent: 30 5% 60%;               /* #8c8480 (Schooner) */
+    --accent: 30 5% 60%; /* #8c8480 (Schooner) */
     --accent-foreground: 60 40% 96%;
 
-    --destructive: 0 65% 50%;          /* Red fallback */
+    --destructive: 0 65% 50%; /* Red fallback */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 60 4% 80%;               /* #d8d8d3 blend */
+    --border: 0 0% 69%; /* translates to #E5E3DD */
     --input: 60 4% 90%;
     --ring: 210 4% 70%;
 
-    --chart-1: 210 10% 60%;            /* muted blue-gray */
-    --chart-2: 35 20% 70%;             /* muted beige */
-    --chart-3: 120 10% 60%;            /* muted green */
-    --chart-4: 10 20% 55%;             /* muted orange */
-    --chart-5: 330 10% 60%;            /* muted mauve */
+    --chart-1: 210 10% 60%; /* muted blue-gray */
+    --chart-2: 35 20% 70%; /* muted beige */
+    --chart-3: 120 10% 60%; /* muted green */
+    --chart-4: 10 20% 55%; /* muted orange */
+    --chart-5: 330 10% 60%; /* muted mauve */
 
     --radius: 0.5rem;
   }
 
-   .dark {
-    --background: 0, 0%, 6.3%;
+  .dark {
+    --background: 0 0% 6.3%;
     --foreground: 60 9.1% 97.8%;
-    --card: 12 8% 8%;     /* Warmer, slightly lighter than current 4.1% */
+    --card: 12 8% 8%; /* Warmer, slightly lighter than current 4.1% */
     --card-foreground: 60 9.1% 97.8%;
     --popover: 20 14.3% 4.1%;
     --popover-foreground: 60 9.1% 97.8%;
@@ -84,7 +109,7 @@
     --accent-foreground: 60 9.1% 97.8%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 60 9.1% 97.8%;
-    --border: 12 6.5% 15.1%;
+    --border: 0 0% 25%; /* a neutral dark border for dark mode */
     --input: 12 6.5% 15.1%;
     --ring: 24 5.7% 82.9%;
     --chart-1: 220 70% 50%;
@@ -92,9 +117,6 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-  }
-  .theme {
-    --animate-shine: shine var(--duration) infinite linear;
   }
 }
 @layer base {
@@ -106,6 +128,68 @@
     font-family: var(--font-app);
     /* @apply transition-colors duration-500 ease-in-out; */
     @apply transition-colors duration-500 ease-in-out;
+  }
+}
+
+@layer utilities {
+  /* The single way dashboard text applies the --text-contrast token (plans 02-03, 02-04). */
+  .text-dash {
+    color: hsl(var(--foreground) / var(--text-contrast));
+  }
+
+  /* Session tracker contribution-grid cell (D-17, plan 02-04) */
+  .bf-cell {
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--fg) 8%, transparent);
+    transition: background-color 0.4s;
+  }
+
+  .bf-cell[data-state="done"] {
+    background: var(--user-accent);
+  }
+
+  .bf-cell[data-state="now"] {
+    background: color-mix(
+      in srgb,
+      var(--user-accent) 45%,
+      color-mix(in srgb, var(--fg) 8%, transparent)
+    );
+  }
+}
+
+@media (max-width: 639px) {
+  .bf-cell {
+    border-radius: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-cell {
+    transition: none;
+  }
+}
+
+/* Chrome idle fade while a session runs (D-17, plan 02-04) */
+.bf-chrome {
+  transition: opacity 0.8s ease;
+}
+
+html[data-chrome-idle]:not([data-panel="open"]):not(:has(:focus-visible)) .bf-chrome {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-chrome {
+    transition: none;
+  }
+}
+
+/* Mobile sheet chrome fade (D-20) - breakpoint must mirror the (min-width: 1024px)
+ * desktop/mobile shell switch in CustomizePanel.tsx exactly. */
+@media (max-width: 1023.98px) {
+  html[data-panel="open"] :is(.bf-chrome, [data-edge-progress]) {
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
@@ -198,26 +282,4 @@
   src: url("/Supreme_Complete/Fonts/OTF/Supreme-ThinItalic.otf") format("opentype");
   font-weight: 100;
   font-style: italic;
-}
-
-:root {
-  --border: 0 0% 69%; /* translates to #E5E3DD */
-}
-
-.dark {
-  --border: 0 0% 25%; /* a neutral dark border for dark mode */
-}
-
-@theme inline {
-  @keyframes shine {
-  0% {
-    background-position: 0% 0%;
-    }
-  50% {
-    background-position: 100% 100%;
-    }
-  to {
-    background-position: 0% 0%;
-    }
-  }
 }

@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Superpowers brainstorming workspace
 .superpowers/
+
+# code-review-graph MCP artifacts
+.code-review-graph*

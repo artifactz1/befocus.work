@@ -2,7 +2,11 @@ export default function AppBackground() {
   return (
     <>
       {/* Solid theme background */}
-      <div aria-hidden className='pointer-events-none fixed inset-0 z-0 bg-background' />
+      <div
+        aria-hidden
+        className='pointer-events-none fixed inset-0 z-0'
+        style={{ backgroundColor: 'var(--bg-solid)' }}
+      />
 
       {/* User-customizable image (settings page will populate via CSS vars) */}
       <div
@@ -21,27 +25,24 @@ export default function AppBackground() {
         aria-hidden
         className='pointer-events-none fixed inset-0 z-0'
         style={{
-          backgroundColor: 'hsl(var(--bg-overlay-color) / var(--bg-overlay-opacity))',
-        }}
-      />
-
-      {/* Soft radial atmosphere */}
-      <div
-        aria-hidden
-        className='pointer-events-none fixed inset-0 z-0'
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 50% at 75% 30%, hsl(var(--accent) / 0.10), transparent 70%), radial-gradient(ellipse 50% 40% at 15% 90%, hsl(var(--muted) / 0.14), transparent 70%)',
+          backgroundColor: 'var(--bg-overlay-color)',
+          opacity: 'var(--bg-overlay-opacity)',
         }}
       />
 
       {/* Grain */}
       <svg
         aria-hidden
-        className='pointer-events-none fixed inset-0 z-0 h-full w-full opacity-[0.05] mix-blend-overlay'
+        className='pointer-events-none fixed inset-0 z-0 h-full w-full mix-blend-overlay'
+        style={{ opacity: 'var(--grain-opacity)' }}
       >
         <filter id='app-grain'>
-          <feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch' />
+          <feTurbulence
+            type='fractalNoise'
+            baseFrequency='0.9'
+            numOctaves='2'
+            stitchTiles='stitch'
+          />
           <feColorMatrix type='saturate' values='0' />
         </filter>
         <rect width='100%' height='100%' filter='url(#app-grain)' />

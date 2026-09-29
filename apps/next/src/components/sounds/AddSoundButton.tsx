@@ -1,17 +1,12 @@
 'use client'
 
-import { createId } from '@paralleldrive/cuid2'
 import type { SoundType } from '@repo/api/db/schemas'
 import { Button } from '@repo/ui/button'
 import { Input } from '@repo/ui/input'
 import { Label } from '@repo/ui/label'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSound } from '~/hooks/useSounds'
-import { api } from '~/lib/api.client'
 import { useSoundsStore } from '~/store/useSoundsStore'
-
 
 export default function AddSoundButton({ type }: { type: SoundType }) {
   const { addSound, isAddMode, toggleAddMode } = useSoundsStore()
@@ -28,7 +23,6 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
       addSound(newSound.id, newSound.name, newSound.url, newSound.isCustom, type)
     },
   })
-  
 
   const validateYoutubeLink = (url: string) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/
@@ -38,7 +32,9 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newLink = e.target.value
     setLink(newLink)
-    setLinkError(newLink && !validateYoutubeLink(newLink) ? 'Please enter a valid YouTube link' : '')
+    setLinkError(
+      newLink && !validateYoutubeLink(newLink) ? 'Please enter a valid YouTube link' : '',
+    )
   }
 
   const handleSubmit = async () => {
@@ -63,43 +59,38 @@ export default function AddSoundButton({ type }: { type: SoundType }) {
   return (
     <main>
       {isAddMode && (
-        <div className="flex flex-col space-y-4 py-6">
+        <div className='flex flex-col space-y-4 py-6'>
           {/* Name */}
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-left">
+          <div className='space-y-2'>
+            <Label htmlFor='name' className='text-left'>
               {type === 'bgMusic' ? 'Background Music Name' : 'Ambient Sound Name'}
             </Label>
             <Input
-              id="name"
+              id='name'
               value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="col-span-3 border-white"
-              placeholder="Enter sound name"
+              onChange={e => setName(e.target.value)}
+              className='col-span-3 border-white'
+              placeholder='Enter sound name'
             />
           </div>
           {/* Link */}
-          <div className="space-y-2">
-            <Label htmlFor="youtube-link" className="text-right">
+          <div className='space-y-2'>
+            <Label htmlFor='youtube-link' className='text-right'>
               YouTube Link
             </Label>
             <Input
-              id="youtube-link"
+              id='youtube-link'
               value={link}
               onChange={handleLinkChange}
               className={linkError ? 'border-red-500' : 'border-white'}
-              placeholder="https://youtube.com/..."
+              placeholder='https://youtube.com/...'
             />
           </div>
           {/* Submit */}
           <Button
-            type="submit"
+            type='submit'
             onClick={handleSubmit}
-            disabled={
-              !name.trim() ||
-              !link.trim() ||
-              !!linkError ||
-              status === 'pending'
-            }
+            disabled={!name.trim() || !link.trim() || !!linkError || status === 'pending'}
           >
             {status === 'pending' ? 'Adding…' : 'Add'}
           </Button>

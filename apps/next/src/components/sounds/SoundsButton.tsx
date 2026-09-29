@@ -18,7 +18,7 @@ const formatTime = (seconds: number) => {
   return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
 }
 
-const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => {
+const SoundSettings = ({ soundId, type }: { soundId: string; type: string }) => {
   // Split the store selectors to avoid unnecessary re-renders
   const sound = useSoundsStore(state => state.sounds[soundId])
   const editModes = useSoundsStore(state => state.editModes)
@@ -37,10 +37,10 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
   const setCurrentTime = useSoundsStore(state => state.setCurrentTime)
 
   const [originalName, setOriginalName] = useState('')
-  const [initialPlay, setInitialPlay] = useState(false);
+  const [initialPlay, setInitialPlay] = useState(false)
 
-  const deleteSoundMutation = useDeleteUserSound();
-  const updateSoundMutation = useUpdateUserSound(soundId);
+  const deleteSoundMutation = useDeleteUserSound()
+  const updateSoundMutation = useUpdateUserSound(soundId)
 
   if (!sound) return null
 
@@ -70,30 +70,31 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
   return (
     <main>
       {!isDeleteMode ? (
-        <Card className="relative overflow-hidden ">
-          <div className={`transition-discrete duration-500 ${sound.playing ? 'opacity-100' : 'opacity-0'}`}>
+        <Card className='relative overflow-hidden '>
+          <div
+            className={`transition-discrete duration-500 ${sound.playing ? 'opacity-100' : 'opacity-0'}`}
+          >
             <BorderBeam
               duration={6}
               size={100}
-              className="from-transparent via-green-500 to-transparent"
+              className='from-transparent via-green-500 to-transparent'
             />
             <BorderBeam
               duration={6}
               delay={3}
               size={100}
-              className="from-transparent via-green-500 to-transparent"
+              className='from-transparent via-green-500 to-transparent'
             />
           </div>
 
-
-          <CardContent className="p-4 space-y-3">
+          <CardContent className='p-4 space-y-3'>
             <div className='flex space-x-2'>
               <Toggle
                 pressed={sound.playing}
                 onClick={() => {
                   if (!initialPlay) {
-                    setInitialPlay(true);
-                    setVolume(soundId, 0.4);
+                    setInitialPlay(true)
+                    setVolume(soundId, 0.4)
                   }
                   toggleSound(soundId)
                 }}
@@ -103,7 +104,7 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
               </Toggle>
 
               <motion.button
-                className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
+                className='group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10'
                 onClick={e => {
                   if (e.detail === 1 && !isEditing) {
                     setOriginalName(sound.name)
@@ -113,7 +114,7 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
               >
                 {isEditing ? (
                   <Input
-                    type="text"
+                    type='text'
                     value={sound.name}
                     autoFocus
                     onClick={e => e.stopPropagation()}
@@ -130,7 +131,7 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
                         updateSoundMutation.mutate(sound.name)
                       }
                     }}
-                    onKeyDown={(e) => {
+                    onKeyDown={e => {
                       if (e.key === 'Enter' || e.key === 'Escape') {
                         toggleEditMode(soundId)
 
@@ -144,7 +145,7 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
                         }
                       }
                     }}
-                    className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
+                    className='bg-transparent h-10 px-0 py-0 rounded-sm w-full'
                   />
                 ) : (
                   <span>{sound.name.length > 17 ? `${sound.name.slice(0, 17)}…` : sound.name}</span>
@@ -161,16 +162,14 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
                 }}
                 max={100}
                 step={1}
-                className="w-full"
-                trackClassName="bg-gray-100"
-                rangeClassName=""
-                thumbClassName="w-4 h-4 "
+                className='w-full'
+                trackClassName='bg-gray-100'
+                rangeClassName=''
+                thumbClassName='w-4 h-4 '
               />
 
-              <div className="flex justify-between items-center">
-                <span className="text-xs">
-                  {Math.round(sound.volume * 100)}%
-                </span>
+              <div className='flex justify-between items-center'>
+                <span className='text-xs'>{Math.round(sound.volume * 100)}%</span>
               </div>
             </div>
 
@@ -198,7 +197,7 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
               //     </div>
               //   </div>
               // </div>
-              <div className="flex items-center space-x-2">
+              <div className='flex items-center space-x-2'>
                 <Slider
                   value={[isSeeking ? currentTime : currentTime]}
                   min={0}
@@ -206,13 +205,13 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
                   step={0.1}
                   onValueChange={handleSliderChange}
                   onValueCommit={handleSliderCommit}
-                  className="w-fill"
-                  trackClassName="bg-gray-100"
-                  rangeClassName="bg-green-400 rounded-r-xl"
-                  thumbClassName="hidden"
+                  className='w-fill'
+                  trackClassName='bg-gray-100'
+                  rangeClassName='bg-green-400 rounded-r-xl'
+                  thumbClassName='hidden'
                 />
-                <div className="flex justify-center items-center w-fit">
-                  <span className="text-xs whitespace-nowrap">
+                <div className='flex justify-center items-center w-fit'>
+                  <span className='text-xs whitespace-nowrap'>
                     {formatTime(currentTime)} / {formatTime(duration)}
                   </span>
                 </div>
@@ -222,9 +221,7 @@ const SoundSettings = ({ soundId, type }: { soundId: string, type: string }) => 
         </Card>
       ) : (
         <div className='space-y-2'>
-          <Button onClick={() => deleteSoundMutation.mutate(soundId)}>
-            Delete {sound.name}
-          </Button>
+          <Button onClick={() => deleteSoundMutation.mutate(soundId)}>Delete {sound.name}</Button>
         </div>
       )}
     </main>

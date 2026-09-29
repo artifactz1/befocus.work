@@ -1,15 +1,23 @@
-import DashboardShell from '~/hooks/DashboardShell'
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
+import CustomizePanel from '~/components/customize/CustomizePanel'
 import { getUserSettings } from '~/lib/server/getUserSettings'
+import { CustomizeStoreProvider } from '~/store/useCustomizeStore'
+import { TimerStoreProvider } from '~/store/useTimerStore'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  // Server action of getting settings
-  const data = await getUserSettings()
+  const settings = await getUserSettings()
 
-  console.log("FETCHED FROM SERVER COMPONENT", data)
+  const queryClient = new QueryClient()
+  queryClient.setQueryData(['userSettings'], settings)
 
   return (
-    <DashboardShell initialSettings={data}>
-      {children}
-    </DashboardShell>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <TimerStoreProvider initialSettings={settings}>
+        <CustomizeStoreProvider initialLook={null}>
+          {children}
+          <CustomizePanel />
+        </CustomizeStoreProvider>
+      </TimerStoreProvider>
+    </HydrationBoundary>
   )
 }

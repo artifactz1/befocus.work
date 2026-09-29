@@ -24,8 +24,8 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
 
   const [originalName, setOriginalName] = useState('')
 
-  const deleteSoundMutation = useDeleteUserSound();
-  const updateSoundMutation = useUpdateUserSound(soundId);
+  const deleteSoundMutation = useDeleteUserSound()
+  const updateSoundMutation = useUpdateUserSound(soundId)
 
   if (!sound) return null
 
@@ -37,7 +37,7 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
       {!isDeleteMode ? (
         <div className='space-y-1 border-2 p-2 rounded-lg'>
           <motion.button
-            className="group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10"
+            className='group relative flex w-full cursor-pointer select-none items-center space-x-2 rounded p-2 text-sm font-medium transition-colors duration-300 h-10'
             onClick={e => {
               if (e.detail === 1 && !isEditing) {
                 setOriginalName(sound.name)
@@ -47,7 +47,7 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
           >
             {isEditing ? (
               <Input
-                type="text"
+                type='text'
                 value={sound.name}
                 autoFocus
                 onClick={e => e.stopPropagation()}
@@ -64,7 +64,7 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
                     updateSoundMutation.mutate(sound.name)
                   }
                 }}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === 'Escape') {
                     toggleEditMode(soundId)
 
@@ -78,7 +78,7 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
                     }
                   }
                 }}
-                className="bg-transparent h-10 px-0 py-0 rounded-sm w-full"
+                className='bg-transparent h-10 px-0 py-0 rounded-sm w-full'
               />
             ) : (
               <span>{sound.name}</span>
@@ -86,10 +86,7 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
           </motion.button>
 
           <div className='flex space-x-2'>
-            <Toggle
-              pressed={sound.playing}
-              onClick={() => toggleSound(soundId)}
-            >
+            <Toggle pressed={sound.playing} onClick={() => toggleSound(soundId)}>
               {sound.playing ? <Volume2 /> : <VolumeX />}
             </Toggle>
 
@@ -106,13 +103,10 @@ const AmbientSoundsButton = ({ soundId }: { soundId: string }) => {
               className='w-full'
             />
           </div>
-
         </div>
       ) : (
         <div className='space-y-2'>
-          <Button onClick={() => deleteSoundMutation.mutate(soundId)}>
-            Delete {sound.name}
-          </Button>
+          <Button onClick={() => deleteSoundMutation.mutate(soundId)}>Delete {sound.name}</Button>
         </div>
       )}
     </main>

@@ -1,13 +1,7 @@
 import { type MotionValue, motion, useSpring, useTransform } from 'framer-motion'
 import { useEffect } from 'react'
 
-function TimerUI({
-  value,
-  fontSize = '25vw',
-}: {
-  value: number
-  fontSize?: string
-}) {
+function TimerUI({ value, fontSize = '25vw' }: { value: number; fontSize?: string }) {
   return (
     <div
       style={{ fontSize, lineHeight: '1em' }} // Ensure line-height matches font-size

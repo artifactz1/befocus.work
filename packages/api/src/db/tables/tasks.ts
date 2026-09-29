@@ -1,7 +1,8 @@
 // schema/todo.ts
-import { pgTable, serial, text, boolean, timestamp } from 'drizzle-orm/pg-core'
-import { createSelectSchema, createInsertSchema, createUpdateSchema } from 'drizzle-zod'
+
 import type { InferSelectModel } from 'drizzle-orm'
+import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-zod'
 import { user } from './auth'
 
 export const tasks = pgTable('tasks', {

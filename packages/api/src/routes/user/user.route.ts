@@ -279,9 +279,6 @@ export type CreateUserTask = typeof createUserTask
 export type UpdateUserTask = typeof updateUserTask
 export type DeleteUserTask = typeof deleteUserTask
 
-
-
-
 export type CreateUserSettings = typeof createUserSettings
 export type GetUserAccountsRoute = typeof getUserAccounts
 export type GetUserRoute = typeof getUser

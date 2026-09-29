@@ -8,7 +8,6 @@ import { useState } from 'react'
 import { useUpdateUserTask } from '~/hooks/useTasks'
 import { useTodoStore } from '~/store/useToDoStore'
 
-
 interface TaskItemProps {
   task: {
     id: number
@@ -28,8 +27,11 @@ export default function TaskItem({ task }: TaskItemProps) {
 
   return (
     <div className='items-bottom flex space-x-2 border-b-2 py-2'>
-      <motion.div whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.8 }} className='flex items-center'>
-
+      <motion.div
+        whileHover={{ scale: 1.2 }}
+        whileTap={{ scale: 0.8 }}
+        className='flex items-center'
+      >
         <Checkbox
           checked={task.completed}
           onCheckedChange={() => {
@@ -89,8 +91,9 @@ export default function TaskItem({ task }: TaskItemProps) {
           <span className='relative inline-block'>
             {task.text}
             <span
-              className={`absolute left-0 top-1/2 h-[2px] transition-all duration-500 ${task.completed ? 'w-full bg-stone-500' : 'w-0 bg-white'
-                }`}
+              className={`absolute left-0 top-1/2 h-[2px] transition-all duration-500 ${
+                task.completed ? 'w-full bg-stone-500' : 'w-0 bg-white'
+              }`}
               style={{ transform: 'translateY(-50%)' }}
             />
           </span>
