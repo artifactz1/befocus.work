@@ -212,15 +212,13 @@ Navigate to the specific package directory and run:
 bun run dev          # Start Next.js dev server
 bun run build        # Build Next.js app
 bun run start        # Start production server
+bun run preview      # Build with OpenNext and preview the Worker locally
+bun run deploy       # Deploy to Cloudflare Workers via OpenNext
 
 # In packages/api/
 bun run dev          # Start API dev server with hot reload
 bun run deploy       # Deploy to Cloudflare Workers
 bun run db:studio    # Open database management UI
-
-# In apps/next/
-bun run preview      # Build with OpenNext and preview the Worker locally
-bun run deploy       # Deploy to Cloudflare Workers via OpenNext
 ```
 
 ## Deployment
@@ -238,8 +236,8 @@ Both the API and the web app deploy to Cloudflare Workers.
 2. **Set production environment variables:**
    ```bash
    bunx wrangler secret put DATABASE_URL
-   bunx wrangler secret put JWT_SECRET
-   # ... add other secrets
+   bunx wrangler secret put BETTER_AUTH_SECRET
+   # ... add the other secrets listed under "Automatic Deploys" below
    ```
 
 3. **Deploy:**
