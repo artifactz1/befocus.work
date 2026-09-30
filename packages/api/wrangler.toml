@@ -1,4 +1,4 @@
-name = "hono-learn"
+name = "befocus"
 keep_vars = true
 main = "src/index.ts"
 compatibility_date = "2024-12-24"

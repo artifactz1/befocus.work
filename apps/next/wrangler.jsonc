@@ -10,6 +10,8 @@
   },
   // next-themes serializes a function into an inline <script>; wrangler keep_names would inject an undefined __name() into it
   "keep_names": false,
+  // keep dashboard-set vars (API_URL) across CI deploys
+  "keep_vars": true,
   "observability": { "enabled": true }
   // Runtime vars/secrets (names only, see README "Web App Deployment"):
   //   API_URL  -> set with `bunx wrangler secret put API_URL` (or add to "vars" here)
