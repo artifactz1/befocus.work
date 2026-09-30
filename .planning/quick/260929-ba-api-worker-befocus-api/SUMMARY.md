@@ -1,5 +1,5 @@
-# Quick: Rename API Worker to befocus-api
+# Quick: Deploy API to hono-learn Worker
 
-Renamed API Worker in `packages/api/wrangler.toml` from `befocus` to `befocus-api` and added `keep_vars = true` so deploys keep dashboard plain-text vars. README secrets line updated. deploy.yml has no hard-coded Worker name. Not deployed; CI deploys after merge.
+API Worker name in `packages/api/wrangler.toml` is now `hono-learn` (holds prod secrets/vars, serves api.befocus.work) with `keep_vars = true` so deploys keep dashboard plain-text vars. README secrets line updated. deploy.yml has no hard-coded Worker name. Not deployed; CI deploys after merge.
 
-Pre-merge step: the existing `hono-learn` Worker (holds prod secrets/vars, serves api.befocus.work) must be renamed to `befocus-api` in the Cloudflare dashboard BEFORE merge, otherwise CI creates an empty Worker without secrets.
+Deferred: renaming to `befocus-api`. The dashboard cannot rename Workers, so it would need secrets re-set and the custom domain moved.
