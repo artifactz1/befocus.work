@@ -1,39 +1,18 @@
 'use client'
 
-import { toast } from 'sonner'
-import { selectIsDirty, useCustomizeStore } from '~/store/useCustomizeStore'
+import { useCustomizeStore } from '~/store/useCustomizeStore'
 
+/**
+ * Live model: every control paints immediately. Done, close, Escape and leaving the route
+ * all keep the change (`close`); Revert puts back the look the panel opened with.
+ */
 export function useCustomizeActions() {
-  const openPanel = useCustomizeStore(state => state.openPanel)
-  const applyStore = useCustomizeStore(state => state.apply)
-  const cancelStore = useCustomizeStore(state => state.cancel)
+  const open = useCustomizeStore(state => state.openPanel)
+  const close = useCustomizeStore(state => state.apply)
+  const revert = useCustomizeStore(state => state.revert)
   const panelOpen = useCustomizeStore(state => state.panelOpen)
-  const isDirty = useCustomizeStore(selectIsDirty)
 
-  const open = () => {
-    openPanel()
-  }
+  const toggle = () => (panelOpen ? close() : open())
 
-  const apply = () => {
-    applyStore()
-    toast('Look applied')
-  }
-
-  const discard = () => {
-    const wasDirty = isDirty
-    cancelStore()
-    if (wasDirty) {
-      toast('Changes discarded')
-    }
-  }
-
-  const toggle = () => {
-    if (panelOpen) {
-      discard()
-    } else {
-      open()
-    }
-  }
-
-  return { open, apply, discard, toggle }
+  return { open, close, revert, toggle }
 }

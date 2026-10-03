@@ -16,17 +16,17 @@ export default function CustomizePanelDesktop() {
     <AnimatePresence>
       {panelOpen && (
         <motion.aside
-          className={`${styles.panel} ${styles.dock}`}
+          className={`${styles.panel} ${styles.inspector}`}
           role='dialog'
           aria-modal='false'
           aria-labelledby='customize-heading'
           data-customize-panel
-          initial={{ x: 40, opacity: 0 }}
+          initial={{ x: 24, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: 40, opacity: 0 }}
+          exit={{ x: 24, opacity: 0 }}
           transition={{ duration, ease: EASE }}
         >
-          <CustomizePanelBody />
+          <CustomizePanelBody variant='desktop' />
         </motion.aside>
       )}
     </AnimatePresence>

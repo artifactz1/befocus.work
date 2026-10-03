@@ -14,7 +14,7 @@ const TABBABLE_SELECTOR =
 
 export default function CustomizePanelMobile() {
   const panelOpen = useCustomizeStore(state => state.panelOpen)
-  const { discard } = useCustomizeActions()
+  const { close } = useCustomizeActions()
   const contentRef = useRef<HTMLDivElement>(null)
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -47,7 +47,7 @@ export default function CustomizePanelMobile() {
       shouldScaleBackground={false}
       handleOnly
       onOpenChange={next => {
-        if (!next) discard()
+        if (!next) close()
       }}
     >
       <DrawerPortal>
@@ -67,7 +67,7 @@ export default function CustomizePanelMobile() {
             <span aria-hidden className='sr-only' />
           </DrawerPrimitive.Title>
           <DrawerPrimitive.Handle preventCycle aria-hidden className={styles.grab} />
-          <CustomizePanelBody />
+          <CustomizePanelBody variant='phone' />
         </DrawerPrimitive.Content>
       </DrawerPortal>
     </Drawer>

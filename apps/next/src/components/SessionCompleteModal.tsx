@@ -66,17 +66,15 @@ export function SessionCompleteModal() {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className='bg-white dark:bg-zinc-900 text-black dark:text-white p-6 rounded-xl shadow-2xl max-w-md w-full'
+            className='bg-zinc-900 text-white p-6 rounded-xl shadow-2xl max-w-md w-full'
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.9 }}
           >
             <h2 className='text-4xl font-bold mb-4'>🎉 Congratulations!</h2>
             <Divider />
-            <p className='mb-2 text-lg font-semibold text-green-600 dark:text-green-400'>
-              All Sessions Complete!
-            </p>
-            <p className='mb-6 text-gray-600 dark:text-gray-300'>
+            <p className='mb-2 text-lg font-semibold text-green-400'>All Sessions Complete!</p>
+            <p className='mb-6 text-gray-300'>
               You&apos;ve successfully finished all {sessions} sessions. Amazing work on your focus
               and dedication!
             </p>

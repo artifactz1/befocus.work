@@ -147,3 +147,4 @@ Resume file: None
 - 260930-br: Rename API deploy name to befocus, keep_vars on web (.planning/quick/260930-br-api-worker-rename-befocus)
 - 261001-te: Remove stray ellipse behind timer buttons (.planning/quick/261001-te-remove-timer-buttons-ellipse)
 - 261002-ts: Keep timer full size when customize panel opens (.planning/quick/261002-ts-timer-no-shrink-customize)
+- 261003-cx: Customize panel as floating inspector, remove light/dark mode (.planning/quick/261003-cx-customize-inspector-no-light-mode)

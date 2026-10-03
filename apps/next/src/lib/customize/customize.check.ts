@@ -2,7 +2,7 @@
 // Run with: bun run src/lib/customize/customize.check.ts (cwd apps/next)
 import assert from 'node:assert/strict'
 import { DEFAULT_LOOK, lookEquals, lookSchema } from '@repo/types/look'
-import { FONTS, lookToTokens } from './catalog'
+import { FONTS, LOOKS, lookName, lookToTokens, solidName } from './catalog'
 
 // DEFAULT_LOOK passes lookSchema.safeParse
 assert.equal(lookSchema.safeParse(DEFAULT_LOOK).success, true, 'DEFAULT_LOOK must parse')
@@ -141,5 +141,17 @@ assert.equal(
     '--font-display must come from the FONTS catalog, never the raw key',
   )
 }
+
+// starter looks: each merges into a valid look and is recognized by name
+for (const preset of LOOKS) {
+  const result = lookSchema.safeParse({ ...DEFAULT_LOOK, ...preset.look })
+  assert.equal(result.success, true, `look "${preset.name}" must parse`)
+  assert.equal(result.success && lookName(result.data), preset.name, `"${preset.name}" by name`)
+}
+assert.equal(lookName(DEFAULT_LOOK), 'Default', 'DEFAULT_LOOK is the Default look')
+assert.equal(lookName({ ...DEFAULT_LOOK, accent: '#000000' }), undefined, 'mix has no look name')
+assert.equal(solidName(DEFAULT_LOOK.bg.color), 'Default', 'default solid is named Default')
+assert.equal(solidName('#0f0f0f'), 'Ink', 'catalog solid is named')
+assert.equal(solidName('#123456'), 'Custom', 'off-catalog solid is Custom')
 
 console.log('customize.check OK')

@@ -10,10 +10,7 @@ export default function TypeSection() {
   const setPreview = useCustomizeStore(state => state.setPreview)
 
   return (
-    <ControlGroup
-      label='Font'
-      hint='Applies to the timer, session title and dashboard text. Panels and menus keep Inter Tight.'
-    >
+    <ControlGroup id='customize-typeface' label='Typeface' value={FONTS[preview.font].label}>
       <div className={styles.picks}>
         {Object.entries(FONTS).map(([id, font]) => (
           <PickCard
@@ -25,7 +22,10 @@ export default function TypeSection() {
             label={font.label}
           >
             <span className={styles.big} aria-hidden style={{ fontFamily: font.stack }}>
-              17:42
+              25:00
+            </span>
+            <span className={styles.nm} aria-hidden>
+              {font.label}
             </span>
           </PickCard>
         ))}

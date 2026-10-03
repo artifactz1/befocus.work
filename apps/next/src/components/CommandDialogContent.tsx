@@ -22,13 +22,12 @@ import {
   Coffee,
   Hash,
   LogOut,
-  Moon,
+  Palette,
   Pause,
   Play,
   RotateCcw,
   SkipBack,
   SkipForward,
-  Sun,
   Timer,
   User,
 } from 'lucide-react'
@@ -39,10 +38,10 @@ import {
   useCommandHandler,
   useCommandMenuKeyboard,
   useSettingsDialog,
-  useThemeActions,
   useTimerActions,
 } from '~/hooks/useCommandMenuHooks'
 import { useParsedCommands } from '~/hooks/useParsedCommands'
+import { useCustomizeActions } from './customize/useCustomizeActions'
 
 export default function CommandDialogConent() {
   const [open, setOpen] = React.useState(false)
@@ -50,7 +49,7 @@ export default function CommandDialogConent() {
 
   // Custom hooks
   useCommandMenuKeyboard(setOpen)
-  const { isDarkMode, toggleTheme } = useThemeActions()
+  const { open: openCustomize } = useCustomizeActions()
   const { session, isPending, handleSignOut, handleSignIn } = useAuthActions()
   const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } =
     useTimerActions()
@@ -73,11 +72,6 @@ export default function CommandDialogConent() {
   const { handleCommand } = useCommandHandler(setOpen)
 
   // Handlers that need to close the dialog
-  const handleToggleTheme = () => {
-    toggleTheme()
-    setOpen(false)
-  }
-
   const handleSignOutWithClose = async () => {
     await handleSignOut()
     setOpen(false)
@@ -171,9 +165,9 @@ export default function CommandDialogConent() {
           <CommandSeparator />
 
           <CommandGroup heading='Account'>
-            <CommandItem onSelect={handleToggleTheme}>
-              {isDarkMode ? <Sun /> : <Moon />}
-              <span>{isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}</span>
+            <CommandItem onSelect={() => handleCommand(openCustomize)}>
+              <Palette />
+              <span>Customize look…</span>
             </CommandItem>
             {!isPending &&
               (session === null ? (

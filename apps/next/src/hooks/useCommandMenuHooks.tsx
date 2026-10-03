@@ -1,5 +1,4 @@
 import { useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
 import React from 'react'
 import { useSaveUserSettings } from '~/hooks/useSession'
 import { signOut, useSession } from '~/lib/auth.client'
@@ -17,21 +16,6 @@ export function useCommandMenuKeyboard(setOpen: React.Dispatch<React.SetStateAct
     document.addEventListener('keydown', down)
     return () => document.removeEventListener('keydown', down)
   }, [setOpen])
-}
-
-// Hook for theme management
-export function useThemeActions() {
-  const { theme, setTheme } = useTheme()
-  const isDarkMode = theme === 'dark'
-
-  const toggleTheme = React.useCallback(() => {
-    setTheme(isDarkMode ? 'light' : 'dark')
-  }, [isDarkMode, setTheme])
-
-  return {
-    isDarkMode,
-    toggleTheme,
-  }
 }
 
 // Hook for authentication actions
