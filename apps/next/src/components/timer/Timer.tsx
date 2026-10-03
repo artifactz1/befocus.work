@@ -157,8 +157,6 @@ export default function Timer() {
           panelOpen: true,
           vw: window.innerWidth,
           vh: window.innerHeight,
-          timerW: visible.offsetWidth,
-          timerH: visible.offsetHeight,
           centerY: rootRect.top + rootRect.height / 2,
         }),
       )

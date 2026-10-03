@@ -143,163 +143,36 @@ assert.equal(
   )
 }
 
-// computeTimerTransform (D-20, UX-05)
-const EPS = 0.01
-
-// closed panel returns identity regardless of viewport
+// computeTimerTransform: translate only, never scale
 assert.deepEqual(
-  computeTimerTransform({
-    panelOpen: false,
-    vw: 1440,
-    vh: 900,
-    timerW: 838,
-    timerH: 250,
-    centerY: 450,
-  }),
+  computeTimerTransform({ panelOpen: false, vw: 1440, vh: 900, centerY: 450 }),
   { tx: 0, ty: 0, scale: 1 },
   'closed panel must return identity',
 )
 
-// 1440x900: centred scale about .42
-{
-  const { tx, ty, scale } = computeTimerTransform({
-    panelOpen: true,
-    vw: 1440,
-    vh: 900,
-    timerW: 838,
-    timerH: 250,
-    centerY: 450,
-  })
-  assert.equal(tx, 0, '1440x900 must not translate x')
-  assert.equal(ty, 0, '1440x900 must not translate y')
-  assert.ok(
-    Math.abs(scale - 0.42) < 0.005,
-    `1440x900 scale must be within 0.005 of 0.42, got ${scale}`,
-  )
+for (const [vw, vh] of [
+  [1920, 1080],
+  [1440, 900],
+  [1024, 640],
+  [390, 844],
+  [200, 200],
+] as const) {
+  const { scale } = computeTimerTransform({ panelOpen: true, vw, vh, centerY: vh / 2 })
+  assert.equal(scale, 1, `${vw}x${vh} must never scale the timer`)
 }
 
-// 1440x900 with the real measured timer (1038px wide): still centred, 352px rendered
-{
-  const { tx, scale } = computeTimerTransform({
-    panelOpen: true,
-    vw: 1440,
-    vh: 900,
-    timerW: 1038,
-    timerH: 310,
-    centerY: 450,
-  })
-  assert.equal(tx, 0, '1440x900 must stay centred whatever the timer base width')
-  assert.ok(Math.abs(scale * 1038 - 352) < 0.5, `1440x900 rendered width must be 352, got ${scale}`)
-}
-
-// 1400x900: centred would render only 312px, so the fallback applies
-{
-  const { tx } = computeTimerTransform({
-    panelOpen: true,
-    vw: 1400,
-    vh: 900,
-    timerW: 1038,
-    timerH: 310,
-    centerY: 450,
-  })
-  assert.equal(tx, 880 / 2 - 700, '1400x900 must use the narrow-desktop fallback')
-}
-
-// 1920x1080: cap at exactly 0.72, centred
-{
-  const { tx, ty, scale } = computeTimerTransform({
-    panelOpen: true,
-    vw: 1920,
-    vh: 1080,
-    timerW: 1006,
-    timerH: 300,
-    centerY: 540,
-  })
-  assert.equal(tx, 0, '1920x1080 must not translate x')
-  assert.equal(ty, 0, '1920x1080 must not translate y')
-  assert.equal(scale, 0.72, '1920x1080 scale must hit the 0.72 cap exactly')
-}
-
-// 1024x640: narrow-desktop fallback, tx -260, scale 0.72
-{
-  const { tx, scale } = computeTimerTransform({
-    panelOpen: true,
-    vw: 1024,
-    vh: 640,
-    timerW: 596,
-    timerH: 178,
-    centerY: 320,
-  })
-  assert.equal(tx, -260, '1024x640 fallback tx must be -260')
-  assert.equal(scale, 0.72, '1024x640 fallback scale must hit the 0.72 cap')
-}
-
-// 1280x800: centred would render only 192px (below 336px), so fallback also applies
-{
-  const { tx, scale } = computeTimerTransform({
-    panelOpen: true,
-    vw: 1280,
-    vh: 800,
-    timerW: 745,
-    timerH: 222,
-    centerY: 400,
-  })
-  assert.equal(tx, -260, '1280x800 fallback tx must be -260')
-  assert.equal(scale, 0.72, '1280x800 fallback scale must hit the 0.72 cap')
-}
-
-// 390x844 mobile: rise above the sheet, scale 0.72, ty within 0.5 of -253.2
-{
-  const { tx, ty, scale } = computeTimerTransform({
-    panelOpen: true,
-    vw: 390,
-    vh: 844,
-    timerW: 350,
-    timerH: 250,
-    centerY: 422,
-  })
-  assert.equal(tx, 0, '390x844 must not translate x')
-  assert.ok(Math.abs(ty - -253.2) < 0.5, `390x844 ty must be within 0.5 of -253.2, got ${ty}`)
-  assert.equal(scale, 0.72, '390x844 scale must hit the 0.72 cap')
-}
-
-// an unmeasured timer (0 width or height) returns identity even while open
-assert.deepEqual(
-  computeTimerTransform({
-    panelOpen: true,
-    vw: 1440,
-    vh: 900,
-    timerW: 0,
-    timerH: 250,
-    centerY: 450,
-  }),
-  { tx: 0, ty: 0, scale: 1 },
-  'zero timerW must return identity',
-)
-assert.deepEqual(
-  computeTimerTransform({
-    panelOpen: true,
-    vw: 1440,
-    vh: 900,
-    timerW: 838,
-    timerH: 0,
-    centerY: 450,
-  }),
-  { tx: 0, ty: 0, scale: 1 },
-  'zero timerH must return identity',
+// desktop: centre in the area left of the 520px dock
+assert.equal(
+  computeTimerTransform({ panelOpen: true, vw: 1440, vh: 900, centerY: 450 }).tx,
+  -260,
+  '1440x900 tx must be -260',
 )
 
-// a tiny viewport never returns scale <= 0 (floor 0.2)
-{
-  const { scale } = computeTimerTransform({
-    panelOpen: true,
-    vw: 200,
-    vh: 200,
-    timerW: 500,
-    timerH: 500,
-    centerY: 100,
-  })
-  assert.ok(scale >= 0.2 - EPS, `tiny viewport scale must be floored at 0.2, got ${scale}`)
-}
+// mobile: rise above the 60dvh sheet
+assert.ok(
+  Math.abs(computeTimerTransform({ panelOpen: true, vw: 390, vh: 844, centerY: 422 }).ty - -253.2) <
+    0.5,
+  '390x844 ty must be about -253.2',
+)
 
 console.log('customize.check OK')

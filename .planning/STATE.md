@@ -146,3 +146,4 @@ Resume file: None
 - 260929-ba: Deploy API to hono-learn Worker, keep_vars (befocus-api rename deferred) (.planning/quick/260929-ba-api-worker-befocus-api)
 - 260930-br: Rename API deploy name to befocus, keep_vars on web (.planning/quick/260930-br-api-worker-rename-befocus)
 - 261001-te: Remove stray ellipse behind timer buttons (.planning/quick/261001-te-remove-timer-buttons-ellipse)
+- 261002-ts: Keep timer full size when customize panel opens (.planning/quick/261002-ts-timer-no-shrink-customize)
