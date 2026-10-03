@@ -54,45 +54,8 @@ html[data-density="roomy"] {
 }
 
 @layer base {
+  /* One dark palette. Light mode is gone: the customize panel (Look) owns appearance. */
   :root {
-    --background: 60 40% 96%; /* #f8f9f3 (Spring Wood) */
-    --foreground: 75 3% 15%; /* #32322c (Tuatara) */
-
-    --card: 60 30% 97%; /* #fcfcf4 (Bianca) */
-    --card-foreground: 75 3% 15%;
-
-    --popover: 60 40% 96%;
-    --popover-foreground: 75 3% 15%;
-
-    --primary: 210 4% 70%; /* #b1b1ac (Delta) */
-    --primary-foreground: 75 3% 15%;
-
-    --secondary: 40 6% 72%; /* #a9a8a3 (Delta alt / cloudy) */
-    --secondary-foreground: 75 3% 15%;
-
-    --muted: 40 5% 85%; /* #e3e2dd blend */
-    --muted-foreground: 60 2% 40%; /* #6e6e69 (Ironside Gray) */
-
-    --accent: 30 5% 60%; /* #8c8480 (Schooner) */
-    --accent-foreground: 60 40% 96%;
-
-    --destructive: 0 65% 50%; /* Red fallback */
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 69%; /* translates to #E5E3DD */
-    --input: 60 4% 90%;
-    --ring: 210 4% 70%;
-
-    --chart-1: 210 10% 60%; /* muted blue-gray */
-    --chart-2: 35 20% 70%; /* muted beige */
-    --chart-3: 120 10% 60%; /* muted green */
-    --chart-4: 10 20% 55%; /* muted orange */
-    --chart-5: 330 10% 60%; /* muted mauve */
-
-    --radius: 0.5rem;
-  }
-
-  .dark {
     --background: 0 0% 6.3%;
     --foreground: 60 9.1% 97.8%;
     --card: 12 8% 8%; /* Warmer, slightly lighter than current 4.1% */
@@ -109,7 +72,7 @@ html[data-density="roomy"] {
     --accent-foreground: 60 9.1% 97.8%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 60 9.1% 97.8%;
-    --border: 0 0% 25%; /* a neutral dark border for dark mode */
+    --border: 0 0% 25%; /* neutral dark border */
     --input: 12 6.5% 15.1%;
     --ring: 24 5.7% 82.9%;
     --chart-1: 220 70% 50%;
@@ -117,6 +80,8 @@ html[data-density="roomy"] {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    --radius: 0.5rem;
   }
 }
 @layer base {

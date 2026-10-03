@@ -1,98 +1,110 @@
 'use client'
 
 import { Button } from '@repo/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs'
-import { X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import { selectIsDefault, selectIsDirty, useCustomizeStore } from '~/store/useCustomizeStore'
+import { Undo2, X } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { selectIsDirty, useCustomizeStore } from '~/store/useCustomizeStore'
 import styles from './customize-panel.module.css'
-import { CUSTOMIZE_SECTIONS, type CustomizeSectionId } from './sections'
+import { CUSTOMIZE_SECTIONS } from './sections'
 import { useCustomizeActions } from './useCustomizeActions'
 
-const LIST_RESET = 'flex h-auto justify-start rounded-none bg-transparent p-0 text-inherit'
-const TAB_RESET =
-  'rounded-none bg-transparent px-0 py-0 text-inherit font-normal shadow-none data-[state=active]:bg-transparent data-[state=active]:text-inherit data-[state=active]:shadow-none'
+const CHIPS = CUSTOMIZE_SECTIONS.filter(section => section.chip)
 
-export default function CustomizePanelBody() {
-  const [sectionId, setSectionId] = useState<CustomizeSectionId>('theme')
-  const resetPreview = useCustomizeStore(state => state.resetPreview)
+export default function CustomizePanelBody({ variant }: { variant: 'desktop' | 'phone' }) {
   const isDirty = useCustomizeStore(selectIsDirty)
-  const isDefault = useCustomizeStore(selectIsDefault)
-  const { apply, discard } = useCustomizeActions()
+  const { close, revert } = useCustomizeActions()
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const [activeChip, setActiveChip] = useState(CHIPS[0]?.id)
 
-  const pinged = useRef(false)
+  const revertButton = (
+    <Button
+      type='button'
+      variant='ghost'
+      className={styles.revert}
+      onClick={revert}
+      disabled={!isDirty}
+    >
+      <Undo2 aria-hidden />
+      Revert
+    </Button>
+  )
 
-  useEffect(() => {
-    if (!isDirty) {
-      pinged.current = false
+  const doneButton = (
+    <Button type='button' className={styles.done} onClick={close}>
+      Done
+    </Button>
+  )
+
+  // The chip for the last group whose top has scrolled to the top of the list. `.body` is
+  // position: relative, so each group's offsetTop is measured from the top of the list.
+  const onScroll = () => {
+    const body = bodyRef.current
+    if (!body || variant !== 'phone') return
+    let current = CHIPS[0]?.id
+    for (const chip of CHIPS) {
+      const el = document.getElementById(chip.id)
+      if (el && el.offsetTop <= body.scrollTop + 16) current = chip.id
     }
-  }, [isDirty])
+    setActiveChip(current)
+  }
 
-  const showPing = isDirty && !pinged.current
-  useEffect(() => {
-    if (showPing) {
-      pinged.current = true
-    }
-  }, [showPing])
+  const jumpTo = (id: string) => {
+    const body = bodyRef.current
+    const el = document.getElementById(id)
+    if (!body || !el) return
+    body.scrollTo({ top: el.offsetTop - 12, behavior: 'smooth' })
+    setActiveChip(id)
+  }
 
   return (
     <>
-      <div className={styles.head}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      {variant === 'desktop' ? (
+        <div className={styles.head}>
           <h2 id='customize-heading' className={styles.heading} tabIndex={-1}>
             Customize
           </h2>
-          <button
-            type='button'
-            className={styles.closeBtn}
-            aria-label='Close (cancel)'
-            onClick={discard}
-          >
-            <X size={18} />
+          <span className={styles.live}>Live preview</span>
+          <button type='button' className={styles.closeBtn} aria-label='Close' onClick={close}>
+            <X size={17} />
           </button>
         </div>
-        {isDirty && (
-          <div className={styles.dirty}>
-            <span className={styles.dot} data-ping={showPing ? 'true' : 'false'} />
-            Previewing changes
+      ) : (
+        <>
+          <div className={styles.head}>
+            {revertButton}
+            <h2 id='customize-heading' className={styles.heading} tabIndex={-1}>
+              Customize
+            </h2>
+            {doneButton}
           </div>
-        )}
-      </div>
+          <nav className={styles.chips} aria-label='Jump to'>
+            {CHIPS.map(chip => (
+              <button
+                key={chip.id}
+                type='button'
+                className={styles.chip}
+                aria-current={chip.id === activeChip ? 'true' : undefined}
+                onClick={() => jumpTo(chip.id)}
+              >
+                {chip.chip}
+              </button>
+            ))}
+          </nav>
+        </>
+      )}
 
-      <Tabs value={sectionId} onValueChange={value => setSectionId(value as typeof sectionId)}>
-        <TabsList aria-label='Customize sections' className={`${LIST_RESET} ${styles.tabs}`}>
-          {CUSTOMIZE_SECTIONS.map(section => (
-            <TabsTrigger
-              key={section.id}
-              value={section.id}
-              className={`${TAB_RESET} ${styles.chip}`}
-            >
-              {section.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {CUSTOMIZE_SECTIONS.map(section => (
-          <TabsContent key={section.id} value={section.id} className='mt-0'>
-            <div className={styles.body} key={section.id}>
-              <section.Component />
-            </div>
-          </TabsContent>
+      <div ref={bodyRef} className={styles.body} onScroll={onScroll}>
+        {CUSTOMIZE_SECTIONS.map(({ id, Component }) => (
+          <Component key={id} />
         ))}
-      </Tabs>
-
-      <div className={styles.foot}>
-        <Button type='button' variant='ghost' onClick={resetPreview} disabled={isDefault}>
-          Reset to default
-        </Button>
-        <div className={styles.footRight}>
-          <Button type='button' variant='ghost' onClick={discard}>
-            Cancel
-          </Button>
-          <Button type='button' variant='default' onClick={apply} disabled={!isDirty}>
-            Apply
-          </Button>
-        </div>
       </div>
+
+      {variant === 'desktop' && (
+        <div className={styles.foot}>
+          {revertButton}
+          {doneButton}
+        </div>
+      )}
     </>
   )
 }

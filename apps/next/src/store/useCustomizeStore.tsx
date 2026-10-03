@@ -9,16 +9,18 @@ import { lookToTokens } from '~/lib/customize/catalog'
 interface CustomizeState {
   /** What the dashboard shows when the panel is closed. */
   active: Look
-  /** A copy of `active` taken when the panel opens, edited by every control. */
+  /** A copy of `active` taken when the panel opens, edited live by every control. */
   preview: Look
   /** What storage has. Always DEFAULT_LOOK in Phase 2 and never written again here. */
   persisted: Look
   panelOpen: boolean
   openPanel: () => void
   setPreview: <K extends LookKey>(key: K, value: Look[K]) => void
+  patchPreview: (patch: Partial<Omit<Look, 'version'>>) => void
+  /** Keeps the live preview and closes the panel (Done, close, Escape). */
   apply: () => void
-  cancel: () => void
-  resetPreview: () => void
+  /** Puts the preview back to the look the panel opened with. The panel stays open. */
+  revert: () => void
 }
 
 function createCustomizeStore(initialLook: unknown) {
@@ -31,18 +33,17 @@ function createCustomizeStore(initialLook: unknown) {
     persisted: look,
     panelOpen: false,
     openPanel: () => set(state => ({ preview: state.active, panelOpen: true })),
-    setPreview: (key, value) => {
-      const candidate = { ...get().preview, [key]: value }
-      const result = lookSchema.safeParse(candidate)
+    setPreview: (key, value) => get().patchPreview({ [key]: value }),
+    patchPreview: patch => {
+      const result = lookSchema.safeParse({ ...get().preview, ...patch })
       if (!result.success) {
-        console.warn(`setPreview: invalid value for "${key}"`, value)
+        console.warn('patchPreview: invalid look patch', patch)
         return
       }
       set({ preview: result.data })
     },
     apply: () => set(state => ({ active: state.preview, panelOpen: false })),
-    cancel: () => set(state => ({ preview: state.active, panelOpen: false })),
-    resetPreview: () => set({ preview: DEFAULT_LOOK }),
+    revert: () => set(state => ({ preview: state.active })),
   }))
 }
 
@@ -60,10 +61,6 @@ export function selectPaintedLook(state: CustomizeState): Look {
 
 export function selectIsDirty(state: CustomizeState): boolean {
   return !lookEquals(state.preview, state.active)
-}
-
-export function selectIsDefault(state: CustomizeState): boolean {
-  return lookEquals(state.preview, DEFAULT_LOOK)
 }
 
 /** Custom property names lookToTokens ever writes - fixed regardless of look values. */

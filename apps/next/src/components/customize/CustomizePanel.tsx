@@ -10,7 +10,7 @@ import { useCustomizeActions } from './useCustomizeActions'
 
 export default function CustomizePanel() {
   const panelOpen = useCustomizeStore(state => state.panelOpen)
-  const { discard } = useCustomizeActions()
+  const { close } = useCustomizeActions()
   const pathname = usePathname()
   const prevPathname = useRef(pathname)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -47,20 +47,20 @@ export default function CustomizePanel() {
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && !event.defaultPrevented) {
-        discard()
+        close()
       }
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [panelOpen, discard])
+  }, [panelOpen, close])
 
   useEffect(() => {
     if (panelOpen && prevPathname.current !== pathname) {
-      discard()
+      close()
     }
     prevPathname.current = pathname
-  }, [pathname, panelOpen, discard])
+  }, [pathname, panelOpen, close])
 
   return isDesktop ? <CustomizePanelDesktop /> : <CustomizePanelMobile />
 }

@@ -1,7 +1,6 @@
 import '@repo/ui/globals.css'
 import { Toaster } from '@repo/ui/sonner'
 import { Fraunces, Inter_Tight, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
-import ThemeProvider from '~/components/sessions/ThemeProvider'
 import AppProviders from '~/provider/AppProviders'
 
 const interTight = Inter_Tight({
@@ -47,10 +46,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>
-        <ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
-          <AppProviders>{children}</AppProviders>
-          <Toaster />
-        </ThemeProvider>
+        <AppProviders>{children}</AppProviders>
+        <Toaster />
       </body>
     </html>
   )

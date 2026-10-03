@@ -9,22 +9,14 @@ import {
   DropdownMenuTrigger,
 } from '@repo/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui/tooltip'
-import { LogOut, Moon, Sun, User } from 'lucide-react'
+import { LogOut, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
 import { signOut, useSession } from '~/lib/auth.client'
 import MenuButton from './helper/MenuButtons'
 
 export default function AccountButton() {
   const { data } = useSession()
   const router = useRouter()
-
-  const { theme, setTheme } = useTheme()
-  const isDarkMode = theme === 'dark'
-
-  const handleToggleTheme = () => {
-    setTheme(isDarkMode ? 'light' : 'dark')
-  }
 
   const handleSignOut = async () => {
     try {
@@ -49,13 +41,6 @@ export default function AccountButton() {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem
-                onClick={handleToggleTheme}
-                className='flex justify-between items-center gap-2'
-              >
-                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-                {isDarkMode ? <Sun className='h-4 w-4' /> : <Moon className='h-4 w-4' />}
-              </DropdownMenuItem>
               {data === null ? (
                 <DropdownMenuItem
                   onClick={() => router.push('/sign-in')}

@@ -4,23 +4,24 @@ import { cn } from '@repo/ui/lib/utils'
 import type { ReactNode } from 'react'
 import styles from './customize-panel.module.css'
 
-export function Hint({ children }: { children: ReactNode }) {
-  return <p className={styles.hint}>{children}</p>
-}
-
+/** One labeled group in the panel list. `value` shows the current choice beside the label. */
 export function ControlGroup({
+  id,
   label,
-  hint,
+  value,
   children,
 }: {
+  id?: string
   label: string
-  hint?: string
+  value?: string
   children: ReactNode
 }) {
   return (
-    <fieldset className={styles.group}>
-      <legend className={styles.label}>{label}</legend>
-      {hint && <Hint>{hint}</Hint>}
+    <fieldset id={id} className={styles.group}>
+      <legend className={styles.label}>
+        <span>{label}</span>
+        {value && <span className={styles.value}>{value}</span>}
+      </legend>
       {children}
     </fieldset>
   )
@@ -100,7 +101,6 @@ export function RangeField({
   value,
   format,
   onChange,
-  hint,
 }: {
   id: string
   label: string
@@ -110,10 +110,9 @@ export function RangeField({
   value: number
   format: (value: number) => string
   onChange: (value: number) => void
-  hint?: string
 }) {
   return (
-    <div>
+    <div className={styles.rangeField}>
       <div className={styles.labRow}>
         <label htmlFor={id}>{label}</label>
         <output htmlFor={id} aria-live='polite' className={styles.output}>
@@ -130,7 +129,6 @@ export function RangeField({
         value={value}
         onChange={e => onChange(Number(e.target.value))}
       />
-      {hint && <Hint>{hint}</Hint>}
     </div>
   )
 }
@@ -175,6 +173,7 @@ export function PickCard({
   checked,
   onChange,
   label,
+  className,
   children,
 }: {
   name: string
@@ -182,6 +181,7 @@ export function PickCard({
   checked: boolean
   onChange: (value: string) => void
   label: string
+  className?: string
   children: ReactNode
 }) {
   return (
@@ -194,7 +194,7 @@ export function PickCard({
         onChange={() => onChange(value)}
         aria-label={label}
       />
-      <span className={styles.card}>{children}</span>
+      <span className={cn(styles.card, className)}>{children}</span>
     </label>
   )
 }
