@@ -1,10 +1,8 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTimerKeyboard } from '~/hooks/useTimerKeyboard'
-import { computeTimerTransform, type TimerTransform } from '~/lib/customize/timer-scale'
-import { useCustomizeStore } from '~/store/useCustomizeStore'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
@@ -40,15 +38,11 @@ export default function Timer() {
   const { sounds, alarmId } = useSoundsStore()
   const { timeLeft, isRunning, decrementTime, workDuration, breakDuration, isWorking } =
     useTimerStore()
-  const panelOpen = useCustomizeStore(s => s.panelOpen)
 
   const [minutes, setMinutes] = useState<number>(timeLeft / 60)
   const [seconds, setSeconds] = useState<number>(0)
   const isLandscape = useIsLandscape()
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const rootRef = useRef<HTMLDivElement | null>(null)
-  const clockRef = useRef<HTMLDivElement | null>(null)
-  const [transform, setTransform] = useState<TimerTransform | null>(null)
 
   useTimerKeyboard()
 
@@ -130,55 +124,6 @@ export default function Timer() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  useLayoutEffect(() => {
-    if (!panelOpen) {
-      setTransform(null)
-      return
-    }
-
-    const measure = () => {
-      const root = rootRef.current
-      const clock = clockRef.current
-      if (!root || !clock) return
-
-      const digitsBlocks = clock.querySelectorAll<HTMLElement>('[data-timer-digits]')
-      let visible: HTMLElement | null = null
-      for (const el of digitsBlocks) {
-        if (el.offsetParent !== null) {
-          visible = el
-          break
-        }
-      }
-      if (!visible) return
-
-      const rootRect = root.getBoundingClientRect()
-      setTransform(
-        computeTimerTransform({
-          panelOpen: true,
-          vw: window.innerWidth,
-          vh: window.innerHeight,
-          centerY: rootRect.top + rootRect.height / 2,
-        }),
-      )
-    }
-
-    measure()
-    window.addEventListener('resize', measure)
-
-    const observer = new ResizeObserver(measure)
-    const clock = clockRef.current
-    if (clock) {
-      for (const el of clock.querySelectorAll<HTMLElement>('[data-timer-digits]')) {
-        observer.observe(el)
-      }
-    }
-
-    return () => {
-      window.removeEventListener('resize', measure)
-      observer.disconnect()
-    }
-  }, [panelOpen])
-
   const total = isWorking ? workDuration : breakDuration
   const elapsed = total > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / total)) : 0
   const nowIndex = Math.floor(elapsed * 25)
@@ -189,13 +134,8 @@ export default function Timer() {
   const rootStyle: ProgressStyle = { '--progress': String(elapsed) }
   const digitsStyle: DigitsStyle = { '--digit-size': desktopFontSize }
 
-  const clockStyle: CSSProperties = transform
-    ? { transform: `translate(${transform.tx}px, ${transform.ty}px) scale(${transform.scale})` }
-    : {}
-
   return (
     <div
-      ref={rootRef}
       className='relative z-0 flex min-h-0 flex-1 items-center justify-center font-display text-dash'
       style={rootStyle}
     >
@@ -203,17 +143,11 @@ export default function Timer() {
         {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
       </span>
 
-      <div
-        ref={clockRef}
-        data-timer-clock
-        className={`absolute inset-0 flex items-center justify-center ${styles.clockTransition}`}
-        style={clockStyle}
-      >
+      <div className='absolute inset-0 flex items-center justify-center'>
         <div
           aria-hidden
           className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}
           style={digitsStyle}
-          data-timer-digits
         >
           <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
           <div
@@ -252,7 +186,6 @@ export default function Timer() {
         <div
           aria-hidden
           className={`absolute flex-row items-center font-bold sm:hidden ${styles.digits}`}
-          data-timer-digits
         >
           <TimerUI value={minutes} fontSize={mobileFontSize} />
           <TimerUI value={seconds} fontSize={mobileFontSize} />

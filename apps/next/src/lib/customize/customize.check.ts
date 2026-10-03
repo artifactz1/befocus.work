@@ -3,7 +3,6 @@
 import assert from 'node:assert/strict'
 import { DEFAULT_LOOK, lookEquals, lookSchema } from '@repo/types/look'
 import { FONTS, lookToTokens } from './catalog'
-import { computeTimerTransform } from './timer-scale'
 
 // DEFAULT_LOOK passes lookSchema.safeParse
 assert.equal(lookSchema.safeParse(DEFAULT_LOOK).success, true, 'DEFAULT_LOOK must parse')
@@ -142,37 +141,5 @@ assert.equal(
     '--font-display must come from the FONTS catalog, never the raw key',
   )
 }
-
-// computeTimerTransform: translate only, never scale
-assert.deepEqual(
-  computeTimerTransform({ panelOpen: false, vw: 1440, vh: 900, centerY: 450 }),
-  { tx: 0, ty: 0, scale: 1 },
-  'closed panel must return identity',
-)
-
-for (const [vw, vh] of [
-  [1920, 1080],
-  [1440, 900],
-  [1024, 640],
-  [390, 844],
-  [200, 200],
-] as const) {
-  const { scale } = computeTimerTransform({ panelOpen: true, vw, vh, centerY: vh / 2 })
-  assert.equal(scale, 1, `${vw}x${vh} must never scale the timer`)
-}
-
-// desktop: centre in the area left of the 520px dock
-assert.equal(
-  computeTimerTransform({ panelOpen: true, vw: 1440, vh: 900, centerY: 450 }).tx,
-  -260,
-  '1440x900 tx must be -260',
-)
-
-// mobile: rise above the 60dvh sheet
-assert.ok(
-  Math.abs(computeTimerTransform({ panelOpen: true, vw: 390, vh: 844, centerY: 422 }).ty - -253.2) <
-    0.5,
-  '390x844 ty must be about -253.2',
-)
 
 console.log('customize.check OK')
