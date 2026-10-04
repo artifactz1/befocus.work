@@ -7,7 +7,7 @@ stopped_at: Completed 02-07-PLAN.md
 last_updated: "2026-09-28T00:17:22.491Z"
 last_activity: 2026-09-28
 progress:
-  total_phases: 6
+  total_phases: 10
   completed_phases: 0
   total_plans: 13
   completed_plans: 12
@@ -110,6 +110,13 @@ Recent decisions affecting current work:
 - [Phase 02-08]: Root-caused the customize panel's Escape-key defect to Radix Tooltip's DismissableLayer (a lingering document-capture Escape listener after the trigger click/focus); fixed by forcing the tooltip closed while the panel is open, in CustomizeButton.tsx
 - [Phase 02-08]: Fixed the Tailwind ambiguous-class build warning, a stray debug console.log, and pre-existing em dashes on the sign-in page on this branch (orchestrator course-correction mid-execution) instead of deferring them; check-deps remains the one deferred pre-existing item
 
+### Roadmap Evolution
+
+- Phase 7 added: Vinyl Sound Space (VNL-01..07), depends on Phase 2
+- Phase 8 added: Focus Blocks and Added Time (BLK-01..05), depends on Phase 3
+- Phase 9 added: Tasks and Time Blocks (TSK-01..05), depends on Phase 8
+- Phase 10 added: Session Logs and Reflection (LOG-01..06), depends on Phases 8 and 9
+
 ### Pending Todos
 
 None yet.
@@ -125,6 +132,9 @@ None yet.
   app.
 
 - bun.lock has stale/incomplete optionalDependencies for esbuild@0.17.19, esbuild@0.18.20 (nested), and esbuild@0.19.12 (nested) - only linux-x64 listed, missing darwin-arm64 and all other platforms. Blocks bun install --frozen-lockfile on macOS from a wiped node_modules. Pre-existing bug, unrelated to Biome 2 upgrade. Fix: human should run 'rm bun.lock && bun install' outside sandbox restrictions (git rm/trash of bun.lock is denied by the Bash sandbox's destructive-action classifier).
+
+- Phases 7-10 carry open product questions Q1-Q9 (ROADMAP.md, "Open Product Questions") and a
+  design board each. Answer both before `/gsd-discuss-phase` on any of them.
 
 ## Deferred Items
 

@@ -103,6 +103,58 @@ Requirements for this milestone. Each maps to roadmap phases.
       viewport size
 - [x] **UX-06**: The panel is keyboard navigable and its controls are labelled for screen readers
 
+### Vinyl Sound Space
+
+- [ ] **VNL-01**: User can open a sound space on the left of the dashboard showing a top-view
+      turntable and a list of every sound in their library as a disc
+- [ ] **VNL-02**: Each disc shows its sound's name and is visually distinct from the others
+- [ ] **VNL-03**: Picking a disc plays it; the platter spins and the tonearm rests on the record
+      while it plays, and both stop when it is paused
+- [ ] **VNL-04**: A record keeps playing after the space closes, and the dashboard shows what is
+      playing with a way to pause it or reopen the space
+- [ ] **VNL-05**: A signed-in user can add, rename and delete discs from the space, and the changes
+      persist across refresh (deleting a sound works end to end, closing issues #101 and #102)
+- [ ] **VNL-06**: User can set the playing record's volume from the turntable
+- [ ] **VNL-07**: The space is keyboard navigable, labelled for screen readers, honours reduced
+      motion, works on a phone, and never makes the timer unusable, including with the customize
+      inspector open
+
+### Focus Blocks
+
+- [ ] **BLK-01**: When a focus block reaches zero the alarm plays and the timer waits in an ended
+      state offering Add time and Start break; it never advances to the break on its own
+- [ ] **BLK-02**: User can add time to a just-ended focus block, repeatedly, and the added time
+      counts down inside the same block
+- [ ] **BLK-03**: Every focus and break block is recorded with planned length, time spent, time
+      added, start and end time, and whether it finished, was skipped or was reset
+- [ ] **BLK-04**: A signed-in user's block records are stored on the server; a guest's survive a
+      refresh in the same browser
+- [ ] **BLK-05**: Recorded block lengths match the wall clock, including with the tab in the
+      background or across a short sleep
+
+### Tasks and Time Blocks
+
+- [ ] **TSK-01**: A guest's tasks survive a refresh in the same browser
+- [ ] **TSK-02**: User can pick the task they are working on in the current focus block, and the
+      block's record lists the tasks worked on and completed during it
+- [ ] **TSK-03**: User can lay out a plan of time blocks before starting and assign tasks to them,
+      and the plan survives a refresh
+- [ ] **TSK-04**: While a session runs, one view shows blocks done, the current block and progress
+      through it, blocks ahead, time added, and tasks checked off
+- [ ] **TSK-05**: The plan and the progress view work on a phone and never obstruct the timer
+
+### Session Logs and Reflection
+
+- [ ] **LOG-01**: When a focus block ends and the break begins, the user is invited to log what
+      they did; the prompt is skippable and never pauses the break timer
+- [ ] **LOG-02**: A log entry is attached to the block it describes and can be edited later
+- [ ] **LOG-03**: When the last session finishes, the user sees a summary built from that
+      session's records (focus time, blocks finished or skipped, time added, tasks done, logs)
+      in place of the canned completion message
+- [ ] **LOG-04**: User can browse past sessions with their blocks and logs
+- [ ] **LOG-05**: User sees what to improve, drawn from their history
+- [ ] **LOG-06**: A guest's logs survive a refresh in the same browser
+
 ## v2 Requirements
 
 Deferred. Tracked but not in this roadmap.
@@ -194,14 +246,37 @@ Which phases cover which requirements. Populated during roadmap creation.
 | UX-04 | Phase 2 - Customization Engine and Panel | Complete |
 | UX-05 | Phase 2 - Customization Engine and Panel | Complete |
 | UX-06 | Phase 2 - Customization Engine and Panel | Complete |
+| VNL-01 | Phase 7 - Vinyl Sound Space | Pending |
+| VNL-02 | Phase 7 - Vinyl Sound Space | Pending |
+| VNL-03 | Phase 7 - Vinyl Sound Space | Pending |
+| VNL-04 | Phase 7 - Vinyl Sound Space | Pending |
+| VNL-05 | Phase 7 - Vinyl Sound Space | Pending |
+| VNL-06 | Phase 7 - Vinyl Sound Space | Pending |
+| VNL-07 | Phase 7 - Vinyl Sound Space | Pending |
+| BLK-01 | Phase 8 - Focus Blocks and Added Time | Pending |
+| BLK-02 | Phase 8 - Focus Blocks and Added Time | Pending |
+| BLK-03 | Phase 8 - Focus Blocks and Added Time | Pending |
+| BLK-04 | Phase 8 - Focus Blocks and Added Time | Pending |
+| BLK-05 | Phase 8 - Focus Blocks and Added Time | Pending |
+| TSK-01 | Phase 9 - Tasks and Time Blocks | Pending |
+| TSK-02 | Phase 9 - Tasks and Time Blocks | Pending |
+| TSK-03 | Phase 9 - Tasks and Time Blocks | Pending |
+| TSK-04 | Phase 9 - Tasks and Time Blocks | Pending |
+| TSK-05 | Phase 9 - Tasks and Time Blocks | Pending |
+| LOG-01 | Phase 10 - Session Logs and Reflection | Pending |
+| LOG-02 | Phase 10 - Session Logs and Reflection | Pending |
+| LOG-03 | Phase 10 - Session Logs and Reflection | Pending |
+| LOG-04 | Phase 10 - Session Logs and Reflection | Pending |
+| LOG-05 | Phase 10 - Session Logs and Reflection | Pending |
+| LOG-06 | Phase 10 - Session Logs and Reflection | Pending |
 
 **Coverage:**
-- v1 requirements: 52 total
-- Mapped to phases: 52
+- v1 requirements: 75 total
+- Mapped to phases: 75
 - Unmapped: 0
 
 Every v1 requirement maps to exactly one phase. No orphans, no duplicates.
 
 ---
 *Requirements defined: 2026-09-23*
-*Last updated: 2026-09-23 after roadmap creation*
+*Last updated: 2026-10-04 after adding Phases 7-10 (vinyl sound space, productivity track)*
