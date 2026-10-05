@@ -35,7 +35,8 @@ function DesktopDigits({
 }
 
 export default function Timer() {
-  const { sounds, alarmId } = useSoundsStore()
+  const alarmUrl = useSoundsStore(s => s.sounds[s.alarmId]?.url)
+  const alarmVolume = useSoundsStore(s => s.sounds[s.alarmId]?.volume ?? 0.5)
   const { timeLeft, isRunning, decrementTime, workDuration, breakDuration, isWorking } =
     useTimerStore()
 
@@ -75,13 +76,15 @@ export default function Timer() {
   }, [isRunning, timeLeft])
 
   useEffect(() => {
-    const selectedAlarm = sounds[alarmId]
-    if (selectedAlarm && audioRef.current) {
-      audioRef.current.src = selectedAlarm.url
+    if (alarmUrl && audioRef.current) {
+      audioRef.current.src = alarmUrl
       audioRef.current.load()
-      audioRef.current.volume = selectedAlarm.volume
     }
-  }, [alarmId, sounds])
+  }, [alarmUrl])
+
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = alarmVolume
+  }, [alarmVolume])
 
   const playAlarm = useCallback(() => {
     if (audioRef.current) {
@@ -143,7 +146,7 @@ export default function Timer() {
         {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
       </span>
 
-      <div className='absolute inset-0 flex items-center justify-center'>
+      <div className={`absolute inset-0 flex items-center justify-center ${styles.stage}`}>
         <div
           aria-hidden
           className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}

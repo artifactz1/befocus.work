@@ -139,7 +139,8 @@ html[data-density="roomy"] {
   transition: opacity 0.8s ease;
 }
 
-html[data-chrome-idle]:not([data-panel="open"]):not(:has(:focus-visible)) .bf-chrome {
+html[data-chrome-idle]:not([data-panel="open"]):not([data-room="open"]):not(:has(:focus-visible))
+  .bf-chrome {
   opacity: 0;
 }
 
@@ -152,9 +153,28 @@ html[data-chrome-idle]:not([data-panel="open"]):not(:has(:focus-visible)) .bf-ch
 /* Mobile sheet chrome fade (D-20) - breakpoint must mirror the (min-width: 1024px)
  * desktop/mobile shell switch in CustomizePanel.tsx exactly. */
 @media (max-width: 1023.98px) {
-  html[data-panel="open"] :is(.bf-chrome, [data-edge-progress]) {
+  html[data-panel="open"] :is(.bf-chrome, [data-edge-progress]),
+  html[data-room="open"] :is(.bf-chrome, [data-edge-progress]) {
     opacity: 0;
     pointer-events: none;
+  }
+}
+
+/* Session counter steps aside for the record room. */
+[data-sessions-ui] {
+  transition:
+    opacity 0.3s,
+    visibility 0.3s;
+}
+
+html[data-room="open"] [data-sessions-ui] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sessions-ui] {
+    transition: none;
   }
 }
 

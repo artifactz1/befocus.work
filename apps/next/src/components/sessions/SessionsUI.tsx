@@ -27,7 +27,7 @@ export default function SessionsUI() {
   }
 
   return (
-    <main>
+    <main data-sessions-ui>
       <div className='hidden h-[calc(11vh+var(--pad-y))] sm:block'>
         <div
           className={`mx-auto flex w-full flex-col items-center justify-center ${isLandscape ? 'space-y-1' : 'space-y-3'}`}

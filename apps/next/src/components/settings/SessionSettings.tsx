@@ -23,6 +23,7 @@ import MenuButton from '../helper/MenuButtons'
 import { BreakDurationInput } from '../input/BreakDurationInput'
 import { SessionsInput } from '../input/SessionsInput'
 import { WorkDurationInput } from '../input/WorkDurationInput'
+import { AlarmPicker } from './AlarmPicker'
 
 export const SessionSettings: React.FC = () => {
   const [workTime, setWorkTime] = useState(25 * 60)
@@ -93,6 +94,8 @@ export const SessionSettings: React.FC = () => {
                 />
                 <SessionsInput value={session} onChange={value => setSession(value)} />
               </div>
+
+              <AlarmPicker />
 
               <div className='flex w-full justify-end'>
                 <AlertDialog>
