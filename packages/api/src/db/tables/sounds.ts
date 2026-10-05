@@ -2,6 +2,7 @@ import type { InferSelectModel } from 'drizzle-orm'
 import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 import { createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
+import { isYouTubeUrl } from '../../lib/youtube'
 import { user } from './auth'
 
 // Optional: Enum-like constraint for sound types
@@ -26,17 +27,17 @@ export type Sounds = InferSelectModel<typeof sounds>
 export const soundTypeEnum = z.enum(['alarm', 'ambient', 'bgMusic']) // or whatever values you're allowing
 
 export const insertSoundSchema = z.object({
-  id: z.string(),
-  name: z.string().min(1), // ✅ NEW FIELD
-  url: z.string().url(),
+  id: z.string().min(1).max(64),
+  name: z.string().trim().min(1).max(80),
+  url: z.string().url().refine(isYouTubeUrl, 'Only YouTube links are supported'),
   soundType: soundTypeEnum,
   isCustom: z.boolean(),
 })
 
 export const updateSoundSchema = z.object({
-  id: z.string(), // ID to look up
-  name: z.string().min(1).optional(), // ✅ Allow changing the name
-  url: z.string().url().optional(),
+  id: z.string().min(1).max(64), // ID to look up
+  name: z.string().trim().min(1).max(80).optional(),
+  url: z.string().url().refine(isYouTubeUrl, 'Only YouTube links are supported').optional(),
   soundType: soundTypeEnum.optional(),
   isCustom: z.boolean().optional(),
 })

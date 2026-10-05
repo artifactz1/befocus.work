@@ -1,5 +1,6 @@
 // Regression check for #101/#102. Run: bun run src/lib/sounds/sounds.check.ts (cwd apps/next)
 import assert from 'node:assert/strict'
+import { isYouTubeUrl } from '@repo/api/lib/youtube'
 import type { Sound } from '~/store/useSoundsStore'
 import {
   HIDDEN_STARTERS_KEY,
@@ -136,5 +137,31 @@ assert.equal(knobKeyValue(0.6, 'Enter', 0.6), 0)
 assert.equal(knobKeyValue(0, ' ', 0.6), 0.6)
 assert.equal(knobKeyValue(0, 'Enter', 0), 0.4)
 assert.equal(knobKeyValue(0.4, 'x', 0.4), null)
+
+for (const ok of [
+  'https://www.youtube.com/watch?v=jfKfPfyJRdk',
+  'https://youtube.com/watch?v=x',
+  'https://m.youtube.com/watch?v=x',
+  'https://music.youtube.com/watch?v=x',
+  'https://youtu.be/jfKfPfyJRdk',
+  'http://youtu.be/x',
+  'https://www.youtube.com/live/x',
+  'https://www.youtube.com/shorts/x',
+]) {
+  assert.equal(isYouTubeUrl(ok), true, ok)
+}
+for (const bad of [
+  'https://evil.com/youtube.com/watch',
+  'https://youtube.com.evil.com/watch?v=x',
+  'https://notyoutube.com/x',
+  'javascript:alert(1)',
+  'ftp://youtu.be/x',
+  'https://youtu.be/',
+  'www.youtube.com/watch?v=x',
+  '',
+  `https://www.youtube.com/watch?v=${'a'.repeat(2049)}`,
+]) {
+  assert.equal(isYouTubeUrl(bad), false, bad)
+}
 
 console.log('sounds.check OK')
