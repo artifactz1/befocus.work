@@ -90,3 +90,38 @@ export function hideStarter(id: string, storage: Store | undefined = defaultStor
     storage?.setItem(HIDDEN_STARTERS_KEY, JSON.stringify([...readHiddenStarters(storage), id]))
   } catch {}
 }
+
+// Deterministic label colors from the name (FNV-1a 32-bit -> hue). No stored color, no migration.
+export function labelInk(name: string) {
+  let hash = 2166136261
+  for (const ch of name.trim().toLowerCase()) {
+    for (let i = 0; i < ch.length; i++) {
+      hash = Math.imul(hash ^ ch.charCodeAt(i), 16777619)
+    }
+  }
+  const h = (hash >>> 0) % 360
+  return {
+    ink: `hsl(${h} 62% 52%)`,
+    inkDeep: `hsl(${h} 62% 36%)`,
+    sleeve: `hsl(${h} 28% 18%)`,
+    sleeveDeep: `hsl(${h} 28% 11%)`,
+  }
+}
+
+const DEFAULT_RECORD_VOLUME = 0.4
+
+// The one-record rule: playing a record stops every other record. Ambience is untouched.
+export function playRecordState(sounds: Record<string, Sound>, id: string) {
+  const target = sounds[id]
+  if (target?.soundType !== 'bgMusic') return null
+  const next: Record<string, Sound> = {}
+  for (const [key, s] of Object.entries(sounds)) {
+    next[key] = s.soundType === 'bgMusic' && key !== id && s.playing ? { ...s, playing: false } : s
+  }
+  next[id] = {
+    ...target,
+    playing: true,
+    volume: target.volume === 0 ? DEFAULT_RECORD_VOLUME : target.volume,
+  }
+  return { sounds: next, bgMusicId: id }
+}

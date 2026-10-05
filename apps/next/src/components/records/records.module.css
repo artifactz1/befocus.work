@@ -47,4 +47,162 @@
 .body {
   min-height: 0;
   overflow: auto;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+
+.turntable {
+  position: relative;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+}
+
+.deck {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  min-height: 0;
+}
+
+.playBtn {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--panel-hair);
+  background: var(--panel-lift);
+  color: inherit;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.playBtn:disabled,
+.volume:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.volume {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  height: 40%;
+  transform: translateY(-50%);
+  writing-mode: vertical-lr;
+  direction: rtl;
+  accent-color: #bdb8b2;
+}
+
+.shelf {
+  min-width: 0;
+}
+
+.sleeves {
+  list-style: none;
+  margin: 0;
+  padding: 2px 0 6px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+}
+
+.sleeves > li {
+  scroll-snap-align: start;
+  flex: none;
+}
+
+.sleeve {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  padding: 8px;
+  border: 1px solid var(--panel-hair);
+  border-radius: 8px;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.sleeve:hover {
+  transform: translateY(-2px);
+}
+
+.sleeve[data-loaded] {
+  opacity: 0.55;
+}
+
+.sleeveLabel {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.sleeveName {
+  font-size: 12px;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.sleeveDot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--user-accent);
+}
+
+.skeleton {
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  background: var(--panel-soft);
+}
+
+.note {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--panel-muted);
+}
+
+.retry {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media (max-width: 639px) {
+  .sleeve,
+  .skeleton {
+    width: 88px;
+    height: 88px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sleeve {
+    transition: none;
+  }
 }

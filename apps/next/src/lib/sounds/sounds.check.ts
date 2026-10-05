@@ -5,6 +5,8 @@ import {
   HIDDEN_STARTERS_KEY,
   hideStarter,
   isStarterId,
+  labelInk,
+  playRecordState,
   readHiddenStarters,
   reconcileSounds,
   STARTER_SOUNDS,
@@ -86,5 +88,36 @@ assert.deepEqual([...readHiddenStarters(st)], ['jazz'], 'no duplicates')
 assert.deepEqual([...readHiddenStarters(mem('not json'))], [])
 assert.deepEqual([...readHiddenStarters(mem(JSON.stringify(['jazz', 'evil', 5])))], ['jazz'])
 assert.ok(HIDDEN_STARTERS_KEY)
+
+// label ink: FNV-1a 32-bit of the trimmed, lowercased name, % 360 ("a" -> 0xe40c292c -> hue 340)
+assert.deepEqual(labelInk('a'), {
+  ink: 'hsl(340 62% 52%)',
+  inkDeep: 'hsl(340 62% 36%)',
+  sleeve: 'hsl(340 28% 18%)',
+  sleeveDeep: 'hsl(340 28% 11%)',
+})
+assert.deepEqual(labelInk('  Smooth Jazz '), labelInk('smooth jazz'))
+assert.equal(labelInk('smooth jazz').ink, 'hsl(264 62% 52%)')
+
+// one record at a time
+const lofi = mk('lofi1', { volume: 0.7 })
+const amb = mk('rain', { soundType: 'ambient', playing: true, volume: 0.3 })
+const pool = {
+  jazz: mk('jazz', { playing: true, volume: 0.5 }),
+  lofi1: lofi,
+  rain: amb,
+  alarm1: alarm,
+}
+const played = playRecordState(pool, 'lofi1')
+assert.ok(played)
+assert.equal(played.bgMusicId, 'lofi1')
+assert.equal(played.sounds.lofi1?.playing, true)
+assert.equal(played.sounds.lofi1?.volume, 0.7, 'existing volume kept')
+assert.equal(played.sounds.jazz?.playing, false, 'previous record stops')
+assert.equal(played.sounds.rain, amb, 'ambience untouched')
+const silent = playRecordState({ ...pool, lofi1: mk('lofi1') }, 'lofi1')
+assert.equal(silent?.sounds.lofi1?.volume, 0.4, 'silent record gets a default volume')
+assert.equal(playRecordState(pool, 'rain'), null, 'ambience is not a record')
+assert.equal(playRecordState(pool, 'nope'), null)
 
 console.log('sounds.check OK')

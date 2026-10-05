@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import {
+  playRecordState,
   readHiddenStarters,
   reconcileSounds,
   type ServerSound,
@@ -29,6 +30,9 @@ interface Alarm {
 interface SoundsState {
   sounds: Record<string, Sound>
   toggleSound: (id: string) => void
+  playRecord: (id: string) => void
+  pauseRecord: () => void
+  toggleRecord: (id: string) => void
   setVolume: (id: string, volume: number) => void
   addSound: (id: string, name: string, url: string, isCustom: boolean, soundType: SoundType) => void
   deleteSound: (id: string) => void
@@ -49,7 +53,7 @@ const alarmList: Alarm[] = [
   { id: 'alarm5', name: 'Alarm 5', filePath: '/sounds/public_sounds_alarm5.mp3' },
 ]
 
-export const useSoundsStore = create<SoundsState>(set => {
+export const useSoundsStore = create<SoundsState>((set, get) => {
   // Prepopulate with alarms
   const initialSounds = alarmList.reduce<Record<string, Sound>>((acc, alarm) => {
     acc[alarm.id] = {
@@ -78,16 +82,28 @@ export const useSoundsStore = create<SoundsState>(set => {
     toggleSound: id =>
       set(state => {
         const sound = state.sounds[id]
-        if (sound) {
-          return {
-            sounds: {
-              ...state.sounds,
-              [id]: { ...sound, playing: !sound.playing },
-            },
-          }
+        if (!sound) return state
+        // starting a record goes through the one-record rule so no caller can play two
+        if (sound.soundType === 'bgMusic' && !sound.playing) {
+          return playRecordState(state.sounds, id) ?? state
         }
-        return state
+        return { sounds: { ...state.sounds, [id]: { ...sound, playing: !sound.playing } } }
       }),
+
+    playRecord: id => set(state => playRecordState(state.sounds, id) ?? state),
+
+    pauseRecord: () =>
+      set(state => {
+        const sound = state.sounds[state.bgMusicId]
+        if (!sound?.playing) return state
+        return { sounds: { ...state.sounds, [sound.id]: { ...sound, playing: false } } }
+      }),
+
+    toggleRecord: id => {
+      const { sounds, bgMusicId, playRecord, pauseRecord } = get()
+      if (id === bgMusicId && sounds[id]?.playing) pauseRecord()
+      else playRecord(id)
+    },
 
     setVolume: (id, volume) =>
       set(state => {
