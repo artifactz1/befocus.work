@@ -336,7 +336,34 @@ time with ambience layered under it, and the record keeps playing after the room
   7. On a phone the room is a bottom sheet with the same content and the timer stays visible
      above it. The room works from the keyboard and a screen reader, and under reduced motion a
      record swaps in instantly with no spin.
-**Plans**: TBD
+**Plans**: 7 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 07-01-PLAN.md - Reproduce sound delete in a browser, fix at the shared path (reconcile, optimistic delete, starter hide, owner-scoped API delete), sounds.check regression script (VNL-01)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 07-02-PLAN.md - Records footer button and room shell (desktop card, phone sheet, focus, exclusive with customize), legacy sounds UI removed (VNL-02, VNL-08)
+- [ ] 07-03-PLAN.md - Timer shrink and chrome hiding on data-room, alarm picker moved into Session settings (VNL-02)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 07-04-PLAN.md - Shelf sleeves with label ink, turntable spin and tonearm, click and drag load, one record at a time (VNL-03, VNL-04)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 07-05-PLAN.md - Ambience knob row and footer now-playing chip (VNL-05, VNL-07)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 07-06-PLAN.md - Paste-to-add with shared YouTube validator on client and API, guest rules, rename and delete from the room (VNL-06, VNL-01)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 07-07-PLAN.md - Phone, keyboard, screen reader and reduced-motion audit with fixes, owner review checkpoint (VNL-08)
+
 **UI hint**: yes
 
 Notes for planning:
