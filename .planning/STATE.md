@@ -112,7 +112,8 @@ Recent decisions affecting current work:
 
 ### Roadmap Evolution
 
-- Phase 7 added: Vinyl Sound Space (VNL-01..07), depends on Phase 2
+- Phase 7 added: Vinyl Sound Space (VNL-01..08), depends on Phase 2; design decided on the
+  vinyl board 2026-10-05 (record room, Material art, shelf + knobs + paste, fix #101/#102 first)
 - Phase 8 added: Focus Blocks and Added Time (BLK-01..05), depends on Phase 3
 - Phase 9 added: Tasks and Time Blocks (TSK-01..05), depends on Phase 8
 - Phase 10 added: Session Logs and Reflection (LOG-01..06), depends on Phases 8 and 9
@@ -134,7 +135,8 @@ None yet.
 - bun.lock has stale/incomplete optionalDependencies for esbuild@0.17.19, esbuild@0.18.20 (nested), and esbuild@0.19.12 (nested) - only linux-x64 listed, missing darwin-arm64 and all other platforms. Blocks bun install --frozen-lockfile on macOS from a wiped node_modules. Pre-existing bug, unrelated to Biome 2 upgrade. Fix: human should run 'rm bun.lock && bun install' outside sandbox restrictions (git rm/trash of bun.lock is denied by the Bash sandbox's destructive-action classifier).
 
 - Phases 7-10 carry open product questions Q1-Q9 (ROADMAP.md, "Open Product Questions") and a
-  design board each. Answer both before `/gsd-discuss-phase` on any of them.
+  design board each. Answer both before `/gsd-discuss-phase` on any of them. Phase 7's board and
+  Q2-Q4 were decided 2026-10-05; Q1 and Q5-Q9 and the Phase 8-10 boards remain.
 
 ## Deferred Items
 

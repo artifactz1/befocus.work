@@ -14,8 +14,8 @@ background sources arrive: R2-backed uploads with quota and server-side validati
 remote URLs with a safe fallback when a host blocks them.
 
 Phases 7-10 were added on 2026-10-04 and extend the milestone past looks into what the dashboard
-does. Phase 7 turns the saved sounds into a vinyl space: a top-view turntable that opens on the
-left and plays the user's sounds as records. Phases 8-10 are the productivity track, in dependency
+does. Phase 7 turns the saved sounds into a record room: a Material-style top-view turntable,
+a shelf of records and ambience knobs that open over the left half of the dashboard. Phases 8-10 are the productivity track, in dependency
 order: first the timer learns an explicit end of block, lets the user add time to a focus block
 that just ended, and records every block; then tasks attach to those blocks and the session gets
 a time-block plan and a live progress view; finally each break invites a short log and the
@@ -37,7 +37,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Saved Themes** - Name, switch, rename and delete looks; curated presets; guest migration
 - [ ] **Phase 5: Media Uploads** - Upload your own images and videos to R2 behind the timer
 - [ ] **Phase 6: URL Backgrounds** - Paste any remote image or video URL, with a safe fallback
-- [ ] **Phase 7: Vinyl Sound Space** - Saved sounds become records on a top-view turntable in a left-hand space
+- [ ] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs
 - [ ] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded
 - [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress
 - [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
@@ -302,84 +302,97 @@ the dashboard usable instead of blank.
 
 ### Phase 7: Vinyl Sound Space
 
-**Goal**: A user's saved sounds become a record collection. A space opens on the left of the
-dashboard with a top-view turntable and the list of discs; picking a disc plays it on the platter,
-and the record keeps playing behind the timer after the space closes.
+**Goal**: The footer Sounds button opens a record room: a Material-style listening room with a
+top-view turntable, a shelf of record sleeves and a row of ambience knobs. It fills the left half
+of the dashboard while the timer shrinks to the right and keeps running. One record plays at a
+time with ambience layered under it, and the record keeps playing after the room closes.
 **Mode:** mvp
 **Depends on**: Phase 2
-**Requirements**: VNL-01, VNL-02, VNL-03, VNL-04, VNL-05, VNL-06, VNL-07
+**Requirements**: VNL-01, VNL-02, VNL-03, VNL-04, VNL-05, VNL-06, VNL-07, VNL-08
 **Success Criteria** (what must be TRUE):
 
-  1. User opens the sound space from the dashboard, it opens on the left, and every sound in their
-     library is listed as a named disc next to a top-view turntable.
+  1. Deleting a sound works end to end and a deleted sound never comes back (issues #101 and
+     #102), verified before any of the room is built.
 
-  2. Picking a disc puts it on the platter and it starts playing; the platter spins and the tonearm
-     sits on the record while it plays, and both stop when it is paused.
+  2. User clicks the footer Sounds button and the record room opens over the left half of the
+     dashboard; the timer shrinks to the right and keeps counting. Alarms are no longer in the
+     Sounds surface and are chosen in Session settings instead.
 
-  3. Closing the space leaves the record playing, and the dashboard shows what is playing with a
-     way to pause it or reopen the space.
+  3. Every music sound sits on the shelf as a sleeve with a generated label ink and its name.
+     Clicking a sleeve or dragging it onto the platter starts it; the platter spins and the
+     tonearm sits on the record, and both stop when it is paused. Starting a record replaces the
+     one playing.
 
-  4. A signed-in user adds a sound from the space and sees a new disc; renaming and deleting a disc
-     both survive a refresh, and a deleted disc never comes back.
+  4. Each ambient sound is a knob under the turntable with its own volume; several can play at
+     once, layered under the record.
 
-  5. The space works from the keyboard and a screen reader, stops spinning under reduced motion, is
-     usable on a phone, and opening it next to the customize inspector leaves the timer usable.
+  5. A signed-in user pastes a YouTube link anywhere in the room, confirms whether it is a record
+     or ambience (prefilled from the link's title), and it lands on the matching shelf or knob
+     row and survives a refresh. A guest sees the starter records and knobs only, with no saving.
+
+  6. Closing the room while a record plays shows a now-playing chip in the footer that fades with
+     the footer's idle behaviour and can pause the record or reopen the room.
+
+  7. On a phone the room is a bottom sheet with the same content and the timer stays visible
+     above it. The room works from the keyboard and a screen reader, and under reduced motion a
+     record swaps in instantly with no spin.
 **Plans**: TBD
 **UI hint**: yes
 
 Notes for planning:
 
+- First step: reproduce and fix sound delete (#101/#102) at the shared delete path
+  (`useDeleteUserSound` in `hooks/useSounds.ts`, `DELETE /user/sounds/:id`), since the shelf
+  invites users to curate. The five starter sounds are seeded client-side at module load in
+  `useSoundsStore.tsx` and are not database rows; delete must handle that.
+
 - This is a new view over the existing sound system, not a new audio engine. Sounds live in the
   `sounds` table (`packages/api/src/db/tables/sounds.ts`: `name`, `url`, `soundType` of
   `alarm | ambient | bgMusic`) behind `GET/POST/PUT/DELETE /user/sounds`. Playback is
   `GlobalSoundsPlayer.tsx`, one hidden `ReactPlayer` per non-alarm sound driven by `playing` and
-  `volume` in `useSoundsStore`. A disc is a `sounds` entry and "on the platter" is its `playing`
-  flag; reuse `useSound`, `useUpdateUserSound` and `useDeleteUserSound` from `hooks/useSounds.ts`.
+  `volume` in `useSoundsStore`. `bgMusic` sounds are records and `ambient` sounds are knobs; "on
+  the platter" is the `playing` flag, with the store enforcing one `bgMusic` playing at a time.
 
-- The current surface is the footer `SoundSettings.tsx` popover (Music, Ambient and Alarm tabs,
-  YouTube links only via `AddSoundButton.tsx`). Whether the space replaces the Music and Ambient
-  tabs or sits beside them is a design pick. Alarms are not records and stay in settings.
+- The footer `SoundSettings.tsx` popover (Music, Ambient and Alarm tabs) is replaced by the room.
+  Alarm selection moves into Session settings (`MenuSettings.tsx`); `soundType: 'alarm'` rows
+  stay as they are.
 
-- Open issues #101 and #102 report that deleting a sound does not work. Reproduce that end to end
-  first and fix it at the shared delete path before the disc list exposes delete. Note that the
-  five default sounds are seeded client-side at module load in `useSoundsStore.tsx` and are not
-  rows in the database.
+- The paste-to-add flow replaces `AddSoundButton.tsx` and stays YouTube only. It sets `soundType`
+  from the user's record or ambience choice. Uploads wait for Phase 5's storage.
 
-- `/user/sounds` sits behind `requireAuth`, so a guest's library today is only those seeded
-  defaults and a guest cannot add a sound. What guests get is open question Q3.
+- Label inks are generated from the sound's name, so no new column or migration is needed.
+- The room deliberately relaxes the "timer stays full size" rule from quick tasks 261002 and
+  261003 (PRs #113 and #114): the timer shrinks into the right half while the room is open. The
+  session counter cells must be hidden or offset so they do not sit under the room. Decide how
+  the room and the customize inspector coexist when both are opened.
 
-- The customize inspector floats on the right (`CustomizePanelDesktop.tsx`, 360px card) and the
-  timer stays centred and full size while it is open (quick tasks 261002 and 261003). The left
-  space must keep that geometry promise when both are open.
+- The now-playing chip is a new footer element and fades with the existing idle chrome
+  (`useChromeIdle`, `.bf-chrome`, `data-chrome-idle`).
 
 - Build the turntable from CSS/SVG and `framer-motion` (already used, with `useReducedMotion`).
-  No new animation or 3D dependency. A user-chosen disc label would need a new column on `sounds`
-  and a Drizzle migration; a label derived from the sound would not. That follows the design pick.
+  The phone bottom sheet uses `vaul`, as the mobile customize sheet does. No new animation, 3D or
+  drag-and-drop dependency; use native drag events with click as the accessible path.
 
-- Reference art for the boards: `ref-turntable-topview.png` (flat, textured top-view turntable
-  with tonearm, a volume slider and two knobs) and `ref-vinyl-disc.png` (half-visible black disc
-  with a white label), both under `firstmate/data/befocus-vinyl-plan/`.
+- Design reference: the decided Lavish board (Material room mocks in its "Your direction"
+  section) at `.lavish/vinyl/board.html` in worktree 2, and the report at
+  `firstmate/data/befocus-vinyl-board/report.md`, section "Final decisions (build spec for
+  Phase 7)".
 
-Open product questions this phase needs answered: Q1, Q2, Q3, Q4.
+Design decisions (captain picks 2026-10-05, all resolved):
 
-Design questions for the captain (one Lavish board, before planning):
+  1. Entry point: the footer Sounds button opens the record room; alarms move to Session
+     settings.
+  2. Shape: a room that fills the left half; the timer shrinks to the right and keeps running.
+  3. Art direction: Material, a realistic top-view turntable.
+  4. Record list: a shelf of sleeves.
+  5. Labels: generated label inks plus the name.
+  6. Loading: click or drag; reduced motion swaps instantly with no spin.
+  7. Background presence: a now-playing chip in the footer that fades with the footer.
+  8. Phone: a bottom sheet.
+  9. Add and save: record shelf, ambience knobs, and paste a YouTube link anywhere.
 
-  1. Entry point: a footer menu button, a tab on the left edge, the command menu, or several.
-  2. Shape of the space: a floating card that mirrors the right-hand inspector, a full-height left
-     drawer, or a wider "room"; and how it sits when the customize inspector is also open.
-  3. Art direction of the turntable: flat textured illustration like the reference print, a
-     cleaner minimal line drawing, or something closer to photoreal; fixed colours or the active
-     look's accent and background.
-  4. Disc list form: a stack of half-visible discs like the reference crop, a sleeve grid, or a
-     carousel; and whether music and ambient are separate shelves.
-  5. Disc labels: generated from the sound's name, the YouTube thumbnail, or a colour the user
-     picks.
-  6. Loading a record: drag a disc onto the platter or click it; how the tonearm moves; what
-     reduced motion shows instead.
-  7. "Playing in the background": what the dashboard shows while a record plays and the space is
-     closed (a small spinning disc in a corner, a faint large turntable behind the timer, or just a
-     now-playing chip), and whether it fades with the idle chrome.
-  8. Phone layout: bottom sheet, full screen, or a compact strip.
+Product questions Q2, Q3 and Q4 are resolved for this phase (see "Open Product Questions").
+Q1, its priority against Phases 4-6, is still open.
 
 ### Phase 8: Focus Blocks and Added Time
 
@@ -555,16 +568,16 @@ Design questions for the captain (one Lavish board, before planning):
 ## Open Product Questions (Phases 7-10)
 
 These are the captain's calls. None of them has been guessed; each phase lists the ones it needs
-answered before `/gsd-discuss-phase`.
+answered before `/gsd-discuss-phase`. Q2-Q4 were answered on the vinyl design board on 2026-10-05.
 
   1. **Q1 Priority.** Where Phases 7-10 sit against Phases 4-6. Both tracks are independent of
      Phases 4-6, so either can go first.
-  2. **Q2 Which sounds are records.** Only background music, or ambient sounds too; and whether
-     more than one record can play at once (ambient layering works today). Phase 7.
-  3. **Q3 Guests and the collection.** Whether a guest can add discs. `/user/sounds` is
-     auth-gated, so guest discs would need browser storage and a migration on sign-up. Phase 7.
-  4. **Q4 Sound sources.** YouTube links only, as today, or uploaded audio files too, which would
-     reuse Phase 5's R2 storage and make Phase 7 depend on it. Phase 7.
+  2. **Q2 Which sounds are records.** Resolved 2026-10-05: music is records, ambience is knobs.
+     One record plays at a time, with ambience layered under it. Phase 7.
+  3. **Q3 Guests and the collection.** Resolved 2026-10-05: guests get the starter records and
+     knobs only, with no saving. Phase 7.
+  4. **Q4 Sound sources.** Resolved 2026-10-05: YouTube only until Phase 5 storage exists; revisit
+     then. Phase 7.
   5. **Q5 When time can be added.** Only when a focus block ends, or also mid-block and on
      breaks. Phase 8.
   6. **Q6 Time-blocker scope.** A plan for the blocks inside one session, or a full-day calendar
@@ -607,13 +620,13 @@ open question Q1.
 | 4. Saved Themes | THM-01..06, SYN-04 | 7 |
 | 5. Media Uploads | MED-01..09 | 9 |
 | 6. URL Backgrounds | URL-01..03 | 3 |
-| 7. Vinyl Sound Space | VNL-01..07 | 7 |
+| 7. Vinyl Sound Space | VNL-01..08 | 8 |
 | 8. Focus Blocks and Added Time | BLK-01..05 | 5 |
 | 9. Tasks and Time Blocks | TSK-01..05 | 5 |
 | 10. Session Logs and Reflection | LOG-01..06 | 6 |
-| **Total** | | **75** |
+| **Total** | | **76** |
 
-All 75 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
+All 76 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
 
 ## Verification Note
 

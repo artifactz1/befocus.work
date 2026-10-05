@@ -52,8 +52,8 @@ they open it - signed in on any device, or as a guest on the same browser.
 
 **Sound space (Phase 7)**
 
-- [ ] User's saved sounds appear as records on a top-view turntable in a space on the left, and
-      the picked record keeps playing behind the timer
+- [ ] The Sounds button opens a record room on the left half: a top-view turntable, a shelf of
+      records and ambience knobs; the picked record keeps playing after the room closes
 
 **Productivity (Phases 8-10)**
 

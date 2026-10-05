@@ -105,19 +105,24 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Vinyl Sound Space
 
-- [ ] **VNL-01**: User can open a sound space on the left of the dashboard showing a top-view
-      turntable and a list of every sound in their library as a disc
-- [ ] **VNL-02**: Each disc shows its sound's name and is visually distinct from the others
-- [ ] **VNL-03**: Picking a disc plays it; the platter spins and the tonearm rests on the record
-      while it plays, and both stop when it is paused
-- [ ] **VNL-04**: A record keeps playing after the space closes, and the dashboard shows what is
-      playing with a way to pause it or reopen the space
-- [ ] **VNL-05**: A signed-in user can add, rename and delete discs from the space, and the changes
-      persist across refresh (deleting a sound works end to end, closing issues #101 and #102)
-- [ ] **VNL-06**: User can set the playing record's volume from the turntable
-- [ ] **VNL-07**: The space is keyboard navigable, labelled for screen readers, honours reduced
-      motion, works on a phone, and never makes the timer unusable, including with the customize
-      inspector open
+- [ ] **VNL-01**: Deleting a sound works end to end and a deleted sound never comes back (issues
+      #101 and #102); fixed before the room is built
+- [ ] **VNL-02**: The footer Sounds button opens a Material-style record room with a top-view
+      turntable that fills the left half of the dashboard while the timer shrinks to the right and
+      keeps running; alarm selection moves to Session settings
+- [ ] **VNL-03**: Music sounds sit on a shelf of sleeves, each with a generated label ink and its
+      name
+- [ ] **VNL-04**: User loads a record by clicking its sleeve or dragging it onto the platter; the
+      platter spins and the tonearm rests on it while it plays; only one record plays at a time
+- [ ] **VNL-05**: Ambient sounds are a row of knobs under the turntable, each with its own volume,
+      layered under the record
+- [ ] **VNL-06**: A signed-in user adds a sound by pasting a YouTube link anywhere in the room and
+      confirming record or ambience; it saves to the matching shelf and persists. Guests get the
+      starter records and knobs only, with no saving. Sources are YouTube only
+- [ ] **VNL-07**: While a record plays with the room closed, a now-playing chip in the footer
+      shows it, fades with the footer's idle behaviour, and can pause it or reopen the room
+- [ ] **VNL-08**: On a phone the room is a bottom sheet; the room is keyboard navigable, labelled
+      for screen readers, and under reduced motion a record swaps in instantly with no spin
 
 ### Focus Blocks
 
@@ -253,6 +258,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | VNL-05 | Phase 7 - Vinyl Sound Space | Pending |
 | VNL-06 | Phase 7 - Vinyl Sound Space | Pending |
 | VNL-07 | Phase 7 - Vinyl Sound Space | Pending |
+| VNL-08 | Phase 7 - Vinyl Sound Space | Pending |
 | BLK-01 | Phase 8 - Focus Blocks and Added Time | Pending |
 | BLK-02 | Phase 8 - Focus Blocks and Added Time | Pending |
 | BLK-03 | Phase 8 - Focus Blocks and Added Time | Pending |
@@ -271,12 +277,12 @@ Which phases cover which requirements. Populated during roadmap creation.
 | LOG-06 | Phase 10 - Session Logs and Reflection | Pending |
 
 **Coverage:**
-- v1 requirements: 75 total
-- Mapped to phases: 75
+- v1 requirements: 76 total
+- Mapped to phases: 76
 - Unmapped: 0
 
 Every v1 requirement maps to exactly one phase. No orphans, no duplicates.
 
 ---
 *Requirements defined: 2026-09-23*
-*Last updated: 2026-10-04 after adding Phases 7-10 (vinyl sound space, productivity track)*
+*Last updated: 2026-10-05 after the vinyl design board decisions (Phase 7)*
