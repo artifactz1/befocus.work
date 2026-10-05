@@ -3,6 +3,7 @@
 import { X } from 'lucide-react'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import panel from '../customize/customize-panel.module.css'
+import KnobRow from './KnobRow'
 import styles from './records.module.css'
 import Shelf from './Shelf'
 import Turntable from './Turntable'
@@ -34,7 +35,7 @@ export default function RecordRoomBody() {
       </div>
       <div className={styles.body}>
         <Turntable />
-        <div aria-hidden='true' />
+        <KnobRow />
         <Shelf />
       </div>
     </>

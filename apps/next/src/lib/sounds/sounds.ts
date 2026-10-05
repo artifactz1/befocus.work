@@ -125,3 +125,30 @@ export function playRecordState(sounds: Record<string, Sound>, id: string) {
   }
   return { sounds: next, bgMusicId: id }
 }
+
+const clamp01 = (v: number) => Math.round(Math.min(1, Math.max(0, v)) * 100) / 100
+
+// Next knob value for a key press, or null if the key is not a knob key.
+export function knobKeyValue(value: number, key: string, last: number): number | null {
+  switch (key) {
+    case 'ArrowUp':
+    case 'ArrowRight':
+      return clamp01(value + 0.05)
+    case 'ArrowDown':
+    case 'ArrowLeft':
+      return clamp01(value - 0.05)
+    case 'PageUp':
+      return clamp01(value + 0.1)
+    case 'PageDown':
+      return clamp01(value - 0.1)
+    case 'Home':
+      return 0
+    case 'End':
+      return 1
+    case 'Enter':
+    case ' ':
+      return value > 0 ? 0 : last > 0 ? last : DEFAULT_RECORD_VOLUME
+    default:
+      return null
+  }
+}

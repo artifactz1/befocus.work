@@ -193,6 +193,48 @@
   cursor: pointer;
 }
 
+.knobs {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 6px 0;
+}
+
+.knob {
+  flex: none;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: ns-resize;
+  touch-action: none;
+  border-radius: 8px;
+  user-select: none;
+}
+
+.knobName {
+  margin-top: 8px;
+  max-width: 80px;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.knobValue {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--panel-muted);
+}
+
+.skeletonKnob {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--panel-soft);
+}
+
 @media (max-width: 639px) {
   .sleeve,
   .skeleton {

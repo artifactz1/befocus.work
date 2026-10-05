@@ -5,6 +5,7 @@ import {
   HIDDEN_STARTERS_KEY,
   hideStarter,
   isStarterId,
+  knobKeyValue,
   labelInk,
   playRecordState,
   readHiddenStarters,
@@ -119,5 +120,21 @@ const silent = playRecordState({ ...pool, lofi1: mk('lofi1') }, 'lofi1')
 assert.equal(silent?.sounds.lofi1?.volume, 0.4, 'silent record gets a default volume')
 assert.equal(playRecordState(pool, 'rain'), null, 'ambience is not a record')
 assert.equal(playRecordState(pool, 'nope'), null)
+
+assert.equal(knobKeyValue(0.4, 'ArrowUp', 0.4), 0.45)
+assert.equal(knobKeyValue(0.4, 'ArrowRight', 0.4), 0.45)
+assert.equal(knobKeyValue(0.4, 'ArrowDown', 0.4), 0.35)
+assert.equal(knobKeyValue(0.4, 'ArrowLeft', 0.4), 0.35)
+assert.equal(knobKeyValue(0.4, 'PageUp', 0.4), 0.5)
+assert.equal(knobKeyValue(0.4, 'PageDown', 0.4), 0.3)
+assert.equal(knobKeyValue(0.98, 'ArrowUp', 0.4), 1, 'clamps high')
+assert.equal(knobKeyValue(0.02, 'PageDown', 0.4), 0, 'clamps low')
+assert.equal(knobKeyValue(0.1, 'ArrowUp', 0.4), 0.15, 'rounds to 2 decimals')
+assert.equal(knobKeyValue(0.4, 'Home', 0.4), 0)
+assert.equal(knobKeyValue(0.4, 'End', 0.4), 1)
+assert.equal(knobKeyValue(0.6, 'Enter', 0.6), 0)
+assert.equal(knobKeyValue(0, ' ', 0.6), 0.6)
+assert.equal(knobKeyValue(0, 'Enter', 0), 0.4)
+assert.equal(knobKeyValue(0.4, 'x', 0.4), null)
 
 console.log('sounds.check OK')
