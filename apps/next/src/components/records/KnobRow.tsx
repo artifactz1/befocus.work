@@ -1,5 +1,6 @@
 'use client'
 
+import { Plus } from 'lucide-react'
 import { useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useUserSounds } from '~/hooks/useSounds'
@@ -8,6 +9,7 @@ import { knobKeyValue } from '~/lib/sounds/sounds'
 import { type Sound, useSoundsStore } from '~/store/useSoundsStore'
 import panel from '../customize/customize-panel.module.css'
 import styles from './records.module.css'
+import SoundOptions from './SoundOptions'
 
 const SWEEP = 135 // degrees either side of straight up
 const point = (deg: number, r: number) => {
@@ -106,7 +108,13 @@ function Knob({ sound }: { sound: Sound }) {
   )
 }
 
-export default function KnobRow() {
+export default function KnobRow({
+  onAdd,
+  onRename,
+}: {
+  onAdd: () => void
+  onRename: (sound: Sound) => void
+}) {
   const { data: session } = useSession()
   const { isPending } = useUserSounds()
   const ambient = useSoundsStore(
@@ -117,14 +125,25 @@ export default function KnobRow() {
   return (
     <section aria-label='Ambience'>
       <h3 className={panel.label}>Ambience</h3>
-      {ambient.length === 0 && !loading ? (
+      {ambient.length === 0 && !loading && !session ? (
         <p className={styles.note}>No ambience yet. Paste a YouTube link to add one.</p>
       ) : (
         <div className={styles.knobs} aria-busy={loading || undefined}>
           {ambient.map(s => (
-            <Knob key={s.id} sound={s} />
+            <div key={s.id} data-sound-id={s.id} className={styles.knobItem}>
+              <Knob sound={s} />
+              {session && <SoundOptions sound={s} onRename={onRename} />}
+            </div>
           ))}
           {loading && <div className={styles.skeletonKnob} aria-hidden='true' />}
+          {session && (
+            <button type='button' className={styles.addKnob} onClick={onAdd}>
+              <span className={styles.addCircle}>
+                <Plus size={20} aria-hidden='true' />
+              </span>
+              Add ambience
+            </button>
+          )}
         </div>
       )}
     </section>

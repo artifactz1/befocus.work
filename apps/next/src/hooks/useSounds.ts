@@ -9,48 +9,22 @@ import { useSession } from '~/lib/auth.client'
 import { hideStarter, isStarterId, type ServerSound } from '~/lib/sounds/sounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
-export const useSound = ({
-  name,
-  url,
-  type,
-  onSuccessCallback,
-}: {
-  name: string
-  url: string
-  type: SoundType
-  onSuccessCallback?: (newSound: any) => void
-}) => {
+export const useSound = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<ServerSound, Error, { name: string; url: string; soundType: SoundType }>({
     mutationKey: ['userSounds'],
-    mutationFn: async () => {
+    mutationFn: async ({ name, url, soundType }) => {
       const res = await api.user.sounds.$post({
-        json: {
-          id: createId(),
-          name,
-          url,
-          isCustom: true,
-          soundType: type,
-        },
+        json: { id: createId(), name, url, isCustom: true, soundType },
       })
-      if (!res.ok) {
-        const { message } = await res.json().catch(() => ({ message: 'Unknown error' }))
-        throw new Error(message)
-      }
-      return res.json()
+      if (res.status === 409) throw new Error('You already have this sound.')
+      if (!res.ok) throw new Error("Couldn't save this sound. Check your connection and try again.")
+      return (await res.json()) as ServerSound
     },
     onSuccess: newSound => {
-      queryClient.setQueryData<ServerSound[]>(['userSounds'], old => [
-        ...(old ?? []),
-        newSound as ServerSound,
-      ])
+      queryClient.setQueryData<ServerSound[]>(['userSounds'], old => [...(old ?? []), newSound])
       queryClient.invalidateQueries({ queryKey: ['userSounds'] })
-      toast.success('Sound added!')
-      onSuccessCallback?.(newSound)
-    },
-    onError: (err: any) => {
-      toast.error(`Error adding sound: ${err.message}`)
     },
   })
 }

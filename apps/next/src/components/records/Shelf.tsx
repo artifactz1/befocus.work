@@ -1,15 +1,24 @@
 'use client'
 
+import { Plus } from 'lucide-react'
+import Link from 'next/link'
 import { useShallow } from 'zustand/react/shallow'
 import { useUserSounds } from '~/hooks/useSounds'
 import { useSession } from '~/lib/auth.client'
 import { labelInk } from '~/lib/sounds/sounds'
-import { useSoundsStore } from '~/store/useSoundsStore'
+import { type Sound, useSoundsStore } from '~/store/useSoundsStore'
 import styles from './records.module.css'
+import SoundOptions from './SoundOptions'
 
 export const RECORD_MIME = 'application/x-befocus-record'
 
-export default function Shelf() {
+export default function Shelf({
+  onAdd,
+  onRename,
+}: {
+  onAdd: () => void
+  onRename: (sound: Sound) => void
+}) {
   const { data: session } = useSession()
   const { isPending, isError, refetch } = useUserSounds()
   const records = useSoundsStore(
@@ -30,7 +39,7 @@ export default function Shelf() {
           const loaded = r.id === bgMusicId
           const playing = loaded && r.playing
           return (
-            <li key={r.id}>
+            <li key={r.id} data-sound-id={r.id} className={styles.sleeveItem}>
               <button
                 type='button'
                 className={styles.sleeve}
@@ -55,6 +64,7 @@ export default function Shelf() {
                 <span className={styles.sleeveName}>{r.name}</span>
                 {playing && <span className={styles.sleeveDot} aria-hidden='true' />}
               </button>
+              {session && <SoundOptions sound={r} onRename={onRename} />}
             </li>
           )
         })}
@@ -63,6 +73,14 @@ export default function Shelf() {
             <li className={styles.skeleton} aria-hidden='true' />
             <li className={styles.skeleton} aria-hidden='true' />
           </>
+        )}
+        {session && (
+          <li>
+            <button type='button' className={styles.addTile} onClick={onAdd}>
+              <Plus size={20} aria-hidden='true' />
+              Add record
+            </button>
+          </li>
         )}
       </ul>
       {session && isError && (
@@ -78,7 +96,14 @@ export default function Shelf() {
           No records yet. <span>Paste a YouTube link to add one.</span>
         </p>
       )}
-      {!session && <p className={styles.note}>Sign in to add and keep your own records.</p>}
+      {!session && (
+        <p className={styles.note}>
+          <Link href='/sign-in' className={styles.retry}>
+            Sign in
+          </Link>{' '}
+          to add and keep your own records.
+        </p>
+      )}
     </section>
   )
 }

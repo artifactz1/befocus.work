@@ -49,7 +49,15 @@ export default function RecordRoom() {
   useEffect(() => {
     if (!roomOpen) return
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'Escape' && !event.defaultPrevented) setRoomOpen(false)
+      if (event.key !== 'Escape' || event.defaultPrevented) return
+      // Radix dialogs and menus handle their own Escape.
+      if (
+        document.querySelector(
+          '[role="dialog"]:not([data-record-room]), [role="alertdialog"], [role="menu"]',
+        )
+      )
+        return
+      setRoomOpen(false)
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
