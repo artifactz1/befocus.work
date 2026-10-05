@@ -13,7 +13,7 @@ const GlobalPlayer = () => {
   const setCurrentTime = useSoundsStore(state => state.setCurrentTime)
   const setDuration = useSoundsStore(state => state.setDuration)
   const setPlayerRef = useSoundsStore(state => state.setPlayerRef)
-  const addSound = useSoundsStore(state => state.addSound)
+  const syncUserSounds = useSoundsStore(state => state.syncUserSounds)
 
   const soundKeys = Object.keys(sounds)
   const { data: userSounds } = useUserSounds()
@@ -41,16 +41,8 @@ const GlobalPlayer = () => {
   }
 
   useEffect(() => {
-    if (!userSounds) return
-
-    const existing = sounds // Use the sounds from the hook subscription
-
-    for (const s of userSounds) {
-      if (!existing[s.id]) {
-        addSound(s.id, s.name, s.url, s.isCustom, s.soundType)
-      }
-    }
-  }, [userSounds, addSound, sounds]) // Add sounds to dependencies
+    syncUserSounds(userSounds)
+  }, [userSounds, syncUserSounds])
 
   return (
     <>

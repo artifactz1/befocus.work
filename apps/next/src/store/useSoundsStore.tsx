@@ -1,5 +1,11 @@
 import type ReactPlayer from 'react-player'
 import { create } from 'zustand'
+import {
+  readHiddenStarters,
+  reconcileSounds,
+  type ServerSound,
+  STARTER_SOUNDS,
+} from '~/lib/sounds/sounds'
 
 // Define sound types
 const soundTypes = ['alarm', 'ambient', 'bgMusic'] as const
@@ -31,6 +37,7 @@ interface SoundsState {
   setVolume: (id: string, volume: number) => void
   addSound: (id: string, name: string, url: string, isCustom: boolean, soundType: SoundType) => void
   deleteSound: (id: string) => void
+  syncUserSounds: (rows: ServerSound[] | undefined) => void
   alarmId: string
   setAlarmId: (id: string) => void
   ambientId: string
@@ -78,7 +85,7 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
   }, {})
 
   return {
-    sounds: { ...initialSounds },
+    sounds: { ...initialSounds, ...STARTER_SOUNDS },
     isDeleteMode: false,
     isAddMode: false,
     isSoundSettingsOpen: false,
@@ -133,6 +140,12 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
       set(state => {
         const { [id]: deleted, ...newSounds } = state.sounds
         return { sounds: newSounds }
+      }),
+
+    syncUserSounds: rows =>
+      set(state => {
+        const sounds = reconcileSounds(state.sounds, rows, readHiddenStarters())
+        return sounds === state.sounds ? state : { sounds }
       }),
 
     toggleDeleteMode: () => set(state => ({ isDeleteMode: !state.isDeleteMode })),
@@ -212,23 +225,3 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
       })),
   }
 })
-
-// Now add your custom sounds with both id and name
-const custom = useSoundsStore.getState().addSound
-custom('rain', 'Rain Ambience', 'https://www.youtube.com/watch?v=yIQd2Ya0Ziw', true, 'ambient')
-custom('jazz', 'Smooth Jazz', 'https://www.youtube.com/watch?v=VwR3LBbL6Jk', true, 'bgMusic')
-custom(
-  'lofi1',
-  'Lofi Hip Hop',
-  'https://www.youtube.com/watch?v=617L_MOB37k&ab_channel=thebootlegboy2',
-  true,
-  'bgMusic',
-)
-custom('library', 'Library Murmurs', 'https://www.youtube.com/watch?v=4vIQON2fDWM', true, 'ambient')
-custom(
-  'fireplace',
-  'Crackling Fireplace',
-  'https://www.youtube.com/watch?v=UgHKb_7884o',
-  true,
-  'ambient',
-)

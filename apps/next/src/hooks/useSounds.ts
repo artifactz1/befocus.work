@@ -5,7 +5,8 @@ import type { SoundType } from '@repo/api/db/schemas'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
-import type { Sound } from '~/store/useSoundsStore' // or define a local type alias if needed
+import { useSession } from '~/lib/auth.client'
+import { hideStarter, isStarterId, type ServerSound } from '~/lib/sounds/sounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 export const useSound = ({
@@ -40,6 +41,10 @@ export const useSound = ({
       return res.json()
     },
     onSuccess: newSound => {
+      queryClient.setQueryData<ServerSound[]>(['userSounds'], old => [
+        ...(old ?? []),
+        newSound as ServerSound,
+      ])
       queryClient.invalidateQueries({ queryKey: ['userSounds'] })
       toast.success('Sound added!')
       onSuccessCallback?.(newSound)
@@ -78,51 +83,51 @@ export const useDeleteUserSound = () => {
   const queryClient = useQueryClient()
   const { deleteSound } = useSoundsStore()
 
-  return useMutation<void, Error, string>({
+  return useMutation<void, Error, string, { prev?: ServerSound[]; name?: string }>({
     mutationFn: async id => {
+      // Starters are built in, not DB rows: removal is remembered per browser.
+      if (isStarterId(id)) return
       const res = await api.user.sounds[':id'].$delete({ param: { id } })
       if (!res.ok) {
         const err = await res.json().catch(() => ({ message: 'Unknown error' }))
         throw new Error(err.message ?? 'Failed to delete sound')
       }
     },
+    onMutate: async id => {
+      if (isStarterId(id)) return {}
+      await queryClient.cancelQueries({ queryKey: ['userSounds'] })
+      const prev = queryClient.getQueryData<ServerSound[]>(['userSounds'])
+      queryClient.setQueryData<ServerSound[]>(['userSounds'], old => old?.filter(s => s.id !== id))
+      return { prev, name: prev?.find(s => s.id === id)?.name }
+    },
     onSuccess: (_, id) => {
-      deleteSound(id)
-      queryClient.invalidateQueries({ queryKey: ['userSounds'] })
+      if (isStarterId(id)) {
+        hideStarter(id)
+        deleteSound(id)
+      }
       toast.success('Sound deleted.')
     },
-    onError: err => {
-      toast.error(`Error deleting sound: ${err.message}`)
+    onError: (_, __, ctx) => {
+      queryClient.setQueryData(['userSounds'], ctx?.prev)
+      toast.error(`Couldn't delete ${ctx?.name ?? 'sound'}. Try again.`)
+    },
+    onSettled: (_, __, id) => {
+      if (!isStarterId(id)) queryClient.invalidateQueries({ queryKey: ['userSounds'] })
     },
   })
 }
 
-// Raw response type from the backend
-interface RawSound {
-  id: string
-  name: string
-  url: string
-  isCustom: boolean
-  soundType: 'alarm' | 'ambient' | 'bgMusic' | string // cast to correct type later
-}
-
 export const useUserSounds = () => {
+  const { data: session } = useSession()
+
   return useQuery({
     queryKey: ['userSounds'],
     queryFn: async () => {
       const res = await api.user.sounds.$get()
       if (!res.ok) throw new Error('Failed to fetch user sounds')
-      return res.json() as Promise<RawSound[]>
+      return res.json() as Promise<ServerSound[]>
     },
-    select: (raw): Sound[] =>
-      raw.map(
-        (r): Sound => ({
-          ...r,
-          playing: false,
-          volume: 0,
-          soundType: r.soundType as 'alarm' | 'ambient' | 'bgMusic',
-        }),
-      ),
+    enabled: Boolean(session),
     refetchOnWindowFocus: false,
   })
 }
