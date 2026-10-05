@@ -50,6 +50,18 @@ they open it - signed in on any device, or as a guest on the same browser.
 - [ ] Guest customizations persist locally and migrate to the account on first sign-in
 - [ ] Every control works on mobile through a bottom sheet
 
+**Sound space (Phase 7)**
+
+- [ ] The Sounds button opens a record room on the left half: a top-view turntable, a shelf of
+      records and ambience knobs; the picked record keeps playing after the room closes
+
+**Productivity (Phases 8-10)**
+
+- [ ] User can add more time when a focus block ends, and every block is recorded
+- [ ] User can tie tasks to focus blocks, plan the session as time blocks, and see progress live
+- [ ] User can log what they did at each break and review a session summary, history, and what
+      to improve
+
 ### Out of Scope
 
 <!-- Explicit boundaries. Includes reasoning to prevent re-adding. -->
@@ -155,4 +167,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-23 after initialization*
+*Last updated: 2026-10-04 after adding Phases 7-10*

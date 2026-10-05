@@ -13,6 +13,15 @@ naming, switching, curated presets and guest-to-account migration. Finally the t
 background sources arrive: R2-backed uploads with quota and server-side validation, then pasted
 remote URLs with a safe fallback when a host blocks them.
 
+Phases 7-10 were added on 2026-10-04 and extend the milestone past looks into what the dashboard
+does. Phase 7 turns the saved sounds into a record room: a Material-style top-view turntable,
+a shelf of records and ambience knobs that open over the left half of the dashboard. Phases 8-10 are the productivity track, in dependency
+order: first the timer learns an explicit end of block, lets the user add time to a focus block
+that just ended, and records every block; then tasks attach to those blocks and the session gets
+a time-block plan and a live progress view; finally each break invites a short log and the
+recorded history turns into a session summary and a view of what to improve. Phase 7 and the
+productivity track are independent of each other and of Phases 4-6.
+
 ## Phases
 
 **Phase Numbering:**
@@ -28,6 +37,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 4: Saved Themes** - Name, switch, rename and delete looks; curated presets; guest migration
 - [ ] **Phase 5: Media Uploads** - Upload your own images and videos to R2 behind the timer
 - [ ] **Phase 6: URL Backgrounds** - Paste any remote image or video URL, with a safe fallback
+- [ ] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs
+- [ ] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded
+- [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress
+- [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
 
 ## Phase Details
 
@@ -287,10 +300,302 @@ the dashboard usable instead of blank.
 **Plans**: TBD
 **UI hint**: yes
 
+### Phase 7: Vinyl Sound Space
+
+**Goal**: The footer Sounds button opens a record room: a Material-style listening room with a
+top-view turntable, a shelf of record sleeves and a row of ambience knobs. It fills the left half
+of the dashboard while the timer shrinks to the right and keeps running. One record plays at a
+time with ambience layered under it, and the record keeps playing after the room closes.
+**Mode:** mvp
+**Depends on**: Phase 2
+**Requirements**: VNL-01, VNL-02, VNL-03, VNL-04, VNL-05, VNL-06, VNL-07, VNL-08
+**Success Criteria** (what must be TRUE):
+
+  1. Deleting a sound works end to end and a deleted sound never comes back (issues #101 and
+     #102), verified before any of the room is built.
+
+  2. User clicks the footer Sounds button and the record room opens over the left half of the
+     dashboard; the timer shrinks to the right and keeps counting. Alarms are no longer in the
+     Sounds surface and are chosen in Session settings instead.
+
+  3. Every music sound sits on the shelf as a sleeve with a generated label ink and its name.
+     Clicking a sleeve or dragging it onto the platter starts it; the platter spins and the
+     tonearm sits on the record, and both stop when it is paused. Starting a record replaces the
+     one playing.
+
+  4. Each ambient sound is a knob under the turntable with its own volume; several can play at
+     once, layered under the record.
+
+  5. A signed-in user pastes a YouTube link anywhere in the room, confirms whether it is a record
+     or ambience (prefilled from the link's title), and it lands on the matching shelf or knob
+     row and survives a refresh. A guest sees the starter records and knobs only, with no saving.
+
+  6. Closing the room while a record plays shows a now-playing chip in the footer that fades with
+     the footer's idle behaviour and can pause the record or reopen the room.
+
+  7. On a phone the room is a bottom sheet with the same content and the timer stays visible
+     above it. The room works from the keyboard and a screen reader, and under reduced motion a
+     record swaps in instantly with no spin.
+**Plans**: TBD
+**UI hint**: yes
+
+Notes for planning:
+
+- First step: reproduce and fix sound delete (#101/#102) at the shared delete path
+  (`useDeleteUserSound` in `hooks/useSounds.ts`, `DELETE /user/sounds/:id`), since the shelf
+  invites users to curate. The five starter sounds are seeded client-side at module load in
+  `useSoundsStore.tsx` and are not database rows; delete must handle that.
+
+- This is a new view over the existing sound system, not a new audio engine. Sounds live in the
+  `sounds` table (`packages/api/src/db/tables/sounds.ts`: `name`, `url`, `soundType` of
+  `alarm | ambient | bgMusic`) behind `GET/POST/PUT/DELETE /user/sounds`. Playback is
+  `GlobalSoundsPlayer.tsx`, one hidden `ReactPlayer` per non-alarm sound driven by `playing` and
+  `volume` in `useSoundsStore`. `bgMusic` sounds are records and `ambient` sounds are knobs; "on
+  the platter" is the `playing` flag, with the store enforcing one `bgMusic` playing at a time.
+
+- The footer `SoundSettings.tsx` popover (Music, Ambient and Alarm tabs) is replaced by the room.
+  Alarm selection moves into Session settings (`MenuSettings.tsx`); `soundType: 'alarm'` rows
+  stay as they are.
+
+- The paste-to-add flow replaces `AddSoundButton.tsx` and stays YouTube only. It sets `soundType`
+  from the user's record or ambience choice. Uploads wait for Phase 5's storage.
+
+- Label inks are generated from the sound's name, so no new column or migration is needed.
+- The room deliberately relaxes the "timer stays full size" rule from quick tasks 261002 and
+  261003 (PRs #113 and #114): the timer shrinks into the right half while the room is open. The
+  session counter cells must be hidden or offset so they do not sit under the room. Decide how
+  the room and the customize inspector coexist when both are opened.
+
+- The now-playing chip is a new footer element and fades with the existing idle chrome
+  (`useChromeIdle`, `.bf-chrome`, `data-chrome-idle`).
+
+- Build the turntable from CSS/SVG and `framer-motion` (already used, with `useReducedMotion`).
+  The phone bottom sheet uses `vaul`, as the mobile customize sheet does. No new animation, 3D or
+  drag-and-drop dependency; use native drag events with click as the accessible path.
+
+- Design reference: the decided Lavish board (Material room mocks in its "Your direction"
+  section) at `.lavish/vinyl/board.html` in worktree 2, and the report at
+  `firstmate/data/befocus-vinyl-board/report.md`, section "Final decisions (build spec for
+  Phase 7)".
+
+Design decisions (captain picks 2026-10-05, all resolved):
+
+  1. Entry point: the footer Sounds button opens the record room; alarms move to Session
+     settings.
+  2. Shape: a room that fills the left half; the timer shrinks to the right and keeps running.
+  3. Art direction: Material, a realistic top-view turntable.
+  4. Record list: a shelf of sleeves.
+  5. Labels: generated label inks plus the name.
+  6. Loading: click or drag; reduced motion swaps instantly with no spin.
+  7. Background presence: a now-playing chip in the footer that fades with the footer.
+  8. Phone: a bottom sheet.
+  9. Add and save: record shelf, ambience knobs, and paste a YouTube link anywhere.
+
+Product questions Q2, Q3 and Q4 are resolved for this phase (see "Open Product Questions").
+Q1, its priority against Phases 4-6, is still open.
+
+### Phase 8: Focus Blocks and Added Time
+
+**Goal**: The end of a focus block becomes a real moment the user controls: the timer stops in an
+ended state where they can add more time or move on to the break, and every focus and break block
+is recorded accurately so the rest of the productivity track has data to stand on.
+**Mode:** mvp
+**Depends on**: Phase 3
+**Requirements**: BLK-01, BLK-02, BLK-03, BLK-04, BLK-05
+**Success Criteria** (what must be TRUE):
+
+  1. When a focus block reaches zero the alarm plays and the timer waits in an ended state that
+     offers Add time and Start break; it never jumps to the break on its own.
+
+  2. User adds time to a just-ended focus block, more than once if they like, and the timer counts
+     the added time down inside the same block.
+
+  3. After a session, a signed-in user's records show each focus and break block with its planned
+     length, time actually spent, time added, start and end time, and whether it finished, was
+     skipped, or was reset; a guest's records survive a refresh in the same browser.
+
+  4. A focus block run with the tab in the background, or across a short laptop sleep, is
+     recorded with the same length the wall clock shows.
+**Plans**: TBD
+**UI hint**: yes
+
+Notes for planning:
+
+- `useTimerStore.tsx` has no explicit block lifecycle. At zero, `Timer.tsx` tells the worker to
+  stop because `timeLeft > 0` is false, and `decrementTime` advances to the break only if one more
+  tick arrives, which makes the end of a block racy. The alarm plays from a `timeLeft === 0`
+  effect in `Timer.tsx`. Give the store an explicit ended state rather than layering Add time on
+  top of the race.
+
+- Time is counted by ticks from `lib/timerWorker.ts` (`setInterval` every 1000 ms), not from the
+  wall clock. Records need real start and end times, so derive remaining time from timestamps or
+  record them alongside the ticks; the planner picks.
+
+- The timer store is per request through `TimerStoreProvider` (FND-05). Added time and the block
+  record live in that store, hydrated through the same single owner.
+
+- Server side: a new table in `packages/api/src/db/tables/`, re-exported from `db/schemas.ts`,
+  with drizzle-zod schemas colocated, and a new `*.route.ts` / `*.handler.ts` / `*.index.ts` trio
+  added to the `routes` array in `src/app.ts` so it appears on the typed client. Guest records use
+  the browser storage pattern Phase 3 introduces (SYN-03).
+
+- `SessionCompleteModal.tsx` (confetti and canned copy) is left alone here; Phase 10 rebuilds it
+  on the records.
+
+Open product questions this phase needs answered: Q1, Q5, Q9.
+
+Design questions for the captain (one Lavish board, before planning):
+
+  1. Where Add time appears when a block ends: under the digits in place of the keyboard hints, in
+     the footer controls, or as a floating prompt.
+  2. How much time one press adds: fixed steps (+1, +5, +10), a single +5, or a custom amount.
+  3. How added time reads on the timer and the Edge, Ruler and Ink progress styles: progress
+     continues past full, restarts for the added time, or switches to an overtime colour.
+  4. How the ended state looks and sounds: does the alarm repeat until acknowledged, and what
+     happens to the idle chrome fade.
+
+### Phase 9: Tasks and Time Blocks
+
+**Goal**: Tasks stop being a separate list and become the work inside the session. A user lays
+out a time-block plan, ties tasks to focus blocks, and while the session runs sees where they are
+in it and what they have worked through.
+**Mode:** mvp
+**Depends on**: Phase 8
+**Requirements**: TSK-01, TSK-02, TSK-03, TSK-04, TSK-05
+**Success Criteria** (what must be TRUE):
+
+  1. A guest adds tasks, refreshes, and the tasks are still there in that browser.
+  2. User picks the task they are working on for the current focus block, and that block's record
+     afterwards lists the tasks worked on and completed during it.
+
+  3. Before starting, the user lays out a plan of time blocks and assigns tasks to them, and the
+     plan is still there after a refresh.
+
+  4. While the session runs, one view shows the blocks done, the current block and how far into it
+     the user is, the blocks ahead, any time added, and the tasks checked off.
+
+  5. The plan and the progress view are usable on a phone and never obstruct the timer.
+**Plans**: TBD
+**UI hint**: yes
+
+Notes for planning:
+
+- Tasks already exist end to end for signed-in users: the `tasks` table
+  (`db/tables/tasks.ts`: `text`, `completed`, `archived`, `createdAt`), `GET/POST/PUT/DELETE
+  /user/tasks`, hooks in `hooks/useTasks.ts`, the global `useTodoStore`, and the footer
+  `ToDoList.tsx` popover. `PrefetchUserTasks` is mounted only on the `(app)` page, so a guest's
+  tasks live in memory and vanish on refresh; guest tasks also use `Date.now()` ids against a
+  server `serial` id, which matters if guest data ever migrates.
+
+- Tie tasks to Phase 8 block records (a join table, or task ids on the block); the planner picks.
+- Progress already shows in two places: the accent contribution grid in `SessionsUI.tsx`
+  (CTL-11) and the Edge, Ruler and Ink progress in `Timer.tsx` with `timer-progress.module.css`.
+  The new progress view extends or replaces these; it must not stack a third indicator on top.
+
+- Dashboard chrome fades while a session runs (`useChromeIdle`, `.bf-chrome`,
+  `data-chrome-idle`). The progress view has to decide whether it fades with it.
+
+- No chart, calendar or drag-and-drop library is installed. Prefer CSS and native drag events;
+  add a dependency only if the chosen design needs one.
+
+- Issue #100 (Notion MCP integration) is adjacent to this phase but not part of it.
+
+Open product questions this phase needs answered: Q6, Q9.
+
+Design questions for the captain (one Lavish board, before planning):
+
+  1. Where tasks live: keep the footer popover, a docked list on one side, or a short list under
+     the timer.
+  2. Form of the time-block plan: a horizontal strip under the header that grows out of the
+     contribution grid, a vertical day column like a calendar, or a ring.
+  3. Assigning tasks to blocks: drag tasks onto blocks, or pick a "now working on" task per block.
+  4. The live progress view: how done, current and upcoming blocks, added time and checked-off
+     tasks show while focusing, and how much of it survives the idle fade.
+  5. Phone layout for the plan and the progress view.
+
+### Phase 10: Session Logs and Reflection
+
+**Goal**: Each break becomes a moment to note what got done, and the recorded blocks, tasks and
+notes turn into a real end-of-session summary and a history that shows the user what to improve.
+**Mode:** mvp
+**Depends on**: Phase 8, Phase 9
+**Requirements**: LOG-01, LOG-02, LOG-03, LOG-04, LOG-05, LOG-06
+**Success Criteria** (what must be TRUE):
+
+  1. When a focus block ends and the break begins, the user is invited to log what they did; they
+     can skip it, and the break timer runs either way.
+
+  2. A saved log entry is attached to the block it describes and can be edited later.
+  3. When the last session finishes, the user sees a summary built from that session's records
+     (focus time, blocks finished or skipped, time added, tasks done, and their logs) instead of
+     canned text.
+
+  4. User browses past sessions with their blocks and logs, and sees what to improve drawn from
+     that history.
+
+  5. A guest's logs survive a refresh in the same browser.
+**Plans**: TBD
+**UI hint**: yes
+
+Notes for planning:
+
+- Log entries attach to Phase 8 block records. "What to improve" compares the Phase 9 plan with
+  what Phase 8 recorded (time added, blocks skipped, breaks cut short, tasks left open), so this
+  phase comes last.
+
+- `SessionCompleteModal.tsx` fires when `currentSession > sessions` and shows confetti
+  (`canvas-confetti`) with fixed copy. Rebuild it as the summary rather than adding a second
+  end-of-session surface.
+
+- A history view as its own App Router route would sit under `(app)/` and is auth-gated by
+  `middleware.ts`; guests only have `/guest`, so a guest history needs an in-dashboard surface or
+  a decision that history is signed-in only (open question Q9).
+
+- No chart library is installed. Simple bars and grids in CSS cover a first version; add one only
+  if the chosen design needs it.
+
+Open product questions this phase needs answered: Q7, Q8, Q9.
+
+Design questions for the captain (one Lavish board, before planning):
+
+  1. The break-time log prompt: an inline card under the timer, a side sheet, or a modal; free
+     text only, or quick tags and a focus rating as well.
+  2. The end-of-session summary: what it shows first, and whether the confetti stays.
+  3. Where history lives: a new page, a panel on the dashboard, or inside the summary.
+  4. How "what to improve" is shown: a few plain-language observations, small charts (planned vs
+     actual, a streak calendar), or both.
+
+## Open Product Questions (Phases 7-10)
+
+These are the captain's calls. None of them has been guessed; each phase lists the ones it needs
+answered before `/gsd-discuss-phase`. Q2-Q4 were answered on the vinyl design board on 2026-10-05.
+
+  1. **Q1 Priority.** Where Phases 7-10 sit against Phases 4-6. Both tracks are independent of
+     Phases 4-6, so either can go first.
+  2. **Q2 Which sounds are records.** Resolved 2026-10-05: music is records, ambience is knobs.
+     One record plays at a time, with ambience layered under it. Phase 7.
+  3. **Q3 Guests and the collection.** Resolved 2026-10-05: guests get the starter records and
+     knobs only, with no saving. Phase 7.
+  4. **Q4 Sound sources.** Resolved 2026-10-05: YouTube only until Phase 5 storage exists; revisit
+     then. Phase 7.
+  5. **Q5 When time can be added.** Only when a focus block ends, or also mid-block and on
+     breaks. Phase 8.
+  6. **Q6 Time-blocker scope.** A plan for the blocks inside one session, or a full-day calendar
+     (which may touch issue #100, the Notion integration). Phase 9.
+  7. **Q7 Where "what to improve" comes from.** Computed from the records, written by the user,
+     or AI-generated (a new external service and cost). Phase 10.
+  8. **Q8 Log cadence.** A prompt at every break, only at the end of a session, or both; and
+     whether it can be turned off. Phase 10.
+  9. **Q9 Guest records.** Whether guests keep block records, logs and history at all, only in
+     their browser, and whether those move into the account on sign-up the way SYN-04 does for
+     themes. Phases 8-10.
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+Phases 1-6 execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6. Phase 7 can start after Phase 2;
+Phases 8 → 9 → 10 run in order after Phase 3. Where the two new tracks sit against Phases 4-6 is
+open question Q1.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -300,6 +605,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |
 | 6. URL Backgrounds | 0/TBD | Not started | - |
+| 7. Vinyl Sound Space | 0/TBD | Not started | - |
+| 8. Focus Blocks and Added Time | 0/TBD | Not started | - |
+| 9. Tasks and Time Blocks | 0/TBD | Not started | - |
+| 10. Session Logs and Reflection | 0/TBD | Not started | - |
 
 ## Requirement Coverage
 
@@ -311,9 +620,13 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Saved Themes | THM-01..06, SYN-04 | 7 |
 | 5. Media Uploads | MED-01..09 | 9 |
 | 6. URL Backgrounds | URL-01..03 | 3 |
-| **Total** | | **52** |
+| 7. Vinyl Sound Space | VNL-01..08 | 8 |
+| 8. Focus Blocks and Added Time | BLK-01..05 | 5 |
+| 9. Tasks and Time Blocks | TSK-01..05 | 5 |
+| 10. Session Logs and Reflection | LOG-01..06 | 6 |
+| **Total** | | **76** |
 
-All 52 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
+All 76 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
 
 ## Verification Note
 
@@ -323,3 +636,4 @@ FND-01), or by running the repo's own `bun run check` / `bun run turbo:build` sc
 
 ---
 *Roadmap created: 2026-09-23*
+*Phases 7-10 added: 2026-10-04*
