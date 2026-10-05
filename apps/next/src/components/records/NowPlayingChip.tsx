@@ -44,7 +44,11 @@ export default function NowPlayingChip({ variant }: { variant: 'full' | 'compact
             aria-label={`${playing ? 'Pause' : 'Play'} ${record.name}`}
             onClick={toggle}
           >
-            {playing ? <Pause size={16} /> : <Play size={16} />}
+            {playing ? (
+              <Pause size={16} aria-hidden='true' />
+            ) : (
+              <Play size={16} aria-hidden='true' />
+            )}
           </button>
           <button
             type='button'

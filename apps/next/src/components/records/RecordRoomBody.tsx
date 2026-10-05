@@ -56,11 +56,11 @@ export default function RecordRoomBody() {
         </p>
         <button
           type='button'
-          className={panel.closeBtn}
+          className={`${panel.closeBtn} ${styles.close}`}
           aria-label='Close records'
           onClick={() => setRoomOpen(false)}
         >
-          <X size={16} />
+          <X size={16} aria-hidden='true' />
         </button>
       </div>
       <div className={styles.body}>

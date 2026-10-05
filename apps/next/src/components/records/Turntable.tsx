@@ -156,7 +156,7 @@ export default function Turntable() {
         aria-label={record ? `${playing ? 'Pause' : 'Play'} ${record.name}` : 'Play'}
         onClick={() => record && toggleRecord(record.id)}
       >
-        {playing ? <Pause size={18} /> : <Play size={18} />}
+        {playing ? <Pause size={18} aria-hidden='true' /> : <Play size={18} aria-hidden='true' />}
       </button>
       <input
         type='range'
