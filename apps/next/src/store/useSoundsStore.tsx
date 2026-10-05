@@ -1,5 +1,11 @@
-import type ReactPlayer from 'react-player'
 import { create } from 'zustand'
+import {
+  playRecordState,
+  readHiddenStarters,
+  reconcileSounds,
+  type ServerSound,
+  STARTER_SOUNDS,
+} from '~/lib/sounds/sounds'
 
 // Define sound types
 const soundTypes = ['alarm', 'ambient', 'bgMusic'] as const
@@ -22,36 +28,24 @@ interface Alarm {
 }
 
 interface SoundsState {
-  isDeleteMode: boolean
-  isAddMode: boolean
   sounds: Record<string, Sound>
   toggleSound: (id: string) => void
-  toggleDeleteMode: () => void
-  toggleAddMode: () => void
+  playRecord: (id: string) => void
+  pauseRecord: () => void
+  toggleRecord: (id: string) => void
   setVolume: (id: string, volume: number) => void
   addSound: (id: string, name: string, url: string, isCustom: boolean, soundType: SoundType) => void
   deleteSound: (id: string) => void
+  syncUserSounds: (rows: ServerSound[] | undefined) => void
   alarmId: string
   setAlarmId: (id: string) => void
-  ambientId: string
-  setAmbientId: (id: string) => void
   bgMusicId: string
   setBgMusic: (id: string) => void
-  isSoundSettingsOpen: boolean
-  setSoundSettingsOpen: (state: boolean) => void
-  editModes: Record<string, boolean>
-  toggleEditMode: (id: string) => void
-  editSound: (id: string, newName: string) => void
-  currentTimes: Record<string, number>
-  setCurrentTime: (id: string, time: number) => void
-  durations: Record<string, number>
-  setDuration: (id: string, duration: number) => void
-  playerRefs: Record<string, ReactPlayer | null>
-  setPlayerRef: (id: string, ref: ReactPlayer | null) => void
-  seekTo: (id: string, time: number) => void
-  seekingStates: Record<string, boolean>
-  setSeeking: (id: string, state: boolean) => void
-  // Remove lastSeekTimes as it's causing issues
+  roomOpen: boolean
+  setRoomOpen: (state: boolean) => void
+  // the footer chip stays after a pause from the chip so it can resume
+  chipHeld: boolean
+  setChipHeld: (held: boolean) => void
 }
 
 const alarmList: Alarm[] = [
@@ -78,17 +72,14 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
   }, {})
 
   return {
-    sounds: { ...initialSounds },
-    isDeleteMode: false,
-    isAddMode: false,
-    isSoundSettingsOpen: false,
-    setSoundSettingsOpen: state => set({ isSoundSettingsOpen: state }),
+    sounds: { ...initialSounds, ...STARTER_SOUNDS },
+    roomOpen: false,
+    setRoomOpen: state => set(state ? { roomOpen: true, chipHeld: false } : { roomOpen: false }),
+    chipHeld: false,
+    setChipHeld: held => set({ chipHeld: held }),
 
     alarmId: 'alarm1',
     setAlarmId: id => set({ alarmId: id }),
-
-    ambientId: 'rain',
-    setAmbientId: id => set({ ambientId: id }),
 
     bgMusicId: 'jazz',
     setBgMusic: id => set({ bgMusicId: id }),
@@ -96,16 +87,28 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
     toggleSound: id =>
       set(state => {
         const sound = state.sounds[id]
-        if (sound) {
-          return {
-            sounds: {
-              ...state.sounds,
-              [id]: { ...sound, playing: !sound.playing },
-            },
-          }
+        if (!sound) return state
+        // starting a record goes through the one-record rule so no caller can play two
+        if (sound.soundType === 'bgMusic' && !sound.playing) {
+          return playRecordState(state.sounds, id) ?? state
         }
-        return state
+        return { sounds: { ...state.sounds, [id]: { ...sound, playing: !sound.playing } } }
       }),
+
+    playRecord: id => set(state => playRecordState(state.sounds, id) ?? state),
+
+    pauseRecord: () =>
+      set(state => {
+        const sound = state.sounds[state.bgMusicId]
+        if (!sound?.playing) return state
+        return { sounds: { ...state.sounds, [sound.id]: { ...sound, playing: false } } }
+      }),
+
+    toggleRecord: id => {
+      const { sounds, bgMusicId, playRecord, pauseRecord } = get()
+      if (id === bgMusicId && sounds[id]?.playing) pauseRecord()
+      else playRecord(id)
+    },
 
     setVolume: (id, volume) =>
       set(state => {
@@ -135,100 +138,10 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
         return { sounds: newSounds }
       }),
 
-    toggleDeleteMode: () => set(state => ({ isDeleteMode: !state.isDeleteMode })),
-
-    toggleAddMode: () => set(state => ({ isAddMode: !state.isAddMode })),
-
-    editModes: {},
-    toggleEditMode: id =>
-      set(state => ({
-        editModes: { ...state.editModes, [id]: !state.editModes[id] },
-      })),
-
-    editSound: (id, newName) =>
+    syncUserSounds: rows =>
       set(state => {
-        const sound = state.sounds[id]
-        if (!sound) return state
-
-        return {
-          sounds: {
-            ...state.sounds,
-            [id]: {
-              ...sound,
-              name: newName,
-            },
-          },
-        }
+        const sounds = reconcileSounds(state.sounds, rows, readHiddenStarters())
+        return sounds === state.sounds ? state : { sounds }
       }),
-
-    currentTimes: {},
-    setCurrentTime: (id, time) =>
-      set(state => ({
-        currentTimes: {
-          ...state.currentTimes,
-          [id]: time,
-        },
-      })),
-
-    durations: {},
-    setDuration: (id, duration) =>
-      set(state => ({
-        durations: {
-          ...state.durations,
-          [id]: duration,
-        },
-      })),
-
-    playerRefs: {},
-    setPlayerRef: (id, ref) =>
-      set(state => ({
-        playerRefs: {
-          ...state.playerRefs,
-          [id]: ref,
-        },
-      })),
-
-    seekTo: (id: string, time: number) => {
-      const state = get()
-      const player = state.playerRefs[id]
-      if (player) {
-        player.seekTo(time, 'seconds')
-        set(prevState => ({
-          currentTimes: {
-            ...prevState.currentTimes,
-            [id]: time,
-          },
-        }))
-      }
-    },
-
-    seekingStates: {},
-    setSeeking: (id, state) =>
-      set(prevState => ({
-        seekingStates: {
-          ...prevState.seekingStates,
-          [id]: state,
-        },
-      })),
   }
 })
-
-// Now add your custom sounds with both id and name
-const custom = useSoundsStore.getState().addSound
-custom('rain', 'Rain Ambience', 'https://www.youtube.com/watch?v=yIQd2Ya0Ziw', true, 'ambient')
-custom('jazz', 'Smooth Jazz', 'https://www.youtube.com/watch?v=VwR3LBbL6Jk', true, 'bgMusic')
-custom(
-  'lofi1',
-  'Lofi Hip Hop',
-  'https://www.youtube.com/watch?v=617L_MOB37k&ab_channel=thebootlegboy2',
-  true,
-  'bgMusic',
-)
-custom('library', 'Library Murmurs', 'https://www.youtube.com/watch?v=4vIQON2fDWM', true, 'ambient')
-custom(
-  'fireplace',
-  'Crackling Fireplace',
-  'https://www.youtube.com/watch?v=UgHKb_7884o',
-  true,
-  'ambient',
-)

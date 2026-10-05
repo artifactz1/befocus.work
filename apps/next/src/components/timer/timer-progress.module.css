@@ -118,13 +118,48 @@
   color: color-mix(in srgb, var(--fg) 62%, transparent);
 }
 
-:global(html[data-panel="open"]) .hints {
+:global(html[data-panel="open"]) .hints,
+:global(html[data-room="open"]) .hints {
   opacity: 0;
+}
+
+/* Record room open: timer keeps running, shrinks right (desktop) or sits above the sheet (phone). */
+.stage {
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-origin: center;
+}
+
+@media (min-width: 1024px) {
+  :global(html[data-room="open"]) .stage {
+    transform: translateX(25vw) scale(0.6);
+  }
+}
+
+@media (max-width: 1023.98px) {
+  :global(html[data-room="open"]) .stage {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: calc(100dvh - min(60dvh, 560px) - 20px);
+  }
+}
+
+/* stacked phone digits are taller than the strip above the sheet */
+@media (max-width: 639px) {
+  :global(html[data-room="open"]) .stage {
+    transform: scale(0.62);
+  }
+}
+
+@media (max-width: 1023.98px) and (max-height: 500px) {
+  :global(html[data-room="open"]) .stage {
+    transform: scale(0.72);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ruler i,
-  .edgeFill {
+  .edgeFill,
+  .stage {
     transition: none;
   }
 }

@@ -292,7 +292,14 @@ export const deleteUserSound: AppRouteHandler<DeleteUserSound> = async c => {
     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
   }
 
-  await db.delete(sounds).where(eq(sounds.id, soundId))
+  const deleted = await db
+    .delete(sounds)
+    .where(and(eq(sounds.id, soundId), eq(sounds.userId, user.id)))
+    .returning({ id: sounds.id })
+
+  if (deleted.length === 0) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
 
   // return c.json(undefined, HttpStatusCodes.NO_CONTENT)
   return c.json({ message: 'Sound deleted successfully' }, HttpStatusCodes.OK)
