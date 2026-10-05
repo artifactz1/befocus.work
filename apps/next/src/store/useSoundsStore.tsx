@@ -1,4 +1,3 @@
-import type ReactPlayer from 'react-player'
 import { create } from 'zustand'
 import {
   readHiddenStarters,
@@ -28,37 +27,18 @@ interface Alarm {
 }
 
 interface SoundsState {
-  isDeleteMode: boolean
-  isAddMode: boolean
   sounds: Record<string, Sound>
   toggleSound: (id: string) => void
-  toggleDeleteMode: () => void
-  toggleAddMode: () => void
   setVolume: (id: string, volume: number) => void
   addSound: (id: string, name: string, url: string, isCustom: boolean, soundType: SoundType) => void
   deleteSound: (id: string) => void
   syncUserSounds: (rows: ServerSound[] | undefined) => void
   alarmId: string
   setAlarmId: (id: string) => void
-  ambientId: string
-  setAmbientId: (id: string) => void
   bgMusicId: string
   setBgMusic: (id: string) => void
-  isSoundSettingsOpen: boolean
-  setSoundSettingsOpen: (state: boolean) => void
-  editModes: Record<string, boolean>
-  toggleEditMode: (id: string) => void
-  editSound: (id: string, newName: string) => void
-  currentTimes: Record<string, number>
-  setCurrentTime: (id: string, time: number) => void
-  durations: Record<string, number>
-  setDuration: (id: string, duration: number) => void
-  playerRefs: Record<string, ReactPlayer | null>
-  setPlayerRef: (id: string, ref: ReactPlayer | null) => void
-  seekTo: (id: string, time: number) => void
-  seekingStates: Record<string, boolean>
-  setSeeking: (id: string, state: boolean) => void
-  // Remove lastSeekTimes as it's causing issues
+  roomOpen: boolean
+  setRoomOpen: (state: boolean) => void
 }
 
 const alarmList: Alarm[] = [
@@ -69,7 +49,7 @@ const alarmList: Alarm[] = [
   { id: 'alarm5', name: 'Alarm 5', filePath: '/sounds/public_sounds_alarm5.mp3' },
 ]
 
-export const useSoundsStore = create<SoundsState>((set, get) => {
+export const useSoundsStore = create<SoundsState>(set => {
   // Prepopulate with alarms
   const initialSounds = alarmList.reduce<Record<string, Sound>>((acc, alarm) => {
     acc[alarm.id] = {
@@ -86,16 +66,11 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
 
   return {
     sounds: { ...initialSounds, ...STARTER_SOUNDS },
-    isDeleteMode: false,
-    isAddMode: false,
-    isSoundSettingsOpen: false,
-    setSoundSettingsOpen: state => set({ isSoundSettingsOpen: state }),
+    roomOpen: false,
+    setRoomOpen: state => set({ roomOpen: state }),
 
     alarmId: 'alarm1',
     setAlarmId: id => set({ alarmId: id }),
-
-    ambientId: 'rain',
-    setAmbientId: id => set({ ambientId: id }),
 
     bgMusicId: 'jazz',
     setBgMusic: id => set({ bgMusicId: id }),
@@ -147,81 +122,5 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
         const sounds = reconcileSounds(state.sounds, rows, readHiddenStarters())
         return sounds === state.sounds ? state : { sounds }
       }),
-
-    toggleDeleteMode: () => set(state => ({ isDeleteMode: !state.isDeleteMode })),
-
-    toggleAddMode: () => set(state => ({ isAddMode: !state.isAddMode })),
-
-    editModes: {},
-    toggleEditMode: id =>
-      set(state => ({
-        editModes: { ...state.editModes, [id]: !state.editModes[id] },
-      })),
-
-    editSound: (id, newName) =>
-      set(state => {
-        const sound = state.sounds[id]
-        if (!sound) return state
-
-        return {
-          sounds: {
-            ...state.sounds,
-            [id]: {
-              ...sound,
-              name: newName,
-            },
-          },
-        }
-      }),
-
-    currentTimes: {},
-    setCurrentTime: (id, time) =>
-      set(state => ({
-        currentTimes: {
-          ...state.currentTimes,
-          [id]: time,
-        },
-      })),
-
-    durations: {},
-    setDuration: (id, duration) =>
-      set(state => ({
-        durations: {
-          ...state.durations,
-          [id]: duration,
-        },
-      })),
-
-    playerRefs: {},
-    setPlayerRef: (id, ref) =>
-      set(state => ({
-        playerRefs: {
-          ...state.playerRefs,
-          [id]: ref,
-        },
-      })),
-
-    seekTo: (id: string, time: number) => {
-      const state = get()
-      const player = state.playerRefs[id]
-      if (player) {
-        player.seekTo(time, 'seconds')
-        set(prevState => ({
-          currentTimes: {
-            ...prevState.currentTimes,
-            [id]: time,
-          },
-        }))
-      }
-    },
-
-    seekingStates: {},
-    setSeeking: (id, state) =>
-      set(prevState => ({
-        seekingStates: {
-          ...prevState.seekingStates,
-          [id]: state,
-        },
-      })),
   }
 })
