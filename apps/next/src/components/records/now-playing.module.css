@@ -1,0 +1,91 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  margin-right: 8px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, hsl(var(--foreground)) 8%, transparent);
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.compact {
+  padding: 0;
+  margin-right: 0;
+  height: auto;
+  border: 0;
+  background: none;
+}
+
+.play,
+.open {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.play {
+  width: 36px;
+  height: 36px;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.open {
+  padding: 0 0 0 8px;
+  border-radius: 999px;
+}
+
+.compact .play,
+.compact .open {
+  width: 44px;
+  height: 44px;
+  justify-content: center;
+  border-radius: 8px;
+  background: transparent;
+  padding: 0;
+}
+
+.disc {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ink) 0 30%, #0c0c0c 32%);
+  flex: none;
+}
+
+.disc[data-playing] {
+  animation: spin 3.6s linear infinite;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--user-accent);
+}
+
+.name {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc[data-playing] {
+    animation: none;
+  }
+}

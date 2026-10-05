@@ -43,6 +43,9 @@ interface SoundsState {
   setBgMusic: (id: string) => void
   roomOpen: boolean
   setRoomOpen: (state: boolean) => void
+  // the footer chip stays after a pause from the chip so it can resume
+  chipHeld: boolean
+  setChipHeld: (held: boolean) => void
 }
 
 const alarmList: Alarm[] = [
@@ -71,7 +74,9 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
   return {
     sounds: { ...initialSounds, ...STARTER_SOUNDS },
     roomOpen: false,
-    setRoomOpen: state => set({ roomOpen: state }),
+    setRoomOpen: state => set(state ? { roomOpen: true, chipHeld: false } : { roomOpen: false }),
+    chipHeld: false,
+    setChipHeld: held => set({ chipHeld: held }),
 
     alarmId: 'alarm1',
     setAlarmId: id => set({ alarmId: id }),
