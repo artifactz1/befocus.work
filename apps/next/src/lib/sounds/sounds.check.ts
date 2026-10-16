@@ -1,17 +1,20 @@
 // Regression check for #101/#102. Run: bun run src/lib/sounds/sounds.check.ts (cwd apps/next)
 import assert from 'node:assert/strict'
-import { isYouTubeUrl } from '@repo/api/lib/youtube'
+import { isYouTubeUrl, youTubeVideoId } from '@repo/api/lib/youtube'
 import type { Sound } from '~/store/useSoundsStore'
 import {
+  autoLabel,
+  discBase,
   HIDDEN_STARTERS_KEY,
   hideStarter,
   isStarterId,
   knobKeyValue,
-  labelInk,
+  labelFill,
   playRecordState,
   readHiddenStarters,
   reconcileSounds,
   STARTER_SOUNDS,
+  thumbnailUrl,
 } from './sounds'
 
 const mk = (id: string, over: Partial<Sound> = {}): Sound => ({
@@ -91,15 +94,51 @@ assert.deepEqual([...readHiddenStarters(mem('not json'))], [])
 assert.deepEqual([...readHiddenStarters(mem(JSON.stringify(['jazz', 'evil', 5])))], ['jazz'])
 assert.ok(HIDDEN_STARTERS_KEY)
 
-// label ink: FNV-1a 32-bit of the trimmed, lowercased name, % 360 ("a" -> 0xe40c292c -> hue 340)
-assert.deepEqual(labelInk('a'), {
-  ink: 'hsl(340 62% 52%)',
-  inkDeep: 'hsl(340 62% 36%)',
-  sleeve: 'hsl(340 28% 18%)',
-  sleeveDeep: 'hsl(340 28% 11%)',
-})
-assert.deepEqual(labelInk('  Smooth Jazz '), labelInk('smooth jazz'))
-assert.equal(labelInk('smooth jazz').ink, 'hsl(264 62% 52%)')
+// vinyl look: a changed label or finish on the server replaces the local sound, keeping playback
+const looked = reconcileSounds(
+  { a1: playing },
+  [row('a1', { labelColor: '#86efac', labelImage: 'thumbnail', discFinish: 'smoke' })],
+  none,
+)
+assert.deepEqual(
+  [looked.a1?.labelColor, looked.a1?.labelImage, looked.a1?.discFinish, looked.a1?.playing],
+  ['#86efac', 'thumbnail', 'smoke', true],
+)
+const lookedAgain = { a1: looked.a1 as Sound }
+assert.equal(
+  reconcileSounds(
+    lookedAgain,
+    [row('a1', { labelColor: '#86efac', labelImage: 'thumbnail', discFinish: 'smoke' })],
+    none,
+  ),
+  lookedAgain,
+  'same look keeps the reference',
+)
+
+// Auto label: accent mixed toward graphite by an FNV-1a pick ("a" -> 0xe40c292c % 5 = 0 -> 92%)
+assert.equal(autoLabel('a'), 'color-mix(in srgb, var(--user-accent) 92%, #2a2a2a)')
+assert.equal(autoLabel('  Smooth Jazz '), autoLabel('smooth jazz'))
+assert.equal(labelFill({ name: 'a', labelColor: '#fde047' }), '#fde047')
+assert.equal(labelFill({ name: 'a', labelColor: null }), autoLabel('a'))
+assert.equal(discBase(undefined, '#fff'), '#0b0b0b')
+assert.equal(discBase('black', '#fff'), '#0b0b0b')
+assert.equal(discBase('tinted', '#fde047'), 'color-mix(in srgb, #fde047 34%, #0b0b0b)')
+assert.match(discBase('smoke', '#fff'), /^rgb\(/)
+
+assert.equal(
+  thumbnailUrl('https://www.youtube.com/watch?v=jfKfPfyJRdk&t=3'),
+  'https://i.ytimg.com/vi/jfKfPfyJRdk/hqdefault.jpg',
+)
+assert.equal(thumbnailUrl('https://evil.com/watch?v=x'), null)
+for (const [url, id] of [
+  ['https://youtu.be/jfKfPfyJRdk?si=1', 'jfKfPfyJRdk'],
+  ['https://www.youtube.com/shorts/abc/', 'abc'],
+  ['https://www.youtube.com/embed/xyz', 'xyz'],
+  ['https://www.youtube.com/live/q1?feature=share', 'q1'],
+  ['https://www.youtube.com/watch?v=', null],
+] as const) {
+  assert.equal(youTubeVideoId(url), id, url)
+}
 
 // one record at a time
 const lofi = mk('lofi1', { volume: 0.7 })

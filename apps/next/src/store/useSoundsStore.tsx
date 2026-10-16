@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import {
+  type DiscFinish,
+  type LabelImage,
   playRecordState,
   readHiddenStarters,
   reconcileSounds,
@@ -19,6 +21,10 @@ export interface Sound {
   url: string
   isCustom: boolean
   soundType: SoundType
+  // vinyl look, user records only; unset means an Auto label on a black disc
+  labelColor?: string | null
+  labelImage?: LabelImage | null
+  discFinish?: DiscFinish
 }
 
 interface Alarm {
@@ -34,7 +40,6 @@ interface SoundsState {
   pauseRecord: () => void
   toggleRecord: (id: string) => void
   setVolume: (id: string, volume: number) => void
-  addSound: (id: string, name: string, url: string, isCustom: boolean, soundType: SoundType) => void
   deleteSound: (id: string) => void
   syncUserSounds: (rows: ServerSound[] | undefined) => void
   alarmId: string
@@ -123,14 +128,6 @@ export const useSoundsStore = create<SoundsState>((set, get) => {
         }
         return state
       }),
-
-    addSound: (id, name, url, isCustom, soundType) =>
-      set(state => ({
-        sounds: {
-          ...state.sounds,
-          [id]: { id, name, playing: false, volume: 0, url, isCustom, soundType },
-        },
-      })),
 
     deleteSound: id =>
       set(state => {

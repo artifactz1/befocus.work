@@ -6,21 +6,53 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
 import { useSession } from '~/lib/auth.client'
-import { hideStarter, isStarterId, type ServerSound } from '~/lib/sounds/sounds'
+import { type DiscFinish, hideStarter, isStarterId, type ServerSound } from '~/lib/sounds/sounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
+
+export interface NewSound {
+  name: string
+  url: string
+  soundType: SoundType
+  labelColor?: string | null
+  labelImage?: 'thumbnail' | null
+  discFinish?: DiscFinish
+  // a resized label picture, uploaded once the sound row exists
+  upload?: Blob
+}
+
+export const labelImageUrl = (id: string) =>
+  api.user.sounds[':id'].label.$url({ param: { id } }).toString()
+
+async function uploadLabel(id: string, image: Blob) {
+  const res = await fetch(labelImageUrl(id), {
+    method: 'PUT',
+    body: image,
+    headers: { 'Content-Type': image.type },
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('upload failed')
+  return (await res.json()) as ServerSound
+}
 
 export const useSound = () => {
   const queryClient = useQueryClient()
 
-  return useMutation<ServerSound, Error, { name: string; url: string; soundType: SoundType }>({
+  return useMutation<ServerSound, Error, NewSound>({
     mutationKey: ['userSounds'],
-    mutationFn: async ({ name, url, soundType }) => {
+    mutationFn: async ({ upload, ...sound }) => {
       const res = await api.user.sounds.$post({
-        json: { id: createId(), name, url, isCustom: true, soundType },
+        json: { id: createId(), isCustom: true, ...sound },
       })
       if (res.status === 409) throw new Error('You already have this sound.')
       if (!res.ok) throw new Error("Couldn't save this sound. Check your connection and try again.")
-      return (await res.json()) as ServerSound
+      const saved = (await res.json()) as ServerSound
+      if (!upload) return saved
+      try {
+        return await uploadLabel(saved.id, upload)
+      } catch {
+        toast.error("Added, but the label picture couldn't be saved. It uses a colour for now.")
+        return saved
+      }
     },
     onSuccess: newSound => {
       queryClient.setQueryData<ServerSound[]>(['userSounds'], old => [...(old ?? []), newSound])

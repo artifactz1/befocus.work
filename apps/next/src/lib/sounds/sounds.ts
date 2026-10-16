@@ -1,4 +1,8 @@
+import { youTubeVideoId } from '@repo/api/lib/youtube'
 import type { Sound } from '~/store/useSoundsStore'
+
+export type LabelImage = 'thumbnail' | 'upload'
+export type DiscFinish = 'black' | 'smoke' | 'tinted'
 
 export interface ServerSound {
   id: string
@@ -6,6 +10,9 @@ export interface ServerSound {
   url: string
   isCustom: boolean
   soundType: Sound['soundType']
+  labelColor?: string | null
+  labelImage?: LabelImage | null
+  discFinish?: DiscFinish
 }
 
 const starter = (id: string, name: string, url: string, soundType: Sound['soundType']): Sound => ({
@@ -56,10 +63,14 @@ export function reconcileSounds(
   }
   for (const r of rows ?? []) {
     const prev = current[r.id]
-    next[r.id] =
-      prev && prev.name === r.name && prev.url === r.url
-        ? prev
-        : { ...(prev ?? { playing: false, volume: 0 }), ...r, isCustom: true }
+    const same =
+      prev &&
+      prev.name === r.name &&
+      prev.url === r.url &&
+      prev.labelColor === r.labelColor &&
+      prev.labelImage === r.labelImage &&
+      prev.discFinish === r.discFinish
+    next[r.id] = same ? prev : { ...(prev ?? { playing: false, volume: 0 }), ...r, isCustom: true }
   }
   const a = Object.keys(next)
   const b = Object.keys(current)
@@ -91,21 +102,43 @@ export function hideStarter(id: string, storage: Store | undefined = defaultStor
   } catch {}
 }
 
-// Deterministic label colors from the name (FNV-1a 32-bit -> hue). No stored color, no migration.
-export function labelInk(name: string) {
+// Board swatches for a record label. null is Auto.
+export const LABEL_SWATCHES = [
+  '#fda4af',
+  '#fdba74',
+  '#fde047',
+  '#86efac',
+  '#93c5fd',
+  '#c4b5fd',
+  '#f5f5f4',
+] as const
+
+const AUTO_MIX = [92, 55, 35, 70, 22]
+
+// Auto label: the accent mixed toward graphite by an amount picked from the name (FNV-1a), so
+// every label sits in the accent's family instead of a saturated hashed hue.
+export function autoLabel(name: string) {
   let hash = 2166136261
   for (const ch of name.trim().toLowerCase()) {
     for (let i = 0; i < ch.length; i++) {
       hash = Math.imul(hash ^ ch.charCodeAt(i), 16777619)
     }
   }
-  const h = (hash >>> 0) % 360
-  return {
-    ink: `hsl(${h} 62% 52%)`,
-    inkDeep: `hsl(${h} 62% 36%)`,
-    sleeve: `hsl(${h} 28% 18%)`,
-    sleeveDeep: `hsl(${h} 28% 11%)`,
-  }
+  return `color-mix(in srgb, var(--user-accent) ${AUTO_MIX[(hash >>> 0) % AUTO_MIX.length]}%, #2a2a2a)`
+}
+
+export const labelFill = (s: Pick<Sound, 'name' | 'labelColor'>) =>
+  s.labelColor ?? autoLabel(s.name)
+
+export function discBase(finish: DiscFinish | undefined, label: string) {
+  if (finish === 'smoke') return 'rgb(68 68 74 / 0.72)'
+  if (finish === 'tinted') return `color-mix(in srgb, ${label} 34%, #0b0b0b)`
+  return '#0b0b0b'
+}
+
+export function thumbnailUrl(url: string) {
+  const id = youTubeVideoId(url)
+  return id ? `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg` : null
 }
 
 const DEFAULT_RECORD_VOLUME = 0.4

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { toast } from 'sonner'
 import { useUserSounds } from '~/hooks/useSounds'
@@ -15,10 +15,15 @@ const GlobalPlayer = () => {
 
   const soundKeys = Object.keys(sounds)
   const { data: userSounds } = useUserSounds()
+  // react-player only renders its lazy players in the browser, so skip the server pass
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   useEffect(() => {
     syncUserSounds(userSounds)
   }, [userSounds, syncUserSounds])
+
+  if (!mounted) return null
 
   return (
     <>
