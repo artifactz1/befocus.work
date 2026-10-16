@@ -38,6 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Media Uploads** - Upload your own images and videos to R2 behind the timer
 - [ ] **Phase 6: URL Backgrounds** - Paste any remote image or video URL, with a safe fallback
 - [x] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs (8/8 plans shipped in #116; human visual checks and 07-08 gaps still open, see Progress)
+- [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (5 plans, ready to execute)
 - [ ] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded
 - [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress
 - [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
@@ -425,6 +426,80 @@ Design decisions (captain picks 2026-10-05, all resolved):
 Product questions Q2, Q3 and Q4 are resolved for this phase (see "Open Product Questions").
 Q1, its priority against Phases 4-6, is still open.
 
+### Phase 07.1: Session settings start card and capsule steppers (INSERTED)
+
+**Goal**: Session settings stops being a footer popover and becomes a centered card that meets
+the user at the moment they commit to a session. Pressing Play on a fresh session opens it with
+modern capsule steppers for focus, break and rounds, the alarm picker, an "ends around" time and
+a Start button; mid-session the footer button opens the same card to edit and save. Users who
+always run the same plan can turn the prompt off.
+**Mode:** mvp
+**Depends on**: Phase 7 (alarm picker moved into Session settings in 07-03)
+**Requirements**: SES-01, SES-02, SES-03, SES-04, SES-05, SES-06
+**Success Criteria** (what must be TRUE):
+
+  1. Focus, break and rounds are each a full-width capsule with a round minus and plus inside and
+     the name and range above it. Focus runs 5-90 min and break 5-30 min in steps of 5, rounds
+     1-12. At a limit the matching button disables and the row says why; holding a button
+     repeats.
+
+  2. Each stepper is one shared component exposed as a labelled spinbutton: arrow keys, Page
+     Up/Down, Home and End change it, and a screen reader hears the name, value and unit. The
+     three copy-pasted inputs are gone.
+
+  3. On a fresh session (round 1 with its full time left, after Reset, or after the last round
+     ends) pressing Play or Space opens a centered card over the dimmed timer instead of starting.
+     It shows the steppers, the alarm picker, the time the session will end, and Start. Enter or
+     Start begins the session with the chosen values; Esc closes it and leaves the timer as it
+     was. Resuming from a pause or skipping rounds never opens it.
+
+  4. An "Ask before each session" switch in the card turns the prompt off; Play then starts
+     straight away. A signed-in user's choice survives refresh and other devices and arrives with
+     the server render (no flash); a guest's choice holds in that browser.
+
+  5. The footer Session settings button opens the same card titled Session settings, with Cancel
+     and Save. Save asks to confirm while a session is in progress, because it restarts the
+     timer. The old popover and the phone drawer are gone.
+
+  6. On a phone the card is the same card with a 16px gutter. The card traps focus, lands on
+     Start (or the first stepper when editing), is labelled for screen readers, and its open and
+     close motion is off under reduced motion.
+**Plans**: 5 plans
+
+Plans:
+
+**Wave 1**
+
+- [ ] 07.1-01-PLAN.md - ask_before_start column with generated migration 0010, bounded settings schemas, quiet save hook; human applies the migration, then a signed-in round trip (SES-04)
+- [ ] 07.1-02-PLAN.md - Pure session rules (limits, fresh/finished, step snapping, totals, ends-around, guest storage) with session.check, and the shared capsule Stepper spinbutton (SES-01, SES-02, SES-03, SES-04)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 07.1-03-PLAN.md - One request-start rule for Play, Space and the command menu; SessionCard start mode on the Radix dialog with the switch, mounted for signed-in users and guests (SES-01, SES-03, SES-04, SES-06)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 07.1-04-PLAN.md - Edit mode with the restart confirm and the footer Session settings button; popover, drawer and number inputs removed; command menu on the shared limits (SES-01, SES-02, SES-05)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 07.1-05-PLAN.md - Browser E2E at 1440 and 390 for guest and signed-in with fixes, then human UAT in Chrome and Firefox (SES-01..SES-06)
+
+**UI hint**: yes
+
+Planning notes:
+
+- Design reference: Lavish board `.lavish/settings/board.html` (local, not committed; session
+  http://127.0.0.1:4387/session/97294d883249ee12). Captain pick 2026-10-16: direction D
+  Capsules, placement P5 "Center card, before you start" with the switch, proposed limits.
+- Settings are stored in seconds today (`sessionSettings.work_duration`, `break_duration`) and
+  `number_of_sessions`; the switch is the only new column. It must follow the
+  server-fetched-then-hydrate path (`getUserSettings` -> `DashboardShell`) like the durations.
+- Space handling lives in `hooks/useTimerKeyboard.ts`; the Play button in
+  `components/timer/TimerButtons.tsx`. Both must route through one "request start" path so the
+  card rule is decided once.
+- Out of scope: any other settings redesign, Phase 8 added time, Phase 9 tasks and time blocks.
+
 ### Phase 8: Focus Blocks and Added Time
 
 **Goal**: The end of a focus block becomes a real moment the user controls: the timer stops in an
@@ -637,6 +712,7 @@ open question Q1.
 | 5. Media Uploads | 0/TBD | Not started | - |
 | 6. URL Backgrounds | 0/TBD | Not started | - |
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
+| 7.1. Session Settings Start Card (INSERTED) | 0/5 | Planned | - |
 | 8. Focus Blocks and Added Time | 0/TBD | Not started | - |
 | 9. Tasks and Time Blocks | 0/TBD | Not started | - |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
@@ -652,12 +728,13 @@ open question Q1.
 | 5. Media Uploads | MED-01..09 | 9 |
 | 6. URL Backgrounds | URL-01..03 | 3 |
 | 7. Vinyl Sound Space | VNL-01..08 | 8 |
+| 7.1. Session Settings Start Card | SES-01..06 | 6 |
 | 8. Focus Blocks and Added Time | BLK-01..05 | 5 |
 | 9. Tasks and Time Blocks | TSK-01..05 | 5 |
 | 10. Session Logs and Reflection | LOG-01..06 | 6 |
-| **Total** | | **76** |
+| **Total** | | **82** |
 
-All 76 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
+All 82 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
 
 ## Verification Note
 

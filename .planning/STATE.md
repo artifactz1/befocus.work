@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: verifying
-stopped_at: Completed 07-08-PLAN.md (Phase 7 shipped in #116; progress views reconciled)
-last_updated: "2026-10-16T00:00:00.000Z"
-last_activity: 2026-10-16
+status: executing
+stopped_at: "Completed 07-08-PLAN.md (Phase 7 redesign, PR #116); progress views reconciled"
+last_updated: "2026-10-16T23:43:52.007Z"
+last_activity: 2026-10-16 -- Phase 07.1 planning complete
 progress:
-  total_phases: 10
-  completed_phases: 1
-  total_plans: 21
+  total_phases: 11
+  completed_phases: 2
+  total_plans: 26
   completed_plans: 20
-  percent: 95
+  percent: 77
 ---
 
 # Project State
@@ -22,16 +22,16 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** A user can change how their focus dashboard looks and have that look still be there
 the next time they open it - signed in on any device, or as a guest on the same browser.
-**Current focus:** Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phases 3-6 and 8-10 not started
+**Current focus:** Phase 7.1 (inserted) planned - 5 plans ready, next `/gsd:execute-phase 07.1`. Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phases 3-6 and 8-10 not started
 
 ## Current Position
 
-Phase: 07 (vinyl-sound-space) - SHIPPED, verification pending
-Plan: 8 of 8
-Status: All plans executed in Phases 2 and 7 (8/8 each), Phase 1 at 4/5. Open: 01-05 production check, 02-08 owner review, 07 human checks, 07-08 timer-scale override and label-size hardening
-Last activity: 2026-10-16
+Phase: 07.1 (session-settings-start-card-and-capsule-steppers) - PLANNED
+Plan: 0 of 5
+Status: Ready to execute 07.1. Still open: 01-05 production check, 02-08 owner review, 07 human checks, 07-08 timer-scale override and label-size hardening
+Last activity: 2026-10-16 -- Phase 07.1 planning complete
 
-Progress: [█████████░] 95%
+Progress: [████████░░] 77%
 
 ## Performance Metrics
 
@@ -119,6 +119,7 @@ Recent decisions affecting current work:
 - Phase 8 added: Focus Blocks and Added Time (BLK-01..05), depends on Phase 3
 - Phase 9 added: Tasks and Time Blocks (TSK-01..05), depends on Phase 8
 - Phase 10 added: Session Logs and Reflection (LOG-01..06), depends on Phases 8 and 9
+- Phase 07.1 inserted after Phase 7: Session settings start card and capsule steppers, from the captain's design board pick (D Capsules, P5 center start card with switch)
 
 ### Pending Todos
 

@@ -124,6 +124,23 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [x] **VNL-08**: On a phone the room is a bottom sheet; the room is keyboard navigable, labelled
       for screen readers, and under reduced motion a record swaps in instantly with no spin
 
+### Session Settings
+
+- [ ] **SES-01**: Focus, break and rounds are full-width capsule steppers (round minus and plus
+      inside, name and range above) with limits focus 5-90 min and break 5-30 min in steps of 5,
+      rounds 1-12; a button disables at its limit with a visible reason, and holding repeats
+- [ ] **SES-02**: One shared stepper component replaces the three duplicated inputs and is a
+      labelled spinbutton driven by arrows, Page Up/Down, Home and End
+- [ ] **SES-03**: Play or Space on a fresh session opens a centered start card (steppers, alarm,
+      ends-around time, Start); Enter starts with the chosen values, Esc leaves the timer as it
+      was; resume and round skips never open it
+- [ ] **SES-04**: An "Ask before each session" switch turns the start card off; it persists for
+      signed-in users through the server render and per browser for guests
+- [ ] **SES-05**: The footer Session settings button opens the same centered card with Cancel and
+      Save, Save confirms while a session is in progress; the popover and phone drawer are removed
+- [ ] **SES-06**: On a phone the card keeps a 16px gutter; the card traps focus, is labelled for
+      screen readers, and honours reduced motion
+
 ### Focus Blocks
 
 - [ ] **BLK-01**: When a focus block reaches zero the alarm plays and the timer waits in an ended
@@ -259,6 +276,12 @@ Which phases cover which requirements. Populated during roadmap creation.
 | VNL-06 | Phase 7 - Vinyl Sound Space | Complete |
 | VNL-07 | Phase 7 - Vinyl Sound Space | Complete |
 | VNL-08 | Phase 7 - Vinyl Sound Space | Complete |
+| SES-01 | Phase 7.1 - Session Settings Start Card | Pending |
+| SES-02 | Phase 7.1 - Session Settings Start Card | Pending |
+| SES-03 | Phase 7.1 - Session Settings Start Card | Pending |
+| SES-04 | Phase 7.1 - Session Settings Start Card | Pending |
+| SES-05 | Phase 7.1 - Session Settings Start Card | Pending |
+| SES-06 | Phase 7.1 - Session Settings Start Card | Pending |
 | BLK-01 | Phase 8 - Focus Blocks and Added Time | Pending |
 | BLK-02 | Phase 8 - Focus Blocks and Added Time | Pending |
 | BLK-03 | Phase 8 - Focus Blocks and Added Time | Pending |
@@ -277,12 +300,12 @@ Which phases cover which requirements. Populated during roadmap creation.
 | LOG-06 | Phase 10 - Session Logs and Reflection | Pending |
 
 **Coverage:**
-- v1 requirements: 76 total
-- Mapped to phases: 76
+- v1 requirements: 82 total
+- Mapped to phases: 82
 - Unmapped: 0
 
 Every v1 requirement maps to exactly one phase. No orphans, no duplicates.
 
 ---
 *Requirements defined: 2026-09-23*
-*Last updated: 2026-10-05 after the vinyl design board decisions (Phase 7)*
+*Last updated: 2026-10-16 after the session settings design board pick (Phase 7.1)*
