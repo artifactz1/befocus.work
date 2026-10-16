@@ -39,13 +39,16 @@ export default function SoundOptions({
   const pending = useRef<(() => void) | null>(null)
   const starter = isStarterId(sound.id)
 
-  // The trigger unmounts with its item, so hand focus to a neighbour or the add tile.
+  // The trigger unmounts with its item, so hand focus to a neighbour. The crate keeps its front
+  // slot and shows another record there, so focus stays in that slot.
   const remove = () => {
     const item = trigger.current?.closest('[data-sound-id]')
     const next = item?.nextElementSibling ?? item?.previousElementSibling
     del.mutate(sound.id)
     requestAnimationFrame(() => {
-      const target = next?.matches(FOCUSABLE) ? next : next?.querySelector(FOCUSABLE)
+      const slot = item?.isConnected && item.getAttribute('data-sound-id') !== sound.id
+      const at = slot ? item : next
+      const target = at?.matches(FOCUSABLE) ? at : at?.querySelector(FOCUSABLE)
       if (target instanceof HTMLElement) target.focus()
     })
   }

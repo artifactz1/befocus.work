@@ -3,7 +3,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { isYouTubeUrl } from '@repo/api/lib/youtube'
 import { useReducedMotion } from 'framer-motion'
-import { Disc3, ImageUp, Link2, X } from 'lucide-react'
+import { ChevronLeft, Disc3, ImageUp, Link2, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useSound, useUpdateUserSound } from '~/hooks/useSounds'
@@ -12,6 +12,7 @@ import {
   type DiscFinish,
   discBase,
   LABEL_SWATCHES,
+  type ServerSound,
   thumbnailUrl,
 } from '~/lib/sounds/sounds'
 import styles from './add-sound.module.css'
@@ -103,14 +104,30 @@ function useVideoTitle(url: string, valid: boolean) {
   return { title: title?.url === url ? title.text : null, fetching: title?.url !== url }
 }
 
-function Head({ title, description }: { title: string; description: string }) {
+// Inside the room the form takes the room's place, so its button goes back to the room.
+function Head({
+  title,
+  description,
+  inline,
+}: {
+  title: string
+  description: string
+  inline: boolean
+}) {
   return (
     <div className={styles.head}>
+      {inline && (
+        <DialogPrimitive.Close className={styles.x} aria-label='Back to records'>
+          <ChevronLeft aria-hidden='true' />
+        </DialogPrimitive.Close>
+      )}
       <DialogPrimitive.Title className={styles.title}>{title}</DialogPrimitive.Title>
       <DialogPrimitive.Description className='sr-only'>{description}</DialogPrimitive.Description>
-      <DialogPrimitive.Close className={styles.x} aria-label='Close'>
-        <X aria-hidden='true' />
-      </DialogPrimitive.Close>
+      {!inline && (
+        <DialogPrimitive.Close className={styles.x} aria-label='Close'>
+          <X aria-hidden='true' />
+        </DialogPrimitive.Close>
+      )}
     </div>
   )
 }
@@ -131,9 +148,13 @@ function Footer({ pending, label }: { pending: boolean; label: string }) {
 function AddForm({
   state,
   close,
+  added,
+  inline,
 }: {
   state: Extract<DialogState, { mode: 'add' }>
   close: () => void
+  added: (row: ServerSound) => void
+  inline: boolean
 }) {
   const reduced = useReducedMotion()
   const phone = useMediaQuery('(max-width: 639px)')
@@ -225,6 +246,7 @@ function AddForm({
       },
       {
         onSuccess: row => {
+          added(row)
           close()
           focusSound(row.id)
         },
@@ -238,6 +260,7 @@ function AddForm({
       <Head
         title={record ? 'Add a record' : 'Add ambience'}
         description='Save a YouTube link as a record or ambience.'
+        inline={inline}
       />
       <div className={styles.field}>
         <label htmlFor='add-sound-url' className={styles.sec}>
@@ -447,9 +470,11 @@ function AddForm({
 function RenameForm({
   state,
   close,
+  inline,
 }: {
   state: Extract<DialogState, { mode: 'rename' }>
   close: () => void
+  inline: boolean
 }) {
   const rename = useUpdateUserSound(state.id)
   const [name, setName] = useState(state.name)
@@ -465,7 +490,7 @@ function RenameForm({
 
   return (
     <form onSubmit={submit} noValidate>
-      <Head title='Rename' description='Change the name.' />
+      <Head title='Rename' description='Change the name.' inline={inline} />
       <div className={styles.field}>
         <label htmlFor='add-sound-name' className={styles.sec}>
           Name
@@ -490,48 +515,78 @@ function RenameForm({
   )
 }
 
+// A modal card, or with `inline` a panel that takes the room card's place on desktop.
 export default function AddSoundDialog({
   state,
   onClose,
+  onAdded,
+  inline = false,
 }: {
   state: DialogState | null
   onClose: () => void
+  onAdded?: (row: ServerSound) => void
+  inline?: boolean
 }) {
   // Rename opens from a menu that is gone by now, so focus goes back to the renamed sleeve.
   // A tap does not focus the add button on touch, so it is passed in to return to.
   const back = useRef<string | HTMLElement | null>(null)
   if (state) back.current = state.mode === 'rename' ? state.id : (state.from ?? null)
 
+  const content = (
+    <DialogPrimitive.Content
+      className={inline ? styles.inline : styles.card}
+      onOpenAutoFocus={e => {
+        e.preventDefault()
+        const url = document.getElementById('add-sound-url') as HTMLInputElement | null
+        const target = url && !url.value ? url : document.getElementById('add-sound-name')
+        target?.focus()
+      }}
+      onCloseAutoFocus={e => {
+        const from = back.current
+        const target =
+          typeof from === 'string'
+            ? document
+                .querySelector(`[data-sound-id="${from}"]`)
+                ?.querySelector<HTMLElement>('button, input')
+            : from
+        if (!target?.isConnected) return
+        e.preventDefault()
+        target.focus()
+      }}
+      // inline, a click on the timer or the footer keeps what was typed
+      onInteractOutside={inline ? e => e.preventDefault() : undefined}
+    >
+      <span className={styles.handle} aria-hidden='true' />
+      {state?.mode === 'add' && (
+        <AddForm
+          state={state}
+          close={onClose}
+          added={row => {
+            // focus goes to the new item, not back to the add button
+            back.current = row.id
+            onAdded?.(row)
+          }}
+          inline={inline}
+        />
+      )}
+      {state?.mode === 'rename' && <RenameForm state={state} close={onClose} inline={inline} />}
+    </DialogPrimitive.Content>
+  )
+
   return (
-    <DialogPrimitive.Root open={state !== null} onOpenChange={open => !open && onClose()}>
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className={styles.scrim} />
-        <DialogPrimitive.Content
-          className={styles.card}
-          onOpenAutoFocus={e => {
-            e.preventDefault()
-            const url = document.getElementById('add-sound-url') as HTMLInputElement | null
-            const target = url && !url.value ? url : document.getElementById('add-sound-name')
-            target?.focus()
-          }}
-          onCloseAutoFocus={e => {
-            const from = back.current
-            const target =
-              typeof from === 'string'
-                ? document
-                    .querySelector(`[data-sound-id="${from}"]`)
-                    ?.querySelector<HTMLElement>('button, input')
-                : from
-            if (!target?.isConnected) return
-            e.preventDefault()
-            target.focus()
-          }}
-        >
-          <span className={styles.handle} aria-hidden='true' />
-          {state?.mode === 'add' && <AddForm state={state} close={onClose} />}
-          {state?.mode === 'rename' && <RenameForm state={state} close={onClose} />}
-        </DialogPrimitive.Content>
-      </DialogPrimitive.Portal>
+    <DialogPrimitive.Root
+      open={state !== null}
+      modal={!inline}
+      onOpenChange={open => !open && onClose()}
+    >
+      {inline ? (
+        content
+      ) : (
+        <DialogPrimitive.Portal>
+          <DialogPrimitive.Overlay className={styles.scrim} />
+          {content}
+        </DialogPrimitive.Portal>
+      )}
     </DialogPrimitive.Root>
   )
 }

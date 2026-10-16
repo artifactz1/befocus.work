@@ -4,6 +4,7 @@ import { isYouTubeUrl } from '@repo/api/lib/youtube'
 import { X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useSession } from '~/lib/auth.client'
 import { type Sound, useSoundsStore } from '~/store/useSoundsStore'
 import AddSoundDialog, { type DialogState } from './AddSoundDialog'
@@ -17,7 +18,12 @@ export default function RecordRoomBody() {
   const record = useSoundsStore(state => state.sounds[state.bgMusicId])
   const { data: session } = useSession()
   const [dialog, setDialog] = useState<DialogState | null>(null)
+  // a record just added comes to the front of the crate
+  const [added, setAdded] = useState<string | null>(null)
   const signedIn = Boolean(session)
+  // On desktop the add and rename forms open in the room card itself, in place of the room.
+  const inline = useMediaQuery('(min-width: 1024px)')
+  const swapped = inline && dialog !== null
   const rename = (s: Sound) => setDialog({ mode: 'rename', id: s.id, name: s.name })
 
   // Pasting a link anywhere in the room starts the add flow.
@@ -46,7 +52,7 @@ export default function RecordRoomBody() {
 
   return (
     <>
-      <div className={styles.head}>
+      <div className={styles.head} hidden={swapped}>
         <h2 id='records-heading' className={styles.heading} tabIndex={-1}>
           Records
         </h2>
@@ -62,18 +68,24 @@ export default function RecordRoomBody() {
           <X aria-hidden='true' />
         </button>
       </div>
-      <div className={styles.body}>
+      <div className={styles.body} hidden={swapped}>
         <Turntable />
         <Ambience
           onAdd={from => setDialog({ mode: 'add', url: '', type: 'ambient', from })}
           onRename={rename}
         />
         <Shelf
+          show={added}
           onAdd={from => setDialog({ mode: 'add', url: '', type: 'bgMusic', from })}
           onRename={rename}
         />
       </div>
-      <AddSoundDialog state={dialog} onClose={() => setDialog(null)} />
+      <AddSoundDialog
+        state={dialog}
+        onClose={() => setDialog(null)}
+        onAdded={row => row.soundType === 'bgMusic' && setAdded(row.id)}
+        inline={inline}
+      />
     </>
   )
 }
