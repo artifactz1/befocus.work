@@ -31,13 +31,13 @@ productivity track are independent of each other and of Phases 4-6.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation Repair** - Production settings hydration, one Tailwind, clean tokens, working lint gate
+- [ ] **Phase 1: Foundation Repair** - Production settings hydration, one Tailwind, clean tokens, working lint gate (4/5 plans merged in #109; 01-05 human deploy and production verification outstanding)
 - [ ] **Phase 2: Customization Engine and Panel** - Every control, live preview, Apply and Cancel, desktop and mobile (all plans executed, owner review checkpoint outstanding)
 - [ ] **Phase 3: Persistence and Sync** - A look survives refresh, follows the account, and sticks for guests
 - [ ] **Phase 4: Saved Themes** - Name, switch, rename and delete looks; curated presets; guest migration
 - [ ] **Phase 5: Media Uploads** - Upload your own images and videos to R2 behind the timer
 - [ ] **Phase 6: URL Backgrounds** - Paste any remote image or video URL, with a safe fallback
-- [x] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs
+- [x] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs (8/8 plans shipped in #116; human visual checks and 07-08 gaps still open, see Progress)
 - [ ] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded
 - [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress
 - [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
@@ -630,13 +630,13 @@ open question Q1.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation Repair | 4/5 | In Progress|  |
-| 2. Customization Engine and Panel | 8/8 | Owner review pending |  |
+| 1. Foundation Repair | 4/5 | In progress - 01-05 (human deploy, FND-01/FND-05 production check) outstanding | - |
+| 2. Customization Engine and Panel | 8/8 | Shipped in #109, verification human_needed: owner visual review (02-08 Task 3) pending; panel later reshaped by #113/#114 | 2026-09-29 (code) |
 | 3. Persistence and Sync | 0/TBD | Not started | - |
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |
 | 6. URL Backgrounds | 0/TBD | Not started | - |
-| 7. Vinyl Sound Space | 0/TBD | Not started | - |
+| 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
 | 8. Focus Blocks and Added Time | 0/TBD | Not started | - |
 | 9. Tasks and Time Blocks | 0/TBD | Not started | - |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
