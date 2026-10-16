@@ -58,6 +58,23 @@ Direction A "Quiet Deck", owner review rounds 3-5 (2026-10-15).
 - `label-image.check` covers the sound schemas: only the PUT route can set an uploaded label.
 - Timer at 0.8 is left for the owner (see Deviation).
 
+## Owner review rounds (Lavish board, after verification)
+
+The owner reviewed the built room on a local Lavish board over 13 rounds and closed it with
+"looks good end it". Commit b3b7748 carries the result:
+
+- Deck vinyl centred in the deck (desktop and phone).
+- Shelf is a record crate: the front sleeve shows its disc out to the right, the next four
+  sleeves stand behind it. Flip by arrows, Left/Right keys, clicking an edge or swiping on touch.
+  Flips use a small bounce (edges glide to their new slot, the new front pops in over the old).
+  Reduced motion flips instantly.
+- Crate discs are always black; the label keeps its colour or picture. Smoke and Tinted finishes
+  stay in the add dialog and show on the deck.
+- Desktop: Add a record, Add ambience and Rename open inside the room card with a Back button
+  instead of a second dialog. Phone and tablet keep the bottom sheet. A new record comes to the
+  crate front with focus on it.
+- Timer stays at 0.8 while the room is open (the owner did not ask to change it).
+
 ## Deploy notes
 
 - Create R2 bucket `befocus-labels` and apply migration 0009 before deploying the API.
