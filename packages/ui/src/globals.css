@@ -40,17 +40,16 @@ html[data-density="roomy"] {
   --pad-y: 7vh;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-}
+/* Mouse only: a styled scrollbar on touch turns the overlay scrollbar into one that takes width. */
+@media (pointer: fine) {
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
 
-::-webkit-scrollbar-track {
-  /* background: #000; */
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c5c5c5;
-  border-radius: 4px;
+  ::-webkit-scrollbar-thumb {
+    background: #c5c5c5;
+    border-radius: 4px;
+  }
 }
 
 @layer base {
