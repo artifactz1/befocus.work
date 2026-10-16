@@ -21,7 +21,7 @@ export interface NewSound {
 }
 
 export const labelImageUrl = (id: string) =>
-  api.user.sounds[':id'].label.$url({ param: { id } }).toString()
+  api.user.sounds[':id'].label.$url({ param: { id: encodeURIComponent(id) } }).toString()
 
 async function uploadLabel(id: string, image: Blob) {
   const res = await fetch(labelImageUrl(id), {

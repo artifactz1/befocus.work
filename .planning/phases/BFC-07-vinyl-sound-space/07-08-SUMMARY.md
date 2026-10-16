@@ -7,7 +7,7 @@ Direction A "Quiet Deck", owner review rounds 3-5 (2026-10-15).
 
 | Area | What |
 |------|------|
-| Schema | `sounds.label_color`, `label_image` (`thumb` or `upload`), `disc_finish` (`black` default, `smoke`, `tinted`); migration `0009_vinyl_labels.sql` |
+| Schema | `sounds.label_color`, `label_image` (`thumbnail` or `upload`), `disc_finish` (`black` default, `smoke`, `tinted`); migration `0009_vinyl_labels.sql` |
 | Label bucket | R2 binding `LABELS` (bucket `befocus-labels`). `PUT /user/sounds/:id/label` stores `labels/{userId}/{soundId}` after an owner check, a 1MB cap and a magic-byte sniff (PNG, JPEG, WebP). `GET` streams it to the owner only, with ETag and 304. Delete, and switching away from an upload, remove the object |
 | Headers | `secureHeaders({ crossOriginResourcePolicy: 'same-site' })` so the web origin can show label images |
 | Client | Store, `useSounds` and `lib/sounds` carry the new fields; `labelImageUrl`; label upload after create |
@@ -46,6 +46,17 @@ Direction A "Quiet Deck", owner review rounds 3-5 (2026-10-15).
   user's sound 404 on PUT and GET, upload 200 then GET 200 same bytes with CORP same-site, nosniff and
   ETag, conditional 304, switch to thumbnail then GET 404, delete then GET 404.
 - Console: only the pre-existing react-player YouTube postMessage origin warning.
+
+## After verification (07-08-VERIFICATION.md)
+
+- PUT label route caps the body with `hono/body-limit` before buffering, with or without
+  Content-Length (curl: chunked 1.1MB 413, chunked junk 415, chunked valid 200).
+- R2 deletes after a row change are caught and logged, so a failed delete no longer turns a
+  committed change into a 500.
+- Deleting the last ambience row hands focus to "Add ambience" (browser check).
+- Label image URL percent-encodes the id.
+- `label-image.check` covers the sound schemas: only the PUT route can set an uploaded label.
+- Timer at 0.8 is left for the owner (see Deviation).
 
 ## Deploy notes
 

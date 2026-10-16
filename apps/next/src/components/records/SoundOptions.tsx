@@ -44,7 +44,10 @@ export default function SoundOptions({
     const item = trigger.current?.closest('[data-sound-id]')
     const next = item?.nextElementSibling ?? item?.previousElementSibling
     del.mutate(sound.id)
-    requestAnimationFrame(() => next?.querySelector<HTMLElement>(FOCUSABLE)?.focus())
+    requestAnimationFrame(() => {
+      const target = next?.matches(FOCUSABLE) ? next : next?.querySelector(FOCUSABLE)
+      if (target instanceof HTMLElement) target.focus()
+    })
   }
 
   return (

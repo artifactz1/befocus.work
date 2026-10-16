@@ -5,7 +5,7 @@ import { and, eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { sessionSettings } from './../../db/tables/settings'
 import { insertSoundSchema, sounds, updateSoundSchema } from './../../db/tables/sounds'
-import { LABEL_MAX_BYTES, labelKey, sniffLabelImage } from '../../lib/label-image'
+import { labelKey, sniffLabelImage } from '../../lib/label-image'
 import type {
   CreateUserSettings,
   CreateUserSounds,
@@ -302,7 +302,12 @@ export const deleteUserSound: AppRouteHandler<DeleteUserSound> = async c => {
     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
   }
 
-  if (existing.labelImage === 'upload') await c.env.LABELS.delete(labelKey(user.id, soundId))
+  // The row is gone either way; a failed object delete only leaves an unreachable image behind.
+  if (existing.labelImage === 'upload') {
+    await c.env.LABELS.delete(labelKey(user.id, soundId)).catch(err =>
+      console.error('label delete failed', err),
+    )
+  }
 
   // return c.json(undefined, HttpStatusCodes.NO_CONTENT)
   return c.json({ message: 'Sound deleted successfully' }, HttpStatusCodes.OK)
@@ -354,7 +359,9 @@ export const updateUserSounds: AppRouteHandler<UpdateUserSounds> = async c => {
 
   // Moving off an uploaded label drops the stored image.
   if (existing.labelImage === 'upload' && data.labelImage !== undefined) {
-    await c.env.LABELS.delete(labelKey(user.id, data.id))
+    await c.env.LABELS.delete(labelKey(user.id, data.id)).catch(err =>
+      console.error('label delete failed', err),
+    )
   }
 
   return c.json(updated[0], HttpStatusCodes.OK)
@@ -376,14 +383,8 @@ export const putUserSoundLabel: AppRouteHandler<PutUserSoundLabel> = async c => 
     return c.json({ message: 'Sound not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
-  const tooLarge = { message: 'Label images can be at most 1 MB.' }
-  if (Number(c.req.header('content-length') ?? 0) > LABEL_MAX_BYTES) {
-    return c.json(tooLarge, HttpStatusCodes.REQUEST_TOO_LONG)
-  }
+  // bodyLimit on the route caps the size
   const body = await c.req.arrayBuffer()
-  if (body.byteLength > LABEL_MAX_BYTES) {
-    return c.json(tooLarge, HttpStatusCodes.REQUEST_TOO_LONG)
-  }
 
   const contentType = sniffLabelImage(new Uint8Array(body))
   if (!contentType) {
