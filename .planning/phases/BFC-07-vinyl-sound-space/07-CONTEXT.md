@@ -68,6 +68,16 @@ observations in the board report.
   (`bun test` file or script) - the plan decides the minimal harness without inventing a framework.
 - Biome style (single quotes, no semicolons, 100 col).
 
+### Redesign (owner, 2026-10-15, plan 07-08)
+- Second design board (`firstmate/data/befocus-records-design/report.md`), Direction A "Quiet Deck"
+  with review rounds 3-5. Supersedes the left-half room and knob row above.
+- Timer stays centred; the room is a left 400px card on desktop, a bottom sheet under 1024px.
+- Vinyl customisation in the add dialog: label Auto, 7 swatches, video thumbnail or uploaded image;
+  disc finish Black, Smoke or Tinted. No inner ring on any disc.
+- Add dialog shows the square cover with the disc sliding out and spinning; off under reduced motion.
+- Uploaded label images go to an owner-scoped R2 bucket with type and size checks. This bucket is
+  the one exception to "Phase 5 storage out of scope"; audio stays YouTube only.
+
 ### Claude's Discretion
 - Exact component structure, knob interaction details, label ink algorithm, how room and
   customize inspector coexist, drag payload details, layout math for shrinking timer.

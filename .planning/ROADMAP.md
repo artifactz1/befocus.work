@@ -364,6 +364,10 @@ Plans:
 
 - [x] 07-07-PLAN.md - Phone, keyboard, screen reader and reduced-motion audit with fixes, owner review checkpoint (VNL-08)
 
+**Wave 7** *(follow-up, owner redesign 2026-10-15)*
+
+- [x] 07-08-PLAN.md - Quiet Deck redesign (left card, centred timer), vinyl label and disc finish in the add dialog, owner-scoped R2 bucket for uploaded label images (VNL-01..VNL-08)
+
 **UI hint**: yes
 
 Notes for planning:
