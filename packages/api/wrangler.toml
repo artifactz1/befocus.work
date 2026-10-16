@@ -12,9 +12,10 @@ compatibility_date = "2024-12-24"
 # binding = "MY_KV_NAMESPACE"
 # id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
+# Uploaded record label images, keyed labels/{userId}/{soundId}
+[[r2_buckets]]
+binding = "LABELS"
+bucket_name = "befocus-labels"
 
 # [[d1_databases]]
 # binding = "DB"

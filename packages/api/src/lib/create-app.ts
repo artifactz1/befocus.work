@@ -29,7 +29,8 @@ export default function createApp() {
     // TODO: https://www.notion.so/nextjs-expo-hono-19463b9e1e3b80c8a338ddfa535470e2?p=19563b9e1e3b80199834e976aefea0fe&pm=s
     // app.use(pinoLogger())
     .use('*', prettyJSON())
-    .use('*', secureHeaders())
+    // same-site, not same-origin, so the web app (app./localhost:3000) can show label images
+    .use('*', secureHeaders({ crossOriginResourcePolicy: 'same-site' }))
     .use('*', timing())
     // Middleware to initialize auth
     .use('*', (c, next) => {

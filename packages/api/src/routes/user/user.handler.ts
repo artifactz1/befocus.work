@@ -5,6 +5,7 @@ import { and, eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { sessionSettings } from './../../db/tables/settings'
 import { insertSoundSchema, sounds, updateSoundSchema } from './../../db/tables/sounds'
+import { LABEL_MAX_BYTES, labelKey, sniffLabelImage } from '../../lib/label-image'
 import type {
   CreateUserSettings,
   CreateUserSounds,
@@ -13,7 +14,9 @@ import type {
   GetUserRoute,
   GetUserSessionRoute,
   GetUserSettings,
+  GetUserSoundLabel,
   GetUserSounds,
+  PutUserSoundLabel,
   UpdateUserSettings,
   UpdateUserSounds,
 } from './user.route'
@@ -240,6 +243,9 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
     url: sound.url,
     isCustom: sound.isCustom,
     soundType: sound.soundType,
+    labelColor: sound.labelColor ?? null,
+    labelImage: sound.labelImage ?? null,
+    discFinish: sound.discFinish ?? 'black',
     userId: user.id,
   }
 
@@ -257,12 +263,7 @@ export const createUserSounds: AppRouteHandler<CreateUserSounds> = async c => {
   }
 
   const result = {
-    id: saved.id,
-    name: saved.name,
-    userId: saved.userId,
-    url: saved.url,
-    isCustom: saved.isCustom,
-    soundType: saved.soundType,
+    ...saved,
     createdAt: saved.createdAt ? saved.createdAt.toISOString() : null,
   }
 
@@ -300,6 +301,8 @@ export const deleteUserSound: AppRouteHandler<DeleteUserSound> = async c => {
   if (deleted.length === 0) {
     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
   }
+
+  if (existing.labelImage === 'upload') await c.env.LABELS.delete(labelKey(user.id, soundId))
 
   // return c.json(undefined, HttpStatusCodes.NO_CONTENT)
   return c.json({ message: 'Sound deleted successfully' }, HttpStatusCodes.OK)
@@ -340,13 +343,94 @@ export const updateUserSounds: AppRouteHandler<UpdateUserSounds> = async c => {
       ...(data.url && { url: data.url }),
       ...(data.soundType && { soundType: data.soundType }),
       ...(typeof data.isCustom === 'boolean' && { isCustom: data.isCustom }),
+      ...(data.labelColor !== undefined && { labelColor: data.labelColor }),
+      ...(data.labelImage !== undefined && { labelImage: data.labelImage }),
+      ...(data.discFinish && { discFinish: data.discFinish }),
     })
     // .where(eq(sounds.id, data.id))
     .where(and(eq(sounds.id, data.id), eq(sounds.userId, user.id)))
 
     .returning()
 
+  // Moving off an uploaded label drops the stored image.
+  if (existing.labelImage === 'upload' && data.labelImage !== undefined) {
+    await c.env.LABELS.delete(labelKey(user.id, data.id))
+  }
+
   return c.json(updated[0], HttpStatusCodes.OK)
+}
+
+export const putUserSoundLabel: AppRouteHandler<PutUserSoundLabel> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  const { id } = c.req.valid('param')
+
+  if (!user) {
+    return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const existing = await db.query.sounds.findFirst({
+    where: (s, { eq, and }) => and(eq(s.id, id), eq(s.userId, user.id)),
+  })
+  if (!existing) {
+    return c.json({ message: 'Sound not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  const tooLarge = { message: 'Label images can be at most 1 MB.' }
+  if (Number(c.req.header('content-length') ?? 0) > LABEL_MAX_BYTES) {
+    return c.json(tooLarge, HttpStatusCodes.REQUEST_TOO_LONG)
+  }
+  const body = await c.req.arrayBuffer()
+  if (body.byteLength > LABEL_MAX_BYTES) {
+    return c.json(tooLarge, HttpStatusCodes.REQUEST_TOO_LONG)
+  }
+
+  const contentType = sniffLabelImage(new Uint8Array(body))
+  if (!contentType) {
+    return c.json(
+      { message: 'Label images must be JPEG, PNG or WebP.' },
+      HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE,
+    )
+  }
+
+  await c.env.LABELS.put(labelKey(user.id, id), body, { httpMetadata: { contentType } })
+
+  const [updated] = await db
+    .update(sounds)
+    .set({ labelImage: 'upload' })
+    .where(and(eq(sounds.id, id), eq(sounds.userId, user.id)))
+    .returning()
+
+  if (!updated) {
+    return c.json({ message: 'Sound not found' }, HttpStatusCodes.NOT_FOUND)
+  }
+
+  return c.json(
+    { ...updated, createdAt: updated.createdAt ? updated.createdAt.toISOString() : null },
+    HttpStatusCodes.OK,
+  )
+}
+
+// The key carries the user id, so a read can only ever reach the caller's own images.
+export const getUserSoundLabel: AppRouteHandler<GetUserSoundLabel> = async c => {
+  const user = c.get('user')
+  const { id } = c.req.valid('param')
+  if (!user) return c.body(null, HttpStatusCodes.NOT_FOUND)
+
+  const object = await c.env.LABELS.get(labelKey(user.id, id))
+  if (!object) return c.body(null, HttpStatusCodes.NOT_FOUND)
+
+  c.header('ETag', object.httpEtag)
+  c.header('Cache-Control', 'private, no-cache')
+  // Also on the 304: the runtime would label it text/plain, and with nosniff the browser's
+  // cross-origin read blocking then drops the cached image.
+  c.header('Content-Type', object.httpMetadata?.contentType ?? 'application/octet-stream')
+  if (c.req.header('if-none-match') === object.httpEtag) {
+    await object.body.cancel()
+    return c.body(null, HttpStatusCodes.NOT_MODIFIED)
+  }
+
+  return c.body(object.body, HttpStatusCodes.OK)
 }
 
 import { insertTaskSchema, tasks, updateTaskSchema } from '@repo/api/db/tables/tasks'
