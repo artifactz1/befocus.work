@@ -64,6 +64,13 @@
       "when": 1748395315724,
       "tag": "0008_first_pandemic",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792113123951,
+      "tag": "0009_vinyl_labels",
+      "breakpoints": true
     }
   ]
 }

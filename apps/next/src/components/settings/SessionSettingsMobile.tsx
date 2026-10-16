@@ -27,6 +27,7 @@ import MenuButton from '../helper/MenuButtons'
 import { BreakDurationInput } from '../input/BreakDurationInput'
 import { SessionsInput } from '../input/SessionsInput'
 import { WorkDurationInput } from '../input/WorkDurationInput'
+import { AlarmPicker } from './AlarmPicker'
 
 export default function SessionSettingsMobile() {
   const { sessions, workDuration, breakDuration, reset, updateSettings } = useTimerStore()
@@ -56,6 +57,7 @@ export default function SessionSettingsMobile() {
             <WorkDurationInput value={workTime / 60} onChange={value => setWorkTime(value)} />
             <BreakDurationInput value={breakTime / 60} onChange={value => setBreakTime(value)} />
             <SessionsInput value={session} onChange={value => setSession(value)} />
+            <AlarmPicker />
           </div>
         </div>
         <DrawerFooter>

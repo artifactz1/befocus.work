@@ -14,7 +14,9 @@ import {
 } from '@repo/api/db/schemas'
 import { notFoundSchema } from '@repo/api/lib/constants'
 import * as HttpStatusCodes from '@repo/api/lib/http-status-codes'
+import { LABEL_MAX_BYTES } from '@repo/api/lib/label-image'
 import jsonContent from '@repo/api/lib/openapi/helpers/json-content'
+import { bodyLimit } from 'hono/body-limit'
 
 const tags = ['User']
 
@@ -199,6 +201,49 @@ export const deleteUserSound = createRoute({
   },
 })
 
+const labelParams = z.object({ id: z.string().min(1).max(64) })
+
+// Body is the raw image (image/jpeg, image/png or image/webp, at most 1 MB). bodyLimit caps the
+// stream before it is buffered, with or without Content-Length; the handler checks the type
+// against the bytes, not the header.
+export const putUserSoundLabel = createRoute({
+  path: '/user/sounds/:id/label',
+  method: 'put',
+  tags,
+  middleware: [
+    bodyLimit({
+      maxSize: LABEL_MAX_BYTES,
+      onError: c =>
+        c.json({ message: 'Label images can be at most 1 MB.' }, HttpStatusCodes.REQUEST_TOO_LONG),
+    }),
+  ] as const,
+  request: { params: labelParams },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(getSoundSchema, 'The sound, now with an uploaded label'),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Sound not found'),
+    [HttpStatusCodes.REQUEST_TOO_LONG]: jsonContent(
+      z.object({ message: z.string() }),
+      'Image is larger than 1 MB',
+    ),
+    [HttpStatusCodes.UNSUPPORTED_MEDIA_TYPE]: jsonContent(
+      z.object({ message: z.string() }),
+      'Not a JPEG, PNG or WebP image',
+    ),
+  },
+})
+
+export const getUserSoundLabel = createRoute({
+  path: '/user/sounds/:id/label',
+  method: 'get',
+  tags,
+  request: { params: labelParams },
+  responses: {
+    [HttpStatusCodes.OK]: { description: 'The label image' },
+    [HttpStatusCodes.NOT_MODIFIED]: { description: 'Unchanged since the given ETag' },
+    [HttpStatusCodes.NOT_FOUND]: { description: 'No uploaded label for this sound' },
+  },
+})
+
 export const getUserTasks = createRoute({
   path: '/user/tasks',
   method: 'get',
@@ -289,3 +334,5 @@ export type GetUserSounds = typeof getUserSounds
 export type CreateUserSounds = typeof createUserSounds
 export type UpdateUserSounds = typeof updateUserSounds
 export type DeleteUserSound = typeof deleteUserSound
+export type PutUserSoundLabel = typeof putUserSoundLabel
+export type GetUserSoundLabel = typeof getUserSoundLabel

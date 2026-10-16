@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useTimerKeyboard } from '~/hooks/useTimerKeyboard'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore } from '~/store/useTimerStore'
@@ -35,7 +36,12 @@ function DesktopDigits({
 }
 
 export default function Timer() {
-  const { sounds, alarmId } = useSoundsStore()
+  const alarmUrl = useSoundsStore(s => s.sounds[s.alarmId]?.url)
+  const alarmVolume = useSoundsStore(s => s.sounds[s.alarmId]?.volume ?? 0.5)
+  // Above the record sheet (under 1024px) the timer is one 64px line, as on the board.
+  const roomOpen = useSoundsStore(s => s.roomOpen)
+  const narrow = useMediaQuery('(max-width: 1023.98px)')
+  const strip = roomOpen && narrow
   const { timeLeft, isRunning, decrementTime, workDuration, breakDuration, isWorking } =
     useTimerStore()
 
@@ -75,13 +81,15 @@ export default function Timer() {
   }, [isRunning, timeLeft])
 
   useEffect(() => {
-    const selectedAlarm = sounds[alarmId]
-    if (selectedAlarm && audioRef.current) {
-      audioRef.current.src = selectedAlarm.url
+    if (alarmUrl && audioRef.current) {
+      audioRef.current.src = alarmUrl
       audioRef.current.load()
-      audioRef.current.volume = selectedAlarm.volume
     }
-  }, [alarmId, sounds])
+  }, [alarmUrl])
+
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = alarmVolume
+  }, [alarmVolume])
 
   const playAlarm = useCallback(() => {
     if (audioRef.current) {
@@ -128,7 +136,9 @@ export default function Timer() {
   const elapsed = total > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / total)) : 0
   const nowIndex = Math.floor(elapsed * 25)
 
-  const desktopFontSize = `calc(${isLandscape ? '30vh' : widthSize} * var(--timer-scale, 1))`
+  const desktopFontSize = strip
+    ? '64px'
+    : `calc(${isLandscape ? '30vh' : widthSize} * var(--timer-scale, 1))`
   const mobileFontSize = `calc(${widthSize} * var(--timer-scale, 1))`
 
   const rootStyle: ProgressStyle = { '--progress': String(elapsed) }
@@ -143,7 +153,7 @@ export default function Timer() {
         {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
       </span>
 
-      <div className='absolute inset-0 flex items-center justify-center'>
+      <div className={`absolute inset-0 flex items-center justify-center ${styles.stage}`}>
         <div
           aria-hidden
           className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}
@@ -185,10 +195,16 @@ export default function Timer() {
 
         <div
           aria-hidden
-          className={`absolute flex-row items-center font-bold sm:hidden ${styles.digits}`}
+          className={`absolute flex-row items-center font-bold sm:hidden ${strip ? 'flex' : ''} ${styles.digits}`}
         >
-          <TimerUI value={minutes} fontSize={mobileFontSize} />
-          <TimerUI value={seconds} fontSize={mobileFontSize} />
+          {strip ? (
+            <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
+          ) : (
+            <>
+              <TimerUI value={minutes} fontSize={mobileFontSize} />
+              <TimerUI value={seconds} fontSize={mobileFontSize} />
+            </>
+          )}
         </div>
       </div>
 

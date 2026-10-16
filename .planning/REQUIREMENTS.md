@@ -105,23 +105,23 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Vinyl Sound Space
 
-- [ ] **VNL-01**: Deleting a sound works end to end and a deleted sound never comes back (issues
+- [x] **VNL-01**: Deleting a sound works end to end and a deleted sound never comes back (issues
       #101 and #102); fixed before the room is built
-- [ ] **VNL-02**: The footer Sounds button opens a Material-style record room with a top-view
+- [x] **VNL-02**: The footer Sounds button opens a Material-style record room with a top-view
       turntable that fills the left half of the dashboard while the timer shrinks to the right and
       keeps running; alarm selection moves to Session settings
-- [ ] **VNL-03**: Music sounds sit on a shelf of sleeves, each with a generated label ink and its
+- [x] **VNL-03**: Music sounds sit on a shelf of sleeves, each with a generated label ink and its
       name
-- [ ] **VNL-04**: User loads a record by clicking its sleeve or dragging it onto the platter; the
+- [x] **VNL-04**: User loads a record by clicking its sleeve or dragging it onto the platter; the
       platter spins and the tonearm rests on it while it plays; only one record plays at a time
-- [ ] **VNL-05**: Ambient sounds are a row of knobs under the turntable, each with its own volume,
+- [x] **VNL-05**: Ambient sounds are a row of knobs under the turntable, each with its own volume,
       layered under the record
-- [ ] **VNL-06**: A signed-in user adds a sound by pasting a YouTube link anywhere in the room and
+- [x] **VNL-06**: A signed-in user adds a sound by pasting a YouTube link anywhere in the room and
       confirming record or ambience; it saves to the matching shelf and persists. Guests get the
       starter records and knobs only, with no saving. Sources are YouTube only
-- [ ] **VNL-07**: While a record plays with the room closed, a now-playing chip in the footer
+- [x] **VNL-07**: While a record plays with the room closed, a now-playing chip in the footer
       shows it, fades with the footer's idle behaviour, and can pause it or reopen the room
-- [ ] **VNL-08**: On a phone the room is a bottom sheet; the room is keyboard navigable, labelled
+- [x] **VNL-08**: On a phone the room is a bottom sheet; the room is keyboard navigable, labelled
       for screen readers, and under reduced motion a record swaps in instantly with no spin
 
 ### Focus Blocks
@@ -251,14 +251,14 @@ Which phases cover which requirements. Populated during roadmap creation.
 | UX-04 | Phase 2 - Customization Engine and Panel | Complete |
 | UX-05 | Phase 2 - Customization Engine and Panel | Complete |
 | UX-06 | Phase 2 - Customization Engine and Panel | Complete |
-| VNL-01 | Phase 7 - Vinyl Sound Space | Pending |
-| VNL-02 | Phase 7 - Vinyl Sound Space | Pending |
-| VNL-03 | Phase 7 - Vinyl Sound Space | Pending |
-| VNL-04 | Phase 7 - Vinyl Sound Space | Pending |
-| VNL-05 | Phase 7 - Vinyl Sound Space | Pending |
-| VNL-06 | Phase 7 - Vinyl Sound Space | Pending |
-| VNL-07 | Phase 7 - Vinyl Sound Space | Pending |
-| VNL-08 | Phase 7 - Vinyl Sound Space | Pending |
+| VNL-01 | Phase 7 - Vinyl Sound Space | Complete |
+| VNL-02 | Phase 7 - Vinyl Sound Space | Complete |
+| VNL-03 | Phase 7 - Vinyl Sound Space | Complete |
+| VNL-04 | Phase 7 - Vinyl Sound Space | Complete |
+| VNL-05 | Phase 7 - Vinyl Sound Space | Complete |
+| VNL-06 | Phase 7 - Vinyl Sound Space | Complete |
+| VNL-07 | Phase 7 - Vinyl Sound Space | Complete |
+| VNL-08 | Phase 7 - Vinyl Sound Space | Complete |
 | BLK-01 | Phase 8 - Focus Blocks and Added Time | Pending |
 | BLK-02 | Phase 8 - Focus Blocks and Added Time | Pending |
 | BLK-03 | Phase 8 - Focus Blocks and Added Time | Pending |

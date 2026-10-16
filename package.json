@@ -38,5 +38,8 @@
     "react-dom": "18.2.0",
     "react-player": "^2.16.0",
     "wrangler": "^4.141.0"
+  },
+  "overrides": {
+    "@radix-ui/react-dialog": "^1.1.14"
   }
 }

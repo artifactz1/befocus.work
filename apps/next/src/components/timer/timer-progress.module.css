@@ -118,13 +118,39 @@
   color: color-mix(in srgb, var(--fg) 62%, transparent);
 }
 
-:global(html[data-panel="open"]) .hints {
+:global(html[data-panel="open"]) .hints,
+:global(html[data-room="open"]) .hints {
   opacity: 0;
+}
+
+/* Record room open: the timer stays centred beside the card (desktop) or sits above the sheet (phone). */
+.stage {
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-origin: center;
+}
+
+/* shrunk to the board's proportions so the card covers no more than the edge of the first digit */
+@media (min-width: 1024px) {
+  :global(html[data-room="open"]) .stage {
+    transform: scale(0.8);
+  }
+}
+
+@media (max-width: 1023.98px) {
+  :global(html[data-room="open"]) .stage {
+    position: fixed;
+    inset: 0 0 auto 0;
+    height: 132px;
+  }
+  :global(html[data-room="open"]) .under {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ruler i,
-  .edgeFill {
+  .edgeFill,
+  .stage {
     transition: none;
   }
 }
