@@ -2,19 +2,20 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { Pause, Play } from 'lucide-react'
-import { labelInk } from '~/lib/sounds/sounds'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useCustomizeActions } from '../customize/useCustomizeActions'
 import styles from './now-playing.module.css'
+import Vinyl, { Eq, soundLook } from './Vinyl'
 
-export default function NowPlayingChip({ variant }: { variant: 'full' | 'compact' }) {
+// The record outside the room: shown while it plays, and held after a pause from here.
+export function useNowPlaying() {
   const roomOpen = useSoundsStore(state => state.roomOpen)
   const record = useSoundsStore(state => state.sounds[state.bgMusicId])
   const chipHeld = useSoundsStore(state => state.chipHeld)
   const { close } = useCustomizeActions()
 
-  const visible = !roomOpen && record !== undefined && (record.playing || chipHeld)
   const playing = Boolean(record?.playing)
+  const shown = !roomOpen && record !== undefined && (playing || chipHeld) ? record : undefined
 
   const toggle = () => {
     const { playRecord, pauseRecord, setChipHeld } = useSoundsStore.getState()
@@ -27,12 +28,18 @@ export default function NowPlayingChip({ variant }: { variant: 'full' | 'compact
     close()
     useSoundsStore.getState().setRoomOpen(true)
   }
+  return { record: shown, playing, toggle, open }
+}
+
+// Desktop pill above the timer controls. On phone the Records button carries the record instead.
+export default function NowPlayingChip() {
+  const { record, playing, toggle, open } = useNowPlaying()
 
   return (
     <AnimatePresence>
-      {visible && record && (
+      {record && (
         <motion.div
-          className={`${styles.chip} ${variant === 'compact' ? styles.compact : ''}`}
+          className={styles.pill}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 6 }}
@@ -40,34 +47,21 @@ export default function NowPlayingChip({ variant }: { variant: 'full' | 'compact
         >
           <button
             type='button'
+            className={styles.open}
+            aria-label={`Open records, ${playing ? 'playing' : 'paused'} ${record.name}`}
+            onClick={open}
+          >
+            <Vinyl size={26} look={soundLook(record)} spin={playing} />
+            <span className={styles.name}>{record.name}</span>
+            {playing && <Eq />}
+          </button>
+          <button
+            type='button'
             className={styles.play}
             aria-label={`${playing ? 'Pause' : 'Play'} ${record.name}`}
             onClick={toggle}
           >
-            {playing ? (
-              <Pause size={16} aria-hidden='true' />
-            ) : (
-              <Play size={16} aria-hidden='true' />
-            )}
-          </button>
-          <button
-            type='button'
-            className={styles.open}
-            aria-label={`Open records, ${record.name}`}
-            onClick={open}
-          >
-            <span
-              className={styles.disc}
-              data-playing={playing || undefined}
-              style={{ ['--ink' as string]: labelInk(record.name).ink }}
-              aria-hidden='true'
-            />
-            {variant === 'full' && (
-              <>
-                {playing && <span className={styles.dot} aria-hidden='true' />}
-                <span className={styles.name}>{record.name}</span>
-              </>
-            )}
+            {playing ? <Pause aria-hidden='true' /> : <Play aria-hidden='true' />}
           </button>
         </motion.div>
       )}

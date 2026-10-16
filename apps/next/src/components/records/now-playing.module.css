@@ -1,91 +1,147 @@
-.chip {
-  display: inline-flex;
+/* The record outside the room (board 03, "chip"). */
+
+.pill {
+  --panel-hair: rgb(255 255 255 / 0.08);
+  position: absolute;
+  left: calc(var(--pad-x) + 8px);
+  bottom: calc(50% + 48px); /* 24px above the centred 48px controls */
+  display: none;
   align-items: center;
-  height: 44px;
-  margin-right: 8px;
-  padding: 4px 12px 4px 4px;
+  gap: 10px;
+  height: 40px;
+  padding: 0 6px 0 8px;
   border-radius: 999px;
-  background: color-mix(in srgb, hsl(var(--foreground)) 8%, transparent);
-  border: 1px solid rgb(255 255 255 / 0.08);
+  background: color-mix(in srgb, var(--bg-solid), #fff 5%);
+  border: 1px solid var(--panel-hair);
+  font-family: var(--font-app);
+  color: hsl(var(--foreground));
 }
 
-.compact {
-  padding: 0;
-  margin-right: 0;
-  height: auto;
-  border: 0;
-  background: none;
+@media (min-width: 768px) {
+  .pill {
+    display: flex;
+  }
 }
 
-.play,
-.open {
+.open,
+.play {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   border: 0;
   background: transparent;
   color: inherit;
   cursor: pointer;
-  font-size: 13px;
-}
-
-.play {
-  width: 36px;
-  height: 36px;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.08);
 }
 
 .open {
-  padding: 0 0 0 8px;
-  border-radius: 999px;
-}
-
-.compact .play,
-.compact .open {
-  width: 44px;
-  height: 44px;
-  justify-content: center;
-  border-radius: 8px;
-  background: transparent;
+  gap: 10px;
+  min-width: 0;
+  height: 32px;
   padding: 0;
-}
-
-.disc {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--ink) 0 30%, #0c0c0c 32%);
-  flex: none;
-}
-
-.disc[data-playing] {
-  animation: spin 3.6s linear infinite;
-}
-
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--user-accent);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .name {
-  max-width: 160px;
+  max-width: 200px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+.play {
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.05);
+}
+
+.play svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+  stroke: none;
+}
+
+.play:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.open:focus-visible,
+.play:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Records button: a soft 40px circle while the room is open; below md it carries the record. */
+
+.button {
+  position: relative;
+}
+
+.ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.05);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.button[data-active] {
+  color: hsl(var(--foreground));
+}
+
+.button[data-active] .ring {
+  opacity: 1;
+}
+
+.icon {
+  position: relative;
+}
+
+.carried {
+  display: none;
+}
+
+@media (max-width: 767.98px) {
+  .button[data-carrying] .ring {
+    width: 44px;
+    height: 44px;
+    opacity: 1;
+  }
+  .button[data-carrying] .icon {
+    display: none;
+  }
+  .button[data-carrying] .carried {
+    display: block;
   }
 }
 
+.caption {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  font-size: 11px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .disc[data-playing] {
-    animation: none;
+  .ring {
+    transition: none;
   }
 }

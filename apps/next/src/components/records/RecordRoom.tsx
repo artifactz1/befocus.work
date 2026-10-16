@@ -8,7 +8,6 @@ import { type KeyboardEvent, useEffect, useRef } from 'react'
 import { Drawer as DrawerPrimitive } from 'vaul'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useSoundsStore } from '~/store/useSoundsStore'
-import panel from '../customize/customize-panel.module.css'
 import RecordRoomBody from './RecordRoomBody'
 import styles from './records.module.css'
 
@@ -103,7 +102,7 @@ export default function RecordRoom() {
       <AnimatePresence>
         {roomOpen && (
           <motion.section
-            className={cn(panel.panel, styles.room)}
+            className={cn(styles.surface, styles.room)}
             role='dialog'
             aria-modal='false'
             aria-labelledby='records-heading'
@@ -131,7 +130,7 @@ export default function RecordRoom() {
       <DrawerPortal>
         <DrawerPrimitive.Content
           ref={contentRef}
-          className={cn(panel.panel, styles.sheet)}
+          className={cn(styles.surface, styles.sheet)}
           aria-labelledby='records-heading'
           aria-describedby={undefined}
           data-record-room

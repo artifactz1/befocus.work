@@ -1,22 +1,84 @@
 'use client'
 
-import { animate, motion, useAnimationFrame, useMotionValue, useReducedMotion } from 'framer-motion'
-import { Pause, Play } from 'lucide-react'
+import {
+  animate,
+  type MotionValue,
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useReducedMotion,
+} from 'framer-motion'
+import { Pause, Play, Volume1 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { labelInk } from '~/lib/sounds/sounds'
+import { useShallow } from 'zustand/react/shallow'
+import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import styles from './records.module.css'
 import { RECORD_MIME } from './Shelf'
+import Vinyl, { Eq, soundLook } from './Vinyl'
 
-const SPIN_DEG_PER_S = 200 // 1.8s per turn
+const SPIN_DEG_PER_S = 112 // 3.2s per turn, the same as the small spinning discs
 const EASE = [0.2, 0.7, 0.2, 1] as const
-const ARM_DOWN = 22
+const EMPTY = { label: 'rgb(255 255 255 / 0.06)', base: '#0b0b0b' }
+
+// Hairline tonearm. It rests straight down beside the disc and swings onto it to play.
+function Arm({ size, swing }: { size: number; swing: MotionValue<number> }) {
+  const px = size + 18
+  const py = 20
+  const len = size * 0.7 - py
+  return (
+    <svg
+      className={styles.arm}
+      width={size + 40}
+      height={size}
+      viewBox={`0 0 ${size + 40} ${size}`}
+      aria-hidden='true'
+    >
+      <motion.g style={{ rotate: swing, originX: `${px}px`, originY: `${py}px` }}>
+        <line
+          x1={px}
+          y1={py}
+          x2={px}
+          y2={py + len}
+          stroke='rgb(245 245 244 / 0.55)'
+          strokeWidth='1.5'
+          strokeLinecap='round'
+        />
+        <line
+          x1={px}
+          y1={py}
+          x2={px}
+          y2={py - len * 0.12}
+          stroke='rgb(245 245 244 / 0.35)'
+          strokeWidth='4'
+          strokeLinecap='round'
+        />
+        <rect x={px - 6} y={py + len - 3} width='12' height='6' rx='1.5' fill='#d6d3d1' />
+      </motion.g>
+      <circle cx={px} cy={py} r='7' fill='#1b1b1b' stroke='rgb(255 255 255 / 0.14)' />
+      <circle cx={px} cy={py} r='2' fill='rgb(255 255 255 / 0.4)' />
+    </svg>
+  )
+}
+
+// Swing that puts the stylus at (0.78, 0.62) of the disc, as on the board.
+const armDown = (size: number) =>
+  (Math.atan2(size * 0.62 - 20, size * 0.78 - size - 18) * 180) / Math.PI - 90
 
 export default function Turntable() {
   const reduced = useReducedMotion()
+  const phone = useMediaQuery('(max-width: 639px)')
+  const size = phone ? 176 : 224
   const bgMusicId = useSoundsStore(state => state.bgMusicId)
   const record = useSoundsStore(state => state.sounds[state.bgMusicId])
   const sounds = useSoundsStore(state => state.sounds)
+  const recordIds = useSoundsStore(
+    useShallow(state =>
+      Object.values(state.sounds)
+        .filter(s => s.soundType === 'bgMusic')
+        .map(s => s.id),
+    ),
+  )
   const toggleRecord = useSoundsStore(state => state.toggleRecord)
   const playRecord = useSoundsStore(state => state.playRecord)
   const setVolume = useSoundsStore(state => state.setVolume)
@@ -28,7 +90,7 @@ export default function Turntable() {
 
   const rotation = useMotionValue(0)
   const speed = useRef(0)
-  const arm = useMotionValue(0)
+  const swing = useMotionValue(0)
   const discOpacity = useMotionValue(1)
 
   // Swap: arm lifts, old disc fades, new disc fades in, arm lowers (via the arm effect below).
@@ -42,10 +104,11 @@ export default function Turntable() {
     }
     lastId.current = bgMusicId
     let live = true
+    // The arm effect owns the swing and lifts it while swapping; awaiting a swing animation
+    // here would hang, since that effect interrupts it.
     setSwapping(true)
     ;(async () => {
-      await animate(arm, 0, { duration: 0.25, ease: EASE })
-      await animate(discOpacity, 0, { duration: 0.2 })
+      await animate(discOpacity, 0, { duration: 0.2, delay: 0.25 })
       if (!live) return
       setShown(record)
       await animate(discOpacity, 1, { duration: 0.3 })
@@ -58,11 +121,16 @@ export default function Turntable() {
     }
   }, [bgMusicId, reduced])
 
+  // Same record, new look (a label picture finished uploading): show it straight away.
   useEffect(() => {
-    const target = playing && !swapping ? ARM_DOWN : 0
-    if (reduced) arm.set(target)
-    else animate(arm, target, { duration: 0.35, ease: EASE })
-  }, [playing, swapping, reduced, arm])
+    if (!swapping && record?.id === shown?.id) setShown(record)
+  }, [record, shown?.id, swapping])
+
+  useEffect(() => {
+    const target = playing && !swapping ? armDown(size) : 0
+    if (reduced) swing.set(target)
+    else animate(swing, target, { duration: 0.35, ease: EASE })
+  }, [playing, swapping, reduced, swing, size])
 
   useAnimationFrame((_, delta) => {
     if (reduced) return
@@ -75,100 +143,83 @@ export default function Turntable() {
     if (speed.current) rotation.set((rotation.get() + (speed.current * delta) / 1000) % 360)
   })
 
-  const ink = labelInk(shown?.name ?? '')
   const acceptable = (e: React.DragEvent) => e.dataTransfer.types.includes(RECORD_MIME)
+  const position = record ? recordIds.indexOf(record.id) + 1 : 0
+  const volume = Math.round((record?.volume ?? 0) * 100)
 
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: drop target, keyboard path is the shelf
-    <div
-      className={styles.turntable}
-      onDragOver={e => {
-        if (!acceptable(e)) return
-        e.preventDefault()
-        setOver(true)
-      }}
-      onDragLeave={() => setOver(false)}
-      onDrop={e => {
-        setOver(false)
-        const id = e.dataTransfer.getData(RECORD_MIME)
-        if (sounds[id]?.soundType !== 'bgMusic') return
-        e.preventDefault()
-        playRecord(id)
-      }}
-    >
-      <svg viewBox='0 0 400 400' className={styles.deck} aria-hidden='true'>
-        <defs>
-          <linearGradient id='plinth' x1='0' y1='0' x2='0' y2='1'>
-            <stop offset='0' stopColor='#22201e' />
-            <stop offset='1' stopColor='#181716' />
-          </linearGradient>
-        </defs>
-        <rect x='0' y='0' width='400' height='400' rx='20' fill='url(#plinth)' />
-        <circle cx='176' cy='200' r='150' fill='#2c2a28' />
-        <circle cx='176' cy='200' r='146' fill='#1a1918' />
-        {over && (
-          <circle
-            cx='176'
-            cy='200'
-            r='152'
-            fill='none'
-            stroke='var(--user-accent)'
-            strokeWidth='3'
-          />
-        )}
-        <motion.g style={{ opacity: discOpacity }}>
-          <motion.g style={{ rotate: rotation, originX: '176px', originY: '200px' }}>
-            <circle cx='176' cy='200' r='140' fill='#0c0c0c' />
-            {[128, 116, 104, 92, 80, 68].map(r => (
-              <circle
-                key={r}
-                cx='176'
-                cy='200'
-                r={r}
-                fill='none'
-                stroke='#fff'
-                strokeOpacity='0.05'
-              />
-            ))}
-            {shown && (
-              <>
-                <circle cx='176' cy='200' r='48' fill={ink.ink} />
-                <circle cx='176' cy='200' r='44' fill='none' stroke={ink.inkDeep} strokeWidth='2' />
-                <circle cx='176' cy='170' r='6' fill={ink.inkDeep} />
-              </>
-            )}
-          </motion.g>
-          <path d='M176 200 L176 60 A140 140 0 0 1 275 101 Z' fill='#fff' fillOpacity='0.04' />
-        </motion.g>
-        <circle cx='176' cy='200' r='4' fill='#cfcac3' />
-        <circle cx='352' cy='300' r='6' fill='#3a3735' />
-        <circle cx='344' cy='72' r='22' fill='#3a3735' />
-        <motion.g style={{ rotate: arm, originX: '344px', originY: '72px' }}>
-          <rect x='334' y='34' width='20' height='26' rx='4' fill='#5a5651' />
-          <path d='M344 72 L344 270 L326 292' fill='none' stroke='#bdb8b2' strokeWidth='4' />
-          <rect x='319' y='284' width='14' height='22' rx='3' fill='#bdb8b2' />
-        </motion.g>
-      </svg>
-      <button
-        type='button'
-        className={styles.playBtn}
-        disabled={!record}
-        aria-label={record ? `${playing ? 'Pause' : 'Play'} ${record.name}` : 'Play'}
-        onClick={() => record && toggleRecord(record.id)}
+    <>
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: drop target, keyboard path is the shelf */}
+      <div
+        className={styles.deck}
+        data-over={over || undefined}
+        onDragOver={e => {
+          if (!acceptable(e)) return
+          e.preventDefault()
+          setOver(true)
+        }}
+        onDragLeave={() => setOver(false)}
+        onDrop={e => {
+          setOver(false)
+          const id = e.dataTransfer.getData(RECORD_MIME)
+          if (sounds[id]?.soundType !== 'bgMusic') return
+          e.preventDefault()
+          playRecord(id)
+        }}
       >
-        {playing ? <Pause size={18} aria-hidden='true' /> : <Play size={18} aria-hidden='true' />}
-      </button>
-      <input
-        type='range'
-        className={styles.volume}
-        aria-label='Record volume'
-        min={0}
-        max={1}
-        step={0.01}
-        disabled={!record}
-        value={record?.volume ?? 0}
-        onChange={e => record && setVolume(record.id, Number(e.target.value))}
-      />
-    </div>
+        <div className={styles.deckInner} style={{ width: size + 40, height: size }}>
+          <motion.div style={{ opacity: discOpacity }}>
+            <Vinyl
+              size={size}
+              look={shown ? soundLook(shown) : EMPTY}
+              rotate={rotation}
+              className={styles.deckDisc}
+            />
+          </motion.div>
+          <Arm size={size} swing={swing} />
+        </div>
+      </div>
+      <div className={styles.transport}>
+        <button
+          type='button'
+          className={styles.play}
+          disabled={!record}
+          aria-label={record ? `${playing ? 'Pause' : 'Play'} ${record.name}` : 'Play'}
+          onClick={() => record && toggleRecord(record.id)}
+        >
+          {playing ? <Pause aria-hidden='true' /> : <Play aria-hidden='true' />}
+        </button>
+        <div className={styles.now}>
+          <p className={styles.title}>{record?.name ?? 'Pick a record'}</p>
+          <p className={styles.sub}>
+            {record ? (
+              <>
+                {playing && <Eq />}
+                {playing ? 'Playing' : 'Paused'} · {position} of {recordIds.length}
+              </>
+            ) : (
+              'From the shelf below'
+            )}
+          </p>
+        </div>
+        <label className={styles.vol}>
+          <Volume1 aria-hidden='true' />
+          <input
+            type='range'
+            className={styles.slider}
+            style={{ ['--v' as string]: volume / 100 }}
+            aria-label='Record volume'
+            min={0}
+            max={100}
+            disabled={!record}
+            value={volume}
+            onChange={e => record && setVolume(record.id, Number(e.target.value) / 100)}
+          />
+          <span className={styles.volValue} aria-hidden='true'>
+            {volume}
+          </span>
+        </label>
+      </div>
+    </>
   )
 }

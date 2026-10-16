@@ -6,9 +6,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useSession } from '~/lib/auth.client'
 import { type Sound, useSoundsStore } from '~/store/useSoundsStore'
-import panel from '../customize/customize-panel.module.css'
 import AddSoundDialog, { type DialogState } from './AddSoundDialog'
-import KnobRow from './KnobRow'
+import Ambience from './Ambience'
 import styles from './records.module.css'
 import Shelf from './Shelf'
 import Turntable from './Turntable'
@@ -47,30 +46,30 @@ export default function RecordRoomBody() {
 
   return (
     <>
-      <div className={panel.head}>
-        <h2 id='records-heading' className={panel.heading} tabIndex={-1}>
+      <div className={styles.head}>
+        <h2 id='records-heading' className={styles.heading} tabIndex={-1}>
           Records
         </h2>
-        <p className={styles.status} aria-live='polite'>
+        <p className='sr-only' aria-live='polite'>
           {status}
         </p>
         <button
           type='button'
-          className={`${panel.closeBtn} ${styles.close}`}
+          className={styles.close}
           aria-label='Close records'
           onClick={() => setRoomOpen(false)}
         >
-          <X size={16} aria-hidden='true' />
+          <X aria-hidden='true' />
         </button>
       </div>
       <div className={styles.body}>
         <Turntable />
-        <KnobRow
-          onAdd={() => setDialog({ mode: 'add', url: '', type: 'ambient' })}
+        <Ambience
+          onAdd={from => setDialog({ mode: 'add', url: '', type: 'ambient', from })}
           onRename={rename}
         />
         <Shelf
-          onAdd={() => setDialog({ mode: 'add', url: '', type: 'bgMusic' })}
+          onAdd={from => setDialog({ mode: 'add', url: '', type: 'bgMusic', from })}
           onRename={rename}
         />
       </div>

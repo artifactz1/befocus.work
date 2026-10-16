@@ -5,10 +5,10 @@ import Link from 'next/link'
 import { useShallow } from 'zustand/react/shallow'
 import { useUserSounds } from '~/hooks/useSounds'
 import { useSession } from '~/lib/auth.client'
-import { labelInk } from '~/lib/sounds/sounds'
 import { type Sound, useSoundsStore } from '~/store/useSoundsStore'
 import styles from './records.module.css'
 import SoundOptions from './SoundOptions'
+import { Eq, labelBackground, soundLook } from './Vinyl'
 
 export const RECORD_MIME = 'application/x-befocus-record'
 
@@ -16,7 +16,7 @@ export default function Shelf({
   onAdd,
   onRename,
 }: {
-  onAdd: () => void
+  onAdd: (from: HTMLElement) => void
   onRename: (sound: Sound) => void
 }) {
   const { data: session } = useSession()
@@ -31,11 +31,16 @@ export default function Shelf({
   const userRecords = records.filter(r => r.isCustom)
 
   return (
-    <section className={styles.shelf} aria-label='Record shelf'>
+    <section className={styles.shelf} aria-labelledby='shelf-heading'>
+      <h3 className={styles.sec}>
+        <span id='shelf-heading'>Shelf</span>
+        <em>
+          {records.length} {records.length === 1 ? 'record' : 'records'}
+        </em>
+      </h3>
       {/* biome-ignore lint/a11y/noRedundantRoles: Safari drops list semantics under list-style none */}
       <ul role='list' className={styles.sleeves} aria-busy={loading || undefined}>
         {records.map(r => {
-          const { ink, inkDeep, sleeve, sleeveDeep } = labelInk(r.name)
           const loaded = r.id === bgMusicId
           const playing = loaded && r.playing
           return (
@@ -52,17 +57,15 @@ export default function Shelf({
                   e.dataTransfer.effectAllowed = 'copy'
                 }}
                 onClick={() => toggleRecord(r.id)}
-                style={{
-                  background: `linear-gradient(160deg, ${sleeve}, ${sleeveDeep})`,
-                }}
               >
-                <span
-                  className={styles.sleeveLabel}
-                  style={{ background: `radial-gradient(${ink} 60%, ${inkDeep})` }}
-                  aria-hidden='true'
-                />
-                <span className={styles.sleeveName}>{r.name}</span>
-                {playing && <span className={styles.sleeveDot} aria-hidden='true' />}
+                <span className={styles.sq}>
+                  <i style={labelBackground(soundLook(r))} />
+                  {playing && <Eq />}
+                </span>
+                <span className={styles.nm}>{r.name}</span>
+                <span className={styles.mt}>
+                  {playing ? 'Playing' : loaded ? 'Paused' : 'Record'}
+                </span>
               </button>
               {session && <SoundOptions sound={r} onRename={onRename} />}
             </li>
@@ -70,15 +73,26 @@ export default function Shelf({
         })}
         {loading && (
           <>
-            <li className={styles.skeleton} aria-hidden='true' />
-            <li className={styles.skeleton} aria-hidden='true' />
+            <li className={styles.skeleton} aria-hidden='true'>
+              <span className={styles.sq} />
+            </li>
+            <li className={styles.skeleton} aria-hidden='true'>
+              <span className={styles.sq} />
+            </li>
           </>
         )}
         {session && (
           <li>
-            <button type='button' className={styles.addTile} onClick={onAdd}>
-              <Plus size={20} aria-hidden='true' />
-              Add record
+            <button
+              type='button'
+              className={`${styles.sleeve} ${styles.add}`}
+              onClick={e => onAdd(e.currentTarget)}
+            >
+              <span className={styles.sq}>
+                <Plus aria-hidden='true' />
+              </span>
+              <span className={styles.nm}>Add</span>
+              <span className={styles.mt}>Paste link</span>
             </button>
           </li>
         )}
@@ -92,9 +106,7 @@ export default function Shelf({
         </p>
       )}
       {session && !loading && !isError && userRecords.length === 0 && (
-        <p className={styles.note}>
-          No records yet. <span>Paste a YouTube link to add one.</span>
-        </p>
+        <p className={styles.note}>No records of your own yet. Paste a YouTube link to add one.</p>
       )}
       {!session && (
         <p className={styles.note}>

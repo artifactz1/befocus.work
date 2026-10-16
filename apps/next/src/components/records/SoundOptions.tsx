@@ -35,6 +35,8 @@ export default function SoundOptions({
   const del = useDeleteUserSound()
   const [confirm, setConfirm] = useState(false)
   const trigger = useRef<HTMLButtonElement>(null)
+  // Dialogs open once the menu has closed, so its focus trap and focus return keep off them.
+  const pending = useRef<(() => void) | null>(null)
   const starter = isStarterId(sound.id)
 
   // The trigger unmounts with its item, so hand focus to a neighbour or the add tile.
@@ -58,13 +60,42 @@ export default function SoundOptions({
             <MoreHorizontal size={16} aria-hidden='true' />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
-          {!starter && <DropdownMenuItem onSelect={() => onRename(sound)}>Rename</DropdownMenuItem>}
-          <DropdownMenuItem onSelect={() => setConfirm(true)}>Delete</DropdownMenuItem>
+        <DropdownMenuContent
+          align='end'
+          onCloseAutoFocus={e => {
+            const open = pending.current
+            if (!open) return
+            pending.current = null
+            e.preventDefault()
+            open()
+          }}
+        >
+          {!starter && (
+            <DropdownMenuItem
+              onSelect={() => {
+                pending.current = () => onRename(sound)
+              }}
+            >
+              Rename
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem
+            onSelect={() => {
+              pending.current = () => setConfirm(true)
+            }}
+          >
+            Delete
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
-        <AlertDialogContent>
+        <AlertDialogContent
+          onCloseAutoFocus={e => {
+            if (!trigger.current?.isConnected) return
+            e.preventDefault()
+            trigger.current.focus()
+          }}
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>Delete {sound.name}?</AlertDialogTitle>
             <AlertDialogDescription>
