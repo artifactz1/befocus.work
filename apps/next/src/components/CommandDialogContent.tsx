@@ -41,7 +41,9 @@ import {
   useTimerActions,
 } from '~/hooks/useCommandMenuHooks'
 import { useParsedCommands } from '~/hooks/useParsedCommands'
+import { LIMITS } from '~/lib/session/session'
 import { useCustomizeActions } from './customize/useCustomizeActions'
+import { useSessionCard } from './settings/useSessionCard'
 
 export default function CommandDialogConent() {
   const [open, setOpen] = React.useState(false)
@@ -50,9 +52,9 @@ export default function CommandDialogConent() {
   // Custom hooks
   useCommandMenuKeyboard(setOpen)
   const { open: openCustomize } = useCustomizeActions()
+  const { requestStart } = useSessionCard()
   const { session, isPending, handleSignOut, handleSignIn } = useAuthActions()
-  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } =
-    useTimerActions()
+  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession } = useTimerActions()
   const {
     workDuration: workDurationMinutes,
     breakDuration: breakDurationMinutes,
@@ -148,7 +150,7 @@ export default function CommandDialogConent() {
               <SkipBack />
               <span>Previous Session</span>
             </CommandItem>
-            <CommandItem onSelect={() => handleCommand(toggleTimer)}>
+            <CommandItem onSelect={() => handleCommand(requestStart)}>
               {isRunning ? <Pause /> : <Play />}
               <span>{isRunning ? 'Pause Timer' : 'Start Timer'}</span>
             </CommandItem>
@@ -239,44 +241,50 @@ export default function CommandDialogConent() {
 
             {numberOnly && !workDurationMinutes && !breakDurationMinutes && !sessionsCount && (
               <>
-                <CommandItem
-                  onSelect={() =>
-                    handleSettingUpdateWithClose(
-                      'work',
-                      numberOnly,
-                      `work duration to ${numberOnly} minutes`,
-                    )
-                  }
-                >
-                  <Timer />
-                  <span>Set work duration to {numberOnly} minutes</span>
-                </CommandItem>
+                {numberOnly >= LIMITS.focus.min && numberOnly <= LIMITS.focus.max && (
+                  <CommandItem
+                    onSelect={() =>
+                      handleSettingUpdateWithClose(
+                        'work',
+                        numberOnly,
+                        `work duration to ${numberOnly} minutes`,
+                      )
+                    }
+                  >
+                    <Timer />
+                    <span>Set work duration to {numberOnly} minutes</span>
+                  </CommandItem>
+                )}
 
-                <CommandItem
-                  onSelect={() =>
-                    handleSettingUpdateWithClose(
-                      'break',
-                      numberOnly,
-                      `break duration to ${numberOnly} minutes`,
-                    )
-                  }
-                >
-                  <Coffee />
-                  <span>Set break duration to {numberOnly} minutes</span>
-                </CommandItem>
+                {numberOnly >= LIMITS.break.min && numberOnly <= LIMITS.break.max && (
+                  <CommandItem
+                    onSelect={() =>
+                      handleSettingUpdateWithClose(
+                        'break',
+                        numberOnly,
+                        `break duration to ${numberOnly} minutes`,
+                      )
+                    }
+                  >
+                    <Coffee />
+                    <span>Set break duration to {numberOnly} minutes</span>
+                  </CommandItem>
+                )}
 
-                <CommandItem
-                  onSelect={() =>
-                    handleSettingUpdateWithClose(
-                      'sessions',
-                      numberOnly,
-                      `session total to ${numberOnly}`,
-                    )
-                  }
-                >
-                  <Hash />
-                  <span>Set sessions to {numberOnly}</span>
-                </CommandItem>
+                {numberOnly >= LIMITS.rounds.min && numberOnly <= LIMITS.rounds.max && (
+                  <CommandItem
+                    onSelect={() =>
+                      handleSettingUpdateWithClose(
+                        'sessions',
+                        numberOnly,
+                        `session total to ${numberOnly}`,
+                      )
+                    }
+                  >
+                    <Hash />
+                    <span>Set sessions to {numberOnly}</span>
+                  </CommandItem>
+                )}
               </>
             )}
           </CommandGroup>

@@ -10,7 +10,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { useSoundsStore } from '~/store/useSoundsStore'
 
 // Alarm choice, preview and volume. Applies immediately, no Save needed.
-export function AlarmPicker() {
+export function AlarmPicker({ labelClassName }: { labelClassName?: string }) {
   const alarms = useSoundsStore(
     useShallow(state => Object.values(state.sounds).filter(s => s.soundType === 'alarm')),
   )
@@ -44,12 +44,15 @@ export function AlarmPicker() {
 
   return (
     <div className='flex flex-col space-y-3'>
-      <Label htmlFor='alarm-sound' className='text-md font-bold'>
+      <Label htmlFor='alarm-sound' className={labelClassName ?? 'text-md font-bold'}>
         Alarm sound
       </Label>
       <div className='flex items-center space-x-2'>
         <Select value={alarmId} onValueChange={setAlarmId}>
-          <SelectTrigger id='alarm-sound' className='flex-1'>
+          <SelectTrigger
+            id='alarm-sound'
+            className='flex-1 max-lg:h-11 [@media(pointer:coarse)]:h-11'
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -64,7 +67,7 @@ export function AlarmPicker() {
           type='button'
           variant='secondary'
           size='icon'
-          className='h-10 w-10'
+          className='h-10 w-10 max-lg:h-11 max-lg:w-11 [@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:w-11'
           aria-label='Preview alarm'
           aria-pressed={previewing}
           onClick={togglePreview}
@@ -73,6 +76,7 @@ export function AlarmPicker() {
         </Button>
       </div>
       <Slider
+        className='max-lg:min-h-11 [@media(pointer:coarse)]:min-h-11'
         aria-label='Alarm volume'
         min={0}
         max={1}

@@ -71,6 +71,13 @@
       "when": 1792113123951,
       "tag": "0009_vinyl_labels",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792198115874,
+      "tag": "0010_ask_before_start",
+      "breakpoints": true
     }
   ]
 }

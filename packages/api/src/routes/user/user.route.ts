@@ -1,5 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 import {
+  createUserSettingsSchema,
   getSoundSchema,
   getTaskSchema,
   getUserAccountsSchema,
@@ -63,12 +64,6 @@ export const getUserSettings = createRoute({
   },
 })
 
-export const createUserSettingsSchema = z.object({
-  workDuration: z.number(),
-  breakDuration: z.number(),
-  numberOfSessions: z.number(),
-})
-
 export const createUserSettings = createRoute({
   path: '/user/settings',
   method: 'post',
@@ -104,6 +99,10 @@ export const updateUserSettings = createRoute({
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(getUserSettingsSchema, 'Successfully updated settings'),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      z.object({ message: z.string() }),
+      'Nothing to update',
+    ),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'User or settings not found'),
   },
 })
