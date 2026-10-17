@@ -164,3 +164,4 @@ Resume file: None
 - 261002-ts: Keep timer full size when customize panel opens (.planning/quick/261002-ts-timer-no-shrink-customize)
 - 261003-cx: Customize panel as floating inspector, remove light/dark mode (.planning/quick/261003-cx-customize-inspector-no-light-mode)
 - 261016-gp: Reconcile ROADMAP progress table and STATE counts with shipped work (.planning/quick/261016-gp-reconcile-progress-views)
+- 261016-rc: Restart confirm styled like the session settings card (.planning/quick/261016-rc-restart-confirm-card-style)

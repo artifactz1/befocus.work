@@ -1,6 +1,7 @@
 /* Session start card. Panel tokens mirror customize-panel.module.css. */
 
-.card {
+.card,
+.confirm {
   --panel-surface: color-mix(in srgb, var(--bg-solid), #fff 5%);
   --panel-soft: rgb(255 255 255 / 0.05);
   --panel-lift: rgb(255 255 255 / 0.08);
@@ -12,7 +13,8 @@
 }
 
 @media (max-width: 1023.98px), (pointer: coarse) {
-  .card {
+  .card,
+  .confirm {
     --btn: 44px;
   }
 }
@@ -201,7 +203,8 @@
   animation: fade-out 0.15s ease-in both;
 }
 
-.card {
+.card,
+.confirm {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -210,7 +213,6 @@
   width: min(400px, calc(100vw - 32px));
   max-height: calc(100dvh - 32px);
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
   background: var(--panel-surface);
   border: 1px solid var(--panel-hair);
@@ -221,11 +223,17 @@
   animation: rise 0.22s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
-.card[data-state="closed"] {
+.card {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.card[data-state="closed"],
+.confirm[data-state="closed"] {
   animation: sink 0.15s ease-in both;
 }
 
-.card * {
+.card *,
+.confirm * {
   min-width: 0;
 }
 
@@ -315,6 +323,18 @@
   letter-spacing: 0;
   text-transform: none;
   color: hsl(var(--foreground));
+}
+
+.confirmText {
+  padding: 20px 20px 16px;
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px 16px 20px;
+  border-top: 1px solid var(--panel-hair);
 }
 
 .foot {
@@ -453,6 +473,22 @@
 }
 
 @media (max-width: 639px) {
+  .confirmText {
+    padding: 16px 16px 12px;
+  }
+
+  .confirmActions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 12px;
+  }
+
+  .confirmActions .ghost,
+  .confirmActions .primary {
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+
   .head {
     padding: 16px 8px 8px 16px;
   }
@@ -508,7 +544,9 @@
   .scrim,
   .scrim[data-state="closed"],
   .card,
-  .card[data-state="closed"] {
+  .card[data-state="closed"],
+  .confirm,
+  .confirm[data-state="closed"] {
     animation: none;
   }
 

@@ -1,16 +1,7 @@
 'use client'
 
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@repo/ui/alert-dialog'
 import { Play, X } from 'lucide-react'
 import { type KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { useSaveUserSettings } from '~/hooks/useSession'
@@ -227,21 +218,26 @@ function Body({ guest, mode }: { guest: boolean; mode: 'start' | 'edit' }) {
         </div>
       </div>
 
-      <AlertDialog open={confirming} onOpenChange={setConfirming}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Restart the session?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Saving applies your new plan and starts again from round 1. Time on the current round
-              is not kept.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Keep editing</AlertDialogCancel>
-            <AlertDialogAction onClick={saveAndRestart}>Save and restart</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AlertDialog.Root open={confirming} onOpenChange={setConfirming}>
+        <AlertDialog.Portal>
+          <AlertDialog.Overlay className={styles.scrim} />
+          <AlertDialog.Content className={styles.confirm}>
+            <div className={styles.confirmText}>
+              <AlertDialog.Title className={styles.title}>Restart the session?</AlertDialog.Title>
+              <AlertDialog.Description className={styles.sub}>
+                Saving applies your new plan and starts again from round 1. Time on the current
+                round is not kept.
+              </AlertDialog.Description>
+            </div>
+            <div className={styles.confirmActions}>
+              <AlertDialog.Cancel className={styles.ghost}>Keep editing</AlertDialog.Cancel>
+              <AlertDialog.Action className={styles.primary} onClick={saveAndRestart}>
+                Save and restart
+              </AlertDialog.Action>
+            </div>
+          </AlertDialog.Content>
+        </AlertDialog.Portal>
+      </AlertDialog.Root>
     </DialogPrimitive.Content>
   )
 }
