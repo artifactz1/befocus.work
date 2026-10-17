@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Foundation Repair** - Production settings hydration, one Tailwind, clean tokens, working lint gate (4/5 plans merged in #109; 01-05 human deploy and production verification outstanding)
 - [ ] **Phase 2: Customization Engine and Panel** - Every control, live preview, Apply and Cancel, desktop and mobile (all plans executed, owner review checkpoint outstanding)
-- [ ] **Phase 3: Persistence and Sync** - A look survives refresh, follows the account, and sticks for guests (planned: 0/6; execution waits on Phase 7.1)
+- [x] **Phase 3: Persistence and Sync** - A look survives refresh, follows the account, and sticks for guests (6/6 built; migrations and signed-in human checks pending)
 - [ ] **Phase 4: Saved Themes** - Name, switch, rename and delete looks; curated presets; guest migration
 - [ ] **Phase 5: Media Uploads** - Upload your own images and videos to R2 behind the timer
 - [ ] **Phase 6: URL Backgrounds** - Paste any remote image or video URL, with a safe fallback
@@ -208,12 +208,12 @@ users on any device and for guests in the same browser.
 **Plans**: 6 plans in 5 waves (`.planning/phases/BFC-03-persistence-and-sync/`)
 
 Plans:
-- [ ] 03-01-PLAN.md - Browser-storage helper (sounds, guest intro and 7.1 ask flag moved onto it), guest look record, queued look saver, first-paint script builder (SYN-03, SYN-05, ENG-05)
-- [ ] 03-02-PLAN.md - `themes` table, `active_theme_id` and unique user index on settings, migration 0011 applied by a human (SYN-01, SYN-02)
-- [ ] 03-03-PLAN.md - PUT /user/themes/active, look on GET /user/settings, race-safe settings create, curl round trip (SYN-01, SYN-02, SYN-05)
-- [ ] 03-04-PLAN.md - Customize store mode and `saveLook`, single hydration owner per mode, paint script in both layouts (ENG-05, SYN-01, SYN-03, SYN-05)
-- [ ] 03-05-PLAN.md - Guest footer note and the save-failed and storage-blocked toasts (SYN-01, SYN-03)
-- [ ] 03-06-PLAN.md - Browser E2E (guest, signed in, second device, rapid Apply, throttled first frame) and human UAT
+- [x] 03-01-PLAN.md - Browser-storage helper (sounds, guest intro and 7.1 ask flag moved onto it), guest look record, queued look saver, first-paint script builder (SYN-03, SYN-05, ENG-05)
+- [x] 03-02-PLAN.md - `themes` table, `active_theme_id` and unique user index on settings, migration 0011 applied by a human (SYN-01, SYN-02)
+- [x] 03-03-PLAN.md - PUT /user/themes/active, look on GET /user/settings, race-safe settings create, curl round trip (SYN-01, SYN-02, SYN-05)
+- [x] 03-04-PLAN.md - Customize store mode and `saveLook`, single hydration owner per mode, paint script in both layouts (ENG-05, SYN-01, SYN-03, SYN-05)
+- [x] 03-05-PLAN.md - Guest footer note and the save-failed and storage-blocked toasts (SYN-01, SYN-03)
+- [x] 03-06-PLAN.md - Browser E2E (guest, signed in, second device, rapid Apply, throttled first frame) and human UAT
 
 Execution order: Phase 7.1 first (captain pick P3; 03-02 needs its migration 0010).
 
@@ -748,7 +748,7 @@ open question Q1.
 |-------|----------------|--------|-----------|
 | 1. Foundation Repair | 4/5 | In progress - 01-05 (human deploy, FND-01/FND-05 production check) outstanding | - |
 | 2. Customization Engine and Panel | 8/8 | Shipped in #109, verification human_needed: owner visual review (02-08 Task 3) pending; panel later reshaped by #113/#114 | 2026-09-29 (code) |
-| 3. Persistence and Sync | 0/6 | Planned (03-01..03-06); execution waits on Phase 7.1 | - |
+| 3. Persistence and Sync | 6/6 | Built, human_needed: apply migrations 0010 and 0011, signed-in and cross-device checks (see 03-VERIFICATION.md) | 2026-10-16 (code) |
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |
 | 6. URL Backgrounds | 0/TBD | Not started | - |
