@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Foundation Repair** - Production settings hydration, one Tailwind, clean tokens, working lint gate (4/5 plans merged in #109; 01-05 human deploy and production verification outstanding)
 - [ ] **Phase 2: Customization Engine and Panel** - Every control, live preview, Apply and Cancel, desktop and mobile (all plans executed, owner review checkpoint outstanding)
-- [ ] **Phase 3: Persistence and Sync** - A look survives refresh, follows the account, and sticks for guests
+- [ ] **Phase 3: Persistence and Sync** - A look survives refresh, follows the account, and sticks for guests (planned: 0/6; execution waits on Phase 7.1)
 - [ ] **Phase 4: Saved Themes** - Name, switch, rename and delete looks; curated presets; guest migration
 - [ ] **Phase 5: Media Uploads** - Upload your own images and videos to R2 behind the timer
 - [ ] **Phase 6: URL Backgrounds** - Paste any remote image or video URL, with a safe fallback
@@ -205,7 +205,17 @@ users on any device and for guests in the same browser.
   3. A guest customizes at `/guest`, refreshes, and the look is still there in that browser.
   4. Clicking Apply repeatedly and quickly settles on exactly what the panel last showed, and a
      refresh confirms the server agrees.
-**Plans**: TBD
+**Plans**: 6 plans in 5 waves (`.planning/phases/BFC-03-persistence-and-sync/`)
+
+Plans:
+- [ ] 03-01-PLAN.md - Browser-storage helper (sounds, guest intro and 7.1 ask flag moved onto it), guest look record, queued look saver, first-paint script builder (SYN-03, SYN-05, ENG-05)
+- [ ] 03-02-PLAN.md - `themes` table, `active_theme_id` and unique user index on settings, migration 0011 applied by a human (SYN-01, SYN-02)
+- [ ] 03-03-PLAN.md - PUT /user/themes/active, look on GET /user/settings, race-safe settings create, curl round trip (SYN-01, SYN-02, SYN-05)
+- [ ] 03-04-PLAN.md - Customize store mode and `saveLook`, single hydration owner per mode, paint script in both layouts (ENG-05, SYN-01, SYN-03, SYN-05)
+- [ ] 03-05-PLAN.md - Guest footer note and the save-failed and storage-blocked toasts (SYN-01, SYN-03)
+- [ ] 03-06-PLAN.md - Browser E2E (guest, signed in, second device, rapid Apply, throttled first frame) and human UAT
+
+Execution order: Phase 7.1 first (captain pick P3; 03-02 needs its migration 0010).
 
 Notes for planning:
 
@@ -605,7 +615,7 @@ with a switcher popover and a Customize > Style "Session progress" control, dimm
 5D the phone follows the same setting (compact views under 640px); Q6 one session; Q9 guests keep
 tasks, plan and links in the browser with no migration in Phase 9.
 
-**Depends on Phase 8 and Phase 3 (not yet planned or built).** Every plan from 09-02 onwards
+**Depends on Phase 8 (not yet planned or built) and Phase 3 (planned, not built).** Every plan from 09-02 onwards
 re-reads the seams it uses and STOPs on a mismatch. Assumed seam for the Phase 8 planner: block
 ids are client-generated UUIDs that exist before the block starts, the timer store accepts a
 pre-built ordered block list for the session (from a Phase 9 plan or from Session settings), and
@@ -738,7 +748,7 @@ open question Q1.
 |-------|----------------|--------|-----------|
 | 1. Foundation Repair | 4/5 | In progress - 01-05 (human deploy, FND-01/FND-05 production check) outstanding | - |
 | 2. Customization Engine and Panel | 8/8 | Shipped in #109, verification human_needed: owner visual review (02-08 Task 3) pending; panel later reshaped by #113/#114 | 2026-09-29 (code) |
-| 3. Persistence and Sync | 0/TBD | Not started | - |
+| 3. Persistence and Sync | 0/6 | Planned (03-01..03-06); execution waits on Phase 7.1 | - |
 | 4. Saved Themes | 0/TBD | Not started | - |
 | 5. Media Uploads | 0/TBD | Not started | - |
 | 6. URL Backgrounds | 0/TBD | Not started | - |
