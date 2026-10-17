@@ -1,0 +1,1 @@
+ALTER TABLE "sessionSettings" ADD COLUMN "ask_before_start" boolean DEFAULT true NOT NULL;

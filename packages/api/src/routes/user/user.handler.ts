@@ -113,9 +113,7 @@ export const createUserSettings: AppRouteHandler<CreateUserSettings> = async c =
     return c.json(existingSettings, HttpStatusCodes.OK)
   }
 
-  // 👇 Get values from the POST body
-  const body = await c.req.json()
-  const { workDuration, breakDuration, numberOfSessions } = body
+  const { workDuration, breakDuration, numberOfSessions, askBeforeStart } = c.req.valid('json')
 
   const inserted = await db
     .insert(sessionSettings)
@@ -125,6 +123,7 @@ export const createUserSettings: AppRouteHandler<CreateUserSettings> = async c =
       workDuration,
       breakDuration,
       numberOfSessions,
+      askBeforeStart,
     })
     .returning()
 
@@ -135,7 +134,7 @@ export const updateUserSettings: AppRouteHandler<UpdateUserSettings> = async c =
   const db = c.get('db')
   const user = c.get('user')
   const session = c.get('session')
-  const data = await c.req.json()
+  const { workDuration, breakDuration, numberOfSessions, askBeforeStart } = c.req.valid('json')
 
   if (!user || !session) {
     return c.json({ message: 'User or session not found' }, HttpStatusCodes.NOT_FOUND)
@@ -149,13 +148,15 @@ export const updateUserSettings: AppRouteHandler<UpdateUserSettings> = async c =
     return c.json({ message: 'Settings not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
+  const values = { workDuration, breakDuration, numberOfSessions, askBeforeStart }
+  // drizzle throws "No values to set" when every value is undefined
+  if (Object.values(values).every(v => v === undefined)) {
+    return c.json({ message: 'Nothing to update' }, HttpStatusCodes.BAD_REQUEST)
+  }
+
   const updated = await db
     .update(sessionSettings)
-    .set({
-      workDuration: data.workDuration,
-      breakDuration: data.breakDuration,
-      numberOfSessions: data.numberOfSessions,
-    })
+    .set(values)
     .where(eq(sessionSettings.userId, user.id))
     .returning()
 
