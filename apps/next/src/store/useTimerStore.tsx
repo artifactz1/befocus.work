@@ -18,7 +18,6 @@ interface TimerState {
   resetCurrentTime: () => void
   skipToNextSession: () => void
   skipToPrevSession: () => void
-  toggleTimer: () => void
   decrementTime: () => void
   isAlarmOn: boolean
   updateSettings: (key: 'sessions' | 'workDuration' | 'breakDuration', value: number) => void
@@ -143,8 +142,6 @@ function createTimerStore(
 
       set({ isRunning: false })
     },
-
-    toggleTimer: () => set(state => ({ isRunning: !state.isRunning })),
 
     decrementTime: () =>
       set(state => {

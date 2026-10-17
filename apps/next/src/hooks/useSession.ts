@@ -1,5 +1,4 @@
-// hooks/useUserSettings.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
 
@@ -19,24 +18,9 @@ export type UserSettingsInput = {
   askBeforeStart?: boolean
 }
 
-// Hook to fetch user settings
-export const useUserSettings = () => {
-  return useQuery<UserSettings | null>({
-    queryKey: ['userSettings'],
-    queryFn: async () => {
-      const response = await api.user.settings.$get()
-      if (!response.ok) return null
-      return await response.json()
-    },
-    // The server layout seeds this query via HydrationBoundary - never refetch on mount/focus.
-    staleTime: Number.POSITIVE_INFINITY,
-  })
-}
-
 // Combined hook to save settings (create or update based on existence).
 // Tries PUT first; a 404 means the user has no settings row yet, so it falls
-// back to POST. This avoids depending on useUserSettings' (possibly seeded-null,
-// per D-08) cache state to decide create vs. update.
+// back to POST. This avoids depending on a cached settings state to decide create vs. update.
 export const useSaveUserSettings = (options?: { quiet?: boolean }) => {
   const queryClient = useQueryClient()
 

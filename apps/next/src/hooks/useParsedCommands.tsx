@@ -1,4 +1,5 @@
 import React from 'react'
+import { LIMITS } from '~/lib/session/session'
 
 // Command parser configuration
 type CommandType = 'work' | 'break' | 'sessions' | 'number'
@@ -22,28 +23,28 @@ const COMMAND_CONFIGS: CommandConfig[] = [
   {
     type: 'work',
     patterns: [/^set work duration to (\d+)(?: minutes?)?$/i, /^work (\d+)$/i, /^w (\d+)$/i],
-    min: 1,
-    max: 120,
+    min: LIMITS.focus.min,
+    max: LIMITS.focus.max,
     unit: 'minutes',
   },
   {
     type: 'break',
     patterns: [/^set break duration to (\d+)(?: minutes?)?$/i, /^break (\d+)$/i, /^b (\d+)$/i],
-    min: 1,
-    max: 60,
+    min: LIMITS.break.min,
+    max: LIMITS.break.max,
     unit: 'minutes',
   },
   {
     type: 'sessions',
     patterns: [/^set sessions to (\d+)$/i, /^sessions (\d+)$/i, /^s (\d+)$/i],
-    min: 1,
-    max: 20,
+    min: LIMITS.rounds.min,
+    max: LIMITS.rounds.max,
   },
   {
     type: 'number',
     patterns: [/^(\d+)$/],
     min: 1,
-    max: 120,
+    max: LIMITS.focus.max,
   },
 ]
 
