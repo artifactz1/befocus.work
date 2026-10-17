@@ -78,6 +78,13 @@
       "when": 1792198115874,
       "tag": "0010_ask_before_start",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792205659478,
+      "tag": "0011_look_persistence",
+      "breakpoints": true
     }
   ]
 }
