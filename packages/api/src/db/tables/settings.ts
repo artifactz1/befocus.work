@@ -2,6 +2,7 @@ import type { InferSelectModel } from 'drizzle-orm'
 import { boolean, integer, pgTable, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-zod'
 import type { z } from 'zod'
+import type { Look } from '../../../../types/look'
 import { user } from './auth'
 import { themes } from './themes'
 
@@ -22,6 +23,7 @@ export const sessionSettings = pgTable(
 )
 
 export type Settings = InferSelectModel<typeof sessionSettings>
+export type SettingsWithLook = Settings & { look: Look | null }
 
 // Schemas
 export const getUserSettingsSchema = createSelectSchema(sessionSettings)
