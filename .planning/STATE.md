@@ -9,9 +9,9 @@ last_activity: 2026-10-16 -- Phase 07.1 planning complete
 progress:
   total_phases: 11
   completed_phases: 2
-  total_plans: 26
+  total_plans: 37
   completed_plans: 20
-  percent: 77
+  percent: 54
 ---
 
 # Project State
@@ -22,7 +22,7 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** A user can change how their focus dashboard looks and have that look still be there
 the next time they open it - signed in on any device, or as a guest on the same browser.
-**Current focus:** Phase 7.1 (inserted) planned - 5 plans ready, next `/gsd:execute-phase 07.1`. Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phases 3-6 and 8-10 not started
+**Current focus:** Phase 7.1 (inserted) planned - 5 plans ready, next `/gsd:execute-phase 07.1`. Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phase 9 planned (11 plans, waits on Phase 8 and Phase 3); Phases 3-6, 8 and 10 not started
 
 ## Current Position
 
@@ -31,7 +31,7 @@ Plan: 0 of 5
 Status: Ready to execute 07.1. Still open: 01-05 production check, 02-08 owner review, 07 human checks, 07-08 timer-scale override and label-size hardening
 Last activity: 2026-10-16 -- Phase 07.1 planning complete
 
-Progress: [████████░░] 77%
+Progress: [█████░░░░░] 54%
 
 ## Performance Metrics
 

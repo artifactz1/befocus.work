@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs (8/8 plans shipped in #116; human visual checks and 07-08 gaps still open, see Progress)
 - [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (5 plans, ready to execute)
 - [ ] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded
-- [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress
+- [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (planned: 0/11; execution waits on Phase 8 and Phase 3)
 - [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
 
 ## Phase Details
@@ -581,8 +581,37 @@ in it and what they have worked through.
      the user is, the blocks ahead, any time added, and the tasks checked off.
 
   5. The plan and the progress view are usable on a phone and never obstruct the timer.
-**Plans**: TBD
+**Plans**: 11 plans in 8 waves (`.planning/phases/BFC-09-tasks-and-time-blocks/`)
+
+Plans:
+- [ ] 09-01-PLAN.md - Deck store migration (one open card on the Quiet Deck) and old to-do-list removal
+- [ ] 09-02-PLAN.md - Plan contracts, `task_plans` table, GET/PUT/DELETE /user/plan, db:push
+- [ ] 09-03-PLAN.md - Tasks store, task actions, Tasks card and List tab (TSK-01)
+- [ ] 09-04-PLAN.md - Tasks persistence: guest browser storage, server-rendered account tasks (TSK-01)
+- [ ] 09-05-PLAN.md - Plan client: guest storage, seeding from Session settings, saver, Plan tab (TSK-03)
+- [ ] 09-06-PLAN.md - Task to block links: `task_block_links`, PUT /user/task-links, Assign checklist and drag (TSK-03)
+- [ ] 09-07-PLAN.md - Live session: plan seeds Phase 8's block list, Session card, live completion writes (TSK-03, TSK-04)
+- [ ] 09-08-PLAN.md - Progress slot: Strip / Now / Grid, switcher popover, Session progress preference (TSK-04)
+- [ ] 09-09-PLAN.md - Now line and now pick (TSK-02)
+- [ ] 09-10-PLAN.md - Block record data path: GET /user/task-links?blockId, guest link history (TSK-02)
+- [ ] 09-11-PLAN.md - Phone: compact progress views, now line placement, mini strip above the sheet (TSK-05)
+
 **UI hint**: yes
+**Context**: `09-CONTEXT.md` (locked picks), `09-UI-SPEC.md` (design contract). Picks from the
+Phase 9 design board (2026-10-16): 1A Tasks card in the Quiet Deck slot with List and Plan tabs;
+2B vertical day column with derived clock times, also the live Session card; 3B tap a block and
+tick tasks into it, native drag as a desktop extra; 4D switchable Strip / Now / Grid progress slot
+with a switcher popover and a Customize > Style "Session progress" control, dimming on idle;
+5D the phone follows the same setting (compact views under 640px); Q6 one session; Q9 guests keep
+tasks, plan and links in the browser with no migration in Phase 9.
+
+**Depends on Phase 8 and Phase 3 (not yet planned or built).** Every plan from 09-02 onwards
+re-reads the seams it uses and STOPs on a mismatch. Assumed seam for the Phase 8 planner: block
+ids are client-generated UUIDs that exist before the block starts, the timer store accepts a
+pre-built ordered block list for the session (from a Phase 9 plan or from Session settings), and
+records reuse those ids. Phase 8 also owns a session id known before the first block, an ended
+state and added time per block in the store. Phase 3 owns the guest browser-storage helper, the
+single hydration owner, and settings persistence that carries the Session progress preference.
 
 Notes for planning:
 
@@ -687,14 +716,16 @@ answered before `/gsd-discuss-phase`. Q2-Q4 were answered on the vinyl design bo
   5. **Q5 When time can be added.** Only when a focus block ends, or also mid-block and on
      breaks. Phase 8.
   6. **Q6 Time-blocker scope.** A plan for the blocks inside one session, or a full-day calendar
-     (which may touch issue #100, the Notion integration). Phase 9.
+     (which may touch issue #100, the Notion integration). Phase 9. Resolved 2026-10-16: one
+     session; a full-day calendar is a later phase.
   7. **Q7 Where "what to improve" comes from.** Computed from the records, written by the user,
      or AI-generated (a new external service and cost). Phase 10.
   8. **Q8 Log cadence.** A prompt at every break, only at the end of a session, or both; and
      whether it can be turned off. Phase 10.
   9. **Q9 Guest records.** Whether guests keep block records, logs and history at all, only in
      their browser, and whether those move into the account on sign-up the way SYN-04 does for
-     themes. Phases 8-10.
+     themes. Phases 8-10. Resolved for Phase 9 on 2026-10-16: guest tasks, plan and task links
+     stay in the browser, with no migration in Phase 9.
 
 ## Progress
 
@@ -714,7 +745,7 @@ open question Q1.
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
 | 7.1. Session Settings Start Card (INSERTED) | 0/5 | Planned | - |
 | 8. Focus Blocks and Added Time | 0/TBD | Not started | - |
-| 9. Tasks and Time Blocks | 0/TBD | Not started | - |
+| 9. Tasks and Time Blocks | 0/11 | Planned (09-01..09-11); execution waits on Phase 8 and Phase 3 | - |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
 
 ## Requirement Coverage
