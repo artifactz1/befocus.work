@@ -22,13 +22,13 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** A user can change how their focus dashboard looks and have that look still be there
 the next time they open it - signed in on any device, or as a guest on the same browser.
-**Current focus:** Phase 7.1 (inserted) plans 01-04 built on fm/befocus-phase71-build; migration 0010 and browser E2E/UAT pending a human. Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phase 3 planned (6 plans, runs after 7.1); Phase 9 planned (11 plans, waits on Phase 8 and Phase 3); Phases 4-6, 8 and 10 not started
+**Current focus:** Phase 7.1 (inserted) all 5 plans built (PR #121); migration 0010 and signed-in E2E/UAT pending a human. Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phase 3 planned (6 plans, runs after 7.1); Phase 9 planned (11 plans, waits on Phase 8 and Phase 3); Phases 4-6, 8 and 10 not started
 
 ## Current Position
 
 Phase: 07.1 (session-settings-start-card-and-capsule-steppers) - BUILT, human checks pending
-Plan: 4 of 5
-Status: 07.1 code done; apply migration 0010, run 05 browser E2E and UAT. Still open: 01-05 production check, 02-08 owner review, 07 human checks, 07-08 timer-scale override and label-size hardening
+Plan: 5 of 5
+Status: 07.1 code done and guest E2E passed; apply migration 0010, run signed-in E2E and UAT. Still open: 01-05 production check, 02-08 owner review, 07 human checks, 07-08 timer-scale override and label-size hardening
 Last activity: 2026-10-16 -- Phase 07.1 plans built
 
 Progress: [██████░░░░] 58%
