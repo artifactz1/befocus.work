@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Media Uploads** - Upload your own images and videos to R2 behind the timer
 - [ ] **Phase 6: URL Backgrounds** - Paste any remote image or video URL, with a safe fallback
 - [x] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs (8/8 plans shipped in #116; human visual checks and 07-08 gaps still open, see Progress)
-- [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (5 plans, ready to execute)
+- [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (plans 01-04 built; migration 0010, browser E2E and UAT pending)
 - [ ] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded
 - [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (planned: 0/11; execution waits on Phase 8 and Phase 3)
 - [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
@@ -480,16 +480,16 @@ Plans:
 
 **Wave 1**
 
-- [ ] 07.1-01-PLAN.md - ask_before_start column with generated migration 0010, bounded settings schemas, quiet save hook; human applies the migration, then a signed-in round trip (SES-04)
-- [ ] 07.1-02-PLAN.md - Pure session rules (limits, fresh/finished, step snapping, totals, ends-around, guest storage) with session.check, and the shared capsule Stepper spinbutton (SES-01, SES-02, SES-03, SES-04)
+- [x] 07.1-01-PLAN.md - ask_before_start column with generated migration 0010, bounded settings schemas, quiet save hook; human applies the migration, then a signed-in round trip (SES-04)
+- [x] 07.1-02-PLAN.md - Pure session rules (limits, fresh/finished, step snapping, totals, ends-around, guest storage) with session.check, and the shared capsule Stepper spinbutton (SES-01, SES-02, SES-03, SES-04)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 07.1-03-PLAN.md - One request-start rule for Play, Space and the command menu; SessionCard start mode on the Radix dialog with the switch, mounted for signed-in users and guests (SES-01, SES-03, SES-04, SES-06)
+- [x] 07.1-03-PLAN.md - One request-start rule for Play, Space and the command menu; SessionCard start mode on the Radix dialog with the switch, mounted for signed-in users and guests (SES-01, SES-03, SES-04, SES-06)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 07.1-04-PLAN.md - Edit mode with the restart confirm and the footer Session settings button; popover, drawer and number inputs removed; command menu on the shared limits (SES-01, SES-02, SES-05)
+- [x] 07.1-04-PLAN.md - Edit mode with the restart confirm and the footer Session settings button; popover, drawer and number inputs removed; command menu on the shared limits (SES-01, SES-02, SES-05)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -753,7 +753,7 @@ open question Q1.
 | 5. Media Uploads | 0/TBD | Not started | - |
 | 6. URL Backgrounds | 0/TBD | Not started | - |
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
-| 7.1. Session Settings Start Card (INSERTED) | 0/5 | Planned | - |
+| 7.1. Session Settings Start Card (INSERTED) | 4/5 | Built, human_needed: migration 0010 not applied, browser E2E (05) and UAT pending | 2026-10-16 (code) |
 | 8. Focus Blocks and Added Time | 0/TBD | Not started | - |
 | 9. Tasks and Time Blocks | 0/11 | Planned (09-01..09-11); execution waits on Phase 8 and Phase 3 | - |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
