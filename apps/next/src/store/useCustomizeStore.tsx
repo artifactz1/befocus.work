@@ -2,6 +2,7 @@
 
 import { DEFAULT_LOOK, type Look, type LookKey, lookEquals, lookSchema } from '@repo/types/look'
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { useStore } from 'zustand/react'
 import { createStore } from 'zustand/vanilla'
 import { api } from '~/lib/api.client'
@@ -11,14 +12,23 @@ import { createLookSaver } from '~/lib/customize/look-saver'
 
 export type CustomizeMode = 'account' | 'guest'
 
-// 03-05 wires the toasts
 export function reportSaveFailed(error: unknown) {
   console.error('look save failed', error)
+  toast.error(
+    "Couldn't save your look. It stays on this screen. We'll try again next time you change it.",
+    {
+      id: 'look-save-failed',
+    },
+  )
 }
 
-// 03-05 wires the toasts
+// Once per page load; the look stays painted for this visit.
+let storageBlockedShown = false
+
 export function reportStorageBlocked() {
-  console.error('look not saved: browser storage is blocked')
+  if (storageBlockedShown) return
+  storageBlockedShown = true
+  toast("This browser isn't saving your look. Private browsing can block storage.")
 }
 
 interface CustomizeState {

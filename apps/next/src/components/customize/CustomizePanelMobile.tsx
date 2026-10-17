@@ -14,6 +14,7 @@ const TABBABLE_SELECTOR =
 
 export default function CustomizePanelMobile() {
   const panelOpen = useCustomizeStore(state => state.panelOpen)
+  const mode = useCustomizeStore(state => state.mode)
   const { close } = useCustomizeActions()
   const contentRef = useRef<HTMLDivElement>(null)
 
@@ -57,6 +58,7 @@ export default function CustomizePanelMobile() {
           aria-labelledby='customize-heading'
           aria-describedby={undefined}
           data-customize-panel
+          data-guest={mode === 'guest' ? '' : undefined}
           onCloseAutoFocus={e => e.preventDefault()}
           onKeyDown={onKeyDown}
         >
