@@ -3,8 +3,10 @@ import * as HttpStatusPhrases from '@repo/api/lib/http-status-phrases'
 import type { AppRouteHandler } from '@repo/api/types/app-context'
 import { and, eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
+import { lookSchema } from '../../../../types/look'
 import { sessionSettings } from './../../db/tables/settings'
 import { insertSoundSchema, sounds, updateSoundSchema } from './../../db/tables/sounds'
+import { themes } from './../../db/tables/themes'
 import { labelKey, sniffLabelImage } from '../../lib/label-image'
 import type {
   CreateUserSettings,
@@ -84,15 +86,19 @@ export const getUserSettings: AppRouteHandler<GetUserSettings> = async c => {
     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
   }
 
-  const settings = await db.query.sessionSettings.findFirst({
-    where: (sessionSettings, { eq }) => eq(sessionSettings.userId, user.id),
-  })
+  const [row] = await db
+    .select({ settings: sessionSettings, look: themes.look })
+    .from(sessionSettings)
+    .leftJoin(themes, and(eq(themes.id, sessionSettings.activeThemeId), eq(themes.userId, user.id)))
+    .where(eq(sessionSettings.userId, user.id))
 
-  if (!settings) {
+  if (!row) {
     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
   }
 
-  return c.json(settings, HttpStatusCodes.OK)
+  // A stored look that no longer parses falls back to null so the client uses the default.
+  const parsed = row.look ? lookSchema.safeParse(row.look) : null
+  return c.json({ ...row.settings, look: parsed?.success ? parsed.data : null }, HttpStatusCodes.OK)
 }
 
 export const createUserSettings: AppRouteHandler<CreateUserSettings> = async c => {
@@ -104,18 +110,10 @@ export const createUserSettings: AppRouteHandler<CreateUserSettings> = async c =
     return c.json({ message: HttpStatusPhrases.NOT_FOUND }, HttpStatusCodes.NOT_FOUND)
   }
 
-  // Check if settings already exist
-  const existingSettings = await db.query.sessionSettings.findFirst({
-    where: (sessionSettings, { eq }) => eq(sessionSettings.userId, user.id),
-  })
-
-  if (existingSettings) {
-    return c.json(existingSettings, HttpStatusCodes.OK)
-  }
-
   const { workDuration, breakDuration, numberOfSessions, askBeforeStart } = c.req.valid('json')
 
-  const inserted = await db
+  // The unique user id makes a concurrent first create a no-op; either way return the row.
+  await db
     .insert(sessionSettings)
     .values({
       id: nanoid(),
@@ -125,9 +123,14 @@ export const createUserSettings: AppRouteHandler<CreateUserSettings> = async c =
       numberOfSessions,
       askBeforeStart,
     })
-    .returning()
+    .onConflictDoNothing({ target: sessionSettings.userId })
 
-  return c.json(inserted[0], HttpStatusCodes.OK)
+  const [settings] = await db
+    .select()
+    .from(sessionSettings)
+    .where(eq(sessionSettings.userId, user.id))
+
+  return c.json(settings, HttpStatusCodes.OK)
 }
 
 export const updateUserSettings: AppRouteHandler<UpdateUserSettings> = async c => {

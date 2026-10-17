@@ -1,4 +1,6 @@
 import { youTubeVideoId } from '@repo/api/lib/youtube'
+import { z } from 'zod'
+import { defaultStorage, readStored, writeStored } from '~/lib/storage/browser-storage'
 import type { Sound } from '~/store/useSoundsStore'
 
 export type LabelImage = 'thumbnail' | 'upload'
@@ -80,26 +82,18 @@ export function reconcileSounds(
 
 export const HIDDEN_STARTERS_KEY = 'befocus.hiddenStarters'
 
-type Store = Pick<Storage, 'getItem' | 'setItem'>
-const defaultStorage = (): Store | undefined => globalThis.localStorage
-
 export function readHiddenStarters(
   storage: Pick<Storage, 'getItem'> | undefined = defaultStorage(),
 ) {
-  try {
-    const parsed: unknown = JSON.parse(storage?.getItem(HIDDEN_STARTERS_KEY) ?? '[]')
-    return new Set(
-      Array.isArray(parsed) ? parsed.filter(x => typeof x === 'string' && isStarterId(x)) : [],
-    )
-  } catch {
-    return new Set<string>()
-  }
+  const stored = readStored(HIDDEN_STARTERS_KEY, z.array(z.unknown()), storage) ?? []
+  return new Set(stored.filter((x): x is string => typeof x === 'string' && isStarterId(x)))
 }
 
-export function hideStarter(id: string, storage: Store | undefined = defaultStorage()) {
-  try {
-    storage?.setItem(HIDDEN_STARTERS_KEY, JSON.stringify([...readHiddenStarters(storage), id]))
-  } catch {}
+export function hideStarter(
+  id: string,
+  storage: Pick<Storage, 'getItem' | 'setItem'> | undefined = defaultStorage(),
+) {
+  writeStored(HIDDEN_STARTERS_KEY, [...readHiddenStarters(storage), id], storage)
 }
 
 // Board swatches for a record label. null is Auto.

@@ -50,6 +50,10 @@
   grid-template-rows: auto auto auto minmax(0, 1fr);
 }
 
+.sheet[data-guest] {
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+}
+
 .sheet[data-vaul-drawer] {
   animation-duration: 0.45s;
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -642,8 +646,43 @@
 .foot {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   padding: 12px 14px 14px 12px;
+  border-top: 1px solid var(--panel-hair);
+}
+
+.note {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 0 2px 10px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  font-weight: 400;
+  color: var(--panel-muted);
+}
+
+.note a {
+  color: hsl(var(--foreground));
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--panel-hair);
+  border-radius: 4px;
+}
+
+.note a:hover {
+  text-decoration-color: currentColor;
+}
+
+.note a:focus-visible {
+  outline: none;
+  box-shadow: var(--panel-ring);
+}
+
+/* Phone: the note is the sheet's last row, not part of a foot. */
+.sheet .note {
+  padding: 10px 20px 12px;
   border-top: 1px solid var(--panel-hair);
 }
 

@@ -2,6 +2,7 @@
 
 import { Button } from '@repo/ui/button'
 import { Undo2, X } from 'lucide-react'
+import Link from 'next/link'
 import { useRef, useState } from 'react'
 import { selectIsDirty, useCustomizeStore } from '~/store/useCustomizeStore'
 import styles from './customize-panel.module.css'
@@ -12,6 +13,7 @@ const CHIPS = CUSTOMIZE_SECTIONS.filter(section => section.chip)
 
 export default function CustomizePanelBody({ variant }: { variant: 'desktop' | 'phone' }) {
   const isDirty = useCustomizeStore(selectIsDirty)
+  const mode = useCustomizeStore(state => state.mode)
   const { close, revert } = useCustomizeActions()
   const bodyRef = useRef<HTMLDivElement>(null)
   const [activeChip, setActiveChip] = useState(CHIPS[0]?.id)
@@ -27,6 +29,17 @@ export default function CustomizePanelBody({ variant }: { variant: 'desktop' | '
       <Undo2 aria-hidden />
       Revert
     </Button>
+  )
+
+  // /sign-in is outside the guest layout, so close (apply and save) must run before navigating.
+  const note = mode === 'guest' && (
+    <p className={styles.note}>
+      Saved in this browser.{' '}
+      <Link href='/sign-in' onClick={close}>
+        Sign in
+      </Link>{' '}
+      to keep it on every device.
+    </p>
   )
 
   const doneButton = (
@@ -99,8 +112,11 @@ export default function CustomizePanelBody({ variant }: { variant: 'desktop' | '
         ))}
       </div>
 
+      {variant === 'phone' && note}
+
       {variant === 'desktop' && (
         <div className={styles.foot}>
+          {note}
           {revertButton}
           {doneButton}
         </div>
