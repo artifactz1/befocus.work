@@ -1,0 +1,188 @@
+/* Session start card. Panel tokens mirror customize-panel.module.css. */
+
+.card {
+  --panel-surface: color-mix(in srgb, var(--bg-solid), #fff 5%);
+  --panel-soft: rgb(255 255 255 / 0.05);
+  --panel-lift: rgb(255 255 255 / 0.08);
+  --panel-hair: rgb(255 255 255 / 0.08);
+  --panel-muted: hsl(var(--muted-foreground));
+  --panel-ring: 0 0 0 2px var(--panel-surface), 0 0 0 3.5px hsl(var(--foreground));
+  --btn: 36px;
+  font-family: var(--font-app);
+}
+
+@media (max-width: 1023.98px), (pointer: coarse) {
+  .card {
+    --btn: 44px;
+  }
+}
+
+/* Capsule stepper (D - Capsules) */
+
+.stepper + .stepper {
+  margin-top: 16px;
+}
+
+.stepHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.name {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.range {
+  font-weight: 400;
+  color: var(--panel-muted);
+  white-space: nowrap;
+}
+
+.stepper[data-at-limit] .range {
+  color: hsl(var(--foreground));
+}
+
+.stepper[data-at-limit] .range::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+  vertical-align: 2px;
+  border-radius: 50%;
+  background: var(--user-accent);
+}
+
+.pill {
+  display: grid;
+  grid-template-columns: var(--btn) minmax(0, 1fr) var(--btn);
+  align-items: center;
+  height: calc(var(--btn) + 8px);
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--panel-soft);
+  box-shadow: inset 0 0 0 1px var(--panel-hair);
+}
+
+.pill:has(.value:focus-visible) {
+  box-shadow: var(--panel-ring);
+}
+
+.btn {
+  display: grid;
+  place-items: center;
+  width: var(--btn);
+  height: var(--btn);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--panel-lift);
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    transform 0.08s,
+    opacity 0.15s;
+}
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    background: rgb(255 255 255 / 0.14);
+  }
+}
+
+.btn:active:not(:disabled),
+.btn[data-held] {
+  background: hsl(var(--foreground));
+  color: #101010;
+  transform: scale(0.92);
+}
+
+.btn:disabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+}
+
+.value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--btn);
+  overflow: hidden;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.read {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.num {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.num[data-dir="up"] {
+  animation: roll-up 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.num[data-dir="down"] {
+  animation: roll-down 0.28s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.unit {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--panel-muted);
+}
+
+.stepper[data-bump] .value {
+  animation: nudge 0.18s 2;
+}
+
+@keyframes roll-up {
+  from {
+    opacity: 0;
+    transform: translateY(45%);
+  }
+}
+
+@keyframes roll-down {
+  from {
+    opacity: 0;
+    transform: translateY(-45%);
+  }
+}
+
+@keyframes nudge {
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .num,
+  .num[data-dir],
+  .value,
+  .stepper[data-bump] .value {
+    animation: none;
+    transition: none;
+  }
+}
