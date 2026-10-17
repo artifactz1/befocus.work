@@ -3,12 +3,14 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
+import { z } from 'zod'
 import AppBackground from '~/components/dashboard/AppBackground'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import GlobalSoundsPlayer from '~/components/helper/GlobalSoundsPlayer'
 import { SessionCompleteModal } from '~/components/SessionCompleteModal'
 import Timer from '~/components/timer/Timer'
+import { readStored, writeStored } from '~/lib/storage/browser-storage'
 
 const INTRO_FLAG = 'befocus.guestIntroShown'
 
@@ -19,14 +21,13 @@ export default function App() {
   const [introDone, setIntroDone] = useState(true)
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const alreadyShown = localStorage.getItem(INTRO_FLAG) === '1'
+    const alreadyShown = readStored(INTRO_FLAG, z.literal(1)) === 1
     if (!alreadyShown) {
       setShowIntro(true)
       setIntroDone(false)
       const t = setTimeout(() => {
         setShowIntro(false)
-        localStorage.setItem(INTRO_FLAG, '1')
+        writeStored(INTRO_FLAG, 1)
       }, 1600)
       return () => clearTimeout(t)
     }
