@@ -7,6 +7,7 @@ export type UserSettings = {
   workDuration: number
   breakDuration: number
   numberOfSessions: number
+  askBeforeStart: boolean
   userId: string
   id: string
 }
@@ -15,6 +16,7 @@ export type UserSettingsInput = {
   workDuration: number
   breakDuration: number
   numberOfSessions: number
+  askBeforeStart?: boolean
 }
 
 // Hook to fetch user settings
@@ -31,65 +33,11 @@ export const useUserSettings = () => {
   })
 }
 
-// Hook to create user settings
-export const useCreateUserSettings = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async (settings: UserSettingsInput) => {
-      const response = await api.user.settings.$post({
-        json: settings,
-      })
-      if (!response.ok) {
-        throw new Error('Failed to create settings')
-      }
-      return await response.json()
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userSettings'] })
-      toast('Session Settings created successfully', {
-        description: 'Your preferences have been saved.',
-      })
-    },
-    onError: error => {
-      toast.error('Failed to create settings')
-      console.error('Error creating settings:', error)
-    },
-  })
-}
-
-// Hook to update user settings
-export const useUpdateUserSettings = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: async (settings: UserSettingsInput) => {
-      const response = await api.user.settings.$put({
-        json: settings,
-      })
-      if (!response.ok) {
-        throw new Error('Failed to update settings')
-      }
-      return response
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userSettings'] })
-      toast('Session Settings updated successfully', {
-        description: 'Your preferences have been saved.',
-      })
-    },
-    onError: error => {
-      toast.error('Failed to update settings')
-      console.error('Error updating settings:', error)
-    },
-  })
-}
-
 // Combined hook to save settings (create or update based on existence).
 // Tries PUT first; a 404 means the user has no settings row yet, so it falls
 // back to POST. This avoids depending on useUserSettings' (possibly seeded-null,
 // per D-08) cache state to decide create vs. update.
-export const useSaveUserSettings = () => {
+export const useSaveUserSettings = (options?: { quiet?: boolean }) => {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -114,12 +62,12 @@ export const useSaveUserSettings = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userSettings'] })
-      toast('Session Settings saved successfully', {
-        description: 'Your preferences have been updated.',
-      })
+      if (!options?.quiet) toast('Session settings saved')
     },
     onError: error => {
-      toast.error('Failed to save settings')
+      toast.error("Couldn't save your session settings", {
+        description: 'They apply to this session only. Check your connection and save again.',
+      })
       console.error('Error saving settings:', error)
     },
   })
