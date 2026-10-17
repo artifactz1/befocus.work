@@ -1,6 +1,7 @@
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import CustomizePanel from '~/components/customize/CustomizePanel'
 import RecordRoom from '~/components/records/RecordRoom'
+import SessionCard from '~/components/settings/SessionCard'
 import { getUserSettings } from '~/lib/server/getUserSettings'
 import { CustomizeStoreProvider } from '~/store/useCustomizeStore'
 import { TimerStoreProvider } from '~/store/useTimerStore'
@@ -18,6 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           {children}
           <CustomizePanel />
           <RecordRoom />
+          <SessionCard />
         </CustomizeStoreProvider>
       </TimerStoreProvider>
     </HydrationBoundary>
