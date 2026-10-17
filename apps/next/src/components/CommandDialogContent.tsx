@@ -42,6 +42,7 @@ import {
 } from '~/hooks/useCommandMenuHooks'
 import { useParsedCommands } from '~/hooks/useParsedCommands'
 import { useCustomizeActions } from './customize/useCustomizeActions'
+import { useSessionCard } from './settings/useSessionCard'
 
 export default function CommandDialogConent() {
   const [open, setOpen] = React.useState(false)
@@ -50,9 +51,9 @@ export default function CommandDialogConent() {
   // Custom hooks
   useCommandMenuKeyboard(setOpen)
   const { open: openCustomize } = useCustomizeActions()
+  const { requestStart } = useSessionCard()
   const { session, isPending, handleSignOut, handleSignIn } = useAuthActions()
-  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } =
-    useTimerActions()
+  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession } = useTimerActions()
   const {
     workDuration: workDurationMinutes,
     breakDuration: breakDurationMinutes,
@@ -148,7 +149,7 @@ export default function CommandDialogConent() {
               <SkipBack />
               <span>Previous Session</span>
             </CommandItem>
-            <CommandItem onSelect={() => handleCommand(toggleTimer)}>
+            <CommandItem onSelect={() => handleCommand(requestStart)}>
               {isRunning ? <Pause /> : <Play />}
               <span>{isRunning ? 'Pause Timer' : 'Start Timer'}</span>
             </CommandItem>

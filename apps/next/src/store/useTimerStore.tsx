@@ -4,6 +4,7 @@ import type { Settings } from '@repo/api/db/schemas'
 import { createContext, type ReactNode, useContext, useState } from 'react'
 import { useStore } from 'zustand/react'
 import { createStore } from 'zustand/vanilla'
+import { startAction } from '~/lib/session/session'
 
 interface TimerState {
   sessions: number
@@ -24,10 +25,30 @@ interface TimerState {
   resetAll: () => void
   setTimeLeft: (value: number) => void
   setIsRunning: (value: boolean) => void
+  askBeforeStart: boolean
+  card: 'start' | 'edit' | null
+  requestStart: () => void
+  openCard: (mode: 'start' | 'edit') => void
+  closeCard: () => void
+  applySettings: (
+    values: {
+      workDuration: number
+      breakDuration: number
+      sessions: number
+      askBeforeStart: boolean
+    },
+    opts: { run: boolean },
+  ) => void
+  setAskBeforeStart: (value: boolean) => void
 }
 
 function createTimerStore(
-  initial: { sessions: number; workDuration: number; breakDuration: number } | null,
+  initial: {
+    sessions: number
+    workDuration: number
+    breakDuration: number
+    askBeforeStart: boolean
+  } | null,
 ) {
   const sessions = initial?.sessions ?? 6
   const workDuration = initial?.workDuration ?? 25 * 60
@@ -37,11 +58,42 @@ function createTimerStore(
     sessions,
     workDuration,
     breakDuration,
+    askBeforeStart: initial?.askBeforeStart ?? true,
+    card: null,
     currentSession: 1,
     isWorking: true,
     isAlarmOn: false,
     timeLeft: workDuration,
     isRunning: false,
+    requestStart: () => {
+      const action = startAction({ ...get() })
+      if (action === 'open') set({ card: 'start' })
+      else if (action === 'restart')
+        set({
+          currentSession: 1,
+          isWorking: true,
+          timeLeft: get().workDuration,
+          isAlarmOn: false,
+          isRunning: true,
+        })
+      else set(state => ({ isRunning: !state.isRunning }))
+    },
+    openCard: mode => set({ card: mode }),
+    closeCard: () => set({ card: null }),
+    applySettings: (values, opts) =>
+      set({
+        workDuration: values.workDuration,
+        breakDuration: values.breakDuration,
+        sessions: values.sessions,
+        askBeforeStart: values.askBeforeStart,
+        currentSession: 1,
+        isWorking: true,
+        timeLeft: values.workDuration,
+        isAlarmOn: false,
+        isRunning: opts.run,
+        card: null,
+      }),
+    setAskBeforeStart: value => set({ askBeforeStart: value }),
     reset: () =>
       set({
         currentSession: 1,
@@ -146,7 +198,10 @@ export function TimerStoreProvider({
   initialSettings,
   children,
 }: {
-  initialSettings: Pick<Settings, 'workDuration' | 'breakDuration' | 'numberOfSessions'> | null
+  initialSettings: Pick<
+    Settings,
+    'workDuration' | 'breakDuration' | 'numberOfSessions' | 'askBeforeStart'
+  > | null
   children: ReactNode
 }) {
   const [store] = useState(() =>
@@ -156,6 +211,7 @@ export function TimerStoreProvider({
             sessions: initialSettings.numberOfSessions,
             workDuration: initialSettings.workDuration,
             breakDuration: initialSettings.breakDuration,
+            askBeforeStart: initialSettings.askBeforeStart,
           }
         : null,
     ),

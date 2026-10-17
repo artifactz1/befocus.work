@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useSessionCard } from '~/components/settings/useSessionCard'
 import { useTimerStoreApi } from '~/store/useTimerStore'
 
 const EDITABLE_SELECTOR =
@@ -10,6 +11,9 @@ const ACTIVATABLE_SELECTOR =
 
 export function useTimerKeyboard() {
   const store = useTimerStoreApi()
+  const { requestStart } = useSessionCard()
+  const requestStartRef = useRef(requestStart)
+  requestStartRef.current = requestStart
 
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
@@ -25,7 +29,7 @@ export function useTimerKeyboard() {
       if (event.key === ' ') {
         if (target instanceof Element && target.closest(ACTIVATABLE_SELECTOR)) return
         event.preventDefault()
-        store.getState().toggleTimer()
+        requestStartRef.current()
         return
       }
 

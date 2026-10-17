@@ -4,12 +4,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/
 import { Pause, Play, RotateCcw, SkipBack, SkipForward } from 'lucide-react'
 import { useTimerStore } from '~/store/useTimerStore'
 import MenuButton from '../helper/MenuButtons'
+import { useSessionCard } from '../settings/useSessionCard'
 
 const iconSize = 'md:h-5 xl:h-6 '
 
 export default function TimerButtons() {
-  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession, toggleTimer } =
-    useTimerStore()
+  const { isRunning, resetCurrentTime, skipToPrevSession, skipToNextSession } = useTimerStore()
+  const card = useTimerStore(s => s.card)
+  const { requestStart } = useSessionCard()
 
   return (
     <div className='flex items-center justify-center gap-1 px-2 py-1.5'>
@@ -29,10 +31,10 @@ export default function TimerButtons() {
         </Tooltip>
       </TooltipProvider>
       <TooltipProvider>
-        <Tooltip>
+        <Tooltip open={card ? false : undefined}>
           <TooltipTrigger asChild>
             <MenuButton
-              onClick={toggleTimer}
+              onClick={requestStart}
               appearance='outline'
               aria-label={isRunning ? 'Pause' : 'Start'}
               aria-keyshortcuts='Space'
