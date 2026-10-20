@@ -1,17 +1,20 @@
 import { betterFetch } from '@better-fetch/fetch'
-import type { Settings } from '@repo/api/db/schemas'
+import type { SettingsWithLook } from '@repo/api/db/tables/settings'
 import { env } from '@repo/app/env/next'
 import { headers } from 'next/headers'
 
-export async function getUserSettings(): Promise<Settings | null> {
+export async function getUserSettings(): Promise<SettingsWithLook | null> {
   const cookie = (await headers()).get('cookie')
 
   if (!cookie) return null
 
   try {
-    const { data: settings, error } = await betterFetch<Settings>(`${env.API_URL}/user/settings`, {
-      headers: { cookie },
-    })
+    const { data: settings, error } = await betterFetch<SettingsWithLook>(
+      `${env.API_URL}/user/settings`,
+      {
+        headers: { cookie },
+      },
+    )
 
     if (error) {
       if (error.status === 404) return null

@@ -18,6 +18,7 @@ import * as HttpStatusCodes from '@repo/api/lib/http-status-codes'
 import { LABEL_MAX_BYTES } from '@repo/api/lib/label-image'
 import jsonContent from '@repo/api/lib/openapi/helpers/json-content'
 import { bodyLimit } from 'hono/body-limit'
+import { lookSchema } from '../../../../types/look'
 
 const tags = ['User']
 
@@ -59,7 +60,10 @@ export const getUserSettings = createRoute({
   method: 'get',
   tags,
   responses: {
-    [HttpStatusCodes.OK]: jsonContent(getUserSettingsSchema, 'The requested session'),
+    [HttpStatusCodes.OK]: jsonContent(
+      getUserSettingsSchema.extend({ look: lookSchema.nullable() }),
+      'The requested settings with the active look',
+    ),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, 'Session not found'),
   },
 })

@@ -1,6 +1,9 @@
 // Pure session rules: limits, the start-card rule, stepping maths, copy and guest switch storage.
 // Units: focus/break in minutes, rounds as a count. No React or DOM here.
 
+import { z } from 'zod'
+import { defaultStorage, readStored, writeStored } from '~/lib/storage/browser-storage'
+
 export type LimitKind = 'focus' | 'break' | 'rounds'
 
 export const LIMITS: Record<LimitKind, { min: number; max: number; step: number }> = {
@@ -83,20 +86,16 @@ export const endsAt = (nowMs: number, totalMin: number) => nowMs + totalMin * 60
 
 export const ASK_KEY = 'befocus.askBeforeStart'
 
-// Strict read: only '0' is off. Missing or throwing storage reads as on.
-export const readAskBeforeStart = (storage: Storage | undefined = globalThis.localStorage) => {
-  try {
-    return storage?.getItem(ASK_KEY) !== '0'
-  } catch {
-    return true
-  }
-}
+const askSchema = z.union([z.literal(0), z.literal(1)])
+
+// Strict read: only 0 is off. Missing, bad or throwing storage reads as on.
+export const readAskBeforeStart = (
+  storage: Pick<Storage, 'getItem'> | undefined = defaultStorage(),
+) => readStored(ASK_KEY, askSchema, storage) !== 0
 
 export const writeAskBeforeStart = (
   v: boolean,
-  storage: Storage | undefined = globalThis.localStorage,
+  storage: Pick<Storage, 'setItem'> | undefined = defaultStorage(),
 ) => {
-  try {
-    storage?.setItem(ASK_KEY, v ? '1' : '0')
-  } catch {}
+  writeStored(ASK_KEY, v ? 1 : 0, storage)
 }
