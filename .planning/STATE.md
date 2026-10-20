@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 07.1 built (PR #121); Phase 03 planned (6 plans), runs after 7.1 merge and migration 0010"
-last_updated: "2026-10-16T23:59:00.000Z"
-last_activity: 2026-10-16 -- Phase 07.1 plans built
+stopped_at: "Phase 08 planned (9 plans in 6 waves); execution waits on Phase 3 migrations 0010 and 0011"
+last_updated: "2026-10-20T22:00:00.000Z"
+last_activity: 2026-10-20 -- Phase 08 planned (9 plans)
 progress:
   total_phases: 11
   completed_phases: 3
-  total_plans: 43
+  total_plans: 52
   completed_plans: 31
-  percent: 72
+  percent: 60
 ---
 
 # Project State
@@ -22,16 +22,16 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** A user can change how their focus dashboard looks and have that look still be there
 the next time they open it - signed in on any device, or as a guest on the same browser.
-**Current focus:** Phase 3 all 6 plans built (look persists server-side and in guest localStorage); migrations 0010 and 0011 plus signed-in checks pending a human (03-VERIFICATION.md). Phase 7.1 (inserted) all 5 plans built (PR #121); migration 0010 and signed-in E2E/UAT pending a human. Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phase 9 planned (11 plans, waits on Phase 8 and Phase 3); Phases 4-6, 8 and 10 not started
+**Current focus:** Phase 3 all 6 plans built (look persists server-side and in guest localStorage); migrations 0010 and 0011 plus signed-in checks pending a human (03-VERIFICATION.md). Phase 7.1 (inserted) all 5 plans built (PR #121); migration 0010 and signed-in E2E/UAT pending a human. Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phase 8 planned (9 plans in 6 waves, waits on Phase 3 migrations; board picks 1D, 2D, 3A, 4C); Phase 9 planned (11 plans, waits on Phase 8 and Phase 3); Phases 4-6 and 10 not started. Build order: 8, then 9, then 10, then 4-6
 
 ## Current Position
 
 Phase: 07.1 (session-settings-start-card-and-capsule-steppers) - BUILT, human checks pending
 Plan: 5 of 5
 Status: 07.1 code done and guest E2E passed; apply migration 0010, run signed-in E2E and UAT. Still open: 01-05 production check, 02-08 owner review, 07 human checks, 07-08 timer-scale override and label-size hardening
-Last activity: 2026-10-16 -- Phase 07.1 plans built
+Last activity: 2026-10-20 -- Phase 08 planned (9 plans)
 
-Progress: [██████░░░░] 58%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
@@ -139,7 +139,9 @@ None yet.
 
 - Phases 7-10 carry open product questions Q1-Q9 (ROADMAP.md, "Open Product Questions") and a
   design board each. Answer both before `/gsd-discuss-phase` on any of them. Phase 7's board and
-  Q2-Q4 were decided 2026-10-05; Q1 and Q5-Q9 and the Phase 8-10 boards remain.
+  Q2-Q4 were decided 2026-10-05; the Phase 8 board, Q1 (build order 8, 9, 10, then 4-6), Q5 and
+  Q9 (Phase 8 part) were decided 2026-10-20 (Q6 with the Phase 9 board); Q7, Q8, Q9 for Phase 10 and the
+  Phase 10 board remain.
 
 ## Deferred Items
 

@@ -39,7 +39,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 6: URL Backgrounds** - Paste any remote image or video URL, with a safe fallback
 - [x] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs (8/8 plans shipped in #116; human visual checks and 07-08 gaps still open, see Progress)
 - [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (5 plans built; migration 0010, signed-in E2E and UAT pending)
-- [ ] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded
+- [ ] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded (planned: 0/9; execution waits on Phase 3)
 - [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (planned: 0/11; execution waits on Phase 8 and Phase 3)
 - [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
 
@@ -434,7 +434,8 @@ Design decisions (captain picks 2026-10-05, all resolved):
   9. Add and save: record shelf, ambience knobs, and paste a YouTube link anywhere.
 
 Product questions Q2, Q3 and Q4 are resolved for this phase (see "Open Product Questions").
-Q1, its priority against Phases 4-6, is still open.
+Q1, its priority against Phases 4-6, was resolved on 2026-10-20: Phases 8, 9 and 10 first, then
+4-6.
 
 ### Phase 07.1: Session settings start card and capsule steppers (INSERTED)
 
@@ -532,8 +533,33 @@ is recorded accurately so the rest of the productivity track has data to stand o
 
   4. A focus block run with the tab in the background, or across a short laptop sleep, is
      recorded with the same length the wall clock shows.
-**Plans**: TBD
+**Plans**: 9 plans in 6 waves (`.planning/phases/BFC-08-focus-blocks-and-added-time/`)
+
+Plans:
+- [ ] 08-01-PLAN.md - Block engine and check, store, worker, Timer and title rewired onto blocks with an explicit ended state and wall-clock `endsAt` (BLK-01, BLK-05)
+- [ ] 08-02-PLAN.md - Ended group under the digits (label, Start break / Start focus / Finish session), Enter and `+` `=` `-` keys, phone and short-screen fit (BLK-01, BLK-02)
+- [ ] 08-03-PLAN.md - Ended cues: ring, two nudges then quiet, tab title, live region, breathing 00:00, focus move (BLK-01)
+- [ ] 08-04-PLAN.md - Footer -1 / +1 by state, added-time badge, notch past the end on Edge, Ruler and Ink, announcements (BLK-02)
+- [ ] 08-05-PLAN.md - Hold-for-1/5/10 tray, keyboard path, first-run hint (BLK-02)
+- [ ] 08-06-PLAN.md - Guest block records in browser storage (merge by id, last 500), provider record sink, pagehide record (BLK-03, BLK-04)
+- [ ] 08-07-PLAN.md - `focus_blocks` table, generated migration, PUT /user/blocks route trio and check; human applies the migration (BLK-03, BLK-04)
+- [ ] 08-08-PLAN.md - Signed-in record queue: per-user, one request at a time, chunks of 100, retry on load and online (BLK-03, BLK-04)
+- [ ] 08-09-PLAN.md - Agent E2E with chrome-devtools-axi at six viewports, then the signed-in human check (BLK-01..05)
+
 **UI hint**: yes
+**Context**: `08-CONTEXT.md` (locked picks), `08-UI-SPEC.md` (design contract). Picks from the
+Phase 8 design board (2026-10-20): 1D footer back / next become -1 / +1 while running, back / next
+when paused, +1 and Start break at 00:00; 2D tap for 1 min, hold for a 1 / 5 / 10 tray; 3A extend
+the block (rescale, notch, badge); 4C ring, nudge twice, then quiet; Q1 build 8, 9, 10, then 4-6;
+Q5 add and remove on any running block, add only once ended; Q9 guests keep records in the
+browser, no migration, last 500.
+
+**Seam with Phase 9** (stated in 08-CONTEXT.md and 08-01): `addedSeconds` is the signed net
+adjustment; store status adds `idle` plus an `endsAt` anchor; a re-run keeps the block id and
+accumulates `actualSeconds`; the last focus block has no break and ends with "Finish session";
+`.under` holds only the ended group; records are written through PUT /user/blocks, with no read
+route in Phase 8. Migration order: Phase 8 ships a generated migration while 09-02 and 09-06 use
+`db:push`, so 08-07 stops and reports blocked if Phase 9 tables are already in the schema.
 
 Notes for planning:
 
@@ -558,7 +584,8 @@ Notes for planning:
 - `SessionCompleteModal.tsx` (confetti and canned copy) is left alone here; Phase 10 rebuilds it
   on the records.
 
-Open product questions this phase needs answered: Q1, Q5, Q9.
+Open product questions this phase needs answered: Q1, Q5, Q9 (all resolved on the Phase 8 board,
+2026-10-20).
 
 Design questions for the captain (one Lavish board, before planning):
 
@@ -615,7 +642,7 @@ with a switcher popover and a Customize > Style "Session progress" control, dimm
 5D the phone follows the same setting (compact views under 640px); Q6 one session; Q9 guests keep
 tasks, plan and links in the browser with no migration in Phase 9.
 
-**Depends on Phase 8 (not yet planned or built) and Phase 3 (planned, not built).** Every plan from 09-02 onwards
+**Depends on Phase 8 (planned, not built) and Phase 3 (planned, not built).** Every plan from 09-02 onwards
 re-reads the seams it uses and STOPs on a mismatch. Assumed seam for the Phase 8 planner: block
 ids are client-generated UUIDs that exist before the block starts, the timer store accepts a
 pre-built ordered block list for the session (from a Phase 9 plan or from Session settings), and
@@ -716,7 +743,7 @@ These are the captain's calls. None of them has been guessed; each phase lists t
 answered before `/gsd-discuss-phase`. Q2-Q4 were answered on the vinyl design board on 2026-10-05.
 
   1. **Q1 Priority.** Where Phases 7-10 sit against Phases 4-6. Both tracks are independent of
-     Phases 4-6, so either can go first.
+     Phases 4-6, so either can go first. Resolved 2026-10-20: Phases 8 → 9 → 10 first, then 4-6.
   2. **Q2 Which sounds are records.** Resolved 2026-10-05: music is records, ambience is knobs.
      One record plays at a time, with ambience layered under it. Phase 7.
   3. **Q3 Guests and the collection.** Resolved 2026-10-05: guests get the starter records and
@@ -724,7 +751,8 @@ answered before `/gsd-discuss-phase`. Q2-Q4 were answered on the vinyl design bo
   4. **Q4 Sound sources.** Resolved 2026-10-05: YouTube only until Phase 5 storage exists; revisit
      then. Phase 7.
   5. **Q5 When time can be added.** Only when a focus block ends, or also mid-block and on
-     breaks. Phase 8.
+     breaks. Phase 8. Resolved 2026-10-20: add and remove on any running block (focus or
+     break), add only once a block has ended.
   6. **Q6 Time-blocker scope.** A plan for the blocks inside one session, or a full-day calendar
      (which may touch issue #100, the Notion integration). Phase 9. Resolved 2026-10-16: one
      session; a full-day calendar is a later phase.
@@ -735,14 +763,14 @@ answered before `/gsd-discuss-phase`. Q2-Q4 were answered on the vinyl design bo
   9. **Q9 Guest records.** Whether guests keep block records, logs and history at all, only in
      their browser, and whether those move into the account on sign-up the way SYN-04 does for
      themes. Phases 8-10. Resolved for Phase 9 on 2026-10-16: guest tasks, plan and task links
-     stay in the browser, with no migration in Phase 9.
+     stay in the browser, with no migration in Phase 9. Resolved for Phase 8 on 2026-10-20: guest
+     block records stay in the browser (last 500), with no migration in Phase 8.
 
 ## Progress
 
 **Execution Order:**
 Phases 1-6 execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6. Phase 7 can start after Phase 2;
-Phases 8 → 9 → 10 run in order after Phase 3. Where the two new tracks sit against Phases 4-6 is
-open question Q1.
+Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resolved 2026-10-20).
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -754,7 +782,7 @@ open question Q1.
 | 6. URL Backgrounds | 0/TBD | Not started | - |
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
 | 7.1. Session Settings Start Card (INSERTED) | 5/5 | Built, human_needed: migration 0010 not applied, signed-in E2E and UAT pending | 2026-10-16 (code) |
-| 8. Focus Blocks and Added Time | 0/TBD | Not started | - |
+| 8. Focus Blocks and Added Time | 0/9 | Planned (08-01..08-09); execution waits on Phase 3 | - |
 | 9. Tasks and Time Blocks | 0/11 | Planned (09-01..09-11); execution waits on Phase 8 and Phase 3 | - |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
 
