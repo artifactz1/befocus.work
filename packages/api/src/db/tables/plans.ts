@@ -110,3 +110,19 @@ export const getPlanSchema = z.object({
   plan: planResponseSchema.nullable(),
   links: z.array(linkResponseSchema),
 })
+
+// Hand-written: the shape joins task_block_links and tasks, so no single table schema covers it.
+export const blockTasksQuerySchema = z.object({ blockId: z.string().uuid() })
+
+export const blockTasksResponseSchema = z.object({
+  tasks: z.array(
+    z.object({
+      taskId: z.number().int(),
+      text: z.string(),
+      worked: z.boolean(),
+      completed: z.boolean(),
+      workedAt: z.string().nullable(),
+      completedAt: z.string().nullable(),
+    }),
+  ),
+})

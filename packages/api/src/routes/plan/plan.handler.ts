@@ -1,7 +1,7 @@
 import * as HttpStatusCodes from '@repo/api/lib/http-status-codes'
 import * as HttpStatusPhrases from '@repo/api/lib/http-status-phrases'
 import type { AppRouteHandler } from '@repo/api/types/app-context'
-import { and, eq, inArray, ne } from 'drizzle-orm'
+import { and, asc, eq, inArray, ne, or } from 'drizzle-orm'
 import {
   type TaskBlockLinkRow,
   type TaskPlanRow,
@@ -9,7 +9,13 @@ import {
   taskPlans,
 } from '../../db/tables/plans'
 import { tasks } from '../../db/tables/tasks'
-import type { DeleteUserPlan, GetUserPlan, PutUserPlan, PutUserTaskLinks } from './plan.route'
+import type {
+  DeleteUserPlan,
+  GetUserBlockTasks,
+  GetUserPlan,
+  PutUserPlan,
+  PutUserTaskLinks,
+} from './plan.route'
 
 const toResponse = (row: TaskPlanRow) => ({
   sessionId: row.sessionId,
@@ -190,4 +196,45 @@ export const putUserTaskLinks: AppRouteHandler<PutUserTaskLinks> = async c => {
   ])
   const rows = results[results.length - 1] as TaskBlockLinkRow[]
   return c.json({ links: rows.map(toLink) }, HttpStatusCodes.OK)
+}
+
+// No plan lookup: the record stays readable after the plan closes.
+export const getUserBlockTasks: AppRouteHandler<GetUserBlockTasks> = async c => {
+  const db = c.get('db')
+  const user = c.get('user')
+  if (!user) {
+    return c.json({ message: HttpStatusPhrases.UNAUTHORIZED }, HttpStatusCodes.UNAUTHORIZED)
+  }
+
+  const { blockId } = c.req.valid('query')
+  const rows = await db
+    .select({
+      taskId: tasks.id,
+      text: tasks.text,
+      worked: taskBlockLinks.worked,
+      completed: taskBlockLinks.completed,
+      workedAt: taskBlockLinks.workedAt,
+      completedAt: taskBlockLinks.completedAt,
+    })
+    .from(taskBlockLinks)
+    .innerJoin(tasks, eq(tasks.id, taskBlockLinks.taskId))
+    .where(
+      and(
+        eq(taskBlockLinks.userId, user.id),
+        eq(tasks.userId, user.id),
+        eq(taskBlockLinks.blockId, blockId),
+        or(eq(taskBlockLinks.worked, true), eq(taskBlockLinks.completed, true)),
+      ),
+    )
+    .orderBy(asc(taskBlockLinks.workedAt))
+  return c.json(
+    {
+      tasks: rows.map(r => ({
+        ...r,
+        workedAt: r.workedAt?.toISOString() ?? null,
+        completedAt: r.completedAt?.toISOString() ?? null,
+      })),
+    },
+    HttpStatusCodes.OK,
+  )
 }

@@ -7,5 +7,6 @@ const router = createRouter()
   .openapi(routes.putUserPlan, handlers.putUserPlan)
   .openapi(routes.deleteUserPlan, handlers.deleteUserPlan)
   .openapi(routes.putUserTaskLinks, handlers.putUserTaskLinks)
+  .openapi(routes.getUserBlockTasks, handlers.getUserBlockTasks)
 
 export default router

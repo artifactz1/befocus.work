@@ -3,6 +3,8 @@ import * as HttpStatusCodes from '@repo/api/lib/http-status-codes'
 import jsonContent from '@repo/api/lib/openapi/helpers/json-content'
 import { createErrorSchema } from '@repo/api/lib/openapi/schemas'
 import {
+  blockTasksQuerySchema,
+  blockTasksResponseSchema,
   getPlanSchema,
   linkResponseSchema,
   planResponseSchema,
@@ -71,7 +73,26 @@ export const putUserTaskLinks = createRoute({
   },
 })
 
+export const getUserBlockTasks = createRoute({
+  path: '/user/task-links',
+  method: 'get',
+  tags,
+  request: { query: blockTasksQuerySchema },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      blockTasksResponseSchema,
+      'Tasks worked on or completed in the block',
+    ),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(messageSchema, 'User not authenticated'),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      createErrorSchema(blockTasksQuerySchema),
+      'Invalid block id',
+    ),
+  },
+})
+
 export type GetUserPlan = typeof getUserPlan
 export type PutUserPlan = typeof putUserPlan
 export type DeleteUserPlan = typeof deleteUserPlan
 export type PutUserTaskLinks = typeof putUserTaskLinks
+export type GetUserBlockTasks = typeof getUserBlockTasks
