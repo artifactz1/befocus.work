@@ -127,10 +127,9 @@ export default function Timer() {
     : `calc(${isLandscape ? '30vh' : widthSize} * var(--timer-scale, 1))`
   const phoneEnded = ended && phone && !strip
   // Ended on phone: the stacked digits shrink to fit between the label (top 40px) and the
-  // Start row (bottom 78px) of the Timer root, a size container so cqh is its height.
-  const mobileFontSize = phoneEnded
-    ? `min(calc(${widthSize} * var(--timer-scale, 1)), calc((100cqh - 118px) / 1.8))`
-    : `calc(${widthSize} * var(--timer-scale, 1))`
+  // Start row (bottom 84px) of the Timer root, a size container so cqh is its height.
+  // Every other state keeps 12px clear above and below, the touch footer row sticks 14px above the root (matters at 375x667, where 50vw is too tall).
+  const mobileFontSize = `min(calc(${widthSize} * var(--timer-scale, 1)), calc((100cqh - ${phoneEnded ? 124 : 52}px) / 1.8))`
 
   // Net time added: the bar rescales to planned + added, with a notch at the planned end.
   const added = block?.addedSeconds ?? 0
@@ -253,7 +252,7 @@ export default function Timer() {
 
       <div
         className={`absolute inset-0 flex items-center justify-center ${styles.stage}`}
-        style={phoneEnded ? { top: 40, bottom: 78 } : undefined}
+        style={phoneEnded ? { top: 40, bottom: 84 } : undefined}
       >
         <div
           className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}

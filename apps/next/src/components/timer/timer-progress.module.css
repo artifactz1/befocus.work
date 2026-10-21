@@ -122,7 +122,8 @@
 /* Net added time (08-UI-SPEC "Digits badge"). Not bf-chrome: it is state, it stays visible. */
 .badge {
   position: absolute;
-  top: calc(50% - var(--digit-size) / 2 - 12px);
+  /* 12px above the glyph box, and never lower than 6px above the ink (matters below ~220px digits). */
+  top: min(calc(50% - var(--digit-size) / 2 - 12px), calc(50% - var(--digit-size) * 0.375 - 46px));
   right: 0;
   display: inline-flex;
   align-items: center;
@@ -307,7 +308,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 22px;
+  bottom: 28px;
   height: 44px;
   animation: bf-ended-in 200ms ease-out;
 }
