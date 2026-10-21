@@ -14,7 +14,7 @@ key-files:
     - apps/next/src/components/timer/Timer.tsx
     - apps/next/src/components/timer/timer-progress.module.css
 requirements-completed: [BLK-01, BLK-02]
-status: complete on desktop and tablet; phone fit open (see Open Decision)
+status: complete
 ---
 
 # Phase 8 Plan 02: Ended block UI and keys Summary
@@ -48,14 +48,16 @@ At 00:00 the timer shows the ended label, a Start break / Start focus / Finish s
 
 **4. Phone render uses `useMediaQuery('(max-width: 639.98px)')`** so only one primary button exists in the DOM (a single ref and one focus target) instead of a CSS-hidden twin.
 
-## Open Decision (phone fit, needs the planner)
+## Phone fit decision (captain, option a) - commit b8c0c7e
 
-UI-SPEC requires the phone primary to keep 12px clearance above the footer and below the digits. Measured:
+Phone stacked digits shrink while ended only. The Timer root is now a size container; ended phone font-size is `min(50vw * scale, (100cqh - 118px) / 1.8)`, the stage is inset 40px top and 78px bottom, the label sits 16px above the stack box and the primary row is 44px tall, 22px above the root bottom. Measured with `emulate --viewport "WxHx1,mobile,touch"`, real wait to 00:00:
 
-- 390x844: stacked digit box 288-639, footer buttons start at 683, so the gap is 44px: the 44px button fits with 0px clearance (touching the footer row, 639-683). The digit ink ends about 625.
-- 375x667: the stacked digits (215-553) already overlap the footer buttons (top 517) with no ended UI; the primary (553-597) sits on the footer. The `max-height: 699px` label fallback does not help because the problem is the button row, not the label.
+| Viewport | Header bottom | Label | Stack box | Primary | Footer buttons top | Clearances |
+| -------- | ------------- | ----- | --------- | ------- | ------------------ | ---------- |
+| 390x844 | 249 | 261-273 | 289-599 | 611-655 | 683 | label-to-stack 16, header-to-label 12, digits-to-primary 12, primary-to-footer 28 |
+| 375x667 | 242 | 254-266 | 282-449 | 461-505 | 517 | label-to-stack 16, header-to-label 12, digits-to-primary 12, primary-to-footer 12 |
 
-So 12px clearance is not reachable on phone with today's 50vw stacked digits. Options: shrink the phone digits while ended (or always, e.g. 40vw / height-aware clamp), or lay the primary over the lower digit area, or move it into the footer area. The 08-UI-SPEC does not decide this, so I stopped at the measured code. Phone label (16px above the stack) fits at 390x844 but lands over the header grid at 375x667.
+The label fallback (`max-height: 699px`) was not needed. No transition on the shrink (jumps at 00:00). Desktop idle re-checked unchanged. Screenshots: scratchpad `ended-390x844.png`, `ended-375x667.png` (replace the earlier phone ones), `idle-1440x900.png`. 08-UI-SPEC.md phone section updated.
 
 ## Known Stubs
 

@@ -232,15 +232,20 @@ The phone digits are stacked (MM over SS) and there is no `.under` today. Follow
 |----------|-------|
 | Label | Same style as desktop at 12px; centred; bottom edge 16px above the top of the stacked digits |
 | Primary | Same as desktop but `padding: 0 16px`; still 44px tall (board's 40 raised to the touch minimum) and 16px text |
-| Primary position | Centred horizontally; vertically centred between the bottom of the stacked digits and the top of the footer buttons, minimum 12px clearance each side |
+| Primary position | Centred horizontally; 12px below the (shrunk) stacked digits and at least 12px above the footer buttons (see the spec decision below) |
 | Hints | None |
 | DOM order | Label, digits, primary, footer (screen reader and Tab order match the visual order) |
 
-**(spec decision)** CONTEXT says "the label and button get their own row between digits and
-footer". At 390x844 the gap between the stacked digits and the footer fits the 44px button but
-not label + button, so the label goes above the digits as the board mock draws it. The planner
-verifies at 390x844 and 375x667; if the button cannot clear 12px at 375x667, the label hides
-under `max-height: 699px` and the live region carries it.
+**(spec decision, captain-picked option a)** The ended phone digits shrink while ended only
+(running and paused are unchanged). The stack is sized to the Timer root: font-size
+`min(50vw x timer-scale, (root height - 118px) / 1.8)` (root is a size container, `cqh`), placed
+between a 40px top inset (label zone) and a 78px bottom inset (Start row). Label bottom edge sits
+16px above the stack box, 12px below the header grid; the primary is 44px tall with its bottom 22px
+above the root bottom, giving 12px above (digits) and 12px below (footer buttons) at 375x667 and
+12px above and 28px below at 390x844. Rationale: with the full 50vw stack the 44px button could not
+clear 12px on either side, and at 375x667 the stack already overlapped the footer. Resulting digit
+size: about 44vw at 390x844 (172px) and 25vw at 375x667 (93px). The `max-height: 699px` label
+fallback was not needed.
 
 ### Sheet open under 1024px (strip mode)
 
