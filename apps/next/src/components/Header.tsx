@@ -11,7 +11,7 @@ function Header() {
   useChromeIdle()
 
   return (
-    <div className='flex w-screen flex-col-reverse px-10 pt-10 sm:mt-0 sm:h-[calc(11vh+var(--pad-y))] sm:w-full sm:flex-row sm:items-center sm:justify-between sm:px-[var(--pad-x)]'>
+    <div className='flex w-screen flex-col-reverse px-10 pt-10 sm:mt-0 sm:min-h-[calc(11vh+var(--pad-y))] sm:w-full sm:flex-row sm:items-center sm:justify-between sm:px-[var(--pad-x)]'>
       <ProgressSlot />
       <div className='bf-chrome mb-4 flex items-end justify-between sm:mb-1'>
         <SessionTitleDisplay />
