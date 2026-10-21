@@ -2,10 +2,20 @@
 
 import type { Settings } from '@repo/api/db/schemas'
 import type { BlockRecord } from '@repo/types/blocks'
-import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useStore } from 'zustand/react'
 import { createStore } from 'zustand/vanilla'
-import { appendGuestRecords } from '~/lib/blocks/block-records'
+import { api } from '~/lib/api.client'
+import { useSession } from '~/lib/auth.client'
+import { appendGuestRecords, createRecordQueue, queueKey } from '~/lib/blocks/block-records'
 import {
   adjust,
   buildSeed,
@@ -219,14 +229,21 @@ export function TimerStoreProvider({
   mode: 'account' | 'guest'
   children: ReactNode
 }) {
-  // Swappable so the store is never recreated; 08-08 sets the account sink.
-  const sinkRef = useRef<((records: BlockRecord[]) => void) | undefined>(
+  // Swappable so the store is never recreated. Guest: localStorage. Account: buffer in memory
+  // until the session user id is known, then the per-user queue (effect below).
+  const buffer = useRef<BlockRecord[]>([])
+  const bufferSink = useCallback((records: BlockRecord[]) => {
+    buffer.current.push(...records)
+  }, [])
+  const sinkRef = useRef<(records: BlockRecord[]) => void>(
     mode === 'guest'
       ? records => {
           appendGuestRecords(records)
         }
-      : undefined,
+      : bufferSink,
   )
+  // Always called (hook rules); only read in account mode. Failed writes are silent by design.
+  const userId = useSession().data?.user.id
   const [store] = useState(() =>
     createTimerStore(
       initialSettings
@@ -240,6 +257,29 @@ export function TimerStoreProvider({
       records => sinkRef.current?.(records),
     ),
   )
+
+  useEffect(() => {
+    if (mode !== 'account' || !userId) return
+    const queue = createRecordQueue({
+      key: queueKey(userId),
+      send: async records => {
+        // Widened: the route types omit 400, which the framework can still return.
+        const status: number = (await api.user.blocks.$put({ json: { records } })).status
+        if (status === 200) return 'ok'
+        if (status === 400 || status === 413 || status === 422) return 'drop'
+        return 'retry'
+      },
+    })
+    if (buffer.current.length > 0) queue.push(buffer.current.splice(0))
+    void queue.flush()
+    sinkRef.current = records => queue.push(records)
+    const onOnline = () => void queue.flush()
+    window.addEventListener('online', onOnline)
+    return () => {
+      window.removeEventListener('online', onOnline)
+      sinkRef.current = bufferSink
+    }
+  }, [mode, userId, bufferSink])
 
   // Closing or reloading mid-block: keep the started block as a record. The sink writes to
   // localStorage synchronously. State is untouched so a bfcache restore resumes the block and
