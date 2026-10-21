@@ -24,7 +24,7 @@ const clock = (seconds: number) => {
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
 // minutes used for widths: planned + added, actual for done blocks
-function blockMinutes(b: LiveBlock) {
+export function blockMinutes(b: LiveBlock) {
   const seconds =
     b.state === 'done' && b.actualSeconds > 0 ? b.actualSeconds : b.plannedSeconds + b.addedSeconds
   return seconds / 60
@@ -105,12 +105,25 @@ function useNames(ids: string[]) {
   return ids.flatMap(id => tasks.find(t => t.id === id)?.text ?? [])
 }
 
-function Cell({ block, width, per }: { block: LiveBlock; width: number; per: number }) {
+function Cell({
+  block,
+  width,
+  per,
+  phone,
+}: {
+  block: LiveBlock
+  width: number
+  per: number
+  phone?: boolean
+}) {
   const names = useNames(block.taskIds)
   const span = block.plannedSeconds + block.addedSeconds
   const added = Math.round(block.addedSeconds / 60)
-  const num =
-    block.kind === 'focus' && width >= 20
+  const num = phone
+    ? block.kind === 'focus' && width >= 16
+      ? String(block.focusNumber)
+      : null
+    : block.kind === 'focus' && width >= 20
       ? `${block.focusNumber}${added > 0 ? ` · +${added}` : ''}`
       : null
   return (
@@ -134,8 +147,8 @@ function Cell({ block, width, per }: { block: LiveBlock; width: number; per: num
         {num && (
           <div className={styles.inner}>
             <span className={styles.num}>{num}</span>
-            {width >= 96 && names[0] && <span>{names[0]}</span>}
-            {width >= 96 && names[1] && <span className={styles.second}>{names[1]}</span>}
+            {!phone && width >= 96 && names[0] && <span>{names[0]}</span>}
+            {!phone && width >= 96 && names[1] && <span className={styles.second}>{names[1]}</span>}
           </div>
         )}
       </div>
@@ -144,7 +157,7 @@ function Cell({ block, width, per }: { block: LiveBlock; width: number; per: num
   )
 }
 
-function StripView({ view }: { view: SessionView }) {
+function StripView({ view, phone }: { view: SessionView; phone?: boolean }) {
   const rowRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
   const reduced = useReducedMotion()
@@ -161,7 +174,7 @@ function StripView({ view }: { view: SessionView }) {
   const { widths, per, overflow } = stripWidths(
     view.blocks.map(b => ({ kind: b.kind, minutes: blockMinutes(b) })),
     width,
-    { gap: 4, minFocus: 32, minBreak: 8 },
+    phone ? { gap: 2, minFocus: 16, minBreak: 4 } : { gap: 4, minFocus: 32, minBreak: 8 },
   )
 
   const currentId = view.current?.id
@@ -176,20 +189,24 @@ function StripView({ view }: { view: SessionView }) {
   }, [currentId, overflow])
 
   return (
-    <div className={styles.view}>
-      <div className={styles.label}>
-        <span className={styles.count}>{label.count}</span>
-        <span>{label.text}</span>
-      </div>
+    <div className={phone ? styles.viewPhone : styles.view}>
+      {!phone && (
+        <div className={styles.label}>
+          <span className={styles.count}>{label.count}</span>
+          <span>{label.text}</span>
+        </div>
+      )}
       <div ref={rowRef} className={`${styles.row} ${overflow ? styles.scroll : ''}`}>
         {width > 0 &&
-          view.blocks.map((b, i) => <Cell key={b.id} block={b} width={widths[i] ?? 0} per={per} />)}
+          view.blocks.map((b, i) => (
+            <Cell key={b.id} block={b} width={widths[i] ?? 0} per={per} phone={phone} />
+          ))}
       </div>
     </div>
   )
 }
 
-function NowView({ view }: { view: SessionView }) {
+function NowView({ view, phone }: { view: SessionView; phone?: boolean }) {
   const label = labelOf(view, 'now')
   const block = view.current ?? view.blocks[0]
   const names = useNames(block?.taskIds ?? [])
@@ -197,12 +214,17 @@ function NowView({ view }: { view: SessionView }) {
   const span = block.plannedSeconds + block.addedSeconds
   const live = view.state === 'live'
   const tail = span > 0 ? block.addedSeconds / span : 0
+  const phoneText = live
+    ? `${block.kind === 'break' ? 'Break' : `Block ${block.focusNumber}`} · ${clock(span - block.elapsedSeconds)} left`
+    : `Block ${block.focusNumber} · ${formatDuration(Math.round(span / 60))}`
   return (
-    <div className={styles.viewNow}>
-      <div className={styles.label}>
-        <span className={styles.count}>{label.count}</span>
-        <span>{label.text}</span>
-      </div>
+    <div className={phone ? styles.viewNowPhone : styles.viewNow}>
+      {!phone && (
+        <div className={styles.label}>
+          <span className={styles.count}>{label.count}</span>
+          <span>{label.text}</span>
+        </div>
+      )}
       <div className={styles.block} data-kind={block.kind} data-state={live ? 'current' : 'ahead'}>
         {live && (
           <div
@@ -215,9 +237,9 @@ function NowView({ view }: { view: SessionView }) {
         {tail > 0 && <div className={styles.plus} style={{ width: `${tail * 100}%` }} />}
         <div className={styles.inner}>
           <span className={styles.num}>
-            {block.kind === 'break' ? 'Break' : `Block ${block.focusNumber}`}
+            {phone ? phoneText : block.kind === 'break' ? 'Break' : `Block ${block.focusNumber}`}
           </span>
-          {block.kind === 'focus' && names.length > 0 && <span>{names.join(' · ')}</span>}
+          {!phone && block.kind === 'focus' && names.length > 0 && <span>{names.join(' · ')}</span>}
         </div>
       </div>
       {block.kind === 'focus' && <Dots ids={block.taskIds} width='100%' />}
@@ -266,22 +288,22 @@ export default function ProgressSlot() {
   const choice = useCustomizeStore(s => selectPaintedLook(s).sessionProgress)
   const commitKey = useCustomizeStore(s => s.commitKey)
   const view = useSessionView()
-  const wide = useMediaQuery('(min-width: 640px)')
+  // Landscape phones (short and wide) take the phone views too, at the smaller sizes
+  const phone = useMediaQuery('(max-width: 639.98px), (max-height: 500px)')
   const [open, setOpen] = useState(false)
   const slotRef = useRef<HTMLButtonElement>(null)
   const selectedRef = useRef<HTMLButtonElement>(null)
 
-  // ponytail: phones keep the existing grid for every view until the phone Strip and Now sizes ship
   const content =
-    !view || !wide || choice === 'grid' ? (
+    !view || choice === 'grid' ? (
       <SessionsUI
         sessions={view?.summary.focusCount}
         currentSession={view ? focusPosition(view) : undefined}
       />
     ) : choice === 'now' ? (
-      <NowView view={view} />
+      <NowView view={view} phone={phone} />
     ) : (
-      <StripView view={view} />
+      <StripView view={view} phone={phone} />
     )
 
   return (
