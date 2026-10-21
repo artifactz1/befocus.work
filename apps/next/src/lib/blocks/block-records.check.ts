@@ -4,9 +4,11 @@ import assert from 'node:assert/strict'
 import type { BlockRecord } from '@repo/types/blocks'
 import {
   appendGuestRecords,
+  createRecordQueue,
   GUEST_RECORDS_KEY,
   MAX_STORED_RECORDS,
   mergeRecords,
+  queueKey,
   readGuestRecords,
 } from './block-records'
 
@@ -86,6 +88,114 @@ assert.equal(MAX_STORED_RECORDS, 500)
   appendGuestRecords([r2], st)
   assert.deepEqual(readGuestRecords(st), [r2], 'same id updates in place')
   assert.equal(appendGuestRecords([r], boom), false, 'throwing setItem')
+}
+
+// createRecordQueue
+{
+  assert.equal(queueKey('u1'), 'befocus.blockQueue.u1')
+  const K = 'q'
+  const stored = (st: ReturnType<typeof fake>) => JSON.parse(st.getItem(K) ?? '[]') as BlockRecord[]
+  const tick = () => new Promise(r => setTimeout(r, 0))
+  type R = 'ok' | 'drop' | 'retry'
+  const scripted = (...results: (R | 'throw')[]) => {
+    const calls: BlockRecord[][] = []
+    let inFlight = 0
+    let overlap = false
+    const send = async (rs: BlockRecord[]): Promise<R> => {
+      calls.push(rs)
+      if (++inFlight > 1) overlap = true
+      await tick()
+      inFlight--
+      const r = results[calls.length - 1] ?? 'ok'
+      if (r === 'throw') throw new Error('network')
+      return r
+    }
+    return { send, calls, overlap: () => overlap }
+  }
+
+  // ok empties the queue
+  let st = fake()
+  let s = scripted()
+  let q = createRecordQueue({ send: s.send, storage: st, key: K })
+  const a = rec()
+  q.push([a])
+  assert.deepEqual(stored(st), [a], 'on disk synchronously')
+  await q.flush()
+  assert.deepEqual(s.calls, [[a]])
+  assert.deepEqual(stored(st), [])
+
+  // chunks of 100, in order, single flight
+  st = fake()
+  s = scripted()
+  q = createRecordQueue({ send: s.send, storage: st, key: K })
+  const many = Array.from({ length: 150 }, () => rec())
+  q.push(many)
+  await q.flush()
+  assert.deepEqual(
+    s.calls.map(c => c.length),
+    [100, 50],
+  )
+  assert.deepEqual(ids(s.calls.flat()), ids(many))
+  assert.equal(s.overlap(), false)
+
+  // retry keeps, later flush resends; throw is retry
+  st = fake()
+  s = scripted('retry', 'throw', 'ok')
+  q = createRecordQueue({ send: s.send, storage: st, key: K })
+  q.push([a])
+  await q.flush()
+  assert.deepEqual(stored(st), [a], 'kept after retry')
+  await q.flush()
+  assert.deepEqual(stored(st), [a], 'kept after throw')
+  await q.flush()
+  assert.deepEqual(stored(st), [])
+  assert.equal(s.calls.length, 3)
+
+  // drop removes the chunk and continues
+  st = fake()
+  s = scripted('drop', 'ok')
+  q = createRecordQueue({ send: s.send, storage: st, key: K })
+  const warn = console.warn
+  console.warn = () => {}
+  q.push(many)
+  await q.flush()
+  console.warn = warn
+  assert.deepEqual(
+    s.calls.map(c => c.length),
+    [100, 50],
+  )
+  assert.deepEqual(stored(st), [])
+
+  // newer copy of the same id pushed during a send survives
+  st = fake()
+  s = scripted()
+  q = createRecordQueue({ send: s.send, storage: st, key: K })
+  q.push([a])
+  const a2 = { ...a, addedSeconds: 60 }
+  q.push([a2])
+  await q.flush()
+  assert.deepEqual(s.calls, [[a], [a2]])
+  assert.deepEqual(stored(st), [])
+
+  // resumes from existing storage
+  st = fake({ [K]: JSON.stringify([a, { junk: 1 }]) })
+  s = scripted()
+  q = createRecordQueue({ send: s.send, storage: st, key: K })
+  await q.flush()
+  assert.deepEqual(s.calls, [[a]], 'stored sent, corrupt dropped')
+
+  // cap keeps newest
+  st = fake()
+  const hang = createRecordQueue({ send: () => new Promise(() => {}), storage: st, key: K })
+  const lots = Array.from({ length: 510 }, () => rec())
+  hang.push(lots)
+  assert.deepEqual(ids(stored(st)), ids(lots.slice(-500)))
+
+  // never-resolving send still leaves the record on disk
+  st = fake()
+  const h2 = createRecordQueue({ send: () => new Promise(() => {}), storage: st, key: K })
+  h2.push([a])
+  assert.deepEqual(stored(st), [a])
 }
 
 console.log('block-records.check ok')
