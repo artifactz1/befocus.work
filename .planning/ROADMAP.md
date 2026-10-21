@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs (8/8 plans shipped in #116; human visual checks and 07-08 gaps still open, see Progress)
 - [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (5 plans built; migration 0010, signed-in E2E and UAT pending)
 - [x] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded (9/9 plans built; human checks pending, see 08-VERIFICATION.md) (completed 2026-10-21)
-- [x] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (planned: 0/11; execution waits on Phase 8 and Phase 3) (completed 2026-10-21)
+- [x] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (completed 2026-10-21, code)
 - [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
 
 ## Phase Details
@@ -783,7 +783,7 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
 | 7.1. Session Settings Start Card (INSERTED) | 5/5 | Built, human_needed: migration 0010 not applied, signed-in E2E and UAT pending | 2026-10-16 (code) |
 | 8. Focus Blocks and Added Time | 9/9 | Built, human_needed: apply migration 0012, signed-in focus_blocks round trip, real-touch long-press, reduced motion (see 08-VERIFICATION.md) | 2026-10-21 (code) |
-| 9. Tasks and Time Blocks | 11/11 | Complete   | 2026-10-21 |
+| 9. Tasks and Time Blocks | 11/11 | Built, human_needed: apply migrations 0013 and 0014 (hand-written, never applied), signed-in and API checks (see 09-VERIFICATION.md) | 2026-10-21 (code) |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
 
 ## Requirement Coverage
