@@ -3,10 +3,11 @@
 import { TASK_TEXT_MAX, type Task } from '@repo/types/tasks'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '~/lib/api.client'
+import { nextNowAfterDone } from '~/lib/plan/now'
 import { failToast, pendingCreates, whenTaskSaved } from '~/lib/tasks/task-writes'
 import { useTimerStoreApi } from '~/store/useTimerStore'
 import { useTasksStoreApi } from '~/store/useToDoStore'
-import { usePlanActions, writeCompletion } from './usePlan'
+import { usePlanActions, writeCompletion, writeNow } from './usePlan'
 
 export { whenTaskSaved }
 
@@ -117,6 +118,14 @@ export function useTaskActions() {
         update(id, { completed: checked }),
         writeCompletion(store, timer, id, checked),
       ])
+    },
+    /** Completes the now task (one completion path) and moves now to the next open task in the block. */
+    markDone: async (id: string) => {
+      const t = timer.getState()
+      const { links, tasks } = store.getState()
+      const next = nextNowAfterDone(links, tasks, t.currentBlockId, id)
+      await Promise.all([update(id, { completed: true }), writeCompletion(store, timer, id, true)])
+      if (next) await writeNow(store, timer, next)
     },
     archive: (id: string) => {
       // an archived task leaves its block (discretion, UI-SPEC List > Archive)

@@ -1,10 +1,12 @@
 'use client'
 
 import type { PlanBlock, TaskLink } from '@repo/types/plan'
+import type { Task } from '@repo/types/tasks'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
 import { isLive } from '~/lib/blocks/blocks'
+import { deriveNow, openInBlock } from '~/lib/plan/now'
 import {
   addFocusBlock,
   buildSessionView,
@@ -293,6 +295,8 @@ export function usePlanActions() {
         failToast(task.text)
       }
     },
+    /** Makes a task the now task of the current focus block (moving it in when planned elsewhere). */
+    setNow: (taskId: string) => writeNow(store, timer, taskId),
     nudge: (id: string, delta: number) => {
       const plan = store.getState().plan
       if (!plan || plan.blocks.findIndex(b => b.id === id) <= lockedUpTo(plan.blocks)) return
@@ -436,6 +440,16 @@ export function usePlanSync() {
           )
         }
       }
+      if (
+        t.status === 'running' &&
+        (prev.status !== 'running' || t.currentBlockId !== prev.currentBlockId)
+      ) {
+        // a block run without any pick still records the default now task as worked on
+        const fresh = store.getState()
+        const now = deriveNow(fresh.links, fresh.tasks, t.currentBlockId)
+        const linked = fresh.links.find(l => l.taskId === now && l.blockId === t.currentBlockId)
+        if (now && !linked?.worked) void writeNow(store, timer, now, true)
+      }
       seedTimer()
     }
 
@@ -453,7 +467,7 @@ export function usePlanSync() {
 }
 
 // Shared tick: every second while a block runs, every minute otherwise (and on tab focus).
-function useNow(ms: number) {
+function useTick(ms: number) {
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
     const tick = () => setNow(Date.now())
@@ -478,7 +492,7 @@ export function useSessionView(): SessionView | null {
   const currentBlockId = useTimerStore(s => s.currentBlockId)
   const status = useTimerStore(s => s.status)
   const timeLeft = useTimerStore(s => s.timeLeft)
-  const now = useNow(status === 'running' ? 1000 : 60_000)
+  const now = useTick(status === 'running' ? 1000 : 60_000)
   return useMemo(
     () =>
       plan
@@ -497,6 +511,17 @@ export function useSessionView(): SessionView | null {
   )
 }
 
+/** Id of the current block while it is a running or paused focus block of the open plan, else null. */
+function liveFocusBlock(store: TasksApi, timer: TimerApi): string | null {
+  const t = timer.getState()
+  const s = store.getState()
+  const current = t.blocks.find(b => b.id === t.currentBlockId)
+  if (current?.kind !== 'focus' || (t.status !== 'running' && t.status !== 'paused')) return null
+  if (!s.plan || s.plan.sessionId !== t.sessionId || !s.plan.blocks.some(b => b.id === current.id))
+    return null
+  return current.id
+}
+
 /**
  * Live completion rule: while a focus block runs or is paused, ticking any task writes a link on
  * the current block (the task moves into it). Planning, breaks and an ended session write none.
@@ -507,13 +532,9 @@ export async function writeCompletion(
   taskId: string,
   checked: boolean,
 ) {
-  const t = timer.getState()
   const s = store.getState()
-  const current = t.blocks.find(b => b.id === t.currentBlockId)
-  if (current?.kind !== 'focus' || (t.status !== 'running' && t.status !== 'paused')) return
-  if (!s.plan || s.plan.sessionId !== t.sessionId || !s.plan.blocks.some(b => b.id === current.id))
-    return
-  const blockId = current.id
+  const blockId = liveFocusBlock(store, timer)
+  if (!blockId) return
   const task = s.tasks.find(x => x.id === taskId)
   const previous = s.links.filter(l => l.taskId === taskId)
   const stamp = new Date().toISOString()
@@ -542,4 +563,79 @@ export async function writeCompletion(
     store.getState().setLinks([...rest, ...previous])
     failToast(task?.text ?? 'task')
   }
+}
+
+/**
+ * Now pick: the task becomes the now task of the current focus block (planned and worked there).
+ * `quiet` skips the announcement (the automatic default at block start).
+ */
+export async function writeNow(store: TasksApi, timer: TimerApi, taskId: string, quiet = false) {
+  const s = store.getState()
+  const blockId = liveFocusBlock(store, timer)
+  const task = s.tasks.find(x => x.id === taskId)
+  if (!blockId || !task) return
+  const previous = s.links.filter(l => l.taskId === taskId)
+  const stamp = new Date().toISOString()
+  s.setLinks(
+    planTask(s.links, taskId, blockId).map(l =>
+      l.taskId === taskId && l.blockId === blockId ? { ...l, worked: true, workedAt: stamp } : l,
+    ),
+  )
+  if (!quiet) s.announce(`Now working on ${task.text}`)
+  if (s.mode === 'guest') return
+  try {
+    await writeLinks(store, [{ blockId, taskId, planned: true, worked: true }])
+  } catch {
+    const rest = store.getState().links.filter(l => l.taskId !== taskId)
+    store.getState().setLinks([...rest, ...previous])
+    failToast(task.text)
+  }
+}
+
+export type NowOption = { task: Task; block: number | null }
+
+/** The now task and the pick lists for the current block. `active` only for a running or paused focus block. */
+export function useNow() {
+  const view = useSessionView()
+  const status = useTimerStore(s => s.status)
+  const tasks = useTasksStore(s => s.tasks)
+  const links = useTasksStore(s => s.links)
+  const plan = useTasksStore(s => s.plan)
+  return useMemo(() => {
+    const current = view?.current
+    const active =
+      !!current &&
+      current.kind === 'focus' &&
+      (status === 'running' || status === 'paused') &&
+      view.state === 'live'
+    const none = {
+      active: false,
+      task: null as Task | null,
+      blockTasks: [] as Task[],
+      otherOpen: [] as NowOption[],
+      doneCount: 0,
+      plannedCount: 0,
+    }
+    if (!active || !current || !view || !plan) return none
+    const byId = (id: string) => tasks.find(t => t.id === id)
+    const ids = openInBlock(links, tasks, current.id)
+    const focusIds = plan.blocks.filter(b => b.kind === 'focus').map(b => b.id)
+    const inBlock = new Set(ids)
+    const otherOpen = tasks
+      .filter(t => !t.archived && !t.completed && !inBlock.has(t.id))
+      .map(t => {
+        const at = links.find(l => l.taskId === t.id && l.planned)?.blockId
+        const i = at ? focusIds.indexOf(at) : -1
+        return { task: t, block: i < 0 ? null : i + 1 }
+      })
+    const nowId = deriveNow(links, tasks, current.id)
+    return {
+      active,
+      task: (nowId && byId(nowId)) || null,
+      blockTasks: ids.flatMap(id => byId(id) ?? []),
+      otherOpen,
+      doneCount: view.summary.doneTasks,
+      plannedCount: view.summary.plannedTasks,
+    }
+  }, [view, status, tasks, links, plan])
 }
