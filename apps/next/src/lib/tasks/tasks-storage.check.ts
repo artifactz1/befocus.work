@@ -1,7 +1,15 @@
 // Runnable self-check for guest task parsing (no test runner exists in this repo).
 // Run with: bun run src/lib/tasks/tasks-storage.check.ts (cwd apps/next)
 import assert from 'node:assert/strict'
-import { parseGuestPlan, parseGuestTasks, toGuestPlan, toGuestTasks } from './tasks-storage'
+import {
+  appendGuestLinkHistory,
+  parseGuestLinkHistory,
+  parseGuestPlan,
+  parseGuestTasks,
+  toGuestLinkHistory,
+  toGuestPlan,
+  toGuestTasks,
+} from './tasks-storage'
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`
 const task = (n: number, over: object = {}) => ({
@@ -83,5 +91,59 @@ assert.deepEqual(
 const manyLinks = Array.from({ length: 600 }, () => link(id(1)))
 assert.equal(parseGuestPlan({ version: 1, plan, links: manyLinks }).links.length, 512, 'links cap')
 assert.deepEqual(parseGuestPlan(toGuestPlan(plan, links)), { plan, links }, 'plan round trip')
+
+// link history
+const hl = (n: number, over: object = {}) =>
+  link(id(1), {
+    taskId: id(n),
+    worked: true,
+    workedAt: `2026-01-01T00:${String(n % 60).padStart(2, '0')}:00.000Z`,
+    ...over,
+  })
+assert.deepEqual(parseGuestLinkHistory('garbage'), [], 'history: garbage')
+assert.deepEqual(parseGuestLinkHistory({ version: 2, links: [hl(1)] }), [], 'history: version')
+assert.deepEqual(parseGuestLinkHistory({ version: 1, links: 'x' }), [], 'history: non-array')
+assert.deepEqual(
+  parseGuestLinkHistory({ version: 1, links: [hl(1), { x: 1 }, hl(2)] }),
+  [hl(1), hl(2)],
+  'history: drops invalid',
+)
+assert.deepEqual(parseGuestLinkHistory(toGuestLinkHistory([hl(1)])), [hl(1)], 'history: round trip')
+
+const planned = link(id(1), { taskId: id(9) }) // neither worked nor completed
+const appended = parseGuestLinkHistory(
+  appendGuestLinkHistory(toGuestLinkHistory([hl(1)]), [planned, hl(2)]),
+)
+assert.deepEqual(appended, [hl(1), hl(2)], 'append keeps worked or completed only')
+const replaced = parseGuestLinkHistory(
+  appendGuestLinkHistory(toGuestLinkHistory([hl(1)]), [
+    hl(1, { completed: true, completedAt: '2026-01-02T00:00:00.000Z' }),
+  ]),
+)
+assert.equal(replaced.length, 1, 'append replaces same block and task')
+assert.equal(replaced[0]?.completed, true, 'replacement wins')
+assert.deepEqual(
+  parseGuestLinkHistory(appendGuestLinkHistory('garbage', [hl(3)])),
+  [hl(3)],
+  'append over corrupt raw',
+)
+const many = Array.from({ length: 600 }, (_, i) =>
+  hl(i + 1, {
+    blockId: id(1000 + i),
+    workedAt: new Date(Date.UTC(2026, 0, 1, 0, i)).toISOString(),
+  }),
+)
+const capped = parseGuestLinkHistory(appendGuestLinkHistory(null, many))
+assert.equal(capped.length, 500, 'history cap')
+assert.equal(
+  capped.some(l => l.blockId === id(1000)),
+  false,
+  'oldest dropped',
+)
+assert.equal(
+  capped.some(l => l.blockId === id(1599)),
+  true,
+  'newest kept',
+)
 
 console.log('tasks-storage.check OK')
