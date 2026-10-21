@@ -14,7 +14,7 @@ export default function TimerButtons() {
   const { requestStart } = useSessionCard()
 
   return (
-    <div className='flex items-center justify-center gap-1 px-2 py-1.5'>
+    <div data-transport className='flex items-center justify-center gap-1 px-2 py-1.5'>
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -22,6 +22,7 @@ export default function TimerButtons() {
               onClick={skipToPrevSession}
               appearance='outline'
               className='xl:h-12 xl:w-32'
+              data-slot='1'
               aria-label='Skip to previous'
             >
               <SkipBack className={`${iconSize}`} strokeWidth={2} />
@@ -36,6 +37,7 @@ export default function TimerButtons() {
             <MenuButton
               onClick={requestStart}
               appearance='outline'
+              data-slot='2'
               aria-label={isRunning ? 'Pause' : 'Start'}
               aria-keyshortcuts='Space'
             >
@@ -57,6 +59,7 @@ export default function TimerButtons() {
               onClick={resetCurrentTime}
               appearance='outline'
               className='xl:h-12 xl:w-32'
+              data-slot='3'
               aria-label='Reset time'
               aria-keyshortcuts='R'
             >
@@ -74,6 +77,7 @@ export default function TimerButtons() {
               onClick={skipToNextSession}
               appearance='outline'
               className='xl:h-12 xl:w-32'
+              data-slot='4'
               aria-label='Skip to next'
             >
               <SkipForward className={`${iconSize}`} strokeWidth={2} />

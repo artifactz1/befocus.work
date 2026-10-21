@@ -227,7 +227,20 @@
   }
 }
 
+.breathe {
+  animation: bf-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes bf-breathe {
+  50% {
+    opacity: 0.5;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .breathe {
+    animation: none;
+  }
   .ended,
   .phoneLabel,
   .phoneRow {

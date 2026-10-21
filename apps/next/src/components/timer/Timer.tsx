@@ -1,10 +1,11 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useEndedCues } from '~/hooks/useEndedCues'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useTimerKeyboard } from '~/hooks/useTimerKeyboard'
+import { minutesLabel } from '~/lib/blocks/blocks'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore, useTimerStoreApi } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
@@ -128,6 +129,26 @@ export default function Timer() {
   }
   const digitsStyle: DigitsStyle = { '--digit-size': desktopFontSize }
 
+  const [liveText, setLiveText] = useState('')
+  const prevFocus = useRef({ status, blockId: currentBlockId })
+  const primaryHadFocus = useRef(false)
+
+  // Announce the end once, and hand focus on when the ended primary goes away (UI-SPEC focus rules).
+  useLayoutEffect(() => {
+    const prev = prevFocus.current
+    prevFocus.current = { status, blockId: currentBlockId }
+    if (status === 'ended' && prev.status !== 'ended') {
+      setLiveText(`Time's up. ${doneLabel}, ${minutesLabel(endedMinutes)}.`)
+    } else if (prev.status === 'ended' && status !== 'ended') {
+      setLiveText('')
+      if (primaryHadFocus.current && status === 'running') {
+        const slot = prev.blockId !== currentBlockId ? '2' : '4'
+        document.querySelector<HTMLElement>(`[data-transport] [data-slot="${slot}"]`)?.focus()
+      }
+      primaryHadFocus.current = false
+    }
+  }, [status, currentBlockId, doneLabel, endedMinutes])
+
   // A mouse user who clicked Play still has focus in the footer: hand it to the ended primary.
   useEffect(() => {
     if (!ended) return
@@ -148,6 +169,12 @@ export default function Timer() {
       ref={primaryRef}
       type='button'
       data-ended-primary
+      onFocus={() => {
+        primaryHadFocus.current = true
+      }}
+      onBlur={() => {
+        primaryHadFocus.current = false
+      }}
       aria-keyshortcuts='Enter'
       className={styles.primary}
       onClick={() => store.getState().startNext()}
@@ -165,6 +192,9 @@ export default function Timer() {
       <span role='timer' aria-label='Time remaining' className='sr-only'>
         {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
       </span>
+      <span aria-live='polite' className='sr-only' data-timer-live>
+        {liveText}
+      </span>
 
       {phoneEnded && (
         <p data-ended-label className={styles.phoneLabel}>
@@ -180,12 +210,15 @@ export default function Timer() {
           className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}
           style={digitsStyle}
         >
-          <div aria-hidden className='contents'>
+          <div
+            aria-hidden
+            className={`flex h-full items-center justify-center ${ended ? styles.breathe : ''}`}
+          >
             <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
           </div>
           <div
             aria-hidden
-            className={`absolute inset-0 items-center justify-center ${styles.inkOverlay}`}
+            className={`absolute inset-0 items-center justify-center ${styles.inkOverlay} ${ended ? styles.breathe : ''}`}
           >
             <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
           </div>
@@ -238,7 +271,7 @@ export default function Timer() {
 
         <div
           aria-hidden
-          className={`absolute flex-row items-center font-bold sm:hidden ${strip ? 'flex' : ''} ${styles.digits}`}
+          className={`absolute flex-row items-center font-bold sm:hidden ${strip ? 'flex' : ''} ${styles.digits} ${ended ? styles.breathe : ''}`}
         >
           {strip ? (
             <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
