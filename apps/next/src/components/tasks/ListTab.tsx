@@ -67,7 +67,7 @@ function EditableText({ task }: { task: Task }) {
 }
 
 function Row({ task }: { task: Task }) {
-  const { toggle, archive, restore } = useTaskActions()
+  const { completeTask, archive, restore } = useTaskActions()
   const block = useTasksStore(s =>
     s.plan ? plannedBlockNumber(s.plan.blocks, s.links, task.id) : null,
   )
@@ -77,7 +77,7 @@ function Row({ task }: { task: Task }) {
         className={styles.box}
         checked={task.completed}
         aria-label={task.text}
-        onCheckedChange={() => toggle(task.id)}
+        onCheckedChange={checked => completeTask(task.id, checked === true)}
       >
         <Check aria-hidden='true' />
       </Checkbox>

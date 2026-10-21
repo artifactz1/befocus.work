@@ -6,16 +6,16 @@ import { Checkbox } from '@repo/ui/checkbox'
 import { cn } from '@repo/ui/lib/utils'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Check, GripVertical, Minus, Plus } from 'lucide-react'
-import { type DragEvent, useEffect, useMemo, useState } from 'react'
+import { type DragEvent, useState } from 'react'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
-import { usePlanActions } from '~/hooks/usePlan'
+import { usePlanActions, useSessionView } from '~/hooks/usePlan'
 import { useTaskActions } from '~/hooks/useTasks'
 import { api } from '~/lib/api.client'
 import {
-  deriveBlockTimes,
   formatClock,
   formatDuration,
   formatRange,
+  type LiveBlock,
   planSummary,
 } from '~/lib/plan/plan'
 import { useTasksStore, useTasksStoreApi } from '~/store/useToDoStore'
@@ -26,22 +26,6 @@ import styles from './tasks.module.css'
 const EASE = [0.2, 0.7, 0.2, 1] as const
 const PX_PER_MINUTE = 2.4
 const DRAG_TYPE = 'application/x-befocus-task'
-
-// Re-derives on a 60s interval and whenever the tab becomes visible; never stored.
-function useNow() {
-  const [now, setNow] = useState(() => Date.now())
-  useEffect(() => {
-    const tick = () => setNow(Date.now())
-    const id = setInterval(tick, 60_000)
-    const onVisible = () => document.visibilityState === 'visible' && tick()
-    document.addEventListener('visibilitychange', onVisible)
-    return () => {
-      clearInterval(id)
-      document.removeEventListener('visibilitychange', onVisible)
-    }
-  }, [])
-  return now
-}
 
 // One checklist row: checked means planned in this block; checking a task planned elsewhere moves it.
 function AssignRow({
@@ -208,49 +192,81 @@ function PlanLoadError() {
   )
 }
 
+const mmss = (seconds: number) =>
+  `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`
+const minutesOf = (seconds: number) => Math.round(seconds / 60)
+
+// "25 min" or "25 + 5 min"
+const lengthText = (b: LiveBlock) =>
+  b.addedSeconds > 0
+    ? `${minutesOf(b.plannedSeconds)} + ${minutesOf(b.addedSeconds)} min`
+    : formatDuration(minutesOf(b.plannedSeconds))
+
+// Done rows: a static tick per task (untick from the List tab).
+function StaticTick({ done }: { done: boolean }) {
+  return (
+    <span className={styles.tick} data-done={done || undefined}>
+      {done && <Check aria-hidden='true' />}
+      <span className='sr-only'>{done ? 'done' : 'not done'}</span>
+    </span>
+  )
+}
+
+// Current block: every assigned task is a completion row (checked = completed).
+function CompletionRow({ task, draggable }: { task: Task; draggable: boolean }) {
+  const { completeTask } = useTaskActions()
+  return (
+    <li
+      className={cn(styles.row, styles.liveRow, task.completed && styles.done)}
+      draggable={draggable || undefined}
+      onDragStart={
+        draggable
+          ? e => {
+              e.dataTransfer.setData(DRAG_TYPE, task.id)
+              e.dataTransfer.effectAllowed = 'move'
+            }
+          : undefined
+      }
+    >
+      {draggable && <GripVertical className={styles.grip} aria-hidden='true' />}
+      <Checkbox
+        className={styles.box}
+        checked={task.completed}
+        aria-label={task.text}
+        onCheckedChange={checked => completeTask(task.id, checked === true)}
+      >
+        <Check aria-hidden='true' />
+      </Checkbox>
+      <span className={styles.text}>{task.text}</span>
+    </li>
+  )
+}
+
 export default function PlanTab() {
   const plan = useTasksStore(s => s.plan)
   const planLoad = useTasksStore(s => s.planLoad)
-  const { addFocus, removeFocus, nudge } = usePlanActions()
+  const { addFocus, removeFocus, nudge, assignTask } = usePlanActions()
   const reduced = useReducedMotion()
-  const now = useNow()
+  const view = useSessionView()
   const [pickedId, setPickedId] = useState<string | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
   const fine = useMediaQuery('(pointer: fine)')
-  const { assignTask } = usePlanActions()
   const tasks = useTasksStore(s => s.tasks)
   const links = useTasksStore(s => s.links)
 
-  const blocks = plan?.blocks
-  const times = useMemo(
-    () =>
-      blocks
-        ? deriveBlockTimes(
-            blocks.map(b => ({
-              id: b.id,
-              kind: b.kind,
-              plannedSeconds: b.minutes * 60,
-              addedSeconds: 0,
-              startedAt: null,
-              endedAt: null,
-              leftSeconds: null,
-            })),
-            now,
-            now,
-          )
-        : [],
-    [blocks, now],
-  )
-
   if (planLoad === 'error') return <PlanLoadError />
-  if (!plan || !blocks) return <Skeleton rows={3} height={60} gap={16} />
+  if (!plan || !view) return <Skeleton rows={3} height={60} gap={16} />
 
+  const blocks = plan.blocks
+  const live = view.state === 'live'
+  const { summary } = view
   const focus = blocks.filter(b => b.kind === 'focus')
-  // the picked block may have been removed; fall back to Block 1
-  const selected = focus.find(b => b.id === pickedId) ?? focus[0]
-  const end = times[times.length - 1]?.end ?? now
+  // Planning: the picked block, else Block 1. Live: only an ahead block can be selected.
+  const pickable = (id: string | null) =>
+    view.blocks.find(b => b.id === id && b.kind === 'focus' && b.state === 'ahead')?.id
+  const selectedId = pickable(pickedId) ?? (live ? undefined : focus[0]?.id)
   const atLimit = focus.length >= PLAN_LIMITS.maxFocus
-  let focusNumber = 0
+  const taskOf = (id: string) => tasks.find(t => t.id === id)
 
   const hasTask = (e: DragEvent) => e.dataTransfer.types.includes(DRAG_TYPE)
   const dropProps = (blockId: string) =>
@@ -279,154 +295,256 @@ export default function PlanTab() {
   return (
     <div className={styles.plan}>
       <div className={records.sec}>
-        <span>{planSummary(blocks)}</span>
-        <em>Ends {formatClock(end)}</em>
+        <span>
+          {live
+            ? `Focus ${minutesOf(summary.focusElapsedSeconds)} min · ${summary.doneTasks}/${summary.plannedTasks} tasks${
+                summary.addedTotal > 0 ? ` · +${minutesOf(summary.addedTotal)} min` : ''
+              }`
+            : planSummary(blocks)}
+        </span>
+        <em>Ends {formatClock(summary.endsAt)}</em>
       </div>
       <fieldset className={styles.column}>
         <legend className='sr-only'>Blocks</legend>
-        {blocks.map((block, i) => {
-          const t = times[i]
-          if (!t) return null
-          const height = block.minutes * PX_PER_MINUTE
-          if (block.kind === 'break') {
+        {view.blocks.map(vb => {
+          const block = blocks.find(b => b.id === vb.id)
+          if (!block) return null
+          const lengthSeconds =
+            vb.state === 'done' ? vb.actualSeconds : vb.plannedSeconds + vb.addedSeconds
+          const height = (lengthSeconds / 60) * PX_PER_MINUTE
+          if (vb.kind === 'break') {
+            const current = vb.state === 'current'
             return (
               <div
-                key={block.id}
+                key={vb.id}
                 className={styles.breakCell}
+                data-state={vb.state}
                 style={{ height: Math.max(16, height) }}
               >
                 <span className={styles.gutter} aria-hidden='true' />
-                <span className={styles.breakRow}>Break · {formatDuration(block.minutes)}</span>
+                <span className={styles.breakRow} data-current={current || undefined}>
+                  {current
+                    ? `Break · ${mmss(Math.max(0, vb.plannedSeconds + vb.addedSeconds - vb.elapsedSeconds))} left`
+                    : `Break · ${formatDuration(minutesOf(vb.plannedSeconds))}`}
+                </span>
               </div>
             )
           }
-          focusNumber += 1
-          const name = `Block ${focusNumber}`
-          const isSelected = block.id === selected?.id
-          const names = links
-            .filter(l => l.planned && l.blockId === block.id)
-            .flatMap(l => tasks.filter(x => x.id === l.taskId && !x.archived).map(x => x.text))
+          const name = `Block ${vb.focusNumber}`
+          const isSelected = vb.id === selectedId
+          const taskList = vb.taskIds.flatMap(id => taskOf(id) ?? [])
+          const names = taskList.map(t => t.text)
           const count = `${names.length === 0 ? 'no' : names.length} ${names.length === 1 ? 'task' : 'tasks'}`
-          const nameText = `${name}, ${formatClock(t.start)} to ${formatClock(t.end)}, ${block.minutes} minutes, ${count}`
-          return (
-            <div key={block.id} className={styles.focusCell}>
+          const span = vb.plannedSeconds + vb.addedSeconds
+          const meta =
+            vb.state === 'ahead'
+              ? formatRange(vb.start, vb.end)
+              : vb.state === 'done'
+                ? lengthText(vb)
+                : `${mmss(vb.elapsedSeconds)} of ${
+                    vb.addedSeconds > 0 ? lengthText(vb) : formatDuration(minutesOf(span))
+                  }${vb.paused ? ' · paused' : ''}`
+          const hatch =
+            vb.addedSeconds > 0 ? (
+              <span
+                className={styles.hatch}
+                data-done={vb.state === 'done' || undefined}
+                style={{ height: (vb.addedSeconds / 60) * PX_PER_MINUTE }}
+                aria-hidden='true'
+              />
+            ) : null
+          const cell = (children: React.ReactNode, droppable: boolean) => (
+            <div key={vb.id} className={styles.focusCell}>
               <span className={styles.gutter} aria-hidden='true'>
-                {formatClock(t.start)}
+                {formatClock(vb.start)}
               </span>
               <div
                 className={styles.focus}
+                data-state={vb.state}
                 data-selected={isSelected || undefined}
-                data-over={overId === block.id || undefined}
+                data-over={overId === vb.id || undefined}
                 style={{ minHeight: Math.max(44, height) }}
-                {...dropProps(block.id)}
+                {...(droppable ? dropProps(vb.id) : {})}
               >
-                <label className={styles.focusLabel}>
-                  <input
-                    type='radio'
-                    name='plan-block'
-                    className={styles.radio}
-                    checked={isSelected}
-                    onChange={() => setPickedId(block.id)}
-                  />
-                  <span className={styles.focusHead}>
-                    <span className={styles.focusTitle} aria-hidden='true'>
-                      {name}
-                    </span>
-                    <span className={styles.meta} aria-hidden='true'>
-                      {formatRange(t.start, t.end)}
-                    </span>
-                  </span>
-                  <span className='sr-only'>{nameText}</span>
-                  <span className={styles.namesLine} aria-hidden='true'>
-                    <span className={names.length === 0 ? styles.noTasks : styles.names}>
-                      {names.length === 0 ? 'No tasks' : names.join(' · ')}
-                    </span>
-                    {overId === block.id && <span className={styles.drop}>Drop here</span>}
-                  </span>
-                </label>
-                <AnimatePresence initial={false}>
-                  {isSelected && (
-                    <motion.div
-                      className={styles.assign}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: reduced ? 0 : 0.25, ease: EASE }}
-                    >
-                      <div className={styles.assignInner}>
-                        <div className={styles.length}>
-                          <span>Length</span>
-                          <button
-                            type='button'
-                            className={styles.nudge}
-                            aria-label={`Shorten ${name}`}
-                            disabled={block.minutes <= PLAN_LIMITS.minMinutes}
-                            onClick={() => nudge(block.id, -PLAN_LIMITS.step)}
-                          >
-                            <Minus aria-hidden='true' />
-                          </button>
-                          <output className={styles.value} aria-live='polite'>
-                            {block.minutes} min
-                          </output>
-                          <button
-                            type='button'
-                            className={styles.nudge}
-                            aria-label={`Lengthen ${name}`}
-                            disabled={block.minutes >= PLAN_LIMITS.maxMinutes}
-                            onClick={() => nudge(block.id, PLAN_LIMITS.step)}
-                          >
-                            <Plus aria-hidden='true' />
-                          </button>
-                        </div>
-                        <AssignList blockId={block.id} name={name} draggable={fine} />
-                        <div className={styles.assignFoot}>
-                          <button
-                            type='button'
-                            className={styles.remove}
-                            disabled={focus.length <= 1}
-                            onClick={() => removeFocus(block.id)}
-                          >
-                            Remove block
-                          </button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {children}
+                {hatch}
               </div>
             </div>
+          )
+
+          if (vb.state === 'done') {
+            return cell(
+              <>
+                <span className={styles.focusHead}>
+                  <span className={styles.focusTitle}>
+                    <Check className={styles.doneCheck} aria-hidden='true' />
+                    {name}
+                  </span>
+                  <span className={styles.meta}>{meta}</span>
+                </span>
+                {taskList.length === 0 ? (
+                  <span className={styles.noTasks}>No tasks</span>
+                ) : (
+                  <ul className={styles.rows}>
+                    {taskList.map(t => (
+                      <li key={t.id} className={cn(styles.row, styles.doneTask)}>
+                        <StaticTick
+                          done={links.some(
+                            l => l.taskId === t.id && l.blockId === vb.id && l.completed,
+                          )}
+                        />
+                        <span className={styles.text}>{t.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>,
+              false,
+            )
+          }
+
+          if (vb.state === 'current') {
+            return cell(
+              <>
+                <span className={styles.focusHead}>
+                  <span className={styles.focusTitle}>{name} · now</span>
+                  <span className={styles.meta}>{meta}</span>
+                </span>
+                <span className={styles.bar} aria-hidden='true'>
+                  <span
+                    className={styles.barFill}
+                    style={{ transform: `scaleX(${Math.min(1, vb.elapsedSeconds / span)})` }}
+                  />
+                </span>
+                {taskList.length === 0 ? (
+                  <span className={styles.noTasks}>No tasks</span>
+                ) : (
+                  <ul className={styles.rows}>
+                    {taskList.map(t => (
+                      <CompletionRow key={t.id} task={t} draggable={fine} />
+                    ))}
+                  </ul>
+                )}
+                {overId === vb.id && <span className={styles.drop}>Drop here</span>}
+              </>,
+              true,
+            )
+          }
+
+          const nameText = `${name}, ${formatClock(vb.start)} to ${formatClock(vb.end)}, ${block.minutes} minutes, ${count}`
+          return cell(
+            <>
+              <label className={styles.focusLabel}>
+                <input
+                  type='radio'
+                  name='plan-block'
+                  className={styles.radio}
+                  checked={isSelected}
+                  onChange={() => setPickedId(vb.id)}
+                />
+                <span className={styles.focusHead}>
+                  <span className={styles.focusTitle} aria-hidden='true'>
+                    {name}
+                  </span>
+                  <span className={styles.meta} aria-hidden='true'>
+                    {meta}
+                  </span>
+                </span>
+                <span className='sr-only'>{nameText}</span>
+                <span className={styles.namesLine} aria-hidden='true'>
+                  <span className={names.length === 0 ? styles.noTasks : styles.names}>
+                    {names.length === 0 ? 'No tasks' : names.join(' · ')}
+                  </span>
+                  {overId === vb.id && <span className={styles.drop}>Drop here</span>}
+                </span>
+              </label>
+              <AnimatePresence initial={false}>
+                {isSelected && (
+                  <motion.div
+                    className={styles.assign}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: reduced ? 0 : 0.25, ease: EASE }}
+                  >
+                    <div className={styles.assignInner}>
+                      <div className={styles.length}>
+                        <span>Length</span>
+                        <button
+                          type='button'
+                          className={styles.nudge}
+                          aria-label={`Shorten ${name}`}
+                          disabled={block.minutes <= PLAN_LIMITS.minMinutes}
+                          onClick={() => nudge(vb.id, -PLAN_LIMITS.step)}
+                        >
+                          <Minus aria-hidden='true' />
+                        </button>
+                        <output className={styles.value} aria-live='polite'>
+                          {block.minutes} min
+                        </output>
+                        <button
+                          type='button'
+                          className={styles.nudge}
+                          aria-label={`Lengthen ${name}`}
+                          disabled={block.minutes >= PLAN_LIMITS.maxMinutes}
+                          onClick={() => nudge(vb.id, PLAN_LIMITS.step)}
+                        >
+                          <Plus aria-hidden='true' />
+                        </button>
+                      </div>
+                      <AssignList blockId={vb.id} name={name} draggable={fine} />
+                      <div className={styles.assignFoot}>
+                        <button
+                          type='button'
+                          className={styles.remove}
+                          disabled={focus.length <= 1}
+                          onClick={() => removeFocus(vb.id)}
+                        >
+                          Remove block
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </>,
+            true,
           )
         })}
         <div className={styles.focusCell}>
           <span className={styles.gutter} aria-hidden='true'>
-            {formatClock(end)}
+            {formatClock(summary.endsAt)}
           </span>
         </div>
       </fieldset>
-      <button
-        type='button'
-        className={cn(styles.add, styles.addBlock)}
-        disabled={atLimit}
-        aria-describedby={atLimit ? 'plan-limit' : undefined}
-        onClick={addFocus}
-      >
-        <Plus aria-hidden='true' />
-        Add focus block
-      </button>
-      {atLimit && (
-        <p id='plan-limit' className={styles.note}>
-          16 blocks is the limit for one session.
-        </p>
+      {!live && (
+        <>
+          <button
+            type='button'
+            className={cn(styles.add, styles.addBlock)}
+            disabled={atLimit}
+            aria-describedby={atLimit ? 'plan-limit' : undefined}
+            onClick={addFocus}
+          >
+            <Plus aria-hidden='true' />
+            Add focus block
+          </button>
+          {atLimit && (
+            <p id='plan-limit' className={styles.note}>
+              16 blocks is the limit for one session.
+            </p>
+          )}
+          <p className={styles.note}>
+            Changes here apply to this session only.
+            {fine && (
+              <>
+                <br />
+                Drag a task onto a block to move it.
+              </>
+            )}
+          </p>
+        </>
       )}
-      <p className={styles.note}>
-        Changes here apply to this session only.
-        {fine && (
-          <>
-            <br />
-            Drag a task onto a block to move it.
-          </>
-        )}
-      </p>
     </div>
   )
 }
