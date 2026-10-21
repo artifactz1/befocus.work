@@ -138,7 +138,9 @@ html[data-density="roomy"] {
   transition: opacity 0.8s ease;
 }
 
-html[data-chrome-idle]:not([data-panel="open"]):not([data-room="open"]):not(:has(:focus-visible))
+html[data-chrome-idle]:not([data-panel="open"]):not([data-room="open"]):not(
+    :has(:focus-visible)
+  ):not(:has(.bf-chrome [role="menu"]))
   .bf-chrome {
   opacity: 0;
 }
