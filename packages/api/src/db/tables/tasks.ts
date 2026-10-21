@@ -23,14 +23,18 @@ export type Task = InferSelectModel<typeof tasks>
 // Zod Schemas
 export const getTaskSchema = createSelectSchema(tasks)
 
-export const insertTaskSchema = createInsertSchema(tasks).omit({
+export const insertTaskSchema = createInsertSchema(tasks, {
+  text: schema => schema.trim().min(1).max(500),
+}).omit({
   id: true,
   editMode: true,
   createdAt: true, // let DB handle the timestamp
   userId: true,
 })
 
-export const updateTaskSchema = createUpdateSchema(tasks).omit({
+export const updateTaskSchema = createUpdateSchema(tasks, {
+  text: schema => schema.trim().min(1).max(500),
+}).omit({
   id: true,
   userId: true,
   createdAt: true, // prevent updating created timestamp

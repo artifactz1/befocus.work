@@ -7,12 +7,13 @@ import SessionCard from '~/components/settings/SessionCard'
 import TasksCard from '~/components/tasks/TasksCard'
 import { lookToTokens } from '~/lib/customize/catalog'
 import { getUserSettings } from '~/lib/server/getUserSettings'
+import { getUserTasks } from '~/lib/server/getUserTasks'
 import { CustomizeStoreProvider } from '~/store/useCustomizeStore'
 import { TimerStoreProvider } from '~/store/useTimerStore'
 import { TasksStoreProvider } from '~/store/useToDoStore'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getUserSettings()
+  const [settings, tasks] = await Promise.all([getUserSettings(), getUserTasks()])
   const look = settings?.look ?? null
 
   const queryClient = new QueryClient()
@@ -25,7 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <HydrationBoundary state={dehydrate(queryClient)}>
         <TimerStoreProvider initialSettings={settings} mode='account'>
           <CustomizeStoreProvider mode='account' initialLook={look}>
-            <TasksStoreProvider mode='account' initialTasks={null}>
+            <TasksStoreProvider mode='account' initialTasks={tasks}>
               {children}
               <CustomizePanel />
               <RecordRoom />

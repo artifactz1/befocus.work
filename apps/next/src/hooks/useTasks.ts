@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
 import { useTasksStoreApi } from '~/store/useToDoStore'
 
-// Fetch user tasks (manual refetch only; 09-04 replaces this with server-rendered hydration)
+// Manual refetch only (the load-error retry); the first load is server-rendered
 export const useUserTasks = () =>
   useQuery<Task[]>({
     queryKey: ['userTasks'],

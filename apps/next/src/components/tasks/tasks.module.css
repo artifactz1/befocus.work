@@ -202,6 +202,34 @@ div.add {
   color: hsl(var(--foreground));
 }
 
+.loadError {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: hsl(var(--destructive) / 0.15);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.retry {
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: hsl(var(--foreground));
+}
+
+.retry:hover:not(:disabled) {
+  background: hsl(var(--foreground) / 0.08);
+}
+
+.retry:disabled {
+  opacity: 0.5;
+}
+
 .note {
   margin: 24px 0 0;
   font-size: 13px;

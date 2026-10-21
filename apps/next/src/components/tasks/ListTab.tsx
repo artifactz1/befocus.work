@@ -6,8 +6,8 @@ import { cn } from '@repo/ui/lib/utils'
 import { Archive, ArchiveRestore, Check, ChevronDown, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { useTaskActions } from '~/hooks/useTasks'
-import { useTasksStore } from '~/store/useToDoStore'
+import { useTaskActions, useUserTasks } from '~/hooks/useTasks'
+import { useTasksStore, useTasksStoreApi } from '~/store/useToDoStore'
 import records from '../records/records.module.css'
 import styles from './tasks.module.css'
 
@@ -152,9 +152,31 @@ function AddRow({ empty }: { empty: boolean }) {
   )
 }
 
+function LoadError() {
+  const store = useTasksStoreApi()
+  const { refetch, isFetching } = useUserTasks()
+  return (
+    <div className={styles.loadError} role='alert'>
+      <span>Couldn't load your tasks.</span>
+      <button
+        type='button'
+        className={styles.retry}
+        disabled={isFetching}
+        onClick={async () => {
+          const { data } = await refetch()
+          if (data) store.getState().hydrateTasks(data)
+        }}
+      >
+        Try again
+      </button>
+    </div>
+  )
+}
+
 export default function ListTab() {
   const tasks = useTasksStore(s => s.tasks)
   const mode = useTasksStore(s => s.mode)
+  const loadState = useTasksStore(s => s.loadState)
   const [showArchived, setShowArchived] = useState(false)
   const open = tasks.filter(t => !t.archived && !t.completed)
   const done = tasks.filter(t => !t.archived && t.completed)
@@ -162,7 +184,8 @@ export default function ListTab() {
 
   return (
     <div className={styles.list}>
-      {tasks.length === 0 && (
+      {loadState === 'error' && <LoadError />}
+      {tasks.length === 0 && loadState === 'ready' && (
         <div className={styles.empty}>
           <p className={styles.emptyTitle}>No tasks yet</p>
           <p>Add what you want to get done this session.</p>

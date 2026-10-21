@@ -32,7 +32,8 @@ export function createTasksStore({ mode, tasks }: { mode: TasksMode; tasks: Task
   return createStore<TasksState>()(set => ({
     mode,
     tasks: tasks ?? [],
-    loadState: 'ready',
+    // a failed server fetch arrives as null; guests have no fetch
+    loadState: mode === 'account' && tasks === null ? 'error' : 'ready',
     hydrateTasks: next => set({ tasks: next, loadState: 'ready' }),
     insertTask: task => set(s => ({ tasks: [task, ...s.tasks] })),
     patchTask: (id, patch) =>
