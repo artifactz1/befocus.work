@@ -21,7 +21,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <>
       <LookPaintScript tokens={lookToTokens(look ?? DEFAULT_LOOK)} />
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <TimerStoreProvider initialSettings={settings}>
+        <TimerStoreProvider initialSettings={settings} mode='account'>
           <CustomizeStoreProvider mode='account' initialLook={look}>
             {children}
             <CustomizePanel />

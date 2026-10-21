@@ -2,9 +2,10 @@
 
 import type { Settings } from '@repo/api/db/schemas'
 import type { BlockRecord } from '@repo/types/blocks'
-import { createContext, type ReactNode, useContext, useState } from 'react'
+import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react'
 import { useStore } from 'zustand/react'
 import { createStore } from 'zustand/vanilla'
+import { appendGuestRecords } from '~/lib/blocks/block-records'
 import {
   adjust,
   buildSeed,
@@ -12,6 +13,7 @@ import {
   createRun,
   legacy,
   pause,
+  pendingRecord,
   type Run,
   resetBlock,
   resetSession,
@@ -207,14 +209,24 @@ function identity(state: TimerState): TimerState {
 
 export function TimerStoreProvider({
   initialSettings,
+  mode,
   children,
 }: {
   initialSettings: Pick<
     Settings,
     'workDuration' | 'breakDuration' | 'numberOfSessions' | 'askBeforeStart'
   > | null
+  mode: 'account' | 'guest'
   children: ReactNode
 }) {
+  // Swappable so the store is never recreated; 08-08 sets the account sink.
+  const sinkRef = useRef<((records: BlockRecord[]) => void) | undefined>(
+    mode === 'guest'
+      ? records => {
+          appendGuestRecords(records)
+        }
+      : undefined,
+  )
   const [store] = useState(() =>
     createTimerStore(
       initialSettings
@@ -225,9 +237,21 @@ export function TimerStoreProvider({
             askBeforeStart: initialSettings.askBeforeStart,
           }
         : null,
-      () => {}, // 08-06 wires the record sinks
+      records => sinkRef.current?.(records),
     ),
   )
+
+  // Closing or reloading mid-block: keep the started block as a record. The sink writes to
+  // localStorage synchronously. State is untouched so a bfcache restore resumes the block and
+  // its later record replaces this one under the same id.
+  useEffect(() => {
+    const onPageHide = () => {
+      const record = pendingRecord(runOf(store.getState()), Date.now())
+      if (record) sinkRef.current?.([record])
+    }
+    window.addEventListener('pagehide', onPageHide)
+    return () => window.removeEventListener('pagehide', onPageHide)
+  }, [store])
 
   return <TimerStoreContext.Provider value={store}>{children}</TimerStoreContext.Provider>
 }

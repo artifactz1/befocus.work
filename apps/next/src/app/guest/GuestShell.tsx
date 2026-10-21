@@ -8,7 +8,7 @@ import { TimerStoreProvider } from '~/store/useTimerStore'
 
 export default function GuestShell({ children }: { children: React.ReactNode }) {
   return (
-    <TimerStoreProvider initialSettings={null}>
+    <TimerStoreProvider initialSettings={null} mode='guest'>
       <CustomizeStoreProvider mode='guest' initialLook={null}>
         <div>{children}</div>
         <CustomizePanel />
