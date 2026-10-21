@@ -1,7 +1,7 @@
 'use client'
 
 import { useCustomizeStore } from '~/store/useCustomizeStore'
-import { useSoundsStore } from '~/store/useSoundsStore'
+import { useDeckStore } from '~/store/useDeckStore'
 
 /**
  * Live model: every control paints immediately. Done, close, Escape and leaving the route
@@ -13,9 +13,9 @@ export function useCustomizeActions() {
   const revert = useCustomizeStore(state => state.revert)
   const panelOpen = useCustomizeStore(state => state.panelOpen)
 
-  // the room and the inspector never show together
+  // a deck card and the inspector never show together
   const open = () => {
-    useSoundsStore.getState().setRoomOpen(false)
+    useDeckStore.getState().closeDeck()
     openPanel()
   }
 

@@ -3,10 +3,10 @@
 import { Drawer, DrawerPortal } from '@repo/ui/drawer'
 import { cn } from '@repo/ui/lib/utils'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { usePathname } from 'next/navigation'
 import { type KeyboardEvent, useEffect, useRef } from 'react'
 import { Drawer as DrawerPrimitive } from 'vaul'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
+import { useDeckCard, useDeckRootAttrs } from '~/store/useDeckStore'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import RecordRoomBody from './RecordRoomBody'
 import styles from './records.module.css'
@@ -16,65 +16,21 @@ const TABBABLE_SELECTOR =
   "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])"
 
 export default function RecordRoom() {
-  const roomOpen = useSoundsStore(state => state.roomOpen)
-  const setRoomOpen = useSoundsStore(state => state.setRoomOpen)
-  const pathname = usePathname()
-  const prevPathname = useRef(pathname)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const { open: isOpen, setOpen } = useDeckCard({
+    card: 'records',
+    headingId: 'records-heading',
+    triggerSelector: '[data-records-trigger]',
+    rerunFocusOn: isDesktop,
+  })
   const reducedMotion = useReducedMotion()
   const contentRef = useRef<HTMLDivElement>(null)
+  useDeckRootAttrs()
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: rerun on isDesktop so focus moves to the heading when the shell swaps
+  // opening the room clears the held footer chip
   useEffect(() => {
-    if (!roomOpen) return
-    const frame = requestAnimationFrame(() => document.getElementById('records-heading')?.focus())
-    return () => cancelAnimationFrame(frame)
-  }, [roomOpen, isDesktop])
-
-  // Return focus only on an open -> closed transition, never on mount.
-  const wasOpen = useRef(roomOpen)
-  useEffect(() => {
-    const closed = wasOpen.current && !roomOpen
-    wasOpen.current = roomOpen
-    if (!closed) return
-    for (const el of document.querySelectorAll<HTMLElement>('[data-records-trigger]')) {
-      if (el.offsetParent !== null) {
-        el.focus()
-        break
-      }
-    }
-  }, [roomOpen])
-
-  useEffect(() => {
-    if (!roomOpen) return
-    const onKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key !== 'Escape' || event.defaultPrevented) return
-      // Radix dialogs and menus handle their own Escape.
-      if (
-        document.querySelector(
-          '[role="dialog"]:not([data-record-room]), [role="alertdialog"], [role="menu"]',
-        )
-      )
-        return
-      setRoomOpen(false)
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [roomOpen, setRoomOpen])
-
-  useEffect(() => {
-    if (roomOpen && prevPathname.current !== pathname) setRoomOpen(false)
-    prevPathname.current = pathname
-  }, [pathname, roomOpen, setRoomOpen])
-
-  useEffect(() => {
-    if (!roomOpen) return
-    const root = document.documentElement
-    root.dataset.room = 'open'
-    return () => {
-      delete root.dataset.room
-    }
-  }, [roomOpen])
+    if (isOpen) useSoundsStore.getState().setChipHeld(false)
+  }, [isOpen])
 
   const onSheetKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'Tab' || !contentRef.current) return
@@ -100,13 +56,14 @@ export default function RecordRoom() {
   if (isDesktop) {
     return (
       <AnimatePresence>
-        {roomOpen && (
+        {isOpen && (
           <motion.section
             className={cn(styles.surface, styles.room)}
             role='dialog'
             aria-modal='false'
             aria-labelledby='records-heading'
             data-record-room
+            data-deck-card
             initial={{ x: -24, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -24, opacity: 0 }}
@@ -121,11 +78,11 @@ export default function RecordRoom() {
 
   return (
     <Drawer
-      open={roomOpen}
+      open={isOpen}
       modal={false}
       shouldScaleBackground={false}
       handleOnly
-      onOpenChange={setRoomOpen}
+      onOpenChange={setOpen}
     >
       <DrawerPortal>
         <DrawerPrimitive.Content
@@ -134,6 +91,7 @@ export default function RecordRoom() {
           aria-labelledby='records-heading'
           aria-describedby={undefined}
           data-record-room
+          data-deck-card
           onCloseAutoFocus={e => e.preventDefault()}
           onKeyDown={onSheetKeyDown}
         >
