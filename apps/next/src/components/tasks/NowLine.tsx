@@ -1,10 +1,14 @@
 'use client'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover'
-import { Check } from 'lucide-react'
+import { Check, ChevronDown } from 'lucide-react'
 import { type RefObject, useRef, useState } from 'react'
-import { type NowOption, useNow, usePlanActions } from '~/hooks/usePlan'
+import { useMediaQuery } from '~/hooks/useMediaQuery'
+import { type NowOption, useNow, usePlanActions, useSessionView } from '~/hooks/usePlan'
 import { useTaskActions } from '~/hooks/useTasks'
+import { selectPaintedLook, useCustomizeStore } from '~/store/useCustomizeStore'
+import { useDeckStore } from '~/store/useDeckStore'
+import { useTimerStore } from '~/store/useTimerStore'
 import styles from './tasks.module.css'
 
 /** True while the now line replaces the key hints under the digits. */
@@ -44,7 +48,60 @@ function PickRow({
   )
 }
 
+/** Phone Grid view: "B3/6 Draft Q3 body" pill that opens the Tasks sheet on the Plan tab. */
+function GridPill() {
+  const now = useNow()
+  const view = useSessionView()
+  const status = useTimerStore(s => s.status)
+  const current = view?.current
+  if (!view || !current || view.state !== 'live' || (status !== 'running' && status !== 'paused'))
+    return null
+  const isBreak = current.kind === 'break'
+  if (!isBreak && now.blockTasks.length + now.otherOpen.length === 0) return null
+  const position = Math.max(
+    1,
+    view.blocks.slice(0, view.currentIndex + 1).filter(b => b.kind === 'focus').length,
+  )
+  const tag = `B${position}/${view.summary.focusCount}`
+  const name = isBreak ? 'Break' : now.task ? now.task.text : 'Pick a task'
+  const label = isBreak
+    ? `Break after Block ${position} of ${view.summary.focusCount}. Open plan`
+    : `Block ${position} of ${view.summary.focusCount}, ${name}. Open plan`
+  return (
+    <button
+      type='button'
+      aria-label={label}
+      data-grid-pill=''
+      className={`${styles.pill} bf-chrome-dim`}
+      style={{ '--idle-opacity': 0.55 } as React.CSSProperties}
+      onClick={() => useDeckStore.getState().openDeck('tasks', 'plan')}
+    >
+      {isBreak ? (
+        <span className={styles.pillTag} aria-hidden='true'>
+          Break · {tag}
+        </span>
+      ) : (
+        <>
+          <span className={styles.pillTag} aria-hidden='true'>
+            {tag}
+          </span>
+          <span className={styles.nowName} data-empty={!now.task || undefined} aria-hidden='true'>
+            {name}
+          </span>
+          <ChevronDown size={14} aria-hidden='true' />
+        </>
+      )}
+    </button>
+  )
+}
+
 export default function NowLine() {
+  const phone = useMediaQuery('(max-width: 639.98px)')
+  const grid = useCustomizeStore(s => selectPaintedLook(s).sessionProgress) === 'grid'
+  return phone && grid ? <GridPill /> : <NowPicker phone={phone} />
+}
+
+function NowPicker({ phone }: { phone: boolean }) {
   const now = useNow()
   const { setNow } = usePlanActions()
   const { markDone } = useTaskActions()
@@ -90,6 +147,9 @@ export default function NowLine() {
         side='bottom'
         align='center'
         sideOffset={12}
+        // ponytail: phone never flips above (it would cover the digits); height is capped instead
+        avoidCollisions={!phone}
+        collisionPadding={16}
         aria-label='Working on'
         className={`${styles.nowPick} motion-reduce:animate-none`}
         onOpenAutoFocus={event => {

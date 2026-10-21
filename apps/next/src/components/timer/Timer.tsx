@@ -9,6 +9,7 @@ import { badgeText, minutesLabel } from '~/lib/blocks/blocks'
 import { useDeckStore } from '~/store/useDeckStore'
 import { useTimerStore, useTimerStoreApi } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
+import MiniStrip from '../progress/MiniStrip'
 import NowLine, { useNowLineShown } from '../tasks/NowLine'
 import { readAdjustHintSeen } from './AdjustTray'
 import TimerUI from './TimeUI'
@@ -308,7 +309,7 @@ export default function Timer() {
                   })}
                   {notch !== null && <b className={styles.rulerNotch} />}
                 </div>
-                {nowLine ? (
+                {nowLine && !phone ? (
                   <NowLine />
                 ) : (
                   <div aria-hidden className={`${styles.hints} bf-chrome`}>
@@ -330,6 +331,17 @@ export default function Timer() {
             )}
           </div>
         </div>
+
+        {strip && deck === 'tasks' && <MiniStrip />}
+
+        {phone && !strip && !ended && (
+          <div
+            className={styles.phoneNow}
+            style={{ '--digit-size': mobileFontSize } as DigitsStyle}
+          >
+            <NowLine />
+          </div>
+        )}
 
         <div
           aria-hidden

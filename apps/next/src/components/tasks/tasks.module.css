@@ -732,6 +732,55 @@ div.add {
   color: color-mix(in srgb, var(--fg) 45%, transparent);
 }
 
+/* Phone (< 640px) */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 44px;
+  max-width: calc(100vw - 32px);
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  white-space: nowrap;
+  color: var(--fg);
+}
+
+.pill:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.pillTag {
+  flex: none;
+  font: 600 11px / 1 var(--font-mono);
+  color: hsl(var(--muted-foreground));
+}
+
+.pill > svg {
+  flex: none;
+}
+
+@media (max-width: 639.98px) {
+  .nowLine {
+    max-width: calc(100vw - 32px);
+  }
+
+  .nowName {
+    min-width: 0;
+    max-width: calc(100vw - 160px);
+  }
+
+  .pill .nowName {
+    color: var(--fg);
+  }
+
+  .pill .nowName[data-empty] {
+    color: color-mix(in srgb, var(--fg) 45%, transparent);
+  }
+}
+
 .nowPick {
   --panel-surface: color-mix(in srgb, var(--bg-solid), #fff 5%);
   --panel-soft: rgb(255 255 255 / 0.05);
@@ -883,4 +932,10 @@ div.add {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--panel-muted);
+}
+
+@media (hover: none) {
+  .pickRow {
+    min-height: 44px;
+  }
 }
