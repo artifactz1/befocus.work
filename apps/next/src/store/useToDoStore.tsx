@@ -1,9 +1,17 @@
 'use client'
 
 import type { Task } from '@repo/types/tasks'
-import { createContext, type ReactNode, useContext, useRef } from 'react'
+import { createContext, type ReactNode, useContext, useEffect, useRef } from 'react'
+import { toast } from 'sonner'
 import { useStore } from 'zustand/react'
 import { createStore } from 'zustand/vanilla'
+import { defaultStorage, readStored, writeStored } from '~/lib/storage/browser-storage'
+import {
+  GUEST_TASKS_KEY,
+  guestTasksSchema,
+  parseGuestTasks,
+  toGuestTasks,
+} from '~/lib/tasks/tasks-storage'
 
 export type TasksMode = 'guest' | 'account'
 
@@ -38,6 +46,29 @@ export function createTasksStore({ mode, tasks }: { mode: TasksMode; tasks: Task
 
 type TasksStoreApi = ReturnType<typeof createTasksStore>
 
+let warned = false
+function warnStorageOnce() {
+  if (warned) return
+  warned = true
+  toast("This browser isn't saving your tasks. Private browsing can block storage.")
+}
+
+// Guest only: read once after mount, then write on every change. Hydrating first means the
+// empty initial state never overwrites saved tasks.
+function useGuestPersistence(store: TasksStoreApi) {
+  useEffect(() => {
+    if (store.getState().mode !== 'guest') return
+    if (!defaultStorage()) warnStorageOnce()
+    store.getState().hydrateTasks(parseGuestTasks(readStored(GUEST_TASKS_KEY, guestTasksSchema)))
+    let last = store.getState().tasks
+    return store.subscribe(state => {
+      if (state.tasks === last) return
+      last = state.tasks
+      if (!writeStored(GUEST_TASKS_KEY, toGuestTasks(state.tasks))) warnStorageOnce()
+    })
+  }, [store])
+}
+
 const TasksStoreContext = createContext<TasksStoreApi | undefined>(undefined)
 
 export function TasksStoreProvider({
@@ -51,6 +82,7 @@ export function TasksStoreProvider({
 }) {
   const ref = useRef<TasksStoreApi | null>(null)
   if (!ref.current) ref.current = createTasksStore({ mode, tasks: initialTasks })
+  useGuestPersistence(ref.current)
   return <TasksStoreContext.Provider value={ref.current}>{children}</TasksStoreContext.Provider>
 }
 
