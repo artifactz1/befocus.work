@@ -1,69 +1,65 @@
-import type { Task } from '@repo/types/tasks'
-import { create } from 'zustand'
+'use client'
 
-interface TodoStore {
-  addMode: boolean
-  toggleAdd: () => void
-  tasks: Task[]
-  addTask: (text: string) => void
-  toggleTask: (id: number) => void
-  toggleEditMode: (id: number) => void
-  editTask: (id: number, newText: string) => void
-  removeTask: (id: number) => void
-  archiveTask: (id: number) => void
-  setTasks: (tasks: Task[]) => void
+import type { Task } from '@repo/types/tasks'
+import { createContext, type ReactNode, useContext, useRef } from 'react'
+import { useStore } from 'zustand/react'
+import { createStore } from 'zustand/vanilla'
+
+export type TasksMode = 'guest' | 'account'
+
+interface TasksState {
+  mode: TasksMode
+  tasks: Task[] // newest first
+  loadState: 'ready' | 'error'
+  hydrateTasks: (tasks: Task[]) => void
+  insertTask: (task: Task) => void
+  patchTask: (id: string, patch: Partial<Omit<Task, 'id'>>) => void
+  replaceTaskId: (tempId: string, id: string) => void
+  dropTask: (id: string) => void
+  setLoadState: (state: 'ready' | 'error') => void
 }
 
-export const useTodoStore = create<TodoStore>(set => ({
-  addMode: false,
-  toggleAdd: () =>
-    set(state => ({
-      addMode: !state.addMode,
-    })),
-  tasks: [],
-  addTask: text =>
-    set(state => ({
-      tasks: [
-        {
-          id: Date.now(),
-          text,
-          completed: false,
-          editMode: false,
-          archived: false,
-        },
-        ...state.tasks,
-      ],
-    })),
-  toggleTask: id =>
-    set(state => ({
-      tasks: state.tasks.map(task =>
-        task.id === id ? { ...task, completed: !task.completed } : task,
-      ),
-    })),
-  toggleEditMode: (
-    id, // <-- Toggles edit mode for a specific task
-  ) =>
-    set(state => ({
-      tasks: state.tasks.map(task =>
-        task.id === id ? { ...task, editMode: !task.editMode } : task,
-      ),
-    })),
-  editTask: (
-    id,
-    newText, // <-- Edits the task text
-  ) =>
-    set(state => ({
-      tasks: state.tasks.map(task => (task.id === id ? { ...task, text: newText } : task)),
-    })),
-  removeTask: id =>
-    set(state => ({
-      tasks: state.tasks.filter(task => task.id !== id),
-    })),
-  archiveTask: (id: number) =>
-    set(state => ({
-      tasks: state.tasks.map(task =>
-        task.id === id ? { ...task, archived: !task.archived } : task,
-      ),
-    })),
-  setTasks: tasks => set({ tasks }),
-}))
+// Per-request (never module-level) so one user's tasks cannot leak into another server render.
+export function createTasksStore({ mode, tasks }: { mode: TasksMode; tasks: Task[] | null }) {
+  return createStore<TasksState>()(set => ({
+    mode,
+    tasks: tasks ?? [],
+    loadState: 'ready',
+    hydrateTasks: next => set({ tasks: next, loadState: 'ready' }),
+    insertTask: task => set(s => ({ tasks: [task, ...s.tasks] })),
+    patchTask: (id, patch) =>
+      set(s => ({ tasks: s.tasks.map(t => (t.id === id ? { ...t, ...patch } : t)) })),
+    replaceTaskId: (tempId, id) =>
+      set(s => ({ tasks: s.tasks.map(t => (t.id === tempId ? { ...t, id } : t)) })),
+    dropTask: id => set(s => ({ tasks: s.tasks.filter(t => t.id !== id) })),
+    setLoadState: loadState => set({ loadState }),
+  }))
+}
+
+type TasksStoreApi = ReturnType<typeof createTasksStore>
+
+const TasksStoreContext = createContext<TasksStoreApi | undefined>(undefined)
+
+export function TasksStoreProvider({
+  mode,
+  initialTasks,
+  children,
+}: {
+  mode: TasksMode
+  initialTasks: Task[] | null
+  children: ReactNode
+}) {
+  const ref = useRef<TasksStoreApi | null>(null)
+  if (!ref.current) ref.current = createTasksStore({ mode, tasks: initialTasks })
+  return <TasksStoreContext.Provider value={ref.current}>{children}</TasksStoreContext.Provider>
+}
+
+export function useTasksStoreApi() {
+  const store = useContext(TasksStoreContext)
+  if (!store) throw new Error('useTasksStoreApi must be used within TasksStoreProvider')
+  return store
+}
+
+export function useTasksStore<T>(selector: (state: TasksState) => T): T {
+  return useStore(useTasksStoreApi(), selector)
+}

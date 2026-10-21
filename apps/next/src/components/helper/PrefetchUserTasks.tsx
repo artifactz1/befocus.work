@@ -2,20 +2,17 @@
 
 import { useEffect } from 'react'
 import { useUserTasks } from '~/hooks/useTasks'
-import { useTodoStore } from '~/store/useToDoStore'
+import { useTasksStoreApi } from '~/store/useToDoStore'
 
 export default function PrefetchUserTasks() {
   const { refetch } = useUserTasks()
-  const { setTasks } = useTodoStore()
+  const store = useTasksStoreApi()
 
   useEffect(() => {
     refetch().then(result => {
-      if (result.data) {
-        // console.log('FETCHED DATA ========', result.data)
-        setTasks(result.data)
-      }
+      if (result.data) store.getState().hydrateTasks(result.data)
     })
-  }, [refetch, setTasks])
+  }, [refetch, store])
 
   return null // no UI
 }
