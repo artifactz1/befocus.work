@@ -1,5 +1,5 @@
 // Pure plan rules: seed, add, remove, nudge, derived clock times, copy. No React or DOM here.
-import { PLAN_LIMITS, type PlanBlock } from '@repo/types/plan'
+import { PLAN_LIMITS, type PlanBlock, type TaskLink } from '@repo/types/plan'
 
 type NewId = () => string
 const defaultId: NewId = () => crypto.randomUUID()
@@ -110,4 +110,26 @@ export function planSummary(blocks: PlanBlock[]): string {
   const n = focusCount(blocks)
   const total = blocks.reduce((sum, b) => sum + b.minutes, 0)
   return `${n} ${n === 1 ? 'block' : 'blocks'} · ${formatDuration(total)}`
+}
+
+/** Plans a task in one block (or in none), unplanning it everywhere else. Other tasks are untouched. */
+export function planTask(links: TaskLink[], taskId: string, blockId: string | null): TaskLink[] {
+  const next = links.map(l =>
+    l.taskId === taskId && l.blockId !== blockId && l.planned ? { ...l, planned: false } : l,
+  )
+  if (blockId === null) return next
+  const existing = next.findIndex(l => l.taskId === taskId && l.blockId === blockId)
+  if (existing >= 0) return next.map((l, i) => (i === existing ? { ...l, planned: true } : l))
+  return [
+    ...next,
+    {
+      blockId,
+      taskId,
+      planned: true,
+      worked: false,
+      completed: false,
+      workedAt: null,
+      completedAt: null,
+    },
+  ]
 }

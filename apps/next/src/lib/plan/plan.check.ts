@@ -8,6 +8,7 @@ import {
   formatDuration,
   nudgeBlock,
   planSummary,
+  planTask,
   removeBlock,
   seedFromSettings,
   type TimedBlock,
@@ -120,5 +121,41 @@ assert.ok(bad([dup, b('', 'break', 5), dup]), 'duplicate ids')
 assert.ok(bad(seedFromSettings({ ...settings, sessions: 17 }, newId)), '17 focus')
 for (const m of [3, 95, 7.5]) assert.ok(bad([b('', 'focus', m)]), `focus ${m}`)
 assert.equal(planBlocksSchema.safeParse([b('', 'focus', 7)]).success, true)
+
+// planTask: move keeps worked/completed, unplan-all adds nothing, other tasks untouched
+const L = (taskId: string, blockId: string, planned = true) => ({
+  blockId,
+  taskId,
+  planned,
+  worked: true,
+  completed: false,
+  workedAt: null,
+  completedAt: null,
+})
+const start = [L('t1', 'b1'), L('t2', 'b1')]
+const moved = planTask(start, 't1', 'b2')
+assert.equal(moved.length, 3)
+assert.deepEqual(moved[0], { ...L('t1', 'b1'), planned: false })
+assert.equal(moved[1], start[1])
+assert.deepEqual(at(moved, 2), {
+  blockId: 'b2',
+  taskId: 't1',
+  planned: true,
+  worked: false,
+  completed: false,
+  workedAt: null,
+  completedAt: null,
+})
+const back = planTask(moved, 't1', 'b1')
+assert.equal(back.length, 3)
+assert.equal(back.filter(l => l.taskId === 't1' && l.planned).length, 1)
+assert.equal(at(back, 0).planned, true)
+const none = planTask(moved, 't1', null)
+assert.equal(none.length, 3)
+assert.equal(
+  none.some(l => l.taskId === 't1' && l.planned),
+  false,
+)
+assert.equal(planTask(start, 't9', null).length, 2)
 
 console.log('plan.check OK')
