@@ -1,7 +1,8 @@
 'use client'
 
 import type { CSSProperties } from 'react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useEndedCues } from '~/hooks/useEndedCues'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useTimerKeyboard } from '~/hooks/useTimerKeyboard'
 import { useSoundsStore } from '~/store/useSoundsStore'
@@ -36,8 +37,6 @@ function DesktopDigits({
 }
 
 export default function Timer() {
-  const alarmUrl = useSoundsStore(s => s.sounds[s.alarmId]?.url)
-  const alarmVolume = useSoundsStore(s => s.sounds[s.alarmId]?.volume ?? 0.5)
   // Above the record sheet (under 1024px) the timer is one 64px line, as on the board.
   const roomOpen = useSoundsStore(s => s.roomOpen)
   const narrow = useMediaQuery('(max-width: 1023.98px)')
@@ -51,14 +50,12 @@ export default function Timer() {
   const [minutes, setMinutes] = useState<number>(timeLeft / 60)
   const [seconds, setSeconds] = useState<number>(0)
   const isLandscape = useIsLandscape()
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-
   useTimerKeyboard()
+  useEndedCues()
 
   const workerRef = useRef<Worker | null>(null)
 
   useEffect(() => {
-    audioRef.current = new Audio('sounds/public_sounds_alarm1.mp3')
     const worker = new Worker(new URL('../../lib/timerWorker', import.meta.url))
     workerRef.current = worker
     worker.onmessage = e => {
@@ -83,41 +80,6 @@ export default function Timer() {
       workerRef.current?.postMessage({ command: 'stop' })
     }
   }, [isRunning])
-
-  useEffect(() => {
-    if (alarmUrl && audioRef.current) {
-      audioRef.current.src = alarmUrl
-      audioRef.current.load()
-    }
-  }, [alarmUrl])
-
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = alarmVolume
-  }, [alarmVolume])
-
-  const playAlarm = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(error => {
-        console.error('Error playing audio:', error)
-      })
-    }
-  }, [])
-
-  const stopAlarm = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause()
-      audioRef.current.currentTime = 0
-    }
-  }, [])
-
-  const prevStatus = useRef(status)
-  useEffect(() => {
-    if (prevStatus.current !== status) {
-      if (status === 'ended') playAlarm()
-      else if (prevStatus.current === 'ended') stopAlarm()
-      prevStatus.current = status
-    }
-  }, [status, playAlarm, stopAlarm])
 
   useEffect(() => {
     const mins = Math.floor(timeLeft / 60)
