@@ -1,7 +1,7 @@
 // Runnable self-check for guest task parsing (no test runner exists in this repo).
 // Run with: bun run src/lib/tasks/tasks-storage.check.ts (cwd apps/next)
 import assert from 'node:assert/strict'
-import { parseGuestTasks, toGuestTasks } from './tasks-storage'
+import { parseGuestPlan, parseGuestTasks, toGuestPlan, toGuestTasks } from './tasks-storage'
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`
 const task = (n: number, over: object = {}) => ({
@@ -43,5 +43,45 @@ assert.deepEqual(
 )
 
 assert.deepEqual(parseGuestTasks(toGuestTasks(valid)), valid, 'round trip')
+
+// Plan
+const plan = {
+  sessionId: id(100),
+  wentLive: false,
+  blocks: [
+    { id: id(1), kind: 'focus' as const, minutes: 25 },
+    { id: id(2), kind: 'break' as const, minutes: 5 },
+    { id: id(3), kind: 'focus' as const, minutes: 25 },
+  ],
+}
+const link = (blockId: string, over: object = {}) => ({
+  blockId,
+  taskId: id(50),
+  planned: true,
+  worked: false,
+  completed: false,
+  workedAt: null,
+  completedAt: null,
+  ...over,
+})
+const links = [link(id(1)), link(id(3))]
+assert.deepEqual(parseGuestPlan({ version: 1, plan, links }), { plan, links }, 'valid plan')
+for (const bad of [
+  null,
+  'x',
+  {},
+  { version: 2, plan, links },
+  { version: 1, plan: { ...plan, blocks: [plan.blocks[1]] }, links },
+]) {
+  assert.deepEqual(parseGuestPlan(bad), { plan: null, links: [] }, 'rejects garbage plan')
+}
+assert.deepEqual(
+  parseGuestPlan({ version: 1, plan, links: [link(id(1)), link(id(99)), { x: 1 }] }).links,
+  [link(id(1))],
+  'unknown-block and invalid links dropped',
+)
+const manyLinks = Array.from({ length: 600 }, () => link(id(1)))
+assert.equal(parseGuestPlan({ version: 1, plan, links: manyLinks }).links.length, 512, 'links cap')
+assert.deepEqual(parseGuestPlan(toGuestPlan(plan, links)), { plan, links }, 'plan round trip')
 
 console.log('tasks-storage.check OK')

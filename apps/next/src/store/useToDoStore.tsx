@@ -1,5 +1,6 @@
 'use client'
 
+import type { TaskLink, TaskPlan } from '@repo/types/plan'
 import type { Task } from '@repo/types/tasks'
 import { createContext, type ReactNode, useContext, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
@@ -25,10 +26,30 @@ interface TasksState {
   replaceTaskId: (tempId: string, id: string) => void
   dropTask: (id: string) => void
   setLoadState: (state: 'ready' | 'error') => void
+  plan: TaskPlan | null
+  links: TaskLink[]
+  planLoad: 'ready' | 'error'
+  // bumped by every setPlan; savedRevision is the revision the server is known to hold
+  planRevision: number
+  savedRevision: number
+  setPlan: (plan: TaskPlan) => void
+  setLinks: (links: TaskLink[]) => void
+  markSaved: (revision: number) => void
+  markUnsaved: () => void
 }
 
+export type InitialPlan = { plan: TaskPlan | null; links: TaskLink[] } | null
+
 // Per-request (never module-level) so one user's tasks cannot leak into another server render.
-export function createTasksStore({ mode, tasks }: { mode: TasksMode; tasks: Task[] | null }) {
+export function createTasksStore({
+  mode,
+  tasks,
+  initialPlan = null,
+}: {
+  mode: TasksMode
+  tasks: Task[] | null
+  initialPlan?: InitialPlan
+}) {
   return createStore<TasksState>()(set => ({
     mode,
     tasks: tasks ?? [],
@@ -42,6 +63,17 @@ export function createTasksStore({ mode, tasks }: { mode: TasksMode; tasks: Task
       set(s => ({ tasks: s.tasks.map(t => (t.id === tempId ? { ...t, id } : t)) })),
     dropTask: id => set(s => ({ tasks: s.tasks.filter(t => t.id !== id) })),
     setLoadState: loadState => set({ loadState }),
+    plan: initialPlan?.plan ?? null,
+    links: initialPlan?.links ?? [],
+    // a failed server fetch arrives as null; seeding then would overwrite a plan we could not read
+    planLoad: mode === 'account' && initialPlan === null ? 'error' : 'ready',
+    planRevision: 0,
+    // server and local agree only when the server sent a plan
+    savedRevision: initialPlan?.plan ? 0 : -1,
+    setPlan: plan => set(s => ({ plan, planRevision: s.planRevision + 1 })),
+    setLinks: links => set({ links }),
+    markSaved: revision => set(s => ({ savedRevision: Math.max(s.savedRevision, revision) })),
+    markUnsaved: () => set({ savedRevision: -1 }),
   }))
 }
 
@@ -75,14 +107,16 @@ const TasksStoreContext = createContext<TasksStoreApi | undefined>(undefined)
 export function TasksStoreProvider({
   mode,
   initialTasks,
+  initialPlan = null,
   children,
 }: {
   mode: TasksMode
   initialTasks: Task[] | null
+  initialPlan?: InitialPlan
   children: ReactNode
 }) {
   const ref = useRef<TasksStoreApi | null>(null)
-  if (!ref.current) ref.current = createTasksStore({ mode, tasks: initialTasks })
+  if (!ref.current) ref.current = createTasksStore({ mode, tasks: initialTasks, initialPlan })
   useGuestPersistence(ref.current)
   return <TasksStoreContext.Provider value={ref.current}>{children}</TasksStoreContext.Provider>
 }

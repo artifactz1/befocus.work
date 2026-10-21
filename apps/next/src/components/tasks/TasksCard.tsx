@@ -7,6 +7,7 @@ import { X } from 'lucide-react'
 import { type KeyboardEvent, useRef } from 'react'
 import { Drawer as DrawerPrimitive } from 'vaul'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
+import { usePlanBootstrap } from '~/hooks/usePlan'
 import { useDeckCard, useDeckStore } from '~/store/useDeckStore'
 import records from '../records/records.module.css'
 import ListTab from './ListTab'
@@ -38,6 +39,7 @@ export default function TasksCard() {
     triggerSelector: '[data-tasks-trigger]',
     rerunFocusOn: isDesktop,
   })
+  usePlanBootstrap()
   const reducedMotion = useReducedMotion()
   const contentRef = useRef<HTMLDivElement>(null)
 
