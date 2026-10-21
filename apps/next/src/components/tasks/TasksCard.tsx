@@ -8,7 +8,7 @@ import { X } from 'lucide-react'
 import { type KeyboardEvent, useRef } from 'react'
 import { Drawer as DrawerPrimitive } from 'vaul'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
-import { usePlanBootstrap } from '~/hooks/usePlan'
+import { usePlanBootstrap, usePlanSync } from '~/hooks/usePlan'
 import { useDeckCard, useDeckStore } from '~/store/useDeckStore'
 import { useTasksStore } from '~/store/useToDoStore'
 import records from '../records/records.module.css'
@@ -75,6 +75,7 @@ export default function TasksCard() {
     rerunFocusOn: isDesktop,
   })
   usePlanBootstrap()
+  usePlanSync()
   const reducedMotion = useReducedMotion()
   const contentRef = useRef<HTMLDivElement>(null)
 

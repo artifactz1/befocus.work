@@ -1,10 +1,22 @@
 'use client'
 
-import type { PlanBlock } from '@repo/types/plan'
-import { useEffect } from 'react'
+import type { PlanBlock, TaskLink } from '@repo/types/plan'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
-import { addFocusBlock, nudgeBlock, planTask, removeBlock, seedFromSettings } from '~/lib/plan/plan'
+import { isLive } from '~/lib/blocks/blocks'
+import {
+  addFocusBlock,
+  buildSessionView,
+  nudgeBlock,
+  planTask,
+  reconcilePlan,
+  removeBlock,
+  reseedFromSettings,
+  type SessionView,
+  seedFromSettings,
+  toSeed,
+} from '~/lib/plan/plan'
 import { defaultStorage, readStored, writeStored } from '~/lib/storage/browser-storage'
 import { failToast, whenTaskSaved } from '~/lib/tasks/task-writes'
 import {
@@ -13,7 +25,7 @@ import {
   parseGuestPlan,
   toGuestPlan,
 } from '~/lib/tasks/tasks-storage'
-import { useTimerStoreApi } from '~/store/useTimerStore'
+import { useTimerStore, useTimerStoreApi } from '~/store/useTimerStore'
 import { useTasksStore, useTasksStoreApi } from '~/store/useToDoStore'
 
 type TasksApi = ReturnType<typeof useTasksStoreApi>
@@ -131,7 +143,13 @@ export function usePlanBootstrap() {
   }, [store, timer, planLoad])
 }
 
-type LinkWrite = { blockId: string; taskId: string; planned: boolean }
+type LinkWrite = {
+  blockId: string
+  taskId: string
+  planned?: boolean
+  worked?: boolean
+  completed?: boolean
+}
 
 const focusNumber = (store: TasksApi, blockId: string) => {
   const focus = store.getState().plan?.blocks.filter(b => b.kind === 'focus') ?? []
@@ -149,7 +167,7 @@ async function writeLinks(store: TasksApi, writes: LinkWrite[]) {
       writes.map(async w => {
         const taskId = await whenTaskSaved(w.taskId)
         if (!taskId) throw new Error('task create failed')
-        return { blockId: w.blockId, taskId: Number(taskId), planned: w.planned }
+        return { ...w, taskId: Number(taskId) }
       }),
     )
     const put = () => api.user['task-links'].$put({ json: { links } })
@@ -178,6 +196,12 @@ export function usePlanActions() {
   const store = useTasksStoreApi()
   const timer = useTimerStoreApi()
 
+  // Index of the last block that can no longer change (done or current); -1 while planning.
+  const lockedUpTo = (blocks: PlanBlock[]) => {
+    const t = timer.getState()
+    return isLive(t) ? blocks.findIndex(b => b.id === t.currentBlockId) : -1
+  }
+
   const edit = (blocks: PlanBlock[]) => {
     const { plan, setPlan } = store.getState()
     if (!plan) return
@@ -188,7 +212,8 @@ export function usePlanActions() {
   return {
     addFocus: () => {
       const plan = store.getState().plan
-      if (!plan) return
+      // planning only (the live Session card has no add row)
+      if (!plan || isLive(timer.getState())) return
       const { workDuration, breakDuration } = timer.getState()
       edit(
         addFocusBlock(plan.blocks, {
@@ -202,6 +227,9 @@ export function usePlanActions() {
       if (!plan) return
       const { blocks, removedIndex } = removeBlock(plan.blocks, id)
       if (removedIndex < 0) return
+      const locked = lockedUpTo(plan.blocks)
+      const survivors = new Set(blocks.map(b => b.id))
+      if (plan.blocks.some((b, i) => !survivors.has(b.id) && i <= locked)) return
       const number = plan.blocks.slice(0, removedIndex + 1).filter(b => b.kind === 'focus').length
       const kept = new Set(blocks.map(b => b.id))
       // Tasks of the removed block go unplanned locally; the plan save clears them on the server.
@@ -267,11 +295,251 @@ export function usePlanActions() {
     },
     nudge: (id: string, delta: number) => {
       const plan = store.getState().plan
-      if (plan) edit(nudgeBlock(plan.blocks, id, delta))
+      if (!plan || plan.blocks.findIndex(b => b.id === id) <= lockedUpTo(plan.blocks)) return
+      edit(nudgeBlock(plan.blocks, id, delta))
     },
     /** Resolves once the server holds the current local plan; rejects when the PUT fails. */
     ensurePlanSaved: () => ensureSaved(store),
     /** The next ensurePlanSaved PUTs again (09-06 retries once on 404 "No open plan"). */
     markPlanUnsaved: () => store.getState().markUnsaved(),
+  }
+}
+
+type TimerApi = ReturnType<typeof useTimerStoreApi>
+
+const CLOSE_FAILED = "Couldn't close your plan. Check your connection and try again."
+
+const sameSeed = (
+  a: { id: string; plannedSeconds: number }[],
+  b: { id: string; plannedSeconds: number }[],
+) =>
+  a.length === b.length &&
+  a.every((x, i) => x.id === b[i]?.id && x.plannedSeconds === b[i]?.plannedSeconds)
+
+// Closes the finished or reset session's plan and opens a fresh one for the timer's new session.
+// A failed DELETE keeps the old plan: a PUT after it would clear `planned` on the old links.
+const closing = new WeakSet<TasksApi>()
+async function closePlan(store: TasksApi, timer: TimerApi) {
+  if (closing.has(store)) return
+  closing.add(store)
+  try {
+    if (store.getState().mode === 'account') {
+      try {
+        const res = await api.user.plan.$delete()
+        if (!res.ok) throw new Error('plan close failed')
+      } catch {
+        toast(CLOSE_FAILED, {
+          action: { label: 'Try again', onClick: () => void closePlan(store, timer) },
+        })
+        return
+      }
+    }
+    const { sessionId, sessions, workDuration, breakDuration } = timer.getState()
+    const s = store.getState()
+    s.markUnsaved()
+    s.setLinks([])
+    s.setPlan({
+      sessionId,
+      wentLive: false,
+      blocks: seedFromSettings({
+        sessions,
+        workMinutes: minutes(workDuration),
+        breakMinutes: minutes(breakDuration),
+      }),
+    })
+    save(store)
+  } finally {
+    closing.delete(store)
+  }
+}
+
+/**
+ * Mount once (TasksCard): keeps the plan and the timer's block list in step. The plan seeds the
+ * timer before the start and its ahead blocks while live; the plan goes live with the first block
+ * and closes when the timer's session id changes (finish or reset).
+ */
+export function usePlanSync() {
+  const store = useTasksStoreApi()
+  const timer = useTimerStoreApi()
+  const planLoad = useTasksStore(s => s.planLoad)
+
+  useEffect(() => {
+    if (store.getState().mode === 'account' && planLoad === 'error') return
+
+    // The plan is the source for the timer's list; compare first so a timer update never loops.
+    const seedTimer = () => {
+      const plan = store.getState().plan
+      const t = timer.getState()
+      if (!plan || plan.sessionId !== t.sessionId) return
+      const seed = toSeed(plan)
+      const at = t.blocks.findIndex(b => b.id === t.currentBlockId)
+      const live = isLive(t)
+      const cut = live ? at + 1 : 0 // live: done and current blocks stay as they are
+      if (sameSeed(t.blocks.slice(cut), seed.slice(cut))) return
+      timer.getState().seedBlocks({ sessionId: plan.sessionId, blocks: seed })
+    }
+
+    let last = timer.getState()
+    const onTimer = () => {
+      const t = timer.getState()
+      const prev = last
+      last = t
+      const s = store.getState()
+      let plan = s.plan
+      if (!plan) return
+
+      if (t.sessionId !== prev.sessionId || plan.sessionId !== t.sessionId) {
+        const action = reconcilePlan(plan, s.links, t)
+        if (action === 'close') return void closePlan(store, timer)
+        if (action === 'adopt') {
+          plan = { ...plan, sessionId: t.sessionId }
+          s.setPlan(plan)
+          save(store)
+        }
+      }
+      if (plan.sessionId !== t.sessionId) return
+
+      // Session settings changed before the start: the plan follows them.
+      const changed =
+        t.sessions !== prev.sessions ||
+        t.workDuration !== prev.workDuration ||
+        t.breakDuration !== prev.breakDuration
+      if (changed && !plan.wentLive && !isLive(t)) {
+        const blocks = reseedFromSettings(plan.blocks, {
+          sessions: t.sessions,
+          workMinutes: minutes(t.workDuration),
+          breakMinutes: minutes(t.breakDuration),
+        })
+        const kept = new Set(blocks.map(b => b.id))
+        // dropped blocks release their tasks locally; the plan save clears them on the server
+        s.setLinks(
+          s.links.map(l => (l.planned && !kept.has(l.blockId) ? { ...l, planned: false } : l)),
+        )
+        plan = { ...plan, blocks }
+        s.setPlan(plan)
+        save(store)
+      }
+
+      if (!plan.wentLive && t.blocks.some(b => b.startedAt !== null)) {
+        s.setPlan({ ...plan, wentLive: true })
+        save(store)
+      }
+
+      if (t.currentBlockId !== prev.currentBlockId && t.sessionId === prev.sessionId) {
+        const block = t.blocks.find(b => b.id === t.currentBlockId)
+        if (block && t.status === 'running') {
+          const focus = t.blocks.filter(b => b.kind === 'focus')
+          s.announce(
+            block.kind === 'break'
+              ? 'Break started'
+              : `Block ${focus.findIndex(b => b.id === block.id) + 1} of ${focus.length} started`,
+          )
+        }
+      }
+      seedTimer()
+    }
+
+    // mount: a stored plan from an earlier load is adopted or closed; then align the lists
+    onTimer()
+    const offTimer = timer.subscribe(onTimer)
+    const offTasks = store.subscribe((state, prev) => {
+      if (state.plan !== prev.plan) seedTimer()
+    })
+    return () => {
+      offTimer()
+      offTasks()
+    }
+  }, [store, timer, planLoad])
+}
+
+// Shared tick: every second while a block runs, every minute otherwise (and on tab focus).
+function useNow(ms: number) {
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const tick = () => setNow(Date.now())
+    tick()
+    const id = setInterval(tick, ms)
+    const onVisible = () => document.visibilityState === 'visible' && tick()
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      clearInterval(id)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [ms])
+  return now
+}
+
+/** The one live description of the session (column, progress slot, now line). Null until a plan exists. */
+export function useSessionView(): SessionView | null {
+  const plan = useTasksStore(s => s.plan)
+  const links = useTasksStore(s => s.links)
+  const tasks = useTasksStore(s => s.tasks)
+  const blocks = useTimerStore(s => s.blocks)
+  const currentBlockId = useTimerStore(s => s.currentBlockId)
+  const status = useTimerStore(s => s.status)
+  const timeLeft = useTimerStore(s => s.timeLeft)
+  const now = useNow(status === 'running' ? 1000 : 60_000)
+  return useMemo(
+    () =>
+      plan
+        ? buildSessionView({
+            plan,
+            storeBlocks: blocks,
+            currentBlockId,
+            paused: status === 'paused',
+            timeLeft,
+            links,
+            tasks,
+            now,
+          })
+        : null,
+    [plan, blocks, currentBlockId, status, timeLeft, links, tasks, now],
+  )
+}
+
+/**
+ * Live completion rule: while a focus block runs or is paused, ticking any task writes a link on
+ * the current block (the task moves into it). Planning, breaks and an ended session write none.
+ */
+export async function writeCompletion(
+  store: TasksApi,
+  timer: TimerApi,
+  taskId: string,
+  checked: boolean,
+) {
+  const t = timer.getState()
+  const s = store.getState()
+  const current = t.blocks.find(b => b.id === t.currentBlockId)
+  if (current?.kind !== 'focus' || (t.status !== 'running' && t.status !== 'paused')) return
+  if (!s.plan || s.plan.sessionId !== t.sessionId || !s.plan.blocks.some(b => b.id === current.id))
+    return
+  const blockId = current.id
+  const task = s.tasks.find(x => x.id === taskId)
+  const previous = s.links.filter(l => l.taskId === taskId)
+  const stamp = new Date().toISOString()
+  const mark = (fn: (l: TaskLink) => TaskLink) => (links: TaskLink[]) =>
+    links.map(l => (l.taskId === taskId && l.blockId === blockId ? fn(l) : l))
+  s.setLinks(
+    checked
+      ? mark(l => ({
+          ...l,
+          worked: true,
+          completed: true,
+          workedAt: l.workedAt ?? stamp,
+          completedAt: stamp,
+        }))(planTask(s.links, taskId, blockId))
+      : mark(l => ({ ...l, completed: false, completedAt: null }))(s.links),
+  )
+  if (s.mode === 'guest') return
+  try {
+    await writeLinks(store, [
+      checked
+        ? { blockId, taskId, completed: true, worked: true, planned: true }
+        : { blockId, taskId, completed: false },
+    ])
+  } catch {
+    const rest = store.getState().links.filter(l => l.taskId !== taskId)
+    store.getState().setLinks([...rest, ...previous])
+    failToast(task?.text ?? 'task')
   }
 }

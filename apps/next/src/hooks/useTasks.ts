@@ -4,8 +4,9 @@ import { TASK_TEXT_MAX, type Task } from '@repo/types/tasks'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '~/lib/api.client'
 import { failToast, pendingCreates, whenTaskSaved } from '~/lib/tasks/task-writes'
+import { useTimerStoreApi } from '~/store/useTimerStore'
 import { useTasksStoreApi } from '~/store/useToDoStore'
-import { usePlanActions } from './usePlan'
+import { usePlanActions, writeCompletion } from './usePlan'
 
 export { whenTaskSaved }
 
@@ -32,6 +33,7 @@ export const useUserTasks = () =>
 export function useTaskActions() {
   const store = useTasksStoreApi()
   const { assignTask } = usePlanActions()
+  const timer = useTimerStoreApi()
 
   const find = (id: string) => store.getState().tasks.find(t => t.id === id)
 
@@ -107,6 +109,14 @@ export function useTaskActions() {
     toggle: (id: string) => {
       const task = find(id)
       if (task) return update(id, { completed: !task.completed })
+    },
+    /** Sets the completed flag and applies the live rule (link on the current block). */
+    completeTask: async (id: string, checked: boolean) => {
+      if (!find(id)) return
+      await Promise.all([
+        update(id, { completed: checked }),
+        writeCompletion(store, timer, id, checked),
+      ])
     },
     archive: (id: string) => {
       // an archived task leaves its block (discretion, UI-SPEC List > Archive)

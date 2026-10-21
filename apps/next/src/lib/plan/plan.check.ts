@@ -4,15 +4,19 @@ import assert from 'node:assert/strict'
 import { PLAN_LIMITS, planBlocksSchema } from '@repo/types/plan'
 import {
   addFocusBlock,
+  buildSessionView,
   deriveBlockTimes,
   formatDuration,
   nudgeBlock,
   plannedBlockNumber,
   planSummary,
   planTask,
+  reconcilePlan,
   removeBlock,
+  reseedFromSettings,
   seedFromSettings,
   type TimedBlock,
+  toSeed,
 } from './plan'
 
 let n = 0
@@ -162,5 +166,113 @@ assert.equal(planTask(start, 't9', null).length, 2)
 assert.equal(plannedBlockNumber(seed, [L('t1', at(seed, 2).id)], 't1'), 2)
 assert.equal(plannedBlockNumber(seed, [L('t1', at(seed, 2).id, false)], 't1'), null)
 assert.equal(plannedBlockNumber(seed, [L('t1', 'gone')], 't1'), null)
+
+// toSeed
+const seeded = toSeed({ blocks: seed })
+assert.equal(seeded.length, 11)
+assert.deepEqual(at(seeded, 1), { id: at(seed, 1).id, kind: 'break', plannedSeconds: 300 })
+
+// reconcilePlan: keep / adopt / close (reads only the plan and links)
+const P = (wentLive: boolean) => ({ sessionId: 's1', wentLive })
+assert.equal(reconcilePlan(P(false), [], { sessionId: 's1' }), 'keep')
+assert.equal(reconcilePlan(P(true), [], { sessionId: 's1' }), 'keep')
+assert.equal(reconcilePlan(P(false), [], { sessionId: 's2' }), 'adopt')
+assert.equal(reconcilePlan(P(true), [], { sessionId: 's2' }), 'close')
+assert.equal(reconcilePlan(P(false), [L('t1', 'b1')], { sessionId: 's2' }), 'close')
+assert.equal(
+  reconcilePlan(P(false), [{ ...L('t1', 'b1'), worked: false }], { sessionId: 's2' }),
+  'adopt',
+)
+
+// reseedFromSettings: shrink keeps the first ids, grow adds new ones
+const shrunk = reseedFromSettings(seed, { ...settings, sessions: 4 }, newId)
+assert.equal(shrunk.length, 7)
+assert.deepEqual(
+  shrunk.map(x => x.id),
+  seed.slice(0, 7).map(x => x.id),
+)
+const grown = reseedFromSettings(shrunk, { sessions: 5, workMinutes: 30, breakMinutes: 10 }, newId)
+assert.equal(grown.length, 9)
+assert.deepEqual(
+  grown.slice(0, 7).map(x => x.id),
+  shrunk.map(x => x.id),
+)
+assert.equal(new Set(grown.map(x => x.id)).size, 9)
+assert.equal(at(grown, 0).minutes, 30)
+assert.equal(planBlocksSchema.safeParse(grown).success, true)
+
+// buildSessionView
+const plan0 = { sessionId: 's1', wentLive: false, blocks: seed }
+const sb = (i: number, over: Record<string, unknown> = {}) => ({
+  id: at(seed, i).id,
+  plannedSeconds: at(seed, i).minutes * 60,
+  actualSeconds: 0,
+  addedSeconds: 0,
+  startedAt: null as number | null,
+  endedAt: null as number | null,
+  ...over,
+})
+const taskList = [
+  { id: 't1', completed: true, archived: false },
+  { id: 't2', completed: false, archived: false },
+  { id: 't3', completed: false, archived: false },
+]
+const vlinks = [
+  { ...L('t1', at(seed, 0).id), worked: true, completed: true },
+  { ...L('t2', at(seed, 2).id), worked: false },
+  { ...L('t3', at(seed, 4).id), worked: false },
+]
+const view = (storeBlocks: ReturnType<typeof sb>[], extra: Record<string, unknown> = {}) =>
+  buildSessionView({
+    plan: plan0,
+    storeBlocks,
+    currentBlockId: at(seed, 0).id,
+    paused: false,
+    timeLeft: 25 * 60,
+    links: vlinks,
+    tasks: taskList,
+    now: T0,
+    ...extra,
+  })
+const idle = view(seed.map((_, i) => sb(i)))
+assert.equal(idle.state, 'planning')
+assert.equal(idle.current, null)
+assert.ok(idle.blocks.every(x => x.state === 'ahead'))
+assert.equal(at(idle.blocks, 0).start, T0)
+assert.equal(idle.summary.plannedTasks, 3)
+
+const liveBlocks = (added: number) => [
+  sb(0, { startedAt: T0, endedAt: T0 + 25 * 60_000, actualSeconds: 1500 }),
+  sb(1, { startedAt: T0 + 25 * 60_000, endedAt: T0 + 30 * 60_000, actualSeconds: 300 }),
+  sb(2, { startedAt: T0 + 30 * 60_000, addedSeconds: added }),
+  ...seed.slice(3).map((_, i) => sb(i + 3)),
+]
+const liveView = (added: number, paused = false) =>
+  view(liveBlocks(added), {
+    currentBlockId: at(seed, 2).id,
+    timeLeft: 600 + added,
+    paused,
+    now: T0 + 45 * 60_000,
+  })
+const lv = liveView(0)
+assert.equal(lv.state, 'live')
+assert.deepEqual(
+  lv.blocks.slice(0, 4).map(x => x.state),
+  ['done', 'done', 'current', 'ahead'],
+)
+assert.equal(lv.currentIndex, 2)
+assert.equal(at(lv.blocks, 2).elapsedSeconds, 900)
+assert.equal(at(lv.blocks, 4).focusNumber, 3)
+assert.equal(lv.summary.focusElapsedSeconds, 1500 + 900)
+assert.equal(lv.summary.doneTasks, 1)
+assert.equal(lv.summary.plannedTasks, 3)
+assert.deepEqual(at(lv.blocks, 0).taskIds, ['t1'])
+assert.equal(at(lv.blocks, 2).paused, false)
+assert.equal(liveView(0, true).current?.paused, true)
+const lvAdded = liveView(300)
+assert.equal(lvAdded.summary.addedTotal, 300)
+assert.equal(at(lvAdded.blocks, 2).addedSeconds, 300)
+assert.equal(at(lvAdded.blocks, 3).start - at(lv.blocks, 3).start, 300_000)
+assert.equal(at(lvAdded.blocks, 2).elapsedSeconds, 900)
 
 console.log('plan.check OK')
