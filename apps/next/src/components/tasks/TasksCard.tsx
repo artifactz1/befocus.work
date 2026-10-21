@@ -2,6 +2,7 @@
 
 import { Drawer, DrawerPortal } from '@repo/ui/drawer'
 import { cn } from '@repo/ui/lib/utils'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/tabs'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { type KeyboardEvent, useRef } from 'react'
@@ -11,9 +12,38 @@ import { usePlanBootstrap } from '~/hooks/usePlan'
 import { useDeckCard, useDeckStore } from '~/store/useDeckStore'
 import records from '../records/records.module.css'
 import ListTab from './ListTab'
+import PlanTab from './PlanTab'
 import styles from './tasks.module.css'
 
 const EASE = [0.2, 0.7, 0.2, 1] as const
+const TAB_LIST =
+  'flex h-auto w-full justify-stretch gap-1 rounded-xl border border-[color:var(--panel-hair)] bg-[color:var(--panel-soft)] p-1'
+const TAB =
+  'flex-1 rounded-lg px-0 py-1 text-[13px] font-normal text-[color:var(--panel-muted)] data-[state=active]:bg-[color:var(--panel-lift)] data-[state=active]:text-foreground data-[state=active]:shadow-[inset_0_0_0_1px_var(--panel-hair)]'
+
+function TasksTabs() {
+  const tab = useDeckStore(s => s.tasksTab)
+  const setTab = useDeckStore(s => s.setTasksTab)
+  return (
+    <Tabs value={tab} onValueChange={v => setTab(v === 'plan' ? 'plan' : 'list')}>
+      <TabsList className={TAB_LIST}>
+        <TabsTrigger className={TAB} value='list'>
+          List
+        </TabsTrigger>
+        <TabsTrigger className={TAB} value='plan'>
+          Plan
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent className='mt-4' value='list'>
+        <ListTab />
+      </TabsContent>
+      <TabsContent className='mt-4' value='plan'>
+        <PlanTab />
+      </TabsContent>
+    </Tabs>
+  )
+}
+
 const TABBABLE_SELECTOR =
   "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])"
 
@@ -82,7 +112,7 @@ export default function TasksCard() {
           >
             <Head />
             <div className={cn(records.body, styles.body)}>
-              <ListTab />
+              <TasksTabs />
             </div>
           </motion.section>
         )}
@@ -115,7 +145,7 @@ export default function TasksCard() {
           <DrawerPrimitive.Handle preventCycle aria-hidden className={records.grab} />
           <Head />
           <div className={cn(records.body, styles.body)}>
-            <ListTab />
+            <TasksTabs />
           </div>
         </DrawerPrimitive.Content>
       </DrawerPortal>

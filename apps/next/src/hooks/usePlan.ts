@@ -13,7 +13,7 @@ import {
   toGuestPlan,
 } from '~/lib/tasks/tasks-storage'
 import { useTimerStoreApi } from '~/store/useTimerStore'
-import { useTasksStoreApi } from '~/store/useToDoStore'
+import { useTasksStore, useTasksStoreApi } from '~/store/useToDoStore'
 
 type TasksApi = ReturnType<typeof useTasksStoreApi>
 
@@ -79,10 +79,12 @@ const minutes = (seconds: number) => Math.round(seconds / 60)
 export function usePlanBootstrap() {
   const store = useTasksStoreApi()
   const timer = useTimerStoreApi()
+  // a successful retry after a failed server read flips this to 'ready' and re-runs the effect
+  const planLoad = useTasksStore(s => s.planLoad)
 
   useEffect(() => {
     const s = store.getState()
-    if (s.mode === 'account' && s.planLoad === 'error') return
+    if (s.mode === 'account' && planLoad === 'error') return
 
     if (s.mode === 'guest') {
       if (defaultStorage()) {
@@ -125,7 +127,7 @@ export function usePlanBootstrap() {
       lastLinks = state.links
       write()
     })
-  }, [store, timer])
+  }, [store, timer, planLoad])
 }
 
 export function usePlanActions() {

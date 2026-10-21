@@ -152,9 +152,21 @@ function AddRow({ empty }: { empty: boolean }) {
   )
 }
 
+export function Skeleton({ rows, height, gap }: { rows: number; height: number; gap: number }) {
+  return (
+    <div className={styles.skeletons} style={{ gap }} aria-busy='true'>
+      {Array.from({ length: rows }, (_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: static placeholders
+        <div key={i} className={styles.skeleton} style={{ height }} />
+      ))}
+    </div>
+  )
+}
+
 function LoadError() {
   const store = useTasksStoreApi()
   const { refetch, isFetching } = useUserTasks()
+  if (isFetching) return <Skeleton rows={3} height={36} gap={4} />
   return (
     <div className={styles.loadError} role='alert'>
       <span>Couldn't load your tasks.</span>

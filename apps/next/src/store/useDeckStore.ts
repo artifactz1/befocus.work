@@ -6,10 +6,14 @@ import { create } from 'zustand'
 
 export type Deck = 'records' | 'tasks' | null
 type Card = Exclude<Deck, null>
+export type TasksTab = 'list' | 'plan'
 
 interface DeckState {
   deck: Deck
-  openDeck: (card: Card) => void
+  // last-used Tasks tab, for this page load only
+  tasksTab: TasksTab
+  setTasksTab: (tab: TasksTab) => void
+  openDeck: (card: Card, tab?: TasksTab) => void
   closeDeck: () => void
   toggleDeck: (card: Card) => void
 }
@@ -17,7 +21,9 @@ interface DeckState {
 // One open-card value for the Quiet Deck: opening one card replaces the other.
 export const useDeckStore = create<DeckState>((set, get) => ({
   deck: null,
-  openDeck: card => set({ deck: card }),
+  tasksTab: 'list',
+  setTasksTab: tasksTab => set({ tasksTab }),
+  openDeck: (card, tab) => set(tab ? { deck: card, tasksTab: tab } : { deck: card }),
   closeDeck: () => set({ deck: null }),
   toggleDeck: card => set({ deck: get().deck === card ? null : card }),
 }))
