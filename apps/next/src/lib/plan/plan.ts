@@ -133,3 +133,16 @@ export function planTask(links: TaskLink[], taskId: string, blockId: string | nu
     },
   ]
 }
+
+/** 1-based number of the focus block a task is planned in, or null. */
+export function plannedBlockNumber(
+  blocks: PlanBlock[],
+  links: TaskLink[],
+  taskId: string,
+): number | null {
+  const link = links.find(l => l.taskId === taskId && l.planned)
+  if (!link) return null
+  const focus = blocks.filter(b => b.kind === 'focus')
+  const i = focus.findIndex(b => b.id === link.blockId)
+  return i < 0 ? null : i + 1
+}

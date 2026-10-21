@@ -10,6 +10,7 @@ import { Drawer as DrawerPrimitive } from 'vaul'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { usePlanBootstrap } from '~/hooks/usePlan'
 import { useDeckCard, useDeckStore } from '~/store/useDeckStore'
+import { useTasksStore } from '~/store/useToDoStore'
 import records from '../records/records.module.css'
 import ListTab from './ListTab'
 import PlanTab from './PlanTab'
@@ -24,6 +25,7 @@ const TAB =
 function TasksTabs() {
   const tab = useDeckStore(s => s.tasksTab)
   const setTab = useDeckStore(s => s.setTasksTab)
+  const announcement = useTasksStore(s => s.announcement)
   return (
     <Tabs value={tab} onValueChange={v => setTab(v === 'plan' ? 'plan' : 'list')}>
       <TabsList className={TAB_LIST}>
@@ -40,6 +42,9 @@ function TasksTabs() {
       <TabsContent className='mt-4' value='plan'>
         <PlanTab />
       </TabsContent>
+      <div className='sr-only' role='status' aria-live='polite'>
+        {announcement}
+      </div>
     </Tabs>
   )
 }

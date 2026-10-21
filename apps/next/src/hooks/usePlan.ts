@@ -4,8 +4,9 @@ import type { PlanBlock } from '@repo/types/plan'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { api } from '~/lib/api.client'
-import { addFocusBlock, nudgeBlock, removeBlock, seedFromSettings } from '~/lib/plan/plan'
+import { addFocusBlock, nudgeBlock, planTask, removeBlock, seedFromSettings } from '~/lib/plan/plan'
 import { defaultStorage, readStored, writeStored } from '~/lib/storage/browser-storage'
+import { failToast, whenTaskSaved } from '~/lib/tasks/task-writes'
 import {
   GUEST_PLAN_KEY,
   guestPlanSchema,
@@ -130,6 +131,49 @@ export function usePlanBootstrap() {
   }, [store, timer, planLoad])
 }
 
+type LinkWrite = { blockId: string; taskId: string; planned: boolean }
+
+const focusNumber = (store: TasksApi, blockId: string) => {
+  const focus = store.getState().plan?.blocks.filter(b => b.kind === 'focus') ?? []
+  return focus.findIndex(b => b.id === blockId) + 1
+}
+
+// Link writes run one at a time per store so a quick move never lands out of order.
+const linkChains = new WeakMap<TasksApi, Promise<unknown>>()
+
+/** Account mode: PUT /user/task-links after the plan and every task create have landed. */
+async function writeLinks(store: TasksApi, writes: LinkWrite[]) {
+  const run = async () => {
+    await ensureSaved(store)
+    const links = await Promise.all(
+      writes.map(async w => {
+        const taskId = await whenTaskSaved(w.taskId)
+        if (!taskId) throw new Error('task create failed')
+        return { blockId: w.blockId, taskId: Number(taskId), planned: w.planned }
+      }),
+    )
+    const put = () => api.user['task-links'].$put({ json: { links } })
+    let res = await put()
+    if (res.status === 404) {
+      // the server has no plan (deleted elsewhere): send ours again, then retry once
+      store.getState().markUnsaved()
+      await ensureSaved(store)
+      res = await put()
+    }
+    if (!res.ok) throw new Error('task link write failed')
+  }
+  const next = (linkChains.get(store) ?? Promise.resolve()).catch(() => {}).then(run)
+  linkChains.set(store, next)
+  return next
+}
+
+function ensureSaved(store: TasksApi): Promise<void> {
+  const { mode, savedRevision, planRevision } = store.getState()
+  if (mode === 'guest') return Promise.resolve()
+  if (saverOf(store).timer !== null || savedRevision < planRevision) return enqueue(store)
+  return Promise.resolve()
+}
+
 export function usePlanActions() {
   const store = useTasksStoreApi()
   const timer = useTimerStoreApi()
@@ -154,29 +198,79 @@ export function usePlanActions() {
       )
     },
     removeFocus: (id: string) => {
-      const plan = store.getState().plan
+      const { plan, links } = store.getState()
       if (!plan) return
       const { blocks, removedIndex } = removeBlock(plan.blocks, id)
       if (removedIndex < 0) return
       const number = plan.blocks.slice(0, removedIndex + 1).filter(b => b.kind === 'focus').length
+      const kept = new Set(blocks.map(b => b.id))
+      // Tasks of the removed block go unplanned locally; the plan save clears them on the server.
+      const released = links.filter(l => l.planned && !kept.has(l.blockId))
+      store
+        .getState()
+        .setLinks(links.map(l => (released.includes(l) ? { ...l, planned: false } : l)))
       edit(blocks)
       toast(`Block ${number} removed`, {
         duration: 5000,
-        action: { label: 'Undo', onClick: () => edit(plan.blocks) },
+        action: {
+          label: 'Undo',
+          onClick: async () => {
+            edit(plan.blocks)
+            // a task the user has since planned elsewhere stays where it is
+            const back = released.filter(
+              l => !store.getState().links.some(x => x.taskId === l.taskId && x.planned),
+            )
+            for (const l of back) {
+              store.getState().setLinks(planTask(store.getState().links, l.taskId, l.blockId))
+            }
+            if (store.getState().mode === 'guest' || back.length === 0) return
+            try {
+              await writeLinks(
+                store,
+                back.map(l => ({ blockId: l.blockId, taskId: l.taskId, planned: true })),
+              )
+            } catch {
+              toast.error("Couldn't restore the tasks of that block. Check your connection.")
+            }
+          },
+        },
       })
+    },
+    /** Plans a task in a block (moving it from any other), or in none with `null`. */
+    assignTask: async (taskId: string, blockId: string | null) => {
+      const state = store.getState()
+      const task = state.tasks.find(t => t.id === taskId)
+      if (!task) return
+      const from = state.links.find(l => l.taskId === taskId && l.planned)?.blockId ?? null
+      if (from === blockId) return
+      const previous = state.links.filter(l => l.taskId === taskId)
+      state.setLinks(planTask(state.links, taskId, blockId))
+      const n = focusNumber(store, blockId ?? from ?? '')
+      state.announce(
+        blockId === null
+          ? `${task.text} removed from Block ${n}`
+          : from
+            ? `${task.text} moved to Block ${n}`
+            : `${task.text} added to Block ${n}`,
+      )
+      if (state.mode === 'guest') return
+      const write =
+        blockId === null ? { blockId: from ?? '', planned: false } : { blockId, planned: true }
+      try {
+        await writeLinks(store, [{ ...write, taskId }])
+      } catch {
+        // restore only this task's links; other tasks may have changed meanwhile
+        const rest = store.getState().links.filter(l => l.taskId !== taskId)
+        store.getState().setLinks([...rest, ...previous])
+        failToast(task.text)
+      }
     },
     nudge: (id: string, delta: number) => {
       const plan = store.getState().plan
       if (plan) edit(nudgeBlock(plan.blocks, id, delta))
     },
     /** Resolves once the server holds the current local plan; rejects when the PUT fails. */
-    ensurePlanSaved: (): Promise<void> => {
-      const { mode, savedRevision, planRevision } = store.getState()
-      if (mode === 'guest') return Promise.resolve()
-      const pending = saverOf(store).timer !== null
-      if (pending || savedRevision < planRevision) return enqueue(store)
-      return Promise.resolve()
-    },
+    ensurePlanSaved: () => ensureSaved(store),
     /** The next ensurePlanSaved PUTs again (09-06 retries once on 404 "No open plan"). */
     markPlanUnsaved: () => store.getState().markUnsaved(),
   }

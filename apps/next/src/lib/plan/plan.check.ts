@@ -7,6 +7,7 @@ import {
   deriveBlockTimes,
   formatDuration,
   nudgeBlock,
+  plannedBlockNumber,
   planSummary,
   planTask,
   removeBlock,
@@ -157,5 +158,9 @@ assert.equal(
   false,
 )
 assert.equal(planTask(start, 't9', null).length, 2)
+
+assert.equal(plannedBlockNumber(seed, [L('t1', at(seed, 2).id)], 't1'), 2)
+assert.equal(plannedBlockNumber(seed, [L('t1', at(seed, 2).id, false)], 't1'), null)
+assert.equal(plannedBlockNumber(seed, [L('t1', 'gone')], 't1'), null)
 
 console.log('plan.check OK')

@@ -473,6 +473,90 @@ div.add {
   cursor: default;
 }
 
+/* Block chip, assign checklist, native drag */
+
+.chip {
+  flex: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--panel-soft);
+  color: var(--panel-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.checklist {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.checklist .rows {
+  margin: 0;
+}
+
+.assignRow {
+  padding: 8px 4px;
+}
+
+.grip {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-right: -4px;
+  color: var(--panel-muted);
+  opacity: 0;
+}
+
+.assignRow:hover .grip {
+  opacity: 1;
+}
+
+.noOpen {
+  margin: 0;
+  padding: 8px 4px;
+  font-size: 13px;
+  color: var(--panel-muted);
+}
+
+.assign .add {
+  margin-top: 0;
+}
+
+.namesLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.names {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--panel-muted);
+}
+
+.focus[data-over] {
+  box-shadow: inset 0 0 0 1.5px var(--user-accent);
+  background: color-mix(in srgb, var(--user-accent) 10%, transparent);
+}
+
+.drop {
+  flex: none;
+  padding: 4px 8px;
+  border: 1px dashed rgb(255 255 255 / 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--panel-muted);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .focus {
     transition: none;
@@ -484,6 +568,10 @@ div.add {
 }
 
 @media (pointer: coarse) {
+  .assignRow {
+    min-height: 44px;
+  }
+
   .nudge {
     width: 44px;
     height: 44px;

@@ -37,6 +37,9 @@ interface TasksState {
   hydratePlan: (plan: TaskPlan | null, links: TaskLink[]) => void
   markSaved: (revision: number) => void
   markUnsaved: () => void
+  // polite live region text for assignment results
+  announcement: string
+  announce: (message: string) => void
 }
 
 export type InitialPlan = { plan: TaskPlan | null; links: TaskLink[] } | null
@@ -61,7 +64,10 @@ export function createTasksStore({
     patchTask: (id, patch) =>
       set(s => ({ tasks: s.tasks.map(t => (t.id === id ? { ...t, ...patch } : t)) })),
     replaceTaskId: (tempId, id) =>
-      set(s => ({ tasks: s.tasks.map(t => (t.id === tempId ? { ...t, id } : t)) })),
+      set(s => ({
+        tasks: s.tasks.map(t => (t.id === tempId ? { ...t, id } : t)),
+        links: s.links.map(l => (l.taskId === tempId ? { ...l, taskId: id } : l)),
+      })),
     dropTask: id => set(s => ({ tasks: s.tasks.filter(t => t.id !== id) })),
     setLoadState: loadState => set({ loadState }),
     plan: initialPlan?.plan ?? null,
@@ -78,6 +84,8 @@ export function createTasksStore({
       set(s => ({ plan, links, planLoad: 'ready', savedRevision: plan ? s.planRevision : -1 })),
     markSaved: revision => set(s => ({ savedRevision: Math.max(s.savedRevision, revision) })),
     markUnsaved: () => set({ savedRevision: -1 }),
+    announcement: '',
+    announce: announcement => set({ announcement }),
   }))
 }
 

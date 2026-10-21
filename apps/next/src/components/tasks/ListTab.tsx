@@ -7,6 +7,7 @@ import { Archive, ArchiveRestore, Check, ChevronDown, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useTaskActions, useUserTasks } from '~/hooks/useTasks'
+import { plannedBlockNumber } from '~/lib/plan/plan'
 import { useTasksStore, useTasksStoreApi } from '~/store/useToDoStore'
 import records from '../records/records.module.css'
 import styles from './tasks.module.css'
@@ -67,6 +68,9 @@ function EditableText({ task }: { task: Task }) {
 
 function Row({ task }: { task: Task }) {
   const { toggle, archive, restore } = useTaskActions()
+  const block = useTasksStore(s =>
+    s.plan ? plannedBlockNumber(s.plan.blocks, s.links, task.id) : null,
+  )
   return (
     <li className={cn(styles.row, task.completed && styles.done)}>
       <Checkbox
@@ -78,6 +82,12 @@ function Row({ task }: { task: Task }) {
         <Check aria-hidden='true' />
       </Checkbox>
       <EditableText task={task} />
+      {block !== null && !task.archived && (
+        <span className={styles.chip}>
+          <span aria-hidden='true'>B{block}</span>
+          <span className='sr-only'>Planned in Block {block}</span>
+        </span>
+      )}
       {task.archived ? (
         <button
           type='button'
@@ -101,8 +111,15 @@ function Row({ task }: { task: Task }) {
   )
 }
 
-function AddRow({ empty }: { empty: boolean }) {
-  const { add } = useTaskActions()
+export function AddRow({
+  empty,
+  label = 'Add a task',
+  onAdd,
+}: {
+  empty: boolean
+  label?: string
+  onAdd: (text: string) => void
+}) {
   const [active, setActive] = useState(empty)
   const [value, setValue] = useState('')
   const input = useRef<HTMLInputElement>(null)
@@ -116,7 +133,7 @@ function AddRow({ empty }: { empty: boolean }) {
     return (
       <button type='button' className={styles.add} onClick={() => setActive(true)}>
         <Plus aria-hidden='true' />
-        Add a task
+        {label}
       </button>
     )
   }
@@ -128,8 +145,8 @@ function AddRow({ empty }: { empty: boolean }) {
         ref={input}
         className={styles.input}
         value={value}
-        placeholder='Add a task'
-        aria-label='Add a task'
+        placeholder={label}
+        aria-label={label}
         maxLength={TASK_TEXT_MAX}
         // biome-ignore lint/a11y/noAutofocus: the row was just activated
         autoFocus
@@ -139,7 +156,7 @@ function AddRow({ empty }: { empty: boolean }) {
         }}
         onKeyDown={e => {
           if (e.key === 'Enter') {
-            add(value)
+            onAdd(value)
             setValue('')
           } else if (e.key === 'Escape' && !value.trim()) {
             e.preventDefault()
@@ -186,6 +203,7 @@ function LoadError() {
 }
 
 export default function ListTab() {
+  const { add } = useTaskActions()
   const tasks = useTasksStore(s => s.tasks)
   const mode = useTasksStore(s => s.mode)
   const loadState = useTasksStore(s => s.loadState)
@@ -211,7 +229,7 @@ export default function ListTab() {
           <Row key={t.id} task={t} />
         ))}
       </ul>
-      <AddRow empty={tasks.length === 0} />
+      <AddRow empty={tasks.length === 0} onAdd={add} />
       {done.length > 0 && (
         <>
           <h3 className={cn(records.sec, styles.later)}>
