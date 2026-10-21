@@ -157,7 +157,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Tasks and Time Blocks
 
-- [ ] **TSK-01**: A guest's tasks survive a refresh in the same browser
+- [x] **TSK-01**: A guest's tasks survive a refresh in the same browser
 - [ ] **TSK-02**: User can pick the task they are working on in the current focus block, and the
       block's record lists the tasks worked on and completed during it
 - [ ] **TSK-03**: User can lay out a plan of time blocks before starting and assign tasks to them,
@@ -288,7 +288,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | BLK-03 | Phase 8 - Focus Blocks and Added Time | Complete |
 | BLK-04 | Phase 8 - Focus Blocks and Added Time | Complete (code); human verify pending |
 | BLK-05 | Phase 8 - Focus Blocks and Added Time | Complete |
-| TSK-01 | Phase 9 - Tasks and Time Blocks | Pending |
+| TSK-01 | Phase 9 - Tasks and Time Blocks | Complete |
 | TSK-02 | Phase 9 - Tasks and Time Blocks | Pending |
 | TSK-03 | Phase 9 - Tasks and Time Blocks | Pending |
 | TSK-04 | Phase 9 - Tasks and Time Blocks | Pending |
