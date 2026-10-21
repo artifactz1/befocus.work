@@ -1,4 +1,4 @@
-import type { ZodType } from 'zod'
+import type { ZodType, ZodTypeDef } from 'zod'
 
 // The property access itself throws in Safari with blocked site data, and on the server.
 export function defaultStorage(): Storage | undefined {
@@ -12,7 +12,7 @@ export function defaultStorage(): Storage | undefined {
 /** Parsed value for `key`, or null when storage is missing or throws, or the value is absent, bad JSON or fails `schema`. */
 export function readStored<T>(
   key: string,
-  schema: ZodType<T>,
+  schema: ZodType<T, ZodTypeDef, unknown>,
   storage: Pick<Storage, 'getItem'> | undefined = defaultStorage(),
 ): T | null {
   try {

@@ -45,6 +45,8 @@ interface CustomizeState {
   patchPreview: (patch: Partial<Omit<Look, 'version'>>) => void
   /** The only write path: server for account, browser storage for guest. */
   saveLook: (look: Look) => void
+  /** Sets one key on active and preview and saves it now (used outside the panel). */
+  commitKey: <K extends LookKey>(key: K, value: Look[K]) => void
   /** Keeps the live preview, saves it when it changed, and closes the panel. */
   apply: () => void
   /** Puts the preview back to the look the panel opened with. The panel stays open. */
@@ -92,6 +94,13 @@ function createCustomizeStore(mode: CustomizeMode, initialLook: unknown) {
         } else {
           reportStorageBlocked()
         }
+      },
+      commitKey: (key, value) => {
+        const result = lookSchema.safeParse({ ...get().active, [key]: value })
+        if (!result.success) return
+        const next = result.data
+        set(state => ({ active: next, preview: { ...state.preview, [key]: next[key] } }))
+        get().saveLook(next)
       },
       apply: () => {
         const { preview, active, saveLook } = get()
@@ -152,6 +161,7 @@ export function CustomizeStoreProvider({
         root.style.setProperty(name, value)
       }
       root.setAttribute('data-progress', attrs['data-progress'])
+      root.setAttribute('data-session-progress', attrs['data-session-progress'])
       root.setAttribute('data-density', attrs['data-density'])
       root.setAttribute('data-panel', state.panelOpen ? 'open' : 'closed')
     }
@@ -170,6 +180,7 @@ export function CustomizeStoreProvider({
         root.style.removeProperty(name)
       }
       root.removeAttribute('data-progress')
+      root.removeAttribute('data-session-progress')
       root.removeAttribute('data-density')
       root.removeAttribute('data-panel')
     }

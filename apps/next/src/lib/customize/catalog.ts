@@ -94,6 +94,13 @@ export const PROGRESS_STYLES = [
   { id: 'edge', label: 'Edge' },
 ] as const
 
+/** Session progress views (TSK-04): the top-left slot. */
+export const SESSION_PROGRESS = [
+  { id: 'strip', label: 'Strip' },
+  { id: 'now', label: 'Now' },
+  { id: 'grid', label: 'Grid' },
+] as const
+
 /** 3 densities (CTL-08). Numeric scale factors live in CSS (Task 3), not here. */
 export const DENSITIES = [
   { id: 'compact', label: 'Compact' },
@@ -103,7 +110,7 @@ export const DENSITIES = [
 
 export function lookToTokens(look: Look): {
   props: Record<string, string>
-  attrs: { 'data-progress': string; 'data-density': string }
+  attrs: { 'data-progress': string; 'data-session-progress': string; 'data-density': string }
 } {
   return {
     props: {
@@ -118,6 +125,7 @@ export function lookToTokens(look: Look): {
     },
     attrs: {
       'data-progress': look.progress,
+      'data-session-progress': look.sessionProgress,
       'data-density': look.density,
     },
   }

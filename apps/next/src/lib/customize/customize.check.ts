@@ -132,14 +132,28 @@ assert.equal(
   )
   assert.deepEqual(
     Object.keys(attrs).sort(),
-    ['data-density', 'data-progress'].sort(),
-    'lookToTokens must return exactly the 2 attributes',
+    ['data-density', 'data-progress', 'data-session-progress'].sort(),
+    'lookToTokens must return exactly the 3 attributes',
   )
   assert.equal(
     props['--font-display'],
     FONTS[DEFAULT_LOOK.font].stack,
     '--font-display must come from the FONTS catalog, never the raw key',
   )
+}
+
+// session progress (TSK-04)
+{
+  const { sessionProgress: _omit, ...legacy } = DEFAULT_LOOK
+  const old = lookSchema.safeParse(legacy)
+  assert.equal(old.success && old.data.sessionProgress, 'strip', 'missing key defaults to strip')
+  assert.equal(lookSchema.safeParse({ ...DEFAULT_LOOK, sessionProgress: 'grid' }).success, true)
+  assert.equal(
+    lookSchema.safeParse({ ...DEFAULT_LOOK, sessionProgress: 'calendar' }).success,
+    false,
+  )
+  assert.equal(lookEquals(DEFAULT_LOOK, { ...DEFAULT_LOOK, sessionProgress: 'now' }), false)
+  assert.equal(lookToTokens(DEFAULT_LOOK).attrs['data-session-progress'], 'strip')
 }
 
 // starter looks: each merges into a valid look and is recognized by name
