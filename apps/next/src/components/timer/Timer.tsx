@@ -9,6 +9,7 @@ import { badgeText, minutesLabel } from '~/lib/blocks/blocks'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore, useTimerStoreApi } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
+import { readAdjustHintSeen } from './AdjustTray'
 import TimerUI from './TimeUI'
 import styles from './timer-progress.module.css'
 
@@ -106,6 +107,14 @@ export default function Timer() {
   const nowIndex = Math.floor(elapsed * 25)
 
   const ended = status === 'ended'
+  // Desktop first-run hint: read after mount (no SSR drift), cleared for good by the first tray open.
+  const [hintSeen, setHintSeen] = useState(false)
+  useEffect(() => {
+    setHintSeen(readAdjustHintSeen())
+    const seen = () => setHintSeen(true)
+    window.addEventListener('befocus:adjust-hint-seen', seen)
+    return () => window.removeEventListener('befocus:adjust-hint-seen', seen)
+  }, [])
   const nextKind = blocks[blocks.findIndex(b => b.id === currentBlockId) + 1]?.kind
   const primaryText =
     nextKind === 'break' ? 'Start break' : nextKind === 'focus' ? 'Start focus' : 'Finish session'
@@ -305,6 +314,12 @@ export default function Timer() {
                   <span>
                     <kbd>R</kbd>reset
                   </span>
+                  {status === 'running' && !hintSeen && (
+                    <span>
+                      <kbd>+</kbd>
+                      <kbd>-</kbd>1 min, hold for more
+                    </span>
+                  )}
                 </div>
               </>
             )}

@@ -45,7 +45,11 @@ export function useHoldPress({ onTap, onHoldOpen, onRelease }: Options) {
   const onPointerDown = (e: PointerEvent<HTMLElement>) => {
     if (e.button !== 0) return
     suppressClick.current = false
-    e.currentTarget.setPointerCapture(e.pointerId)
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId)
+    } catch {
+      // No active pointer to capture (synthetic events); the coordinate checks still work.
+    }
     phase.current = 'down'
     setHeld(true)
     timer.current = setTimeout(() => {
