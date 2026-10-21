@@ -805,7 +805,7 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "default": "false"
+          "default": false
         },
         "updated_at": {
           "name": "updated_at",
