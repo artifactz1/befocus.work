@@ -1,0 +1,226 @@
+/* Tasks card content. The shell (surface, room, sheet, head, sec) comes from records.module.css. */
+
+.card {
+  --accent-ink: #101010;
+}
+
+.body {
+  overscroll-behavior: contain;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.later {
+  margin-top: 24px;
+}
+
+.rows {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.row:hover,
+.row:focus-within {
+  background: var(--panel-soft);
+}
+
+.box {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid rgb(255 255 255 / 0.35);
+  background: transparent;
+  display: grid;
+  place-items: center;
+}
+
+.box[data-state="checked"] {
+  background: var(--user-accent);
+  border-color: var(--user-accent);
+  color: var(--accent-ink);
+}
+
+.box svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 3;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: text;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.done .text {
+  color: var(--panel-muted);
+  text-decoration: line-through;
+  text-decoration-color: rgb(255 255 255 / 0.25);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px solid var(--panel-hair);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.4;
+  outline: none;
+}
+
+.input:focus-visible {
+  border-bottom-color: var(--user-accent);
+}
+
+@media (max-width: 1023px) {
+  .input {
+    font-size: 16px;
+  }
+}
+
+.act {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--panel-muted);
+  cursor: pointer;
+  opacity: 0;
+}
+
+.row:hover .act,
+.row:focus-within .act,
+.act:focus-visible {
+  opacity: 1;
+}
+
+.act:hover {
+  background: var(--panel-soft);
+  color: hsl(var(--foreground));
+}
+
+.act svg {
+  width: 16px;
+  height: 16px;
+}
+
+.add {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border: 1px dashed rgb(255 255 255 / 0.14);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--panel-muted);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.add:hover {
+  color: hsl(var(--foreground));
+}
+
+div.add {
+  cursor: text;
+}
+
+.add svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.disclosure {
+  align-items: center;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.disclosure svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s;
+}
+
+.disclosure svg[data-open] {
+  transform: rotate(180deg);
+}
+
+.empty {
+  margin-bottom: 24px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--panel-muted);
+}
+
+.emptyTitle {
+  margin: 0 0 2px;
+  font-size: 15px;
+  color: hsl(var(--foreground));
+}
+
+.note {
+  margin: 24px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--panel-muted);
+}
+
+.note a:hover {
+  text-decoration: underline;
+}
+
+@media (pointer: coarse) {
+  .row {
+    min-height: 44px;
+  }
+
+  .act {
+    opacity: 1;
+    width: 44px;
+    height: 44px;
+  }
+}
