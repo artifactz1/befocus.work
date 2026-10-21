@@ -26,7 +26,7 @@ the next time they open it - signed in on any device, or as a guest on the same 
 
 ## Current Position
 
-Phase: 09 (tasks-and-time-blocks) — BUILT, human checks pending
+Phase: 09 (tasks-and-time-blocks) - BUILT, human checks pending
 Plan: 11 of 11
 Status: Phase complete — ready for verification
 Last activity: 2026-10-21
