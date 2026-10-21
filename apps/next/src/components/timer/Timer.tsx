@@ -14,7 +14,6 @@ const RULER_TICKS = Array.from({ length: 25 }, (_, i) => i)
 
 type ProgressStyle = CSSProperties & Record<'--progress', string>
 type DigitsStyle = CSSProperties & Record<'--digit-size', string>
-type RootStyle = ProgressStyle & Record<'--stack-size', string>
 
 function DesktopDigits({
   minutes,
@@ -154,11 +153,16 @@ export default function Timer() {
   const desktopFontSize = strip
     ? '64px'
     : `calc(${isLandscape ? '30vh' : widthSize} * var(--timer-scale, 1))`
-  const mobileFontSize = `calc(${widthSize} * var(--timer-scale, 1))`
+  const phoneEnded = ended && phone && !strip
+  // Ended on phone: the stacked digits shrink to fit between the label (top 40px) and the
+  // Start row (bottom 78px) of the Timer root, a size container so cqh is its height.
+  const mobileFontSize = phoneEnded
+    ? `min(calc(${widthSize} * var(--timer-scale, 1)), calc((100cqh - 118px) / 1.8))`
+    : `calc(${widthSize} * var(--timer-scale, 1))`
 
-  const rootStyle: RootStyle = {
+  const rootStyle: ProgressStyle = {
+    containerType: 'size',
     '--progress': String(elapsed),
-    '--stack-size': `calc(${mobileFontSize} * 1.8)`,
   }
   const digitsStyle: DigitsStyle = { '--digit-size': desktopFontSize }
 
@@ -200,13 +204,16 @@ export default function Timer() {
         {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
       </span>
 
-      {ended && phone && !strip && (
+      {phoneEnded && (
         <p data-ended-label className={styles.phoneLabel}>
           {doneLabel}
         </p>
       )}
 
-      <div className={`absolute inset-0 flex items-center justify-center ${styles.stage}`}>
+      <div
+        className={`absolute inset-0 flex items-center justify-center ${styles.stage}`}
+        style={phoneEnded ? { top: 40, bottom: 78 } : undefined}
+      >
         <div
           className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}
           style={digitsStyle}
@@ -282,7 +289,7 @@ export default function Timer() {
         </div>
       </div>
 
-      {ended && phone && !strip && (
+      {phoneEnded && (
         <div data-ended-row className={styles.phoneRow}>
           {primary}
         </div>
