@@ -12,6 +12,7 @@
 }
 
 .ruler {
+  position: relative;
   display: none;
   align-items: end;
   gap: 8px;
@@ -34,6 +35,18 @@
   transform: scaleY(0.7);
 }
 
+.ruler i.ext {
+  background: repeating-linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--fg) 38%, transparent) 0 3px,
+    transparent 3px 6px
+  );
+}
+
+.ruler i.ext.done {
+  background: repeating-linear-gradient(180deg, var(--user-accent) 0 3px, transparent 3px 6px);
+}
+
 .ruler i.done {
   background: var(--user-accent);
 }
@@ -41,6 +54,18 @@
 .ruler i.now {
   transform: none;
   background: var(--user-accent);
+}
+
+.rulerNotch {
+  position: absolute;
+  top: -12px;
+  left: calc(var(--notch) * 100%);
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: hsl(var(--muted-foreground));
+  animation: bf-notch-in 200ms ease-out;
 }
 
 :global(html[data-progress="ruler"]) .ruler {
@@ -61,12 +86,68 @@
   pointer-events: none;
 }
 
+:global([data-adjusting]) .inkOverlay {
+  transition: clip-path 400ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
 :global(html[data-progress="ink"]) .inkOverlay {
   display: flex;
 }
 
+/* Planned end on Ink: a 4px cut-out line over the glyph row, same basis as the clip-path. */
+.inkNotch {
+  display: none;
+  position: absolute;
+  left: calc(var(--notch) * 100%);
+  top: calc(50% - var(--digit-size) * 0.46);
+  height: calc(var(--digit-size) * 0.92);
+  width: 4px;
+  margin-left: -2px;
+  background: var(--bg-solid);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fg) 40%, transparent);
+  pointer-events: none;
+  animation: bf-notch-in 200ms ease-out;
+}
+
+:global(html[data-progress="ink"]) .inkNotch {
+  display: block;
+}
+
+@keyframes bf-notch-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Net added time (08-UI-SPEC "Digits badge"). Not bf-chrome: it is state, it stays visible. */
+.badge {
+  position: absolute;
+  top: calc(50% - var(--digit-size) / 2 - 12px);
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  font: 600 20px / 1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--foreground));
+  animation: bf-notch-in 160ms ease-out;
+}
+
+.badgePhone {
+  top: -8px;
+  height: 28px;
+  padding: 0 12px;
+  font-size: 14px;
+}
+
 .edgeTrack,
-.edgeFill {
+.edgeHatch,
+.edgeFill,
+.edgeNotch {
   position: fixed;
   left: 0;
   right: 0;
@@ -81,6 +162,27 @@
   background: color-mix(in srgb, var(--fg) 8%, transparent);
 }
 
+.edgeHatch {
+  z-index: 4;
+  left: calc(var(--notch) * 100%);
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--fg) 34%, transparent) 0 3px,
+    transparent 3px 7px
+  );
+  animation: bf-notch-in 200ms ease-out;
+}
+
+.edgeNotch {
+  z-index: 6;
+  left: calc(var(--notch) * 100%);
+  right: auto;
+  width: 4px;
+  margin-left: -2px;
+  background: var(--bg-solid);
+  animation: bf-notch-in 200ms ease-out;
+}
+
 .edgeFill {
   z-index: 5;
   background: var(--user-accent);
@@ -89,8 +191,13 @@
   transition: transform 1s linear;
 }
 
-:global(html[data-progress="edge"]) :is(.edgeTrack, .edgeFill) {
+:global(html[data-progress="edge"]) :is(.edgeTrack, .edgeHatch, .edgeFill, .edgeNotch) {
   display: block;
+}
+
+/* One adjustment step eases over 400ms instead of the 1s linear tick (flag held 400ms). */
+:global([data-adjusting]) .edgeFill {
+  transition: transform 400ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .hints {
@@ -227,7 +334,8 @@
   }
 }
 
-.breathe {
+.breathe,
+.breatheKids > :not([data-adjust-badge]) {
   animation: bf-breathe 2.4s ease-in-out infinite;
 }
 
@@ -238,7 +346,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .breathe {
+  .breathe,
+  .breatheKids > :not([data-adjust-badge]) {
     animation: none;
   }
   .ended,
@@ -248,7 +357,17 @@
   }
   .ruler i,
   .edgeFill,
-  .stage {
+  .inkOverlay,
+  .stage,
+  :global([data-adjusting]) .edgeFill,
+  :global([data-adjusting]) .inkOverlay {
     transition: none;
+  }
+  .rulerNotch,
+  .inkNotch,
+  .badge,
+  .edgeHatch,
+  .edgeNotch {
+    animation: none;
   }
 }

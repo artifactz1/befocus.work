@@ -5,7 +5,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useEndedCues } from '~/hooks/useEndedCues'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useTimerKeyboard } from '~/hooks/useTimerKeyboard'
-import { minutesLabel } from '~/lib/blocks/blocks'
+import { badgeText, minutesLabel } from '~/lib/blocks/blocks'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useTimerStore, useTimerStoreApi } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
@@ -14,7 +14,7 @@ import styles from './timer-progress.module.css'
 
 const RULER_TICKS = Array.from({ length: 25 }, (_, i) => i)
 
-type ProgressStyle = CSSProperties & Record<'--progress', string>
+type ProgressStyle = CSSProperties & Record<'--progress', string> & { '--notch'?: string }
 type DigitsStyle = CSSProperties & Record<'--digit-size', string>
 
 function DesktopDigits({
@@ -123,9 +123,15 @@ export default function Timer() {
     ? `min(calc(${widthSize} * var(--timer-scale, 1)), calc((100cqh - 118px) / 1.8))`
     : `calc(${widthSize} * var(--timer-scale, 1))`
 
+  // Net time added: the bar rescales to planned + added, with a notch at the planned end.
+  const added = block?.addedSeconds ?? 0
+  const notch = block && added > 0 ? block.plannedSeconds / total : null
+  const badge = block && status !== 'idle' && !strip ? badgeText(block.addedSeconds) : null
+
   const rootStyle: ProgressStyle = {
     containerType: 'size',
     '--progress': String(elapsed),
+    ...(notch !== null && { '--notch': String(notch) }),
   }
   const digitsStyle: DigitsStyle = { '--digit-size': desktopFontSize }
 
@@ -148,6 +154,38 @@ export default function Timer() {
       primaryHadFocus.current = false
     }
   }, [status, currentBlockId, doneLabel, endedMinutes])
+
+  // One listener hears every adjustment (keyboard, footer, tray): same block, running now, was
+  // running or ended before, added time changed. Resets and block changes fall out of the guard.
+  const prevAdjust = useRef({ status, blockId: currentBlockId, added })
+  const liveFlip = useRef(false)
+  const [adjusting, setAdjusting] = useState(false)
+  const adjustTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  useLayoutEffect(() => {
+    const prev = prevAdjust.current
+    prevAdjust.current = { status, blockId: currentBlockId, added }
+    if (
+      prev.blockId !== currentBlockId ||
+      status !== 'running' ||
+      (prev.status !== 'running' && prev.status !== 'ended') ||
+      prev.added === added
+    )
+      return
+    const delta = Math.round((added - prev.added) / 60)
+    if (delta === 0) return
+    // A trailing nbsp on alternate calls makes a repeated message count as new text.
+    liveFlip.current = !liveFlip.current
+    const tail = liveFlip.current ? '' : '\u00A0'
+    setLiveText(
+      delta > 0
+        ? `Added ${minutesLabel(delta)}${prev.status === 'ended' ? '. Block resumed.' : ''}${tail}`
+        : `Removed ${minutesLabel(-delta)}${tail}`,
+    )
+    setAdjusting(true)
+    clearTimeout(adjustTimer.current)
+    adjustTimer.current = setTimeout(() => setAdjusting(false), 400)
+  }, [status, currentBlockId, added])
+  useEffect(() => () => clearTimeout(adjustTimer.current), [])
 
   // A mouse user who clicked Play still has focus in the footer: hand it to the ended primary.
   useEffect(() => {
@@ -188,6 +226,8 @@ export default function Timer() {
       ref={rootRef}
       className='relative z-0 flex min-h-0 flex-1 items-center justify-center font-display text-dash'
       style={rootStyle}
+      data-adjusting={adjusting || undefined}
+      data-extended={notch !== null || undefined}
     >
       <span role='timer' aria-label='Time remaining' className='sr-only'>
         {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
@@ -223,6 +263,13 @@ export default function Timer() {
             <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
           </div>
 
+          {notch !== null && <div aria-hidden data-ink-notch className={styles.inkNotch} />}
+          {badge && (
+            <span aria-hidden data-adjust-badge className={styles.badge}>
+              {badge}
+            </span>
+          )}
+
           <div className={styles.under}>
             {ended && !phone ? (
               <div data-ended-group className={styles.ended}>
@@ -243,18 +290,13 @@ export default function Timer() {
             ) : (
               <>
                 <div aria-hidden className={styles.ruler}>
-                  {RULER_TICKS.map(i => (
-                    <i
-                      key={`tick-${i}`}
-                      className={
-                        i < nowIndex
-                          ? styles.done
-                          : i === nowIndex && timeLeft > 0
-                            ? styles.now
-                            : undefined
-                      }
-                    />
-                  ))}
+                  {RULER_TICKS.map(i => {
+                    const state =
+                      i < nowIndex ? styles.done : i === nowIndex && timeLeft > 0 ? styles.now : ''
+                    const ext = notch !== null && i / 25 >= notch ? styles.ext : ''
+                    return <i key={`tick-${i}`} className={`${state} ${ext}`.trim() || undefined} />
+                  })}
+                  {notch !== null && <b className={styles.rulerNotch} />}
                 </div>
                 <div aria-hidden className={`${styles.hints} bf-chrome`}>
                   <span>
@@ -271,7 +313,7 @@ export default function Timer() {
 
         <div
           aria-hidden
-          className={`absolute flex-row items-center font-bold sm:hidden ${strip ? 'flex' : ''} ${styles.digits} ${ended ? styles.breathe : ''}`}
+          className={`absolute flex-row items-center font-bold sm:hidden ${strip ? 'flex' : ''} ${styles.digits} ${ended ? styles.breatheKids : ''}`}
         >
           {strip ? (
             <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
@@ -279,6 +321,11 @@ export default function Timer() {
             <>
               <TimerUI value={minutes} fontSize={mobileFontSize} />
               <TimerUI value={seconds} fontSize={mobileFontSize} />
+              {badge && (
+                <span data-adjust-badge className={`${styles.badge} ${styles.badgePhone}`}>
+                  {badge}
+                </span>
+              )}
             </>
           )}
         </div>
@@ -291,7 +338,9 @@ export default function Timer() {
       )}
 
       <div aria-hidden data-edge-progress className={styles.edgeTrack} />
+      {notch !== null && <div aria-hidden data-edge-progress className={styles.edgeHatch} />}
       <div aria-hidden data-edge-progress className={styles.edgeFill} />
+      {notch !== null && <div aria-hidden data-edge-progress className={styles.edgeNotch} />}
     </div>
   )
 }
