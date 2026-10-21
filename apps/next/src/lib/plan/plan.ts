@@ -175,6 +175,30 @@ export function reseedFromSettings(
   return seedFromSettings(s, () => ids.shift() ?? newId())
 }
 
+/**
+ * The timer started under new block ids (Session settings Start): the plan takes the timer's ids
+ * and lengths by position and its links follow. Links at positions that did not survive lose
+ * `planned`, like the pre-start reseed.
+ */
+export function followTimerBlocks(
+  blocks: PlanBlock[],
+  links: TaskLink[],
+  timer: { id: string; kind: 'focus' | 'break'; plannedSeconds: number }[],
+): { blocks: PlanBlock[]; links: TaskLink[] } {
+  const ids = new Map(blocks.map((b, i) => [b.id, timer[i]?.id]))
+  return {
+    blocks: timer.map(t => ({
+      id: t.id,
+      kind: t.kind,
+      minutes: Math.round(t.plannedSeconds / 60),
+    })),
+    links: links.map(l => {
+      const id = ids.get(l.blockId)
+      return id ? { ...l, blockId: id } : l.planned ? { ...l, planned: false } : l
+    }),
+  }
+}
+
 export type LiveBlock = {
   id: string
   kind: 'focus' | 'break'

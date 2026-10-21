@@ -6,6 +6,7 @@ import {
   addFocusBlock,
   buildSessionView,
   deriveBlockTimes,
+  followTimerBlocks,
   formatDuration,
   nudgeBlock,
   plannedBlockNumber,
@@ -200,6 +201,25 @@ assert.deepEqual(
 assert.equal(new Set(grown.map(x => x.id)).size, 9)
 assert.equal(at(grown, 0).minutes, 30)
 assert.equal(planBlocksSchema.safeParse(grown).success, true)
+
+// followTimerBlocks: settings Start gives new ids; assignments follow by position
+const tb = reseedFromSettings(seed, { sessions: 3, workMinutes: 20, breakMinutes: 5 }, newId).map(
+  (b, i) => ({
+    id: `11111111-1111-4111-8111-00000000000${i}`,
+    kind: b.kind,
+    plannedSeconds: b.minutes * 60,
+  }),
+)
+const fl = followTimerBlocks(seed, [L('a', at(seed, 0).id), L('b', at(seed, 8).id)], tb)
+assert.deepEqual(
+  fl.blocks.map(b => b.id),
+  tb.map(x => x.id),
+)
+assert.equal(at(fl.blocks, 0).minutes, 20)
+assert.equal(at(fl.links, 0).blockId, at(tb, 0).id)
+assert.equal(at(fl.links, 0).planned, true)
+assert.equal(at(fl.links, 1).planned, false)
+assert.equal(planBlocksSchema.safeParse(fl.blocks).success, true)
 
 // buildSessionView
 const plan0 = { sessionId: 's1', wentLive: false, blocks: seed }

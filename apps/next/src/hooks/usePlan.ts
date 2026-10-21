@@ -10,6 +10,7 @@ import { deriveNow, openInBlock } from '~/lib/plan/now'
 import {
   addFocusBlock,
   buildSessionView,
+  followTimerBlocks,
   nudgeBlock,
   planTask,
   reconcilePlan,
@@ -409,6 +410,12 @@ export function usePlanSync() {
         if (action === 'close') return void closePlan(store, timer)
         if (action === 'adopt') {
           plan = { ...plan, sessionId: t.sessionId }
+          if (isLive(t)) {
+            // started under new block ids (Session settings Start): follow them, keep assignments
+            const next = followTimerBlocks(plan.blocks, s.links, t.blocks)
+            plan = { ...plan, blocks: next.blocks }
+            s.setLinks(next.links)
+          }
           s.setPlan(plan)
           save(store)
         }

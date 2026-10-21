@@ -1,5 +1,5 @@
 # Deferred items
 
-## Found during 09-11 (out of scope)
+## Found during 09-11
 
-- Settings dialog Start path (`applySettings run:true` -> `resetWith`) assigns new session and block ids. Plan sync adopts them but `seed()` returns null, so the plan and session view stay "planning" forever in guest mode. Workaround while testing: reload, then press Start directly. Not caused by 09-11.
+- RESOLVED: Settings dialog Start path (`applySettings run:true` -> `resetWith`) assigned new session and block ids, so `seed()` returned null and the plan stayed "planning". `usePlanSync` now adopts the timer's block ids and lengths by position via `followTimerBlocks` (plan.ts) and moves task links with them; checked in `plan.check.ts` and in guest mode in the browser (Start card, assigned task shows as Now).
