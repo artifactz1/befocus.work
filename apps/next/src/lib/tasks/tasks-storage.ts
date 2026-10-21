@@ -78,3 +78,42 @@ export function parseGuestPlan(raw: unknown): { plan: TaskPlan | null; links: Ta
 export function toGuestPlan(plan: TaskPlan, links: TaskLink[]) {
   return { version: 1 as const, plan, links }
 }
+
+export const GUEST_LINK_HISTORY_KEY = 'befocus.taskLinkHistory'
+const MAX_HISTORY = 500
+
+export const guestLinkHistorySchema = z.object({
+  version: z.literal(1),
+  links: z.array(z.unknown()).max(5000),
+})
+
+const stamp = (l: TaskLink) => l.completedAt ?? l.workedAt ?? ''
+
+// Oldest first, newest 500 kept. Stable sort keeps insertion order for equal stamps.
+const newest = (links: TaskLink[]) =>
+  [...links].sort((a, b) => stamp(a).localeCompare(stamp(b))).slice(-MAX_HISTORY)
+
+/** Guest storage is untrusted: this is the only path from it to the link history. */
+export function parseGuestLinkHistory(raw: unknown): TaskLink[] {
+  const env = guestLinkHistorySchema.safeParse(raw)
+  if (!env.success) return []
+  const links: TaskLink[] = []
+  for (const item of env.data.links) {
+    const l = guestLinkSchema.safeParse(item)
+    if (l.success) links.push(l.data)
+  }
+  return newest(links)
+}
+
+export function toGuestLinkHistory(links: TaskLink[]) {
+  return { version: 1 as const, links: newest(links) }
+}
+
+/** Adds the closing plan's worked or completed links to the stored history; returns the new value. */
+export function appendGuestLinkHistory(raw: unknown, links: TaskLink[]) {
+  const added = links.filter(l => l.worked || l.completed)
+  const key = (l: TaskLink) => `${l.blockId}:${l.taskId}`
+  const replaced = new Set(added.map(key))
+  const kept = parseGuestLinkHistory(raw).filter(l => !replaced.has(key(l)))
+  return toGuestLinkHistory([...kept, ...added])
+}

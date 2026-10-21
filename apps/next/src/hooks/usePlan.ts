@@ -22,7 +22,10 @@ import {
 import { defaultStorage, readStored, writeStored } from '~/lib/storage/browser-storage'
 import { failToast, whenTaskSaved } from '~/lib/tasks/task-writes'
 import {
+  appendGuestLinkHistory,
+  GUEST_LINK_HISTORY_KEY,
   GUEST_PLAN_KEY,
+  guestLinkHistorySchema,
   guestPlanSchema,
   parseGuestPlan,
   toGuestPlan,
@@ -340,6 +343,15 @@ async function closePlan(store: TasksApi, timer: TimerApi) {
     }
     const { sessionId, sessions, workDuration, breakDuration } = timer.getState()
     const s = store.getState()
+    if (s.mode === 'guest' && defaultStorage()) {
+      // Phase 10 reads this history for the block record; a failed write must not stop the close
+      try {
+        const raw = readStored(GUEST_LINK_HISTORY_KEY, guestLinkHistorySchema)
+        writeStored(GUEST_LINK_HISTORY_KEY, appendGuestLinkHistory(raw, s.links))
+      } catch (error) {
+        console.error('Could not save the task link history', error)
+      }
+    }
     s.markUnsaved()
     s.setLinks([])
     s.setPlan({

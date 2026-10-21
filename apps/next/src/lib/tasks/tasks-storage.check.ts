@@ -127,13 +127,13 @@ assert.deepEqual(
   [hl(3)],
   'append over corrupt raw',
 )
-const many = Array.from({ length: 600 }, (_, i) =>
+const manyHist = Array.from({ length: 600 }, (_, i) =>
   hl(i + 1, {
     blockId: id(1000 + i),
     workedAt: new Date(Date.UTC(2026, 0, 1, 0, i)).toISOString(),
   }),
 )
-const capped = parseGuestLinkHistory(appendGuestLinkHistory(null, many))
+const capped = parseGuestLinkHistory(appendGuestLinkHistory(null, manyHist))
 assert.equal(capped.length, 500, 'history cap')
 assert.equal(
   capped.some(l => l.blockId === id(1000)),
