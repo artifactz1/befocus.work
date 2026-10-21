@@ -14,6 +14,7 @@ const RULER_TICKS = Array.from({ length: 25 }, (_, i) => i)
 
 type ProgressStyle = CSSProperties & Record<'--progress', string>
 type DigitsStyle = CSSProperties & Record<'--digit-size', string>
+type RootStyle = ProgressStyle & Record<'--stack-size', string>
 
 function DesktopDigits({
   minutes,
@@ -42,8 +43,11 @@ export default function Timer() {
   const roomOpen = useSoundsStore(s => s.roomOpen)
   const narrow = useMediaQuery('(max-width: 1023.98px)')
   const strip = roomOpen && narrow
+  const phone = useMediaQuery('(max-width: 639.98px)')
   const store = useTimerStoreApi()
   const { timeLeft, isRunning, status, blocks, currentBlockId } = useTimerStore()
+  const rootRef = useRef<HTMLDivElement | null>(null)
+  const primaryRef = useRef<HTMLButtonElement | null>(null)
 
   const [minutes, setMinutes] = useState<number>(timeLeft / 60)
   const [seconds, setSeconds] = useState<number>(0)
@@ -139,16 +143,56 @@ export default function Timer() {
   const elapsed = total > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / total)) : 0
   const nowIndex = Math.floor(elapsed * 25)
 
+  const ended = status === 'ended'
+  const nextKind = blocks[blocks.findIndex(b => b.id === currentBlockId) + 1]?.kind
+  const primaryText =
+    nextKind === 'break' ? 'Start break' : nextKind === 'focus' ? 'Start focus' : 'Finish session'
+  const nextHint = primaryText.toLowerCase()
+  const doneLabel = `${block?.kind === 'break' ? 'Break' : 'Focus block'} done`
+  const endedMinutes = block ? Math.round(total / 60) : 0
+
   const desktopFontSize = strip
     ? '64px'
     : `calc(${isLandscape ? '30vh' : widthSize} * var(--timer-scale, 1))`
   const mobileFontSize = `calc(${widthSize} * var(--timer-scale, 1))`
 
-  const rootStyle: ProgressStyle = { '--progress': String(elapsed) }
+  const rootStyle: RootStyle = {
+    '--progress': String(elapsed),
+    '--stack-size': `calc(${mobileFontSize} * 1.8)`,
+  }
   const digitsStyle: DigitsStyle = { '--digit-size': desktopFontSize }
+
+  // A mouse user who clicked Play still has focus in the footer: hand it to the ended primary.
+  useEffect(() => {
+    if (!ended) return
+    const active = document.activeElement
+    const root = rootRef.current
+    if (
+      active instanceof HTMLElement &&
+      root &&
+      active.closest('.bf-chrome') &&
+      root.compareDocumentPosition(active) & Node.DOCUMENT_POSITION_FOLLOWING
+    ) {
+      primaryRef.current?.focus()
+    }
+  }, [ended])
+
+  const primary = (
+    <button
+      ref={primaryRef}
+      type='button'
+      data-ended-primary
+      aria-keyshortcuts='Enter'
+      className={styles.primary}
+      onClick={() => store.getState().startNext()}
+    >
+      {primaryText}
+    </button>
+  )
 
   return (
     <div
+      ref={rootRef}
       className='relative z-0 flex min-h-0 flex-1 items-center justify-center font-display text-dash'
       style={rootStyle}
     >
@@ -156,13 +200,20 @@ export default function Timer() {
         {`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`}
       </span>
 
+      {ended && phone && !strip && (
+        <p data-ended-label className={styles.phoneLabel}>
+          {doneLabel}
+        </p>
+      )}
+
       <div className={`absolute inset-0 flex items-center justify-center ${styles.stage}`}>
         <div
-          aria-hidden
           className={`relative hidden h-[70vh] items-center justify-center font-bold sm:flex ${styles.digits}`}
           style={digitsStyle}
         >
-          <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
+          <div aria-hidden className='contents'>
+            <DesktopDigits minutes={minutes} seconds={seconds} fontSize={desktopFontSize} />
+          </div>
           <div
             aria-hidden
             className={`absolute inset-0 items-center justify-center ${styles.inkOverlay}`}
@@ -171,28 +222,48 @@ export default function Timer() {
           </div>
 
           <div className={styles.under}>
-            <div aria-hidden className={styles.ruler}>
-              {RULER_TICKS.map(i => (
-                <i
-                  key={`tick-${i}`}
-                  className={
-                    i < nowIndex
-                      ? styles.done
-                      : i === nowIndex && timeLeft > 0
-                        ? styles.now
-                        : undefined
-                  }
-                />
-              ))}
-            </div>
-            <div aria-hidden className={`${styles.hints} bf-chrome`}>
-              <span>
-                <kbd>Space</kbd>pause/start
-              </span>
-              <span>
-                <kbd>R</kbd>reset
-              </span>
-            </div>
+            {ended && !phone ? (
+              <div data-ended-group className={styles.ended}>
+                <p data-ended-label className={styles.endedLabel}>
+                  {`${doneLabel} \u00B7 ${endedMinutes} min`}
+                </p>
+                {primary}
+                <div aria-hidden className={`${styles.hints} ${styles.endedHints} bf-chrome`}>
+                  <span>
+                    <kbd>+</kbd>add 1 min
+                  </span>
+                  <span>
+                    <kbd>Enter</kbd>
+                    {nextHint}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div aria-hidden className={styles.ruler}>
+                  {RULER_TICKS.map(i => (
+                    <i
+                      key={`tick-${i}`}
+                      className={
+                        i < nowIndex
+                          ? styles.done
+                          : i === nowIndex && timeLeft > 0
+                            ? styles.now
+                            : undefined
+                      }
+                    />
+                  ))}
+                </div>
+                <div aria-hidden className={`${styles.hints} bf-chrome`}>
+                  <span>
+                    <kbd>Space</kbd>pause/start
+                  </span>
+                  <span>
+                    <kbd>R</kbd>reset
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -210,6 +281,12 @@ export default function Timer() {
           )}
         </div>
       </div>
+
+      {ended && phone && !strip && (
+        <div data-ended-row className={styles.phoneRow}>
+          {primary}
+        </div>
+      )}
 
       <div aria-hidden data-edge-progress className={styles.edgeTrack} />
       <div aria-hidden data-edge-progress className={styles.edgeFill} />

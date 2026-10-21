@@ -147,7 +147,94 @@
   }
 }
 
+/* Ended block (08-UI-SPEC "Ended block under the digits") */
+.ended {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  animation: bf-ended-in 200ms ease-out;
+}
+
+.endedLabel,
+.phoneLabel {
+  margin: 0;
+  font: 500 14px / 1 var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--fg) 55%, transparent);
+  white-space: nowrap;
+}
+
+.primary {
+  height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 8px;
+  background: hsl(var(--foreground));
+  color: #101010;
+  font: 600 16px / 1 var(--font-app);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.primary:hover {
+  background: hsl(var(--foreground) / 0.9);
+}
+
+.primary:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Phone: label 16px above the stacked digits, button in its own row below them. */
+.phoneLabel {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(50% + var(--stack-size) / 2 + 16px);
+  font-size: 12px;
+  animation: bf-ended-in 200ms ease-out;
+}
+
+.phoneRow {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(50% + var(--stack-size) / 2);
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  animation: bf-ended-in 200ms ease-out;
+}
+
+.phoneRow .primary {
+  padding: 0 16px;
+}
+
+@keyframes bf-ended-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-height: 799px) {
+  .endedHints {
+    display: none;
+  }
+}
+
+@media (max-height: 559px) {
+  .endedLabel {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .ended,
+  .phoneLabel,
+  .phoneRow {
+    animation: none;
+  }
   .ruler i,
   .edgeFill,
   .stage {
