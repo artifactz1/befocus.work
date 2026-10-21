@@ -536,7 +536,7 @@ is recorded accurately so the rest of the productivity track has data to stand o
 **Plans**: 9 plans in 6 waves (`.planning/phases/BFC-08-focus-blocks-and-added-time/`)
 
 Plans:
-- [ ] 08-01-PLAN.md - Block engine and check, store, worker, Timer and title rewired onto blocks with an explicit ended state and wall-clock `endsAt` (BLK-01, BLK-05)
+- [x] 08-01-PLAN.md - Block engine and check, store, worker, Timer and title rewired onto blocks with an explicit ended state and wall-clock `endsAt` (BLK-01, BLK-05)
 - [ ] 08-02-PLAN.md - Ended group under the digits (label, Start break / Start focus / Finish session), Enter and `+` `=` `-` keys, phone and short-screen fit (BLK-01, BLK-02)
 - [ ] 08-03-PLAN.md - Ended cues: ring, two nudges then quiet, tab title, live region, breathing 00:00, focus move (BLK-01)
 - [ ] 08-04-PLAN.md - Footer -1 / +1 by state, added-time badge, notch past the end on Edge, Ruler and Ink, announcements (BLK-02)
@@ -782,7 +782,7 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 6. URL Backgrounds | 0/TBD | Not started | - |
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
 | 7.1. Session Settings Start Card (INSERTED) | 5/5 | Built, human_needed: migration 0010 not applied, signed-in E2E and UAT pending | 2026-10-16 (code) |
-| 8. Focus Blocks and Added Time | 0/9 | Planned (08-01..08-09); execution waits on Phase 3 | - |
+| 8. Focus Blocks and Added Time | 1/9 | In Progress|  |
 | 9. Tasks and Time Blocks | 0/11 | Planned (09-01..09-11); execution waits on Phase 8 and Phase 3 | - |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
 

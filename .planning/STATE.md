@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Phase 08 planned (9 plans in 6 waves); execution waits on Phase 3 migrations 0010 and 0011"
-last_updated: "2026-10-20T22:00:00.000Z"
-last_activity: 2026-10-20 -- Phase 08 planned (9 plans)
+stopped_at: Completed BFC-08-01-PLAN.md
+last_updated: "2026-10-21T03:33:13.632Z"
+last_activity: 2026-10-21
 progress:
   total_phases: 11
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 52
-  completed_plans: 31
-  percent: 60
+  completed_plans: 32
+  percent: 36
 ---
 
 # Project State
@@ -22,16 +22,16 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** A user can change how their focus dashboard looks and have that look still be there
 the next time they open it - signed in on any device, or as a guest on the same browser.
-**Current focus:** Phase 3 all 6 plans built (look persists server-side and in guest localStorage); migrations 0010 and 0011 plus signed-in checks pending a human (03-VERIFICATION.md). Phase 7.1 (inserted) all 5 plans built (PR #121); migration 0010 and signed-in E2E/UAT pending a human. Phase 7 shipped (#116) awaiting human checks and owner override; Phase 1 (01-05 deploy check) and Phase 2 (owner review) also awaiting human sign-off; Phase 8 planned (9 plans in 6 waves, waits on Phase 3 migrations; board picks 1D, 2D, 3A, 4C); Phase 9 planned (11 plans, waits on Phase 8 and Phase 3); Phases 4-6 and 10 not started. Build order: 8, then 9, then 10, then 4-6
+**Current focus:** Phase 08 — focus-blocks-and-added-time
 
 ## Current Position
 
-Phase: 07.1 (session-settings-start-card-and-capsule-steppers) - BUILT, human checks pending
-Plan: 5 of 5
-Status: 07.1 code done and guest E2E passed; apply migration 0010, run signed-in E2E and UAT. Still open: 01-05 production check, 02-08 owner review, 07 human checks, 07-08 timer-scale override and label-size hardening
-Last activity: 2026-10-20 -- Phase 08 planned (9 plans)
+Phase: 08 (focus-blocks-and-added-time) — EXECUTING
+Plan: 2 of 9
+Status: Ready to execute
+Last activity: 2026-10-21
 
-Progress: [██████░░░░] 60%
+Progress: [██████░░░░] 62%
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [██████░░░░] 60%
 | Phase 02 P06 | 40min | 2 tasks | 8 files |
 | Phase BFC-02 P07 | 90min | 2 tasks | 3 files |
 | Phase 02 P08 | 70min | 2 tasks | 5 files |
+| Phase 08 P01 | 25 min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -116,6 +117,7 @@ Recent decisions affecting current work:
 
 - Phase 7 added: Vinyl Sound Space (VNL-01..08), depends on Phase 2; design decided on the
   vinyl board 2026-10-05 (record room, Material art, shelf + knobs + paste, fix #101/#102 first)
+
 - Phase 8 added: Focus Blocks and Added Time (BLK-01..05), depends on Phase 3
 - Phase 9 added: Tasks and Time Blocks (TSK-01..05), depends on Phase 8
 - Phase 10 added: Session Logs and Reflection (LOG-01..06), depends on Phases 8 and 9
@@ -153,8 +155,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-10-16
-Stopped at: Completed 07-08-PLAN.md (Phase 7 redesign, PR #116); progress views reconciled
+Last session: 2026-10-21T03:33:13.626Z
+Stopped at: Completed BFC-08-01-PLAN.md
 Resume file: None
 
 ## Quick Tasks Completed
