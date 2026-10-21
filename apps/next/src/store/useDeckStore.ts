@@ -13,7 +13,9 @@ interface DeckState {
   // last-used Tasks tab, for this page load only
   tasksTab: TasksTab
   setTasksTab: (tab: TasksTab) => void
-  openDeck: (card: Card, tab?: TasksTab) => void
+  // element that opened the card; focus returns to it on close while it is connected
+  opener: HTMLElement | null
+  openDeck: (card: Card, tab?: TasksTab, opener?: HTMLElement) => void
   closeDeck: () => void
   toggleDeck: (card: Card) => void
 }
@@ -23,9 +25,11 @@ export const useDeckStore = create<DeckState>((set, get) => ({
   deck: null,
   tasksTab: 'list',
   setTasksTab: tasksTab => set({ tasksTab }),
-  openDeck: (card, tab) => set(tab ? { deck: card, tasksTab: tab } : { deck: card }),
+  opener: null,
+  openDeck: (card, tab, opener) =>
+    set({ deck: card, opener: opener ?? null, ...(tab ? { tasksTab: tab } : {}) }),
   closeDeck: () => set({ deck: null }),
-  toggleDeck: card => set({ deck: get().deck === card ? null : card }),
+  toggleDeck: card => set({ deck: get().deck === card ? null : card, opener: null }),
 }))
 
 // Owns html[data-room] / html[data-deck]. Call once (RecordRoom, mounted by both layouts).
@@ -75,6 +79,12 @@ export function useDeckCard({
     const closed = prevDeck.current === card && deck === null
     prevDeck.current = deck
     if (!closed) return
+    const opener = useDeckStore.getState().opener
+    useDeckStore.setState({ opener: null })
+    if (opener?.isConnected && opener.offsetParent !== null) {
+      opener.focus()
+      return
+    }
     for (const el of document.querySelectorAll<HTMLElement>(triggerSelector)) {
       if (el.offsetParent !== null) {
         el.focus()

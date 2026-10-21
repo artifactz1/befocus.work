@@ -7,8 +7,18 @@ import useIsLandscape from '../helper/useIsMobileLandscape'
 
 type CellState = 'done' | 'now' | 'todo'
 
-export default function SessionsUI() {
-  const { sessions, currentSession, isWorking } = useTimerStore()
+// Counts come from the plan's block list when the progress slot passes them.
+export default function SessionsUI({
+  sessions: planSessions,
+  currentSession: planCurrent,
+}: {
+  sessions?: number
+  currentSession?: number
+}) {
+  const store = useTimerStore()
+  const { isWorking } = store
+  const sessions = planSessions ?? store.sessions
+  const currentSession = planCurrent ?? store.currentSession
 
   const isLandscape = useIsLandscape()
 
@@ -27,7 +37,7 @@ export default function SessionsUI() {
   }
 
   return (
-    <main data-sessions-ui>
+    <div>
       <div className='hidden h-[calc(11vh+var(--pad-y))] sm:block'>
         <div
           className={`mx-auto flex w-full flex-col items-center justify-center ${isLandscape ? 'space-y-1' : 'space-y-3'}`}
@@ -103,6 +113,6 @@ export default function SessionsUI() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
