@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useTimerKeyboard } from '~/hooks/useTimerKeyboard'
 import { useSoundsStore } from '~/store/useSoundsStore'
-import { useTimerStore } from '~/store/useTimerStore'
+import { useTimerStore, useTimerStoreApi } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
 import TimerUI from './TimeUI'
 import styles from './timer-progress.module.css'
@@ -42,8 +42,8 @@ export default function Timer() {
   const roomOpen = useSoundsStore(s => s.roomOpen)
   const narrow = useMediaQuery('(max-width: 1023.98px)')
   const strip = roomOpen && narrow
-  const { timeLeft, isRunning, decrementTime, workDuration, breakDuration, isWorking } =
-    useTimerStore()
+  const store = useTimerStoreApi()
+  const { timeLeft, isRunning, status, blocks, currentBlockId } = useTimerStore()
 
   const [minutes, setMinutes] = useState<number>(timeLeft / 60)
   const [seconds, setSeconds] = useState<number>(0)
@@ -55,30 +55,31 @@ export default function Timer() {
   const workerRef = useRef<Worker | null>(null)
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      audioRef.current = new Audio('sounds/public_sounds_alarm1.mp3')
-      workerRef.current = new Worker(new URL('../../lib/timerWorker', import.meta.url))
-      workerRef.current.onmessage = e => {
-        if (e.data === 'decrement') {
-          decrementTime()
-        }
-      }
+    audioRef.current = new Audio('sounds/public_sounds_alarm1.mp3')
+    const worker = new Worker(new URL('../../lib/timerWorker', import.meta.url))
+    workerRef.current = worker
+    worker.onmessage = e => {
+      if (e.data === 'tick') store.getState().tick(Date.now())
     }
+    // A background tab can throttle the worker: catch an end that passed while hidden at once.
+    const catchUp = () => store.getState().tick(Date.now())
+    document.addEventListener('visibilitychange', catchUp)
+    window.addEventListener('focus', catchUp)
 
     return () => {
-      if (workerRef.current) {
-        workerRef.current.terminate()
-      }
+      document.removeEventListener('visibilitychange', catchUp)
+      window.removeEventListener('focus', catchUp)
+      worker.terminate()
     }
-  }, [decrementTime])
+  }, [store])
 
   useEffect(() => {
-    if (isRunning && timeLeft > 0) {
-      workerRef.current?.postMessage({ command: 'start', interval: 1000 })
+    if (isRunning) {
+      workerRef.current?.postMessage({ command: 'start', interval: 250 })
     } else {
       workerRef.current?.postMessage({ command: 'stop' })
     }
-  }, [isRunning, timeLeft])
+  }, [isRunning])
 
   useEffect(() => {
     if (alarmUrl && audioRef.current) {
@@ -106,13 +107,14 @@ export default function Timer() {
     }
   }, [])
 
+  const prevStatus = useRef(status)
   useEffect(() => {
-    if (timeLeft === 0) {
-      playAlarm()
-    } else {
-      stopAlarm()
+    if (prevStatus.current !== status) {
+      if (status === 'ended') playAlarm()
+      else if (prevStatus.current === 'ended') stopAlarm()
+      prevStatus.current = status
     }
-  }, [timeLeft, playAlarm, stopAlarm])
+  }, [status, playAlarm, stopAlarm])
 
   useEffect(() => {
     const mins = Math.floor(timeLeft / 60)
@@ -132,7 +134,8 @@ export default function Timer() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const total = isWorking ? workDuration : breakDuration
+  const block = blocks.find(b => b.id === currentBlockId)
+  const total = block ? block.plannedSeconds + block.addedSeconds : 0
   const elapsed = total > 0 ? Math.min(1, Math.max(0, 1 - timeLeft / total)) : 0
   const nowIndex = Math.floor(elapsed * 25)
 

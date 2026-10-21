@@ -91,13 +91,15 @@ const fromSeed = (s: SeedBlock, index: number, sessionId: string): Block => ({
 
 export function createRun(sessionId: string, seed: SeedBlock[]): Run {
   const blocks = seed.map((s, i) => fromSeed(s, i, sessionId))
+  const first = blocks[0]
+  if (!first) throw new Error('createRun needs at least one block')
   return {
     sessionId,
     blocks,
-    currentBlockId: blocks[0].id,
+    currentBlockId: first.id,
     status: 'idle',
     endsAt: null,
-    remainingMs: blocks[0].plannedSeconds * 1000,
+    remainingMs: first.plannedSeconds * 1000,
     segmentStartedAt: null,
     activeMs: 0,
     completed: false,
@@ -107,7 +109,9 @@ export function createRun(sessionId: string, seed: SeedBlock[]): Run {
 const indexOfCurrent = (run: Run) => run.blocks.findIndex(b => b.id === run.currentBlockId)
 
 export function currentBlock(run: Run): Block {
-  return run.blocks[indexOfCurrent(run)]
+  const block = run.blocks[indexOfCurrent(run)]
+  if (!block) throw new Error('currentBlockId is not in blocks')
+  return block
 }
 
 export function nextBlock(run: Run): Block | null {

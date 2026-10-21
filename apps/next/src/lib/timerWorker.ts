@@ -6,7 +6,7 @@ self.onmessage = e => {
   if (command === 'start') {
     if (intervalId) return // Prevent multiple intervals
     intervalId = setInterval(() => {
-      self.postMessage('decrement')
+      self.postMessage('tick')
     }, interval)
   } else if (command === 'stop') {
     clearInterval(intervalId as NodeJS.Timeout)
