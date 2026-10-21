@@ -8,7 +8,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Check, GripVertical, Minus, Plus } from 'lucide-react'
 import { type DragEvent, useState } from 'react'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
-import { usePlanActions, useSessionView } from '~/hooks/usePlan'
+import { useNow, usePlanActions, useSessionView } from '~/hooks/usePlan'
 import { useTaskActions } from '~/hooks/useTasks'
 import { api } from '~/lib/api.client'
 import {
@@ -20,6 +20,7 @@ import {
 } from '~/lib/plan/plan'
 import { useTasksStore, useTasksStoreApi } from '~/store/useToDoStore'
 import records from '../records/records.module.css'
+import BlockTasks from './BlockTasks'
 import { AddRow, Skeleton } from './ListTab'
 import styles from './tasks.module.css'
 
@@ -202,22 +203,26 @@ const lengthText = (b: LiveBlock) =>
     ? `${minutesOf(b.plannedSeconds)} + ${minutesOf(b.addedSeconds)} min`
     : formatDuration(minutesOf(b.plannedSeconds))
 
-// Done rows: a static tick per task (untick from the List tab).
-function StaticTick({ done }: { done: boolean }) {
-  return (
-    <span className={styles.tick} data-done={done || undefined}>
-      {done && <Check aria-hidden='true' />}
-      <span className='sr-only'>{done ? 'done' : 'not done'}</span>
-    </span>
-  )
-}
-
 // Current block: every assigned task is a completion row (checked = completed).
-function CompletionRow({ task, draggable }: { task: Task; draggable: boolean }) {
+function CompletionRow({
+  task,
+  draggable,
+  isNow,
+}: {
+  task: Task
+  draggable: boolean
+  isNow: boolean
+}) {
   const { completeTask } = useTaskActions()
+  const { setNow } = usePlanActions()
   return (
     <li
-      className={cn(styles.row, styles.liveRow, task.completed && styles.done)}
+      className={cn(
+        styles.row,
+        styles.liveRow,
+        task.completed && styles.done,
+        isNow && styles.nowRow,
+      )}
       draggable={draggable || undefined}
       onDragStart={
         draggable
@@ -238,6 +243,19 @@ function CompletionRow({ task, draggable }: { task: Task; draggable: boolean }) 
         <Check aria-hidden='true' />
       </Checkbox>
       <span className={styles.text}>{task.text}</span>
+      {!task.completed &&
+        (isNow ? (
+          <span className={styles.nowTagRow}>Now</span>
+        ) : (
+          <button
+            type='button'
+            className={styles.setNow}
+            aria-label={`Set ${task.text} as now`}
+            onClick={() => void setNow(task.id)}
+          >
+            Set now
+          </button>
+        ))}
     </li>
   )
 }
@@ -252,7 +270,7 @@ export default function PlanTab() {
   const [overId, setOverId] = useState<string | null>(null)
   const fine = useMediaQuery('(pointer: fine)')
   const tasks = useTasksStore(s => s.tasks)
-  const links = useTasksStore(s => s.links)
+  const nowId = useNow().task?.id
 
   if (planLoad === 'error') return <PlanLoadError />
   if (!plan || !view) return <Skeleton rows={3} height={60} gap={16} />
@@ -382,22 +400,7 @@ export default function PlanTab() {
                   </span>
                   <span className={styles.meta}>{meta}</span>
                 </span>
-                {taskList.length === 0 ? (
-                  <span className={styles.noTasks}>No tasks</span>
-                ) : (
-                  <ul className={styles.rows}>
-                    {taskList.map(t => (
-                      <li key={t.id} className={cn(styles.row, styles.doneTask)}>
-                        <StaticTick
-                          done={links.some(
-                            l => l.taskId === t.id && l.blockId === vb.id && l.completed,
-                          )}
-                        />
-                        <span className={styles.text}>{t.text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <BlockTasks blockId={vb.id} />
               </>,
               false,
             )
@@ -421,7 +424,7 @@ export default function PlanTab() {
                 ) : (
                   <ul className={styles.rows}>
                     {taskList.map(t => (
-                      <CompletionRow key={t.id} task={t} draggable={fine} />
+                      <CompletionRow key={t.id} task={t} draggable={fine} isNow={t.id === nowId} />
                     ))}
                   </ul>
                 )}

@@ -9,6 +9,7 @@ import { badgeText, minutesLabel } from '~/lib/blocks/blocks'
 import { useDeckStore } from '~/store/useDeckStore'
 import { useTimerStore, useTimerStoreApi } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
+import NowLine, { useNowLineShown } from '../tasks/NowLine'
 import { readAdjustHintSeen } from './AdjustTray'
 import TimerUI from './TimeUI'
 import styles from './timer-progress.module.css'
@@ -46,6 +47,7 @@ export default function Timer() {
   const phone = useMediaQuery('(max-width: 639.98px)')
   const store = useTimerStoreApi()
   const { timeLeft, isRunning, status, blocks, currentBlockId } = useTimerStore()
+  const nowLine = useNowLineShown()
   const rootRef = useRef<HTMLDivElement | null>(null)
   const primaryRef = useRef<HTMLButtonElement | null>(null)
 
@@ -306,20 +308,24 @@ export default function Timer() {
                   })}
                   {notch !== null && <b className={styles.rulerNotch} />}
                 </div>
-                <div aria-hidden className={`${styles.hints} bf-chrome`}>
-                  <span>
-                    <kbd>Space</kbd>pause/start
-                  </span>
-                  <span>
-                    <kbd>R</kbd>reset
-                  </span>
-                  {status === 'running' && !hintSeen && (
+                {nowLine ? (
+                  <NowLine />
+                ) : (
+                  <div aria-hidden className={`${styles.hints} bf-chrome`}>
                     <span>
-                      <kbd>+</kbd>
-                      <kbd>-</kbd>1 min, hold for more
+                      <kbd>Space</kbd>pause/start
                     </span>
-                  )}
-                </div>
+                    <span>
+                      <kbd>R</kbd>reset
+                    </span>
+                    {status === 'running' && !hintSeen && (
+                      <span>
+                        <kbd>+</kbd>
+                        <kbd>-</kbd>1 min, hold for more
+                      </span>
+                    )}
+                  </div>
+                )}
               </>
             )}
           </div>

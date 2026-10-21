@@ -6,6 +6,7 @@ import { cn } from '@repo/ui/lib/utils'
 import { Archive, ArchiveRestore, Check, ChevronDown, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+import { useNow } from '~/hooks/usePlan'
 import { useTaskActions, useUserTasks } from '~/hooks/useTasks'
 import { plannedBlockNumber } from '~/lib/plan/plan'
 import { useTasksStore, useTasksStoreApi } from '~/store/useToDoStore'
@@ -71,8 +72,11 @@ function Row({ task }: { task: Task }) {
   const block = useTasksStore(s =>
     s.plan ? plannedBlockNumber(s.plan.blocks, s.links, task.id) : null,
   )
+  const now = useNow()
+  const isNow = now.task?.id === task.id
+  const inCurrent = block !== null && now.blockTasks.some(t => t.id === task.id)
   return (
-    <li className={cn(styles.row, task.completed && styles.done)}>
+    <li className={cn(styles.row, task.completed && styles.done, isNow && styles.nowRow)}>
       <Checkbox
         className={styles.box}
         checked={task.completed}
@@ -82,8 +86,9 @@ function Row({ task }: { task: Task }) {
         <Check aria-hidden='true' />
       </Checkbox>
       <EditableText task={task} />
+      {isNow && <span className={styles.nowTagRow}>Now</span>}
       {block !== null && !task.archived && (
-        <span className={styles.chip}>
+        <span className={styles.chip} data-current={inCurrent || undefined}>
           <span aria-hidden='true'>B{block}</span>
           <span className='sr-only'>Planned in Block {block}</span>
         </span>
