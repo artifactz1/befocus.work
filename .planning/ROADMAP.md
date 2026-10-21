@@ -628,7 +628,7 @@ Plans:
 - [x] 09-05-PLAN.md - Plan client: guest storage, seeding from Session settings, saver, Plan tab (TSK-03)
 - [x] 09-06-PLAN.md - Task to block links: `task_block_links`, PUT /user/task-links, Assign checklist and drag (TSK-03)
 - [x] 09-07-PLAN.md - Live session: plan seeds Phase 8's block list, Session card, live completion writes (TSK-03, TSK-04)
-- [ ] 09-08-PLAN.md - Progress slot: Strip / Now / Grid, switcher popover, Session progress preference (TSK-04)
+- [x] 09-08-PLAN.md - Progress slot: Strip / Now / Grid, switcher popover, Session progress preference (TSK-04)
 - [ ] 09-09-PLAN.md - Now line and now pick (TSK-02)
 - [ ] 09-10-PLAN.md - Block record data path: GET /user/task-links?blockId, guest link history (TSK-02)
 - [ ] 09-11-PLAN.md - Phone: compact progress views, now line placement, mini strip above the sheet (TSK-05)
@@ -783,7 +783,7 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
 | 7.1. Session Settings Start Card (INSERTED) | 5/5 | Built, human_needed: migration 0010 not applied, signed-in E2E and UAT pending | 2026-10-16 (code) |
 | 8. Focus Blocks and Added Time | 9/9 | Built, human_needed: apply migration 0012, signed-in focus_blocks round trip, real-touch long-press, reduced motion (see 08-VERIFICATION.md) | 2026-10-21 (code) |
-| 9. Tasks and Time Blocks | 7/11 | In Progress|  |
+| 9. Tasks and Time Blocks | 8/11 | In Progress|  |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
 
 ## Requirement Coverage
