@@ -541,9 +541,9 @@ Plans:
 - [ ] 08-03-PLAN.md - Ended cues: ring, two nudges then quiet, tab title, live region, breathing 00:00, focus move (BLK-01)
 - [ ] 08-04-PLAN.md - Footer -1 / +1 by state, added-time badge, notch past the end on Edge, Ruler and Ink, announcements (BLK-02)
 - [ ] 08-05-PLAN.md - Hold-for-1/5/10 tray, keyboard path, first-run hint (BLK-02)
-- [ ] 08-06-PLAN.md - Guest block records in browser storage (merge by id, last 500), provider record sink, pagehide record (BLK-03, BLK-04)
-- [ ] 08-07-PLAN.md - `focus_blocks` table, generated migration, PUT /user/blocks route trio and check; human applies the migration (BLK-03, BLK-04)
-- [ ] 08-08-PLAN.md - Signed-in record queue: per-user, one request at a time, chunks of 100, retry on load and online (BLK-03, BLK-04)
+- [x] 08-06-PLAN.md - Guest block records in browser storage (merge by id, last 500), provider record sink, pagehide record (BLK-03, BLK-04)
+- [x] 08-07-PLAN.md - `focus_blocks` table, generated migration, PUT /user/blocks route trio and check; human applies the migration (BLK-03, BLK-04)
+- [x] 08-08-PLAN.md - Signed-in record queue: per-user, one request at a time, chunks of 100, retry on load and online (BLK-03, BLK-04)
 - [ ] 08-09-PLAN.md - Agent E2E with chrome-devtools-axi at six viewports, then the signed-in human check (BLK-01..05)
 
 **UI hint**: yes
@@ -782,7 +782,7 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 6. URL Backgrounds | 0/TBD | Not started | - |
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
 | 7.1. Session Settings Start Card (INSERTED) | 5/5 | Built, human_needed: migration 0010 not applied, signed-in E2E and UAT pending | 2026-10-16 (code) |
-| 8. Focus Blocks and Added Time | 1/9 | In Progress|  |
+| 8. Focus Blocks and Added Time | 4/9 | In Progress|  |
 | 9. Tasks and Time Blocks | 0/11 | Planned (09-01..09-11); execution waits on Phase 8 and Phase 3 | - |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
 

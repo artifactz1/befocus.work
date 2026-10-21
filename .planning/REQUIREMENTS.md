@@ -149,7 +149,7 @@ Requirements for this milestone. Each maps to roadmap phases.
       counts down inside the same block
 - [ ] **BLK-03**: Every focus and break block is recorded with planned length, time spent, time
       added, start and end time, and whether it finished, was skipped or was reset
-- [ ] **BLK-04**: A signed-in user's block records are stored on the server; a guest's survive a
+- [x] **BLK-04**: A signed-in user's block records are stored on the server; a guest's survive a
       refresh in the same browser
 - [x] **BLK-05**: Recorded block lengths match the wall clock, including with the tab in the
       background or across a short sleep
@@ -285,7 +285,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | BLK-01 | Phase 8 - Focus Blocks and Added Time | Complete |
 | BLK-02 | Phase 8 - Focus Blocks and Added Time | Pending |
 | BLK-03 | Phase 8 - Focus Blocks and Added Time | Pending |
-| BLK-04 | Phase 8 - Focus Blocks and Added Time | Pending |
+| BLK-04 | Phase 8 - Focus Blocks and Added Time | Complete |
 | BLK-05 | Phase 8 - Focus Blocks and Added Time | Complete |
 | TSK-01 | Phase 9 - Tasks and Time Blocks | Pending |
 | TSK-02 | Phase 9 - Tasks and Time Blocks | Pending |
