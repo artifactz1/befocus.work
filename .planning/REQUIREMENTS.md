@@ -145,7 +145,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 - [x] **BLK-01**: When a focus block reaches zero the alarm plays and the timer waits in an ended
       state offering Add time and Start break; it never advances to the break on its own
-- [ ] **BLK-02**: User can add time to a just-ended focus block, repeatedly, and the added time
+- [x] **BLK-02**: User can add time to a just-ended focus block, repeatedly, and the added time
       counts down inside the same block
 - [x] **BLK-03**: Every focus and break block is recorded with planned length, time spent, time
       added, start and end time, and whether it finished, was skipped or was reset
@@ -283,7 +283,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | SES-05 | Phase 7.1 - Session Settings Start Card | Pending |
 | SES-06 | Phase 7.1 - Session Settings Start Card | Pending |
 | BLK-01 | Phase 8 - Focus Blocks and Added Time | Complete |
-| BLK-02 | Phase 8 - Focus Blocks and Added Time | Pending |
+| BLK-02 | Phase 8 - Focus Blocks and Added Time | Complete |
 | BLK-03 | Phase 8 - Focus Blocks and Added Time | Complete |
 | BLK-04 | Phase 8 - Focus Blocks and Added Time | Complete |
 | BLK-05 | Phase 8 - Focus Blocks and Added Time | Complete |
