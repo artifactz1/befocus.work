@@ -164,7 +164,7 @@ Requirements for this milestone. Each maps to roadmap phases.
       and the plan survives a refresh
 - [x] **TSK-04**: While a session runs, one view shows blocks done, the current block and progress
       through it, blocks ahead, time added, and tasks checked off
-- [ ] **TSK-05**: The plan and the progress view work on a phone and never obstruct the timer
+- [x] **TSK-05**: The plan and the progress view work on a phone and never obstruct the timer
 
 ### Session Logs and Reflection
 
@@ -292,7 +292,7 @@ Which phases cover which requirements. Populated during roadmap creation.
 | TSK-02 | Phase 9 - Tasks and Time Blocks | Complete |
 | TSK-03 | Phase 9 - Tasks and Time Blocks | Complete |
 | TSK-04 | Phase 9 - Tasks and Time Blocks | Complete |
-| TSK-05 | Phase 9 - Tasks and Time Blocks | Pending |
+| TSK-05 | Phase 9 - Tasks and Time Blocks | Complete |
 | LOG-01 | Phase 10 - Session Logs and Reflection | Pending |
 | LOG-02 | Phase 10 - Session Logs and Reflection | Pending |
 | LOG-03 | Phase 10 - Session Logs and Reflection | Pending |
