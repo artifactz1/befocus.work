@@ -311,6 +311,8 @@ div.add {
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--panel-muted);
+  /* "05:03 PM" is 52.8px in the 52px column; one line spills under 1px into the 8px gap */
+  white-space: nowrap;
 }
 
 .breakCell .gutter {
