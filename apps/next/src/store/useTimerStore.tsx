@@ -208,6 +208,8 @@ function createTimerStore(
         commit(startNext(runOf(get()), now, fresh), {}, now)
       },
       seedBlocks: input => {
+        // a finished run stays put until the summary is left (resetAll)
+        if (get().completed) return false
         const next = seed(runOf(get()), input)
         if (!next) return false
         commit(next)

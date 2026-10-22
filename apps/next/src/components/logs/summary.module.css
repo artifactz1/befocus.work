@@ -426,6 +426,7 @@ button.ghostRow:focus-visible {
 .chip {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   height: 32px;
   padding: 0 12px;
   border-radius: 999px;
