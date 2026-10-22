@@ -25,7 +25,6 @@ const TAB =
 function TasksTabs() {
   const tab = useDeckStore(s => s.tasksTab)
   const setTab = useDeckStore(s => s.setTasksTab)
-  const announcement = useTasksStore(s => s.announcement)
   return (
     <Tabs value={tab} onValueChange={v => setTab(v === 'plan' ? 'plan' : 'list')}>
       <TabsList className={TAB_LIST}>
@@ -42,10 +41,17 @@ function TasksTabs() {
       <TabsContent className='mt-4' value='plan'>
         <PlanTab />
       </TabsContent>
-      <div className='sr-only' role='status' aria-live='polite'>
-        {announcement}
-      </div>
     </Tabs>
+  )
+}
+
+// Outside the card: a now pick from the timer or a block start is announced with the card closed.
+function Announcer() {
+  const announcement = useTasksStore(s => s.announcement)
+  return (
+    <div className='sr-only' role='status' aria-live='polite'>
+      {announcement}
+    </div>
   )
 }
 
@@ -102,59 +108,65 @@ export default function TasksCard() {
 
   if (isDesktop) {
     return (
-      <AnimatePresence>
-        {isOpen && (
-          <motion.section
-            className={cn(records.surface, records.room, styles.card)}
-            role='dialog'
-            aria-modal='false'
-            aria-labelledby='tasks-heading'
-            data-tasks-card
-            data-deck-card
-            initial={{ x: -24, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -24, opacity: 0 }}
-            transition={{ duration: reducedMotion ? 0 : 0.45, ease: EASE }}
-          >
-            <Head />
-            <div className={cn(records.body, styles.body)}>
-              <TasksTabs />
-            </div>
-          </motion.section>
-        )}
-      </AnimatePresence>
+      <>
+        <Announcer />
+        <AnimatePresence>
+          {isOpen && (
+            <motion.section
+              className={cn(records.surface, records.room, styles.card)}
+              role='dialog'
+              aria-modal='false'
+              aria-labelledby='tasks-heading'
+              data-tasks-card
+              data-deck-card
+              initial={{ x: -24, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -24, opacity: 0 }}
+              transition={{ duration: reducedMotion ? 0 : 0.45, ease: EASE }}
+            >
+              <Head />
+              <div className={cn(records.body, styles.body)}>
+                <TasksTabs />
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
+      </>
     )
   }
 
   return (
-    <Drawer
-      open={isOpen}
-      modal={false}
-      shouldScaleBackground={false}
-      handleOnly
-      onOpenChange={setOpen}
-    >
-      <DrawerPortal>
-        <DrawerPrimitive.Content
-          ref={contentRef}
-          className={cn(records.surface, records.sheet, styles.card)}
-          aria-labelledby='tasks-heading'
-          aria-describedby={undefined}
-          data-tasks-card
-          data-deck-card
-          onCloseAutoFocus={e => e.preventDefault()}
-          onKeyDown={onSheetKeyDown}
-        >
-          <DrawerPrimitive.Title asChild>
-            <span aria-hidden className='sr-only' />
-          </DrawerPrimitive.Title>
-          <DrawerPrimitive.Handle preventCycle aria-hidden className={records.grab} />
-          <Head />
-          <div className={cn(records.body, styles.body)}>
-            <TasksTabs />
-          </div>
-        </DrawerPrimitive.Content>
-      </DrawerPortal>
-    </Drawer>
+    <>
+      <Announcer />
+      <Drawer
+        open={isOpen}
+        modal={false}
+        shouldScaleBackground={false}
+        handleOnly
+        onOpenChange={setOpen}
+      >
+        <DrawerPortal>
+          <DrawerPrimitive.Content
+            ref={contentRef}
+            className={cn(records.surface, records.sheet, styles.card)}
+            aria-labelledby='tasks-heading'
+            aria-describedby={undefined}
+            data-tasks-card
+            data-deck-card
+            onCloseAutoFocus={e => e.preventDefault()}
+            onKeyDown={onSheetKeyDown}
+          >
+            <DrawerPrimitive.Title asChild>
+              <span aria-hidden className='sr-only' />
+            </DrawerPrimitive.Title>
+            <DrawerPrimitive.Handle preventCycle aria-hidden className={records.grab} />
+            <Head />
+            <div className={cn(records.body, styles.body)}>
+              <TasksTabs />
+            </div>
+          </DrawerPrimitive.Content>
+        </DrawerPortal>
+      </Drawer>
+    </>
   )
 }
