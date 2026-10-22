@@ -1,0 +1,89 @@
+/* Hold tray above the -1 / +1 footer buttons (08-UI-SPEC "Hold tray"). */
+.tray {
+  --panel-surface: color-mix(in srgb, var(--bg-solid), #fff 5%);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  z-index: 40;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--panel-surface);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.5);
+  animation: tray-in 120ms ease-out;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+.cell {
+  width: 72px;
+  height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.05);
+  color: hsl(var(--foreground));
+  font: 600 16px / 1 var(--font-app);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.cell:hover:not([aria-disabled="true"]),
+.cell:focus:not([aria-disabled="true"]),
+.active {
+  background: hsl(var(--foreground));
+  color: #101010;
+}
+
+.cell:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.cell[aria-disabled="true"] {
+  opacity: 0.3;
+  cursor: default;
+}
+
+@media (max-width: 1023.98px), (pointer: coarse) {
+  .cell {
+    width: 52px;
+    font-size: 14px;
+  }
+}
+
+@keyframes tray-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tray {
+    animation: none;
+  }
+}
+
+/* Footer trigger while pressed or its tray is open. */
+button.held {
+  background: rgb(255 255 255 / 0.12);
+  border-color: rgb(255 255 255 / 0.28);
+}
+
+.holdable {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}

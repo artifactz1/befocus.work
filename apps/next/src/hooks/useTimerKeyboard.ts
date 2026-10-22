@@ -18,7 +18,9 @@ export function useTimerKeyboard() {
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.repeat) return
-      if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return
+      if (event.metaKey || event.ctrlKey || event.altKey) return
+      // Shift is allowed for '+' only (most layouts type it with Shift).
+      if (event.shiftKey && event.key !== '+') return
 
       const target = event.target
       if (target instanceof Element) {
@@ -30,6 +32,29 @@ export function useTimerKeyboard() {
         if (target instanceof Element && target.closest(ACTIVATABLE_SELECTOR)) return
         event.preventDefault()
         requestStartRef.current()
+        return
+      }
+
+      if (event.key === '+' || event.key === '=') {
+        if (store.getState().adjust(1)) event.preventDefault()
+        return
+      }
+
+      if (event.key === '-') {
+        if (store.getState().adjust(-1)) event.preventDefault()
+        return
+      }
+
+      if (event.key === 'Enter') {
+        if (store.getState().status !== 'ended') return
+        if (
+          target instanceof Element &&
+          target.closest(ACTIVATABLE_SELECTOR) &&
+          !target.closest("[aria-disabled='true']")
+        )
+          return
+        event.preventDefault()
+        store.getState().startNext()
         return
       }
 

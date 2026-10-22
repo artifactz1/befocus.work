@@ -5,18 +5,19 @@ import { useTimerStore } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
 
 export default function SessionTitleDisplay() {
-  const { isWorking, isRunning, workDuration, timeLeft } = useTimerStore()
+  const { isWorking, isRunning, status, workDuration, timeLeft } = useTimerStore()
 
-  const text = isRunning
-    ? isWorking
-      ? 'Focus'
-      : 'Break'
-    : workDuration === timeLeft
-      ? 'Be Focus'
-      : 'Paused'
+  const text =
+    isRunning || status === 'ended'
+      ? isWorking
+        ? 'Focus'
+        : 'Break'
+      : workDuration === timeLeft
+        ? 'Be Focus'
+        : 'Paused'
 
   const isLandscape = useIsLandscape()
-  const isIdle = !isRunning
+  const isIdle = !isRunning && status !== 'ended'
 
   return (
     <AnimatePresence mode='wait'>
