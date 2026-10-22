@@ -69,7 +69,12 @@ export function useDeckCard({
   // biome-ignore lint/correctness/useExhaustiveDependencies: rerun on rerunFocusOn so focus moves to the heading when the shell swaps
   useEffect(() => {
     if (!open) return
-    const frame = requestAnimationFrame(() => document.getElementById(headingId)?.focus())
+    const frame = requestAnimationFrame(() => {
+      const heading = document.getElementById(headingId)
+      // A field the card focused on open (the empty List's add input) keeps focus
+      if (heading?.closest('[data-deck-card]')?.contains(document.activeElement)) return
+      heading?.focus()
+    })
     return () => cancelAnimationFrame(frame)
   }, [open, headingId, rerunFocusOn])
 
