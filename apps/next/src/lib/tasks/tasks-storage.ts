@@ -11,6 +11,8 @@ const guestTaskSchema = z.object({
   completed: z.boolean(),
   archived: z.boolean(),
   createdAt: z.string().datetime().optional(),
+  later: z.boolean().optional(),
+  laterAt: z.string().datetime().nullable().optional(),
 })
 
 // Items stay unknown here so one bad item cannot discard its valid siblings.
