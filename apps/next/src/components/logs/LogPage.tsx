@@ -32,7 +32,7 @@ function Loading() {
   )
 }
 
-// Past session: fates stay read-only (no setFate), logs and Next time stay editable.
+// Past session: fates stay read-only (no fate handler), logs and Next time stay editable.
 function Detail({ mode, session }: { mode: 'account' | 'guest'; session: HistorySession }) {
   const { summary, handlers } = useSummaryModel({
     mode,
