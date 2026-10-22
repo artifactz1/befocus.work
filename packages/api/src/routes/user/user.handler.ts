@@ -508,7 +508,10 @@ export const updateUserTask: AppRouteHandler<UpdateUserTask> = async c => {
 
   const [updated] = await db
     .update(tasks)
-    .set(parsed.data)
+    .set({
+      ...parsed.data,
+      ...(parsed.data.later !== undefined && { laterAt: parsed.data.later ? new Date() : null }),
+    })
     .where(and(eq(tasks.id, taskId), eq(tasks.userId, user.id)))
     .returning()
 
