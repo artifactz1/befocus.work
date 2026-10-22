@@ -3,6 +3,7 @@ import AccentSection from './AccentSection'
 import BackgroundSection from './BackgroundSection'
 import LooksSection from './LooksSection'
 import {
+  BreakLogSection,
   DensitySection,
   FinishSection,
   ProgressSection,
@@ -18,6 +19,7 @@ export const CUSTOMIZE_SECTIONS: { id: string; chip?: string; Component: Compone
   { id: 'customize-accent', chip: 'Accent', Component: AccentSection },
   { id: 'customize-progress', chip: 'Timer', Component: ProgressSection },
   { id: 'customize-session-progress', Component: SessionProgressSection },
+  { id: 'customize-break-log', Component: BreakLogSection },
   { id: 'customize-density', Component: DensitySection },
   { id: 'customize-finish', Component: FinishSection },
 ]
