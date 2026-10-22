@@ -79,7 +79,10 @@ const ps = buildSummary(past)
 assert.equal(ps.status, 'stopped')
 assert.deepEqual(ps.later, [])
 const over = mdFixture()
-over.note = { ...over.note!, carried: [{ taskId: 't5', text: 'Draft Phase 10 board', fate: 'drop' }] }
+over.note = {
+  ...over.note!,
+  carried: [{ taskId: 't5', text: 'Draft Phase 10 board', fate: 'drop' }],
+}
 assert.equal(buildSummary(over).notDone.find(n => n.taskId === 't5')?.fate, 'drop')
 
 // a task completed in any block is Done, never Not done; nothing in both Not done and Later
@@ -107,7 +110,9 @@ assert.deepEqual(fateOps('later', 'drop'), ['clear-later', 'archive'])
 assert.deepEqual(fateOps('next', 'next'), [])
 
 // finishedRecords: ended blocks of the run, step records win by id, sorted by index
-const base = mdFixture().records
+// toRecord validates ids as uuids, the fixture uses short ids
+const uid = (n: number) => `00000000-0000-4000-8000-00000000000${n}`
+const base = mdFixture().records.map((r, i) => ({ ...r, id: uid(i) }))
 const blk = (r: (typeof base)[number], over: Partial<Block> = {}): Block =>
   ({
     id: r.id,
@@ -132,20 +137,39 @@ const fr = finishedRecords(
 assert.deepEqual(
   fr.map(r => [r.id, r.actualSeconds]),
   [
-    ['b1', 1],
-    ['b2', 1500],
+    [uid(0), 1],
+    [uid(2), 1500],
   ],
 )
 
 // toHistoryLinks
 const hl = toHistoryLinks(
   [
-    { blockId: 'b1', taskId: 't1', planned: true, worked: false, completed: false, workedAt: null, completedAt: null },
-    { blockId: 'b1', taskId: 'gone', planned: true, worked: false, completed: false, workedAt: null, completedAt: null },
+    {
+      blockId: 'b1',
+      taskId: 't1',
+      planned: true,
+      worked: false,
+      completed: false,
+      workedAt: null,
+      completedAt: null,
+    },
+    {
+      blockId: 'b1',
+      taskId: 'gone',
+      planned: true,
+      worked: false,
+      completed: false,
+      workedAt: null,
+      completedAt: null,
+    },
   ],
   mdFixture().tasks,
 )
-assert.deepEqual(hl.map(l => [l.taskId, l.text]), [['t1', 'Write notes']])
+assert.deepEqual(
+  hl.map(l => [l.taskId, l.text]),
+  [['t1', 'Write notes']],
+)
 
 // formatting
 assert.equal(fmt.compact(3000), '50m')
@@ -159,7 +183,7 @@ assert.equal(fmt.since(ago(1), now), 'yesterday')
 assert.equal(fmt.since(ago(3), now), 'since Sun')
 assert.equal(fmt.since(ago(10), now), 'since 11 Oct')
 assert.equal(fmt.day(now, now), 'Wed 21 Oct')
-assert.equal(fmt.day(now - 400 * 86_400_000, now), 'Sat 12 Sep 2025')
+assert.equal(fmt.day(Date.UTC(2025, 8, 16, 9), now), 'Tue 16 Sep 2025')
 assert.equal(fmt.dayWithYear(now), 'Wed 21 Oct 2026')
 assert.equal(fmt.stamp(Date.UTC(2026, 9, 21, 9, 0)), '2026-10-21-0900')
 
@@ -169,7 +193,8 @@ assert.equal(blockLogSchema.safeParse({ ...ok, text: 'ok' }).success, true)
 assert.equal(blockLogSchema.safeParse({ ...ok, text: 'x'.repeat(2001) }).success, false)
 const noteOk = { sessionId: SID, nextTime: '', carried: [] }
 assert.equal(
-  sessionNoteSchema.safeParse({ ...noteOk, extraDone: Array.from({ length: 21 }, () => 'a') }).success,
+  sessionNoteSchema.safeParse({ ...noteOk, extraDone: Array.from({ length: 21 }, () => 'a') })
+    .success,
   false,
 )
 
