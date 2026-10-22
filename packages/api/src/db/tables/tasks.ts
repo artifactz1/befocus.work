@@ -12,6 +12,8 @@ export const tasks = pgTable('tasks', {
   editMode: boolean('edit_mode').notNull().default(false),
   archived: boolean('archived').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  later: boolean('later').notNull().default(false),
+  laterAt: timestamp('later_at', { withTimezone: true }),
   userId: text('user_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
@@ -30,6 +32,7 @@ export const insertTaskSchema = createInsertSchema(tasks, {
   editMode: true,
   createdAt: true, // let DB handle the timestamp
   userId: true,
+  laterAt: true, // only the server stamps it
 })
 
 export const updateTaskSchema = createUpdateSchema(tasks, {
@@ -38,4 +41,5 @@ export const updateTaskSchema = createUpdateSchema(tasks, {
   id: true,
   userId: true,
   createdAt: true, // prevent updating created timestamp
+  laterAt: true, // only the server stamps it
 })
