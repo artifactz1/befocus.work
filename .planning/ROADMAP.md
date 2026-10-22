@@ -41,7 +41,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (5 plans built; migration 0010, signed-in E2E and UAT pending)
 - [x] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded (9/9 plans built; human checks pending, see 08-VERIFICATION.md) (completed 2026-10-21)
 - [x] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (completed 2026-10-21, code)
-- [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
+- [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary you can export, history and what to improve
 
 ## Phase Details
 
@@ -691,7 +691,7 @@ Design questions for the captain (one Lavish board, before planning):
 notes turn into a real end-of-session summary and a history that shows the user what to improve.
 **Mode:** mvp
 **Depends on**: Phase 8, Phase 9
-**Requirements**: LOG-01, LOG-02, LOG-03, LOG-04, LOG-05, LOG-06
+**Requirements**: LOG-01, LOG-02, LOG-03, LOG-04, LOG-05, LOG-06, LOG-07, LOG-08
 **Success Criteria** (what must be TRUE):
 
   1. When a focus block ends and the break begins, the user is invited to log what they did; they
@@ -706,8 +706,39 @@ notes turn into a real end-of-session summary and a history that shows the user 
      that history.
 
   5. A guest's logs survive a refresh in the same browser.
-**Plans**: TBD
+  6. At the end of a session the user sees what got done, what did not, and what is left for
+     later, and can carry unfinished items over to later or back into their tasks.
+
+  7. User can copy the session summary as text, download it as a text or Markdown file, and use
+     the native share sheet where the device supports it.
+**Plans**: 13 plans in 6 waves (`.planning/phases/BFC-10-session-logs-and-reflection/`)
+
+Plans:
+- [ ] 10-01-PLAN.md - Log contracts, `block_logs` and `session_notes` tables, task `later` / `later_at`, hand-written migration 0015 (LOG-02, LOG-06, LOG-07)
+- [ ] 10-02-PLAN.md - "Ask what got done at each break" setting, /log reachable by guests and signed-in users, keyboard guard (LOG-01, LOG-04)
+- [ ] 10-03-PLAN.md - Account API: block logs, block links, session notes, history, task later flag (LOG-02, LOG-04, LOG-07)
+- [ ] 10-04-PLAN.md - Summary model, done / not done / later fates and export text, test first (LOG-03, LOG-07, LOG-08)
+- [ ] 10-05-PLAN.md - History list and What to improve rules, test first (LOG-04, LOG-05)
+- [ ] 10-06-PLAN.md - Log data layer: guest browser storage and account API behind one hook (LOG-02, LOG-06)
+- [ ] 10-07-PLAN.md - Later flag on the client and the Tasks Later group with Bring back (LOG-07, LOG-06)
+- [ ] 10-08-PLAN.md - Session seams: ended-session snapshot, break prompt trigger, Later cleared on plan (LOG-01, LOG-03)
+- [ ] 10-09-PLAN.md - Break log modal: shared log form, segmented rating, Move to (LOG-01, LOG-02)
+- [ ] 10-10-PLAN.md - Session summary view, done / not done / later list, block rows, Export menu (LOG-03, LOG-07, LOG-08, LOG-02)
+- [ ] 10-11-PLAN.md - Summary takes over the timer area, old completion modal removed, one confetti burst (LOG-03, LOG-07, LOG-02)
+- [ ] 10-12-PLAN.md - What to improve panel: Insights / Charts / Both, shown from 3 sessions (LOG-05)
+- [ ] 10-13-PLAN.md - /log page and footer Log button (LOG-04, LOG-08, LOG-06, LOG-02, LOG-05)
+
 **UI hint**: yes
+**Context**: `10-CONTEXT.md` (locked picks), `10-UI-SPEC.md` (design contract), `10-PATTERNS.md`.
+Picks from the Phase 10 design board (2026-10-21): 1C break log modal with text, task ticks, a
+Scattered / Okay / Deep rating and Move to (next block, a later block, or Later); 2A the summary
+takes over the timer area and replaces `SessionCompleteModal`, with 2-1 one confetti burst; 3A a
+`/log` page for guests and signed-in users; 4D Insights / Charts / Both switch, shown from 3
+sessions; 5A done / not done / later list with Next session, Later and Drop plus "Add something
+you did"; 6B Export menu (copy, download .txt / .md, native share), Notion stays in #100.
+Q7 computed rules plus a "Next time" note, no AI; Q8 prompt at every break and at session end,
+the break prompt switchable and on by default; Q9 guests keep logs in the browser only, no
+migration. Migration 0015 is hand-written and must be applied before signed-in checks.
 
 Notes for planning:
 
@@ -726,7 +757,8 @@ Notes for planning:
 - No chart library is installed. Simple bars and grids in CSS cover a first version; add one only
   if the chosen design needs it.
 
-Open product questions this phase needs answered: Q7, Q8, Q9.
+Open product questions this phase needs answered: Q7, Q8, Q9 (all resolved on the Phase 10 board,
+2026-10-21).
 
 Design questions for the captain (one Lavish board, before planning):
 
@@ -736,6 +768,10 @@ Design questions for the captain (one Lavish board, before planning):
   3. Where history lives: a new page, a panel on the dashboard, or inside the summary.
   4. How "what to improve" is shown: a few plain-language observations, small charts (planned vs
      actual, a streak calendar), or both.
+  5. The done / not done / later list (LOG-07): where it sits in the summary, what fills it, and
+     where "later" items go.
+  6. Export (LOG-08): copy, download and share controls, and the shape of the exported text.
+     Notion export is issue #100, not this phase.
 
 ## Open Product Questions (Phases 7-10)
 
@@ -757,14 +793,17 @@ answered before `/gsd-discuss-phase`. Q2-Q4 were answered on the vinyl design bo
      (which may touch issue #100, the Notion integration). Phase 9. Resolved 2026-10-16: one
      session; a full-day calendar is a later phase.
   7. **Q7 Where "what to improve" comes from.** Computed from the records, written by the user,
-     or AI-generated (a new external service and cost). Phase 10.
+     or AI-generated (a new external service and cost). Phase 10. Resolved 2026-10-21: computed rules from
+     the records plus a "Next time" note the user writes; no AI.
   8. **Q8 Log cadence.** A prompt at every break, only at the end of a session, or both; and
-     whether it can be turned off. Phase 10.
+     whether it can be turned off. Phase 10. Resolved 2026-10-21: both, a prompt at every break and at
+     session end; the break prompt can be switched off and is on by default.
   9. **Q9 Guest records.** Whether guests keep block records, logs and history at all, only in
      their browser, and whether those move into the account on sign-up the way SYN-04 does for
      themes. Phases 8-10. Resolved for Phase 9 on 2026-10-16: guest tasks, plan and task links
      stay in the browser, with no migration in Phase 9. Resolved for Phase 8 on 2026-10-20: guest
-     block records stay in the browser (last 500), with no migration in Phase 8.
+     block records stay in the browser (last 500), with no migration in Phase 8. Resolved for Phase 10
+     on 2026-10-21: guest logs, notes and history stay in the browser, with no migration.
 
 ## Progress
 
@@ -784,7 +823,7 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 7.1. Session Settings Start Card (INSERTED) | 5/5 | Built, human_needed: migration 0010 not applied, signed-in E2E and UAT pending | 2026-10-16 (code) |
 | 8. Focus Blocks and Added Time | 9/9 | Built, human_needed: apply migration 0012, signed-in focus_blocks round trip, real-touch long-press, reduced motion (see 08-VERIFICATION.md) | 2026-10-21 (code) |
 | 9. Tasks and Time Blocks | 11/11 | Built, human_needed: apply migrations 0013 and 0014 (hand-written, never applied), signed-in and API checks (see 09-VERIFICATION.md) | 2026-10-21 (code) |
-| 10. Session Logs and Reflection | 0/TBD | Not started | - |
+| 10. Session Logs and Reflection | 0/13 | Planned, not built: apply migration 0015 before signed-in checks | - |
 
 ## Requirement Coverage
 
@@ -800,10 +839,10 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 7.1. Session Settings Start Card | SES-01..06 | 6 |
 | 8. Focus Blocks and Added Time | BLK-01..05 | 5 |
 | 9. Tasks and Time Blocks | TSK-01..05 | 5 |
-| 10. Session Logs and Reflection | LOG-01..06 | 6 |
-| **Total** | | **82** |
+| 10. Session Logs and Reflection | LOG-01..08 | 8 |
+| **Total** | | **84** |
 
-All 82 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
+All 84 v1 requirements are mapped to exactly one phase. No orphans, no duplicates.
 
 ## Verification Note
 

@@ -177,6 +177,11 @@ Requirements for this milestone. Each maps to roadmap phases.
 - [ ] **LOG-04**: User can browse past sessions with their blocks and logs
 - [ ] **LOG-05**: User sees what to improve, drawn from their history
 - [ ] **LOG-06**: A guest's logs survive a refresh in the same browser
+- [ ] **LOG-07**: At the end of a session the user sees an explicit done / not done / later list;
+      unfinished items can be carried over to later or back into their tasks
+- [ ] **LOG-08**: User can copy the session summary as text, download it as a text or Markdown
+      file, and share it through the device's native share sheet where supported (Notion export
+      is deferred to issue #100)
 
 ## v2 Requirements
 
@@ -299,14 +304,16 @@ Which phases cover which requirements. Populated during roadmap creation.
 | LOG-04 | Phase 10 - Session Logs and Reflection | Pending |
 | LOG-05 | Phase 10 - Session Logs and Reflection | Pending |
 | LOG-06 | Phase 10 - Session Logs and Reflection | Pending |
+| LOG-07 | Phase 10 - Session Logs and Reflection | Pending |
+| LOG-08 | Phase 10 - Session Logs and Reflection | Pending |
 
 **Coverage:**
-- v1 requirements: 82 total
-- Mapped to phases: 82
+- v1 requirements: 84 total
+- Mapped to phases: 84
 - Unmapped: 0
 
 Every v1 requirement maps to exactly one phase. No orphans, no duplicates.
 
 ---
 *Requirements defined: 2026-09-23*
-*Last updated: 2026-10-16 after the session settings design board pick (Phase 7.1)*
+*Last updated: 2026-10-21 after adding LOG-07 and LOG-08 to Phase 10*
