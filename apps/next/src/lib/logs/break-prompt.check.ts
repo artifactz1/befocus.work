@@ -20,7 +20,11 @@ const blk = (id: string, kind: 'focus' | 'break', index: number, endedAt: number
 })
 const run = (cur: string, status: Run['status'], focusEnded: number | null = 1): Run => ({
   sessionId: 's',
-  blocks: [blk('f1', 'focus', 0, focusEnded), blk('b1', 'break', 1, null), blk('f2', 'focus', 2, null)],
+  blocks: [
+    blk('f1', 'focus', 0, focusEnded),
+    blk('b1', 'break', 1, null),
+    blk('f2', 'focus', 2, null),
+  ],
   currentBlockId: cur,
   status,
   endsAt: null,

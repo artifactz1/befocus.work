@@ -36,6 +36,7 @@ import {
   tick,
   timeLeftSeconds,
 } from '~/lib/blocks/blocks'
+import { finishedRecords } from '~/lib/logs/summary'
 import { startAction } from '~/lib/session/session'
 
 interface TimerState extends Run {
@@ -72,6 +73,8 @@ interface TimerState extends Run {
     opts: { run: boolean },
   ) => void
   setAskBeforeStart: (value: boolean) => void
+  /** Snapshot of the session that just ended; kept until resetAll (not persisted). */
+  finished: { sessionId: string; records: BlockRecord[] } | null
 }
 
 const newId = () => crypto.randomUUID()
@@ -107,7 +110,17 @@ function createTimerStore(
     const commit = (next: Run | Step, extra: Partial<TimerState> = {}, now = Date.now()) => {
       const step = 'run' in next ? next : { run: next, records: [] }
       const sess = extra.sessions ?? get().sessions
-      set({ ...step.run, ...legacy(step.run, now, sess), ...extra })
+      const before = get()
+      const finished =
+        step.run.completed && !before.completed
+          ? { sessionId: before.sessionId, records: finishedRecords(before.blocks, step.records) }
+          : undefined
+      set({
+        ...step.run,
+        ...legacy(step.run, now, sess),
+        ...(finished ? { finished } : {}),
+        ...extra,
+      })
       if (step.records.length > 0) onRecords(step.records)
     }
     const fresh = () => {
@@ -134,6 +147,7 @@ function createTimerStore(
       workDuration,
       breakDuration,
       askBeforeStart: initial?.askBeforeStart ?? true,
+      finished: null,
       card: null,
       tick: now => {
         const state = get()
@@ -202,7 +216,7 @@ function createTimerStore(
       updateSettings: (key, value) => set({ [key]: value } as Pick<TimerState, typeof key>),
       resetAll: () => {
         const state = get()
-        if (state.completed) commit({ ...runOf(state), completed: false })
+        if (state.completed) commit({ ...runOf(state), completed: false }, { finished: null })
         else resetWith(state, Date.now())
       },
     }

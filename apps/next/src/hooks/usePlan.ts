@@ -279,6 +279,7 @@ export function usePlanActions() {
       if (from === blockId) return
       const previous = state.links.filter(l => l.taskId === taskId)
       state.setLinks(planTask(state.links, taskId, blockId))
+      if (blockId !== null && task.later) state.patchTask(taskId, { later: false, laterAt: null })
       const n = focusNumber(store, blockId ?? from ?? '')
       state.announce(
         blockId === null
@@ -402,6 +403,9 @@ export function usePlanSync() {
       const prev = last
       last = t
       const s = store.getState()
+      // capture the ended session's links before closePlan clears them
+      if (t.completed && !prev.completed)
+        s.setEndedLinks(s.links.filter(l => prev.blocks.some(b => b.id === l.blockId)))
       let plan = s.plan
       if (!plan) return
 
