@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useNow } from '~/hooks/usePlan'
 import { useTaskActions, useUserTasks } from '~/hooks/useTasks'
+import { makeFormat } from '~/lib/logs/summary'
 import { plannedBlockNumber } from '~/lib/plan/plan'
 import { useTasksStore, useTasksStoreApi } from '~/store/useToDoStore'
 import records from '../records/records.module.css'
@@ -67,8 +68,8 @@ function EditableText({ task }: { task: Task }) {
   )
 }
 
-function Row({ task }: { task: Task }) {
-  const { completeTask, archive, restore } = useTaskActions()
+function Row({ task, laterRow }: { task: Task; laterRow?: boolean }) {
+  const { completeTask, archive, restore, setLater } = useTaskActions()
   const block = useTasksStore(s =>
     s.plan ? plannedBlockNumber(s.plan.blocks, s.links, task.id) : null,
   )
@@ -78,7 +79,7 @@ function Row({ task }: { task: Task }) {
   return (
     <li className={cn(styles.row, task.completed && styles.done, isNow && styles.nowRow)}>
       <Checkbox
-        className={styles.box}
+        className={cn(styles.box, laterRow && styles.laterBox)}
         checked={task.completed}
         aria-label={task.text}
         onCheckedChange={checked => completeTask(task.id, checked === true)}
@@ -92,6 +93,14 @@ function Row({ task }: { task: Task }) {
           <span aria-hidden='true'>B{block}</span>
           <span className='sr-only'>Planned in Block {block}</span>
         </span>
+      )}
+      {laterRow && task.laterAt && (
+        <span className={styles.laterDate}>{makeFormat().since(task.laterAt, Date.now())}</span>
+      )}
+      {laterRow && (
+        <button type='button' className={styles.bringBack} onClick={() => setLater(task.id, false)}>
+          Bring back
+        </button>
       )}
       {task.archived ? (
         <button
@@ -213,7 +222,10 @@ export default function ListTab() {
   const mode = useTasksStore(s => s.mode)
   const loadState = useTasksStore(s => s.loadState)
   const [showArchived, setShowArchived] = useState(false)
-  const open = tasks.filter(t => !t.archived && !t.completed)
+  const open = tasks.filter(t => !t.archived && !t.completed && !t.later)
+  const later = tasks
+    .filter(t => !t.archived && !t.completed && t.later)
+    .sort((a, b) => (b.laterAt ?? '').localeCompare(a.laterAt ?? ''))
   const done = tasks.filter(t => !t.archived && t.completed)
   const archived = tasks.filter(t => t.archived)
 
@@ -235,6 +247,18 @@ export default function ListTab() {
         ))}
       </ul>
       <AddRow empty={tasks.length === 0} onAdd={add} />
+      {later.length > 0 && (
+        <div className={styles.laterGroup}>
+          <h3 className={cn(records.sec, styles.later)}>
+            Later <em>{later.length}</em>
+          </h3>
+          <ul className={styles.rows}>
+            {later.map(t => (
+              <Row key={t.id} task={t} laterRow />
+            ))}
+          </ul>
+        </div>
+      )}
       {done.length > 0 && (
         <>
           <h3 className={cn(records.sec, styles.later)}>
