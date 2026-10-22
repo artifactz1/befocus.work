@@ -1,5 +1,7 @@
 'use client'
 
+import type { BlockRecord } from '@repo/types/blocks'
+import type { TaskLink } from '@repo/types/plan'
 import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/popover'
 import { useReducedMotion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
@@ -7,10 +9,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useSessionView } from '~/hooks/usePlan'
 import { SESSION_PROGRESS } from '~/lib/customize/catalog'
+import { makeFormat } from '~/lib/logs/summary'
 import { formatDuration, type LiveBlock, type SessionView } from '~/lib/plan/plan'
 import { stripWidths } from '~/lib/plan/strip'
 import { selectPaintedLook, useCustomizeStore } from '~/store/useCustomizeStore'
 import { useDeckStore } from '~/store/useDeckStore'
+import { useTimerStore } from '~/store/useTimerStore'
 import { useTasksStore } from '~/store/useToDoStore'
 import SessionsUI from '../sessions/SessionsUI'
 import styles from './progress.module.css'
@@ -157,11 +161,55 @@ function Cell({
   )
 }
 
-function StripView({ view, phone }: { view: SessionView; phone?: boolean }) {
+/** The ended session as a strip: every block done, from the finished snapshot. */
+function finishedView(records: BlockRecord[], links: TaskLink[]): SessionView {
+  let focusNumber = 0
+  const blocks: LiveBlock[] = [...records]
+    .sort((a, b) => a.index - b.index)
+    .map(r => ({
+      id: r.id,
+      kind: r.kind,
+      focusNumber: r.kind === 'focus' ? ++focusNumber : null,
+      state: 'done',
+      plannedSeconds: r.plannedSeconds,
+      addedSeconds: r.addedSeconds,
+      actualSeconds: r.actualSeconds,
+      elapsedSeconds: r.actualSeconds,
+      paused: false,
+      start: r.startedAt,
+      end: r.endedAt,
+      taskIds: links.filter(l => l.blockId === r.id && (l.planned || l.worked)).map(l => l.taskId),
+    }))
+  return {
+    state: 'live',
+    blocks,
+    current: null,
+    currentIndex: blocks.length - 1,
+    summary: {
+      focusCount: focusNumber,
+      totalMinutes: 0,
+      focusElapsedSeconds: 0,
+      addedTotal: 0,
+      doneTasks: 0,
+      plannedTasks: 0,
+      endsAt: 0,
+    },
+  }
+}
+
+function StripView({
+  view,
+  phone,
+  label: given,
+}: {
+  view: SessionView
+  phone?: boolean
+  label?: { count: string; text: string }
+}) {
   const rowRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState(0)
   const reduced = useReducedMotion()
-  const label = labelOf(view, 'strip')
+  const label = given ?? labelOf(view, 'strip')
 
   useEffect(() => {
     const el = rowRef.current
@@ -288,23 +336,39 @@ export default function ProgressSlot() {
   const choice = useCustomizeStore(s => selectPaintedLook(s).sessionProgress)
   const commitKey = useCustomizeStore(s => s.commitKey)
   const view = useSessionView()
+  const completed = useTimerStore(s => s.completed)
+  const finished = useTimerStore(s => s.finished)
+  const endedLinks = useTasksStore(s => s.endedLinks)
+  const ended = useMemo(
+    () => (completed && finished ? finishedView(finished.records, endedLinks ?? []) : null),
+    [completed, finished, endedLinks],
+  )
   // Landscape phones (short and wide) take the phone views too, at the smaller sizes
   const phone = useMediaQuery('(max-width: 639.98px), (max-height: 500px)')
   const [open, setOpen] = useState(false)
   const slotRef = useRef<HTMLButtonElement>(null)
   const selectedRef = useRef<HTMLButtonElement>(null)
 
-  const content =
-    !view || choice === 'grid' ? (
-      <SessionsUI
-        sessions={view?.summary.focusCount}
-        currentSession={view ? focusPosition(view) : undefined}
-      />
-    ) : choice === 'now' ? (
-      <NowView view={view} phone={phone} />
-    ) : (
-      <StripView view={view} phone={phone} />
-    )
+  const endedLabel = ended && {
+    count: `${ended.summary.focusCount} / ${ended.summary.focusCount}`,
+    text: `Session done · ${makeFormat().compact(
+      ended.blocks.reduce((n, b) => n + (b.kind === 'focus' ? b.actualSeconds : 0), 0),
+    )} focused`,
+  }
+
+  // Whatever the Session progress pick, a finished session shows the strip, every block done.
+  const content = ended ? (
+    <StripView view={ended} phone={phone} label={endedLabel || undefined} />
+  ) : !view || choice === 'grid' ? (
+    <SessionsUI
+      sessions={view?.summary.focusCount}
+      currentSession={view ? focusPosition(view) : undefined}
+    />
+  ) : choice === 'now' ? (
+    <NowView view={view} phone={phone} />
+  ) : (
+    <StripView view={view} phone={phone} />
+  )
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -315,7 +379,9 @@ export default function ProgressSlot() {
           data-sessions-ui
           data-progress-slot
           aria-haspopup='dialog'
-          aria-label={view ? nameOf(view) : 'Session progress. Change view'}
+          aria-label={
+            ended ? 'Session done' : view ? nameOf(view) : 'Session progress. Change view'
+          }
           className={`${styles.root} bf-chrome-dim`}
         >
           <div aria-hidden>{content}</div>
