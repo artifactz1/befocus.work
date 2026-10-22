@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict'
 import { blockLogSchema, sessionNoteSchema } from '@repo/types/logs'
 import type { Block } from '~/lib/blocks/blocks'
-import { mdFixture, SID } from './fixture'
+import { mdFixture, must, SID } from './fixture'
 import {
   buildSummary,
   defaultFate,
@@ -80,14 +80,14 @@ assert.equal(ps.status, 'stopped')
 assert.deepEqual(ps.later, [])
 const over = mdFixture()
 over.note = {
-  ...over.note!,
+  ...must(over.note),
   carried: [{ taskId: 't5', text: 'Draft Phase 10 board', fate: 'drop' }],
 }
 assert.equal(buildSummary(over).notDone.find(n => n.taskId === 't5')?.fate, 'drop')
 
 // a task completed in any block is Done, never Not done; nothing in both Not done and Later
 const dup = mdFixture()
-dup.links.push({ ...dup.links[3]!, blockId: 'b4', completed: true, completedAt: 'x' })
+dup.links.push({ ...must(dup.links[3]), blockId: 'b4', completed: true, completedAt: 'x' })
 const ds = buildSummary(dup)
 assert.ok(ds.done.some(d => d.taskId === 't4'))
 assert.ok(!ds.notDone.some(d => d.taskId === 't4'))
@@ -129,10 +129,10 @@ const blk = (r: (typeof base)[number], over: Partial<Block> = {}): Block =>
     firstStartedAt: null,
     ...over,
   }) as Block
-const unended = blk(base[6]!, { endedAt: null, outcome: null })
+const unended = blk(must(base[6]), { endedAt: null, outcome: null })
 const fr = finishedRecords(
-  [blk(base[2]!), blk(base[0]!), unended],
-  [{ ...base[0]!, actualSeconds: 1 }],
+  [blk(must(base[2])), blk(must(base[0])), unended],
+  [{ ...must(base[0]), actualSeconds: 1 }],
 )
 assert.deepEqual(
   fr.map(r => [r.id, r.actualSeconds]),

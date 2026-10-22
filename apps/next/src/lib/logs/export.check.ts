@@ -2,7 +2,7 @@
 // Run with: TZ=UTC bun run src/lib/logs/export.check.ts (cwd apps/next)
 import assert from 'node:assert/strict'
 import { escapeMd, exportFileName, toMarkdown, toText } from './export'
-import { mdFixture } from './fixture'
+import { mdFixture, must } from './fixture'
 import { buildSummary, makeFormat } from './summary'
 
 const fmt = makeFormat('en-GB', 'UTC')
@@ -50,7 +50,8 @@ bare.note = null
 bare.links = []
 bare.logs = [{ blockId: 'b1', sessionId: bare.sessionId, text: '', rating: null }]
 const bareMd = toMarkdown(buildSummary(bare), fmt)
-for (const h of ['## Done', '## Not done', '## Later', '## Next time']) assert.ok(!bareMd.includes(h), h)
+for (const h of ['## Done', '## Not done', '## Later', '## Next time'])
+  assert.ok(!bareMd.includes(h), h)
 assert.ok(bareMd.includes('1. 09:00 - 09:30 · +5 min\n2. 09:35 - 10:00\n'))
 
 // escaping
@@ -58,9 +59,9 @@ assert.equal(escapeMd('<img src=x onerror=alert(1)>'), '\\<img src=x onerror=ale
 assert.equal(escapeMd('[a](javascript:x)'), '\\[a\\](javascript:x)')
 assert.equal(escapeMd('\\ ` * _ [ ] < > # |'), '\\\\ \\` \\* \\_ \\[ \\] \\< \\> \\# \\|')
 const evil = mdFixture()
-evil.links[0] = { ...evil.links[0]!, text: '<img src=x>\n# [a](b)' }
-evil.note = { ...evil.note!, extraDone: ['*bold*\nmore'], nextTime: 'a\n# b' }
-evil.logs[0] = { ...evil.logs[0]!, text: 'line one\n# line *two*' }
+evil.links[0] = { ...must(evil.links[0]), text: '<img src=x>\n# [a](b)' }
+evil.note = { ...must(evil.note), extraDone: ['*bold*\nmore'], nextTime: 'a\n# b' }
+evil.logs[0] = { ...must(evil.logs[0]), text: 'line one\n# line *two*' }
 const evilMd = toMarkdown(buildSummary(evil), fmt)
 assert.ok(evilMd.includes('- [x] \\<img src=x\\> \\# \\[a\\](b)\n'))
 assert.ok(evilMd.includes('- [x] \\*bold\\* more\n'))

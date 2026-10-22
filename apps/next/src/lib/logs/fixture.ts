@@ -104,3 +104,8 @@ export function mdFixture(): SummaryInput {
     live: true,
   }
 }
+
+export function must<T>(value: T | undefined | null): T {
+  if (value === undefined || value === null) throw new Error('fixture value missing')
+  return value
+}
