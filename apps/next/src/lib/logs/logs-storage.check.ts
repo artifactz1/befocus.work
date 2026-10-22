@@ -35,11 +35,15 @@ for (const g of [null, undefined, 5, 'x', {}, { version: 2, items: [] }, { versi
 
 // one bad item keeps its siblings
 assert.deepEqual(
-  parseGuestLogs({ version: 1, items: [log(1), { blockId: 'nope' }, log(2), null] }).map(l => l.blockId),
+  parseGuestLogs({ version: 1, items: [log(1), { blockId: 'nope' }, log(2), null] }).map(
+    l => l.blockId,
+  ),
   [uuid(1), uuid(2)],
 )
 assert.deepEqual(
-  parseGuestNotes({ version: 1, items: [note(1), { sessionId: 1 }, note(2)] }).map(n => n.sessionId),
+  parseGuestNotes({ version: 1, items: [note(1), { sessionId: 1 }, note(2)] }).map(
+    n => n.sessionId,
+  ),
   [uuid(1), uuid(2)],
 )
 
@@ -90,7 +94,11 @@ assert.deepEqual(
   })
   const recent = uuid(7001)
   const old = uuid(7002)
-  const records = [rec(1, old, now - 40 * DAY), rec(2, recent, now - 2 * DAY), rec(3, recent, now - DAY)]
+  const records = [
+    rec(1, old, now - 40 * DAY),
+    rec(2, recent, now - 2 * DAY),
+    rec(3, recent, now - DAY),
+  ]
   const task = (id: string, text: string): Task => ({ id, text, completed: false, archived: false })
   const tasks = [task(uuid(501), 'write'), task(uuid(502), 'read')]
   const link = (blockId: string, taskId: string, completed = false): TaskLink => ({
@@ -104,21 +112,36 @@ assert.deepEqual(
   })
   const linkHistory = [link(uuid(2), uuid(501)), link(uuid(1), uuid(502))]
   const liveLinks = [link(uuid(2), uuid(501), true)] // live wins over stored
-  const logs = [log(2, 'recent'), log(1, 'old')]
+  const logs = [
+    { ...log(2, 'recent'), sessionId: recent },
+    { ...log(1, 'old'), sessionId: old },
+  ]
   const notes = [note(7001, 'n-recent'), note(7002, 'n-old')]
   const input = { records, linkHistory, liveLinks, tasks, logs, notes }
 
   const h = guestHistory(input, { before: now, days: 35 })
-  assert.deepEqual(h.records.map(r => r.id), [uuid(2), uuid(3)])
-  assert.deepEqual(h.logs.map(l => l.blockId), [uuid(2)])
-  assert.deepEqual(h.notes.map(n => n.sessionId), [recent])
+  assert.deepEqual(
+    h.records.map(r => r.id),
+    [uuid(2), uuid(3)],
+  )
+  assert.deepEqual(
+    h.logs.map(l => l.blockId),
+    [uuid(2)],
+  )
+  assert.deepEqual(
+    h.notes.map(n => n.sessionId),
+    [recent],
+  )
   assert.equal(h.links.length, 1)
   assert.equal(h.links[0]?.text, 'write')
   assert.equal(h.links[0]?.completed, true)
   assert.equal(h.nextBefore, new Date(now - 35 * DAY).toISOString())
 
   const older = guestHistory(input, { before: now - 35 * DAY, days: 35 })
-  assert.deepEqual(older.records.map(r => r.id), [uuid(1)])
+  assert.deepEqual(
+    older.records.map(r => r.id),
+    [uuid(1)],
+  )
   assert.equal(older.links[0]?.text, 'read')
   assert.equal(older.nextBefore, null)
 
