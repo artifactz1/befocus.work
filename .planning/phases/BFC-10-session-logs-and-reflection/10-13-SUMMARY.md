@@ -29,7 +29,7 @@ completed: 2026-10-21
 - 1693eca feat(10-13): /log route and footer Log button
 - a955874 feat(10-13): log history list, improve panel and page states
 - cd67927 feat(10-13): session detail and phone list to detail switch
-- (final) fix(10-13): keep setFate out of LogPage comment
+- 22fd3b7 docs(BFC-10-13): summary (also carries a one-word comment fix in LogPage.tsx)
 
 ## Verification
 
