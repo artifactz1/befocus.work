@@ -1,14 +1,5 @@
 import type { InferSelectModel } from 'drizzle-orm'
-import {
-  index,
-  jsonb,
-  pgTable,
-  serial,
-  text,
-  timestamp,
-  unique,
-  uuid,
-} from 'drizzle-orm/pg-core'
+import { index, jsonb, pgTable, serial, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core'
 import { createSelectSchema } from 'drizzle-zod'
 import { type CarriedTask, FOCUS_RATINGS } from '../../../../types/logs'
 import { user } from './auth'
