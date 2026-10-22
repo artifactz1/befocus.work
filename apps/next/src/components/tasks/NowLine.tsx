@@ -151,7 +151,7 @@ function NowPicker({ phone }: { phone: boolean }) {
         avoidCollisions={!phone}
         collisionPadding={16}
         aria-label='Working on'
-        className={`${styles.nowPick} motion-reduce:animate-none`}
+        className={`${styles.nowPick} motion-reduce:!animate-none`}
         onOpenAutoFocus={event => {
           event.preventDefault()
           currentRef.current?.focus()

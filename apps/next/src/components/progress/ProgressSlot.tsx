@@ -327,7 +327,7 @@ export default function ProgressSlot() {
         align='start'
         sideOffset={8}
         aria-label='Session progress'
-        className={`${styles.switcher} motion-reduce:animate-none`}
+        className={`${styles.switcher} motion-reduce:!animate-none`}
         onOpenAutoFocus={event => {
           event.preventDefault()
           selectedRef.current?.focus()
