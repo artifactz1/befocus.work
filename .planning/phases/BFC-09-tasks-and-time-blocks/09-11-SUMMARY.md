@@ -26,7 +26,7 @@ key-files:
     - apps/next/src/components/timer/timer-progress.module.css
 key-decisions:
   - "Phone views use (max-width: 639.98px), (max-height: 500px) so landscape phones at 844x390 get 24px Strip and 32px Now"
-  - "Phone now pick popover uses avoidCollisions={!phone} so it never flips over the digits"
+  - "Phone now pick popover uses avoidCollisions={!phone} so it stays below the digits at 390 (in landscape 844x390 it flips above and overlays them while open, allowed by the revised must-have)"
 requirements-completed: [TSK-05]
 duration: long
 completed: 2026-10-21
@@ -46,11 +46,11 @@ Both tasks touch Timer.tsx and progress.module.css edits that were interleaved, 
 ## Verification (guest mode, chrome-devtools-axi, dev server killed by recorded PID)
 
 Rects (px):
-- 390 Strip: slot 32,88 to 358,158; digits start well below (about 250). Switcher open: 32,166 to 372,379, fits the width, overlays the digits only while open.
+- 390 Strip: slot 32,88 to 358,158; digits start well below (about 250). Switcher open: 32,166 to 372,379, fits the width, overlays the digits only while open (allowed: the 09-11 must-have was relaxed to "while closed" by the captain on 2026-10-22).
 - 390 now line: top 613 with digits box bottom 589, a 24px gap per spec. Now pick popover 35,669 to 355,828, below the digits (bottom 589).
 - 390 Grid: pill 109,630 to 281,674 (44px high); transport row starts at 683, clear.
 - 390 sheet: sheet top 132, mini strip 40,104 to 350,112 (8px high), visible above the sheet.
-- 844x390: Strip blocks 24px, Now bar 32px, slot bottom 80, digits start about 150. Unobstructed.
+- 844x390: Strip blocks 24px, Now bar 32px, slot bottom 80, digits start about 150. Unobstructed while popovers are closed; the open switcher and now pick overlay the digits, allowed.
 - 1440x900: regression view intact, now line and strip as before.
 
 Idle opacities (computed): slot 0.35, now line and pill 0.55, footer 0, at both 390 and 1440. With the now pick open or the timer paused chrome returns to 1.

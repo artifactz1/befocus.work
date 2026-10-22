@@ -6,13 +6,22 @@ Date: 2026-10-21.
 
 ## Verdict
 
-**NOT-READY.** Everything that can run locally passes after 8 small fixes, but one 09-11 must-have fails:
-"No popover, sheet or progress view ever covers the timer digits at 390x844 or in landscape 844x390".
-The progress switcher covers the minute digits at 390x844 in every view, and in landscape 844x390 both the
-switcher and the Now pick cover the digits. The switcher placement comes straight from 09-UI-SPEC
-(`side="bottom" align="start" sideOffset={8}` under the slot), so the spec and the must-have contradict each
-other. Fixing it needs a design call (phone sheet, different anchor, or relaxing the must-have to "while
-closed"), not a minimal fix. Once the captain picks one, the rest is merge-ready.
+**MERGE-READY.** Everything that can run locally passes after 8 small fixes. The one open 09-11 item (open
+popovers over the timer digits) was settled by a design call, below. What is left is the captain's: real-phone
+touch and long-press, and the real database migrations.
+
+## Decision
+
+The first pass of this report was NOT-READY on one 09-11 must-have: "No popover, sheet or progress view ever
+covers the timer digits at 390x844 or in landscape 844x390". The open progress switcher covers the minute
+digits at 390x844, and in landscape 844x390 both the open switcher and the open Now pick cover the digits.
+The switcher placement comes straight from 09-UI-SPEC (`side="bottom" align="start" sideOffset={8}` under
+the slot), so the spec and the must-have contradicted each other.
+
+Captain's design call (2026-10-22T00:51:14Z): option 1, relax the must-have. It now reads "No popover, sheet
+or progress view covers the timer digits while closed at 390x844 or in landscape 844x390; an open popover may
+overlay the digits while the user has it open." 09-11-PLAN and 09-11-SUMMARY are updated to match. No code
+change to popover placement.
 
 ## Setup
 
@@ -82,19 +91,20 @@ closed"), not a minimal fix. Once the captain picks one, the rest is merge-ready
 |---|---|---|
 | 390x844 plan gutter one line, sheet top 132, rows 44px | PASS | |
 | 390x844 Now pick popover below the digits, height capped | PASS | |
-| 390x844 switcher popover vs digits | **FAIL** | Digits x78-312, y256-593 (Grid, ended). Switcher 32,232 to 372,445 covers the minute row. Strip: switcher 32,166 to 372,379 vs digits y216-567. Now: 32,170 to 372,383 vs y218-569. The 09-11 SUMMARY saw this ("overlays the digits only while open") and passed it; the must-have says "ever". |
-| 844x390 Now pick popover | **FAIL** | `phone` query is width-only, so landscape gets `avoidCollisions` and flips above, over the digits (about x250-594, y150-290). About 33px free below the trigger, so no trigger-relative placement clears the digits. |
-| 844x390 switcher popover | **FAIL** | x35-373, y117-329, over the left digits. |
+| 390x844 switcher popover vs digits | PASS (revised must-have) | Digits x78-312, y256-593 (Grid, ended). Switcher 32,232 to 372,445 covers the minute row. Strip: switcher 32,166 to 372,379 vs digits y216-567. Now: 32,170 to 372,383 vs y218-569. Overlays only while open, allowed under the revised must-have. Closed, nothing covers the digits. |
+| 844x390 Now pick popover | PASS (revised must-have) | `phone` query is width-only, so landscape gets `avoidCollisions` and flips above, over the digits (about x250-594, y150-290). About 33px free below the trigger, so no trigger-relative placement clears the digits. Overlays only while open, allowed. |
+| 844x390 switcher popover | PASS (revised must-have) | x35-373, y117-329, over the left digits only while open, allowed. |
 | 844x390 Tasks deck, 24px strip blocks, 32px Now bar | PASS | |
 | Idle dim 0.35 / 0.55, open popover keeps chrome awake | PASS | |
 | Empty Tasks list keeps add input focus | PASS after fdad809 | |
 
 ## Plan must-have audit (08-01 .. 08-09, 09-01 .. 09-11)
 
-Every truth in every plan was walked against the code and the runs above. All met except:
+Every truth in every plan was walked against the code and the runs above. All met. Items worth naming:
 
-- **09-11** "No popover, sheet or progress view ever covers the timer digits at 390x844 or in landscape
-  844x390": FAIL, see above. Conflicts with the 09-UI-SPEC switcher placement.
+- **09-11** digits truth: met under the revised wording ("covers the timer digits while closed ... an open
+  popover may overlay the digits while the user has it open"), see Decision. Under the original "ever"
+  wording it failed.
 - **09-09 / 09-03** announcement and empty-state focus truths: were failing, fixed (dab9100, fdad809).
 - **09-11** reduced-motion truths for popovers and sheets: were failing, fixed (7672780, fd991b3).
 
@@ -121,4 +131,4 @@ Notes, not gaps:
 ## Screenshots
 
 On `pr-screenshots` under `pr-fm-befocus-phase9-build/verify/`, linked in the PR #126 body: gutter fix (1440, 390),
-empty-focus and idle title (1440, 390), switcher over digits at 390, Now pick and switcher over digits at 844x390.
+empty-focus and idle title (1440, 390), switcher over digits at 390, Now pick and switcher over digits at 844x390 (open popovers, allowed under the revised must-have).
