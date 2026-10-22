@@ -1,7 +1,7 @@
 'use client'
 
 import { useCustomizeStore } from '~/store/useCustomizeStore'
-import { useSoundsStore } from '~/store/useSoundsStore'
+import { useDeckStore } from '~/store/useDeckStore'
 import { useTimerStoreApi } from '~/store/useTimerStore'
 
 // One request-start entry for Play, Space and the command menu. When the card opens it also
@@ -11,7 +11,7 @@ export function useSessionCard() {
   const closeCustomize = useCustomizeStore(s => s.apply)
 
   const closeOthers = () => {
-    useSoundsStore.getState().setRoomOpen(false)
+    useDeckStore.getState().closeDeck()
     closeCustomize()
   }
 

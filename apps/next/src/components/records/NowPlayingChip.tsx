@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { Pause, Play } from 'lucide-react'
+import { useDeckStore } from '~/store/useDeckStore'
 import { useSoundsStore } from '~/store/useSoundsStore'
 import { useCustomizeActions } from '../customize/useCustomizeActions'
 import styles from './now-playing.module.css'
@@ -9,13 +10,13 @@ import Vinyl, { Eq, soundLook } from './Vinyl'
 
 // The record outside the room: shown while it plays, and held after a pause from here.
 export function useNowPlaying() {
-  const roomOpen = useSoundsStore(state => state.roomOpen)
+  const isOpen = useDeckStore(state => state.deck === 'records')
   const record = useSoundsStore(state => state.sounds[state.bgMusicId])
   const chipHeld = useSoundsStore(state => state.chipHeld)
   const { close } = useCustomizeActions()
 
   const playing = Boolean(record?.playing)
-  const shown = !roomOpen && record !== undefined && (playing || chipHeld) ? record : undefined
+  const shown = !isOpen && record !== undefined && (playing || chipHeld) ? record : undefined
 
   const toggle = () => {
     const { playRecord, pauseRecord, setChipHeld } = useSoundsStore.getState()
@@ -26,7 +27,7 @@ export function useNowPlaying() {
   }
   const open = () => {
     close()
-    useSoundsStore.getState().setRoomOpen(true)
+    useDeckStore.getState().openDeck('records')
   }
   return { record: shown, playing, toggle, open }
 }

@@ -7,8 +7,18 @@ import useIsLandscape from '../helper/useIsMobileLandscape'
 
 type CellState = 'done' | 'now' | 'todo'
 
-export default function SessionsUI() {
-  const { sessions, currentSession, isWorking } = useTimerStore()
+// Counts come from the plan's block list when the progress slot passes them.
+export default function SessionsUI({
+  sessions: planSessions,
+  currentSession: planCurrent,
+}: {
+  sessions?: number
+  currentSession?: number
+}) {
+  const store = useTimerStore()
+  const { isWorking } = store
+  const sessions = planSessions ?? store.sessions
+  const currentSession = planCurrent ?? store.currentSession
 
   const isLandscape = useIsLandscape()
 
@@ -27,8 +37,8 @@ export default function SessionsUI() {
   }
 
   return (
-    <main data-sessions-ui>
-      <div className='hidden h-[calc(11vh+var(--pad-y))] sm:block'>
+    <div>
+      <div className='hidden sm:block'>
         <div
           className={`mx-auto flex w-full flex-col items-center justify-center ${isLandscape ? 'space-y-1' : 'space-y-3'}`}
         >
@@ -43,10 +53,7 @@ export default function SessionsUI() {
                 <div
                   key={`focus-${index}`}
                   data-state={focusState(index)}
-                  className={cn(
-                    'bf-cell',
-                    `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 lg:h-14 lg:w-14`,
-                  )}
+                  className={cn('bf-cell', `${isLandscape ? 'h-6 w-6' : 'h-8 w-8'} flex-1`)}
                 />
               ))}
             </div>
@@ -55,10 +62,7 @@ export default function SessionsUI() {
                 <div
                   key={`break-${index}`}
                   data-state={breakState(index)}
-                  className={cn(
-                    'bf-cell',
-                    `${isLandscape ? 'h-6 w-6' : 'h-12 w-12'} flex-1 lg:h-14 lg:w-14`,
-                  )}
+                  className={cn('bf-cell', `${isLandscape ? 'h-6 w-6' : 'h-8 w-8'} flex-1`)}
                 />
               ))}
             </div>
@@ -103,6 +107,6 @@ export default function SessionsUI() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

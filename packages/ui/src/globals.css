@@ -138,15 +138,27 @@ html[data-density="roomy"] {
   transition: opacity 0.8s ease;
 }
 
+.bf-chrome-dim {
+  transition: opacity 0.8s ease;
+}
+
 html[data-chrome-idle]:not([data-panel="open"]):not([data-room="open"]):not(
     :has(:focus-visible)
-  ):not(:has(.bf-chrome [role="menu"]))
+  ):not(:has(.bf-chrome [role="menu"])):not(:has([data-session-switcher], [data-now-pick]))
   .bf-chrome {
   opacity: 0;
 }
 
+html[data-chrome-idle]:not([data-panel="open"]):not([data-room="open"]):not(
+    :has(:focus-visible)
+  ):not(:has([data-session-switcher], [data-now-pick]))
+  .bf-chrome-dim {
+  opacity: var(--idle-opacity, 0.35);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bf-chrome {
+  .bf-chrome,
+  .bf-chrome-dim {
     transition: none;
   }
 }
@@ -154,8 +166,8 @@ html[data-chrome-idle]:not([data-panel="open"]):not([data-room="open"]):not(
 /* Mobile sheet chrome fade (D-20) - breakpoint must mirror the (min-width: 1024px)
  * desktop/mobile shell switch in CustomizePanel.tsx exactly. */
 @media (max-width: 1023.98px) {
-  html[data-panel="open"] :is(.bf-chrome, [data-edge-progress]),
-  html[data-room="open"] :is(.bf-chrome, [data-edge-progress]) {
+  html[data-panel="open"] :is(.bf-chrome, .bf-chrome-dim, [data-edge-progress]),
+  html[data-room="open"] :is(.bf-chrome, .bf-chrome-dim, [data-edge-progress]) {
     opacity: 0;
     pointer-events: none;
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import { DENSITIES, PROGRESS_STYLES } from '~/lib/customize/catalog'
+import { DENSITIES, PROGRESS_STYLES, SESSION_PROGRESS } from '~/lib/customize/catalog'
 import { useCustomizeStore } from '~/store/useCustomizeStore'
 import { ControlGroup, PickCard, RangeField, SegmentedControl } from '../controls'
 import styles from '../customize-panel.module.css'
@@ -38,6 +38,30 @@ export function ProgressSection() {
           )
         })}
       </div>
+    </ControlGroup>
+  )
+}
+
+export function SessionProgressSection() {
+  const preview = useCustomizeStore(state => state.preview)
+  const setPreview = useCustomizeStore(state => state.setPreview)
+
+  return (
+    <ControlGroup
+      id='customize-session-progress'
+      label='Session progress'
+      value={SESSION_PROGRESS.find(view => view.id === preview.sessionProgress)?.label}
+    >
+      <SegmentedControl
+        name='sessionProgress'
+        legend='Session progress'
+        options={SESSION_PROGRESS.map(view => ({ value: view.id, label: view.label }))}
+        value={preview.sessionProgress}
+        onChange={value => setPreview('sessionProgress', value as typeof preview.sessionProgress)}
+      />
+      <p style={{ fontSize: 13, lineHeight: 1.4, marginTop: 8, opacity: 0.6 }}>
+        You can also tap the progress area on the timer screen.
+      </p>
     </ControlGroup>
   )
 }

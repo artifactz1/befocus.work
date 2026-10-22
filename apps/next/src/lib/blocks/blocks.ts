@@ -329,7 +329,7 @@ export function resetSession(run: Run, now: number, sessionId: string, seed: See
   }
 }
 
-const isLive = (run: Run) =>
+export const isLive = (run: Run) =>
   run.status !== 'idle' ||
   run.blocks.some(b => b.startedAt !== null || b.outcome !== null || b.carriedSeconds > 0)
 

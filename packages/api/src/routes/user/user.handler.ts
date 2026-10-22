@@ -532,7 +532,7 @@ export const deleteUserTask: AppRouteHandler<DeleteUserTask> = async c => {
     return c.json({ message: 'Task not found' }, HttpStatusCodes.NOT_FOUND)
   }
 
-  await db.delete(tasks).where(eq(tasks.id, taskId))
+  await db.delete(tasks).where(and(eq(tasks.id, taskId), eq(tasks.userId, user.id)))
 
   return c.json({ message: 'Task deleted successfully' }, HttpStatusCodes.OK)
 }

@@ -372,3 +372,17 @@
     animation: none;
   }
 }
+
+/* Phone: now line or pill centred under the stacked digits (09-UI-SPEC section 6) */
+.phoneNow {
+  position: absolute;
+  top: calc(50% + var(--digit-size) * 0.9);
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 24px;
+}
+
+/* Grid pill is 44px and the Grid slot is taller, so pull it up to clear the transport row */
+.phoneNow:has([data-grid-pill]) {
+  margin-top: 8px;
+}

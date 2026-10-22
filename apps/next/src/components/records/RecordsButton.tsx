@@ -3,7 +3,7 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/ui/tooltip'
 import { Disc3 } from 'lucide-react'
 import { useState } from 'react'
-import { useSoundsStore } from '~/store/useSoundsStore'
+import { useDeckStore } from '~/store/useDeckStore'
 import { useCustomizeActions } from '../customize/useCustomizeActions'
 import MenuButton from '../helper/MenuButtons'
 import { useNowPlaying } from './NowPlayingChip'
@@ -12,15 +12,15 @@ import Vinyl, { soundLook } from './Vinyl'
 
 // Below md the button carries the playing record (a spinning disc); on wider screens the pill does.
 export default function RecordsButton({ caption = false }: { caption?: boolean }) {
-  const roomOpen = useSoundsStore(state => state.roomOpen)
-  const setRoomOpen = useSoundsStore(state => state.setRoomOpen)
+  const isOpen = useDeckStore(state => state.deck === 'records')
+  const toggleDeck = useDeckStore(state => state.toggleDeck)
   const { close } = useCustomizeActions()
   const { record, playing } = useNowPlaying()
   const [tip, setTip] = useState(false)
 
   const toggle = () => {
-    if (!roomOpen) close()
-    setRoomOpen(!roomOpen)
+    if (!isOpen) close()
+    toggleDeck('records')
   }
 
   return (
@@ -29,7 +29,7 @@ export default function RecordsButton({ caption = false }: { caption?: boolean }
         {/* Closed while the room is open, so its Escape listener cannot swallow ours, and only
             opened by hover or keyboard focus, not by focus returning after a tap or click. */}
         <Tooltip
-          open={tip && !roomOpen}
+          open={tip && !isOpen}
           onOpenChange={open =>
             setTip(
               open &&
@@ -44,9 +44,9 @@ export default function RecordsButton({ caption = false }: { caption?: boolean }
               aria-label={
                 record ? `Records, ${playing ? 'playing' : 'paused'} ${record.name}` : 'Records'
               }
-              aria-expanded={roomOpen}
+              aria-expanded={isOpen}
               data-records-trigger
-              data-active={roomOpen || undefined}
+              data-active={isOpen || undefined}
               data-carrying={record ? true : undefined}
               className={styles.button}
               onClick={toggle}

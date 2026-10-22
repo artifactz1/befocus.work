@@ -157,14 +157,14 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Tasks and Time Blocks
 
-- [ ] **TSK-01**: A guest's tasks survive a refresh in the same browser
-- [ ] **TSK-02**: User can pick the task they are working on in the current focus block, and the
+- [x] **TSK-01**: A guest's tasks survive a refresh in the same browser
+- [x] **TSK-02**: User can pick the task they are working on in the current focus block, and the
       block's record lists the tasks worked on and completed during it
-- [ ] **TSK-03**: User can lay out a plan of time blocks before starting and assign tasks to them,
+- [x] **TSK-03**: User can lay out a plan of time blocks before starting and assign tasks to them,
       and the plan survives a refresh
-- [ ] **TSK-04**: While a session runs, one view shows blocks done, the current block and progress
+- [x] **TSK-04**: While a session runs, one view shows blocks done, the current block and progress
       through it, blocks ahead, time added, and tasks checked off
-- [ ] **TSK-05**: The plan and the progress view work on a phone and never obstruct the timer
+- [x] **TSK-05**: The plan and the progress view work on a phone and never obstruct the timer
 
 ### Session Logs and Reflection
 
@@ -288,11 +288,11 @@ Which phases cover which requirements. Populated during roadmap creation.
 | BLK-03 | Phase 8 - Focus Blocks and Added Time | Complete |
 | BLK-04 | Phase 8 - Focus Blocks and Added Time | Complete (code); human verify pending |
 | BLK-05 | Phase 8 - Focus Blocks and Added Time | Complete |
-| TSK-01 | Phase 9 - Tasks and Time Blocks | Pending |
-| TSK-02 | Phase 9 - Tasks and Time Blocks | Pending |
-| TSK-03 | Phase 9 - Tasks and Time Blocks | Pending |
-| TSK-04 | Phase 9 - Tasks and Time Blocks | Pending |
-| TSK-05 | Phase 9 - Tasks and Time Blocks | Pending |
+| TSK-01 | Phase 9 - Tasks and Time Blocks | Complete |
+| TSK-02 | Phase 9 - Tasks and Time Blocks | Complete |
+| TSK-03 | Phase 9 - Tasks and Time Blocks | Complete |
+| TSK-04 | Phase 9 - Tasks and Time Blocks | Complete |
+| TSK-05 | Phase 9 - Tasks and Time Blocks | Complete |
 | LOG-01 | Phase 10 - Session Logs and Reflection | Pending |
 | LOG-02 | Phase 10 - Session Logs and Reflection | Pending |
 | LOG-03 | Phase 10 - Session Logs and Reflection | Pending |

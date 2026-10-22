@@ -26,6 +26,7 @@ export const bgSchema = z.discriminatedUnion('kind', [
 
 export const FONT_IDS = ['inter-tight', 'editorial-serif', 'mono', 'display-sans'] as const
 export const PROGRESS_IDS = ['edge', 'ruler', 'ink', 'none'] as const
+export const SESSION_PROGRESS_IDS = ['strip', 'now', 'grid'] as const
 export const DENSITY_IDS = ['compact', 'comfortable', 'roomy'] as const
 
 export const lookSchema = z
@@ -39,6 +40,7 @@ export const lookSchema = z
     accent: hexColorSchema,
     contrast: z.number().finite().min(0.55).max(1),
     progress: z.enum(PROGRESS_IDS),
+    sessionProgress: z.enum(SESSION_PROGRESS_IDS).default('strip'),
     density: z.enum(DENSITY_IDS),
     grain: z.number().finite().min(0).max(1),
   })
@@ -62,6 +64,7 @@ export const DEFAULT_LOOK: Look = {
   accent: '#f5f5f4',
   contrast: 1,
   progress: 'edge',
+  sessionProgress: 'strip',
   density: 'comfortable',
   grain: 0.05,
 }
@@ -79,6 +82,7 @@ export function lookEquals(a: Look, b: Look): boolean {
     a.accent === b.accent &&
     a.contrast === b.contrast &&
     a.progress === b.progress &&
+    a.sessionProgress === b.sessionProgress &&
     a.density === b.density &&
     a.grain === b.grain
   )

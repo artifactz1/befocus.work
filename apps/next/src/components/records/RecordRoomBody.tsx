@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useSession } from '~/lib/auth.client'
+import { useDeckStore } from '~/store/useDeckStore'
 import { type Sound, useSoundsStore } from '~/store/useSoundsStore'
 import AddSoundDialog, { type DialogState } from './AddSoundDialog'
 import Ambience from './Ambience'
@@ -14,7 +15,7 @@ import Shelf from './Shelf'
 import Turntable from './Turntable'
 
 export default function RecordRoomBody() {
-  const setRoomOpen = useSoundsStore(state => state.setRoomOpen)
+  const closeDeck = useDeckStore(state => state.closeDeck)
   const record = useSoundsStore(state => state.sounds[state.bgMusicId])
   const { data: session } = useSession()
   const [dialog, setDialog] = useState<DialogState | null>(null)
@@ -63,7 +64,7 @@ export default function RecordRoomBody() {
           type='button'
           className={styles.close}
           aria-label='Close records'
-          onClick={() => setRoomOpen(false)}
+          onClick={closeDeck}
         >
           <X aria-hidden='true' />
         </button>

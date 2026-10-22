@@ -40,7 +40,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Vinyl Sound Space** - The Sounds button opens a record room: turntable, shelf of records, ambience knobs (8/8 plans shipped in #116; human visual checks and 07-08 gaps still open, see Progress)
 - [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (5 plans built; migration 0010, signed-in E2E and UAT pending)
 - [x] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded (9/9 plans built; human checks pending, see 08-VERIFICATION.md) (completed 2026-10-21)
-- [ ] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (planned: 0/11; execution waits on Phase 8 and Phase 3)
+- [x] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (completed 2026-10-21, code)
 - [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary, history and what to improve
 
 ## Phase Details
@@ -621,17 +621,17 @@ in it and what they have worked through.
 **Plans**: 11 plans in 8 waves (`.planning/phases/BFC-09-tasks-and-time-blocks/`)
 
 Plans:
-- [ ] 09-01-PLAN.md - Deck store migration (one open card on the Quiet Deck) and old to-do-list removal
-- [ ] 09-02-PLAN.md - Plan contracts, `task_plans` table, GET/PUT/DELETE /user/plan, db:push
-- [ ] 09-03-PLAN.md - Tasks store, task actions, Tasks card and List tab (TSK-01)
-- [ ] 09-04-PLAN.md - Tasks persistence: guest browser storage, server-rendered account tasks (TSK-01)
-- [ ] 09-05-PLAN.md - Plan client: guest storage, seeding from Session settings, saver, Plan tab (TSK-03)
-- [ ] 09-06-PLAN.md - Task to block links: `task_block_links`, PUT /user/task-links, Assign checklist and drag (TSK-03)
-- [ ] 09-07-PLAN.md - Live session: plan seeds Phase 8's block list, Session card, live completion writes (TSK-03, TSK-04)
-- [ ] 09-08-PLAN.md - Progress slot: Strip / Now / Grid, switcher popover, Session progress preference (TSK-04)
-- [ ] 09-09-PLAN.md - Now line and now pick (TSK-02)
-- [ ] 09-10-PLAN.md - Block record data path: GET /user/task-links?blockId, guest link history (TSK-02)
-- [ ] 09-11-PLAN.md - Phone: compact progress views, now line placement, mini strip above the sheet (TSK-05)
+- [x] 09-01-PLAN.md - Deck store migration (one open card on the Quiet Deck) and old to-do-list removal
+- [x] 09-02-PLAN.md - Plan contracts, `task_plans` table, GET/PUT/DELETE /user/plan, db:push
+- [x] 09-03-PLAN.md - Tasks store, task actions, Tasks card and List tab (TSK-01)
+- [x] 09-04-PLAN.md - Tasks persistence: guest browser storage, server-rendered account tasks (TSK-01)
+- [x] 09-05-PLAN.md - Plan client: guest storage, seeding from Session settings, saver, Plan tab (TSK-03)
+- [x] 09-06-PLAN.md - Task to block links: `task_block_links`, PUT /user/task-links, Assign checklist and drag (TSK-03)
+- [x] 09-07-PLAN.md - Live session: plan seeds Phase 8's block list, Session card, live completion writes (TSK-03, TSK-04)
+- [x] 09-08-PLAN.md - Progress slot: Strip / Now / Grid, switcher popover, Session progress preference (TSK-04)
+- [x] 09-09-PLAN.md - Now line and now pick (TSK-02)
+- [x] 09-10-PLAN.md - Block record data path: GET /user/task-links?blockId, guest link history (TSK-02)
+- [x] 09-11-PLAN.md - Phone: compact progress views, now line placement, mini strip above the sheet (TSK-05)
 
 **UI hint**: yes
 **Context**: `09-CONTEXT.md` (locked picks), `09-UI-SPEC.md` (design contract). Picks from the
@@ -783,7 +783,7 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 7. Vinyl Sound Space | 8/8 | Shipped in #116, not fully verified: 07-VERIFICATION human_needed (drag-drop, YouTube playback, paste-add checks); 07-08-VERIFICATION gaps_found (desktop timer scale(0.8) with room open, owner override not recorded; label upload 1 MB cap not enforced without Content-Length) | 2026-10-16 (code) |
 | 7.1. Session Settings Start Card (INSERTED) | 5/5 | Built, human_needed: migration 0010 not applied, signed-in E2E and UAT pending | 2026-10-16 (code) |
 | 8. Focus Blocks and Added Time | 9/9 | Built, human_needed: apply migration 0012, signed-in focus_blocks round trip, real-touch long-press, reduced motion (see 08-VERIFICATION.md) | 2026-10-21 (code) |
-| 9. Tasks and Time Blocks | 0/11 | Planned (09-01..09-11); execution waits on Phase 8 and Phase 3 | - |
+| 9. Tasks and Time Blocks | 11/11 | Built, human_needed: apply migrations 0013 and 0014 (hand-written, never applied), signed-in and API checks (see 09-VERIFICATION.md) | 2026-10-21 (code) |
 | 10. Session Logs and Reflection | 0/TBD | Not started | - |
 
 ## Requirement Coverage
