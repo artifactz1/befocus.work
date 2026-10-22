@@ -924,4 +924,7 @@
   .deckDisc {
     transition: none;
   }
+  .sheet[data-vaul-drawer] {
+    animation: none;
+  }
 }
