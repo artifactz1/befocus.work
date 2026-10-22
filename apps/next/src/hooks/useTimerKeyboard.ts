@@ -5,7 +5,7 @@ import { useTimerStoreApi } from '~/store/useTimerStore'
 const EDITABLE_SELECTOR =
   "input, textarea, select, [contenteditable]:not([contenteditable='false'])"
 const GUARDED_CONTAINER_SELECTOR =
-  "[role='dialog']:not([data-customize-panel]):not([data-record-room]):not([data-tasks-card]), [role='alertdialog'], [role='menu'], [role='listbox']"
+  "[role='dialog']:not([data-customize-panel]):not([data-record-room]):not([data-tasks-card]), [role='alertdialog'], [role='menu'], [role='listbox'], [data-break-log], [data-session-summary], [data-log-page]"
 const ACTIVATABLE_SELECTOR =
   "button, a[href], summary, [role='button'], [role='tab'], [role='menuitem'], [role='option'], [role='switch'], [role='checkbox'], [role='radio'], [role='slider']"
 

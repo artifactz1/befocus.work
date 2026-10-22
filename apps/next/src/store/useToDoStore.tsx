@@ -34,6 +34,9 @@ interface TasksState {
   savedRevision: number
   setPlan: (plan: TaskPlan) => void
   setLinks: (links: TaskLink[]) => void
+  /** Links of the session that just ended, kept past closePlan for the summary (not persisted). */
+  endedLinks: TaskLink[] | null
+  setEndedLinks: (links: TaskLink[] | null) => void
   hydratePlan: (plan: TaskPlan | null, links: TaskLink[]) => void
   markSaved: (revision: number) => void
   markUnsaved: () => void
@@ -79,6 +82,8 @@ export function createTasksStore({
     savedRevision: initialPlan?.plan ? 0 : -1,
     setPlan: plan => set(s => ({ plan, planRevision: s.planRevision + 1 })),
     setLinks: links => set({ links }),
+    endedLinks: null,
+    setEndedLinks: endedLinks => set({ endedLinks }),
     // a plan read from the server agrees with the server by definition
     hydratePlan: (plan, links) =>
       set(s => ({ plan, links, planLoad: 'ready', savedRevision: plan ? s.planRevision : -1 })),

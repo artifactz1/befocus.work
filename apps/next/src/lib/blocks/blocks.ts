@@ -48,7 +48,7 @@ export interface Run {
   segmentStartedAt: number | null
   /** Running ms of the current block so far (pauses excluded). */
   activeMs: number
-  /** Session finished, SessionCompleteModal pending. */
+  /** Session finished, the summary is showing. */
   completed: boolean
 }
 

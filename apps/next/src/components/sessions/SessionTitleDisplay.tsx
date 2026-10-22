@@ -5,11 +5,13 @@ import { useTimerStore } from '~/store/useTimerStore'
 import useIsLandscape from '../helper/useIsMobileLandscape'
 
 export default function SessionTitleDisplay() {
-  const { isWorking, isRunning, status } = useTimerStore()
+  const { isWorking, isRunning, status, completed, finished } = useTimerStore()
+  const done = completed && finished !== null
 
   // From the run status: a block lengthened in the plan never reads Paused before it starts
-  const text =
-    isRunning || status === 'ended'
+  const text = done
+    ? 'Done'
+    : isRunning || status === 'ended'
       ? isWorking
         ? 'Focus'
         : 'Break'
@@ -18,7 +20,7 @@ export default function SessionTitleDisplay() {
         : 'Be Focus'
 
   const isLandscape = useIsLandscape()
-  const isIdle = !isRunning && status !== 'ended'
+  const isIdle = !done && !isRunning && status !== 'ended'
 
   return (
     <AnimatePresence mode='wait'>

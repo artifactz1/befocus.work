@@ -10,6 +10,8 @@ interface TaskRow {
   completed: boolean
   archived: boolean
   createdAt?: string | null
+  later?: boolean
+  laterAt?: string | null
 }
 
 /** Tasks for the dashboard server render, or null on any failure (the List then shows a retry). */
@@ -34,6 +36,8 @@ export async function getUserTasks(): Promise<Task[] | null> {
       completed: row.completed,
       archived: row.archived,
       createdAt: row.createdAt ? String(row.createdAt) : undefined,
+      later: row.later ?? false,
+      laterAt: row.laterAt ? String(row.laterAt) : null,
     }))
   } catch {
     console.error('getUserTasks failed', { status: 'exception' })

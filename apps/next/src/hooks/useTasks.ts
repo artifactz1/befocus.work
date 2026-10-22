@@ -25,6 +25,8 @@ export const useUserTasks = () =>
         completed: row.completed,
         archived: row.archived,
         createdAt: row.createdAt ? String(row.createdAt) : undefined,
+        later: row.later ?? false,
+        laterAt: row.laterAt ? String(row.laterAt) : null,
       }))
     },
     refetchOnWindowFocus: false,
@@ -41,7 +43,7 @@ export function useTaskActions() {
   // Optimistic patch; on account failure restore the previous fields and toast.
   const update = async (
     id: string,
-    patch: Partial<Pick<Task, 'text' | 'completed' | 'archived'>>,
+    patch: Partial<Pick<Task, 'text' | 'completed' | 'archived' | 'later' | 'laterAt'>>,
   ) => {
     const prev = find(id)
     if (!prev) return
@@ -58,7 +60,9 @@ export function useTaskActions() {
         if (!serverId) throw new Error('create failed')
         current = serverId
       }
-      const res = await api.user.tasks[':id'].$put({ param: { id: current }, json: patch })
+      // laterAt is never sent: the server stamps it
+      const { laterAt: _laterAt, ...json } = patch
+      const res = await api.user.tasks[':id'].$put({ param: { id: current }, json })
       if (!res.ok) throw new Error('update failed')
     } catch {
       store.getState().patchTask(current, before)
@@ -127,10 +131,20 @@ export function useTaskActions() {
       await Promise.all([update(id, { completed: true }), writeCompletion(store, timer, id, true)])
       if (next) await writeNow(store, timer, next)
     },
-    archive: (id: string) => {
+    archive: (id: string, opts?: { keepLinks?: boolean }) => {
       // an archived task leaves its block (discretion, UI-SPEC List > Archive)
-      void assignTask(id, null)
+      if (!opts?.keepLinks) void assignTask(id, null)
       return update(id, { archived: true })
+    },
+    /** Sets a task aside as Later (also unplans it) or brings it back. */
+    setLater: (id: string, value: boolean, opts?: { keepLinks?: boolean }) => {
+      if (value && !opts?.keepLinks) void assignTask(id, null)
+      return update(
+        id,
+        value
+          ? { later: true, laterAt: new Date().toISOString() }
+          : { later: false, laterAt: null },
+      )
     },
     restore: (id: string) => update(id, { archived: false }),
   }

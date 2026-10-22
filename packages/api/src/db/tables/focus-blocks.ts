@@ -26,7 +26,10 @@ export const focusBlocks = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
-  t => [index('focus_blocks_user_session_idx').on(t.userId, t.sessionId)],
+  t => [
+    index('focus_blocks_user_session_idx').on(t.userId, t.sessionId),
+    index('focus_blocks_user_started_idx').on(t.userId, t.startedAt),
+  ],
 )
 
 export type FocusBlock = InferSelectModel<typeof focusBlocks>

@@ -5,7 +5,7 @@ export default function SessionMobileCount() {
   return (
     <div className='block sm:hidden'>
       <p className='xs:text-3xl mr-1 text-2xl font-display font-extrabold text-dash tabular-nums'>
-        {currentSession} / {sessions}
+        {Math.min(currentSession, sessions)} / {sessions}
       </p>
     </div>
   )

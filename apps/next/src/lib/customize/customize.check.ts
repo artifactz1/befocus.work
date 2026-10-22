@@ -156,6 +156,16 @@ assert.equal(
   assert.equal(lookToTokens(DEFAULT_LOOK).attrs['data-session-progress'], 'strip')
 }
 
+// break log (LOG-01)
+{
+  const { askAtBreak: _omit, ...legacy } = DEFAULT_LOOK
+  const old = lookSchema.safeParse(legacy)
+  assert.equal(old.success && old.data.askAtBreak, true, 'missing key defaults to true')
+  assert.equal(lookSchema.safeParse({ ...DEFAULT_LOOK, askAtBreak: 'no' }).success, false)
+  assert.equal(lookEquals(DEFAULT_LOOK, { ...DEFAULT_LOOK, askAtBreak: false }), false)
+  assert.equal(DEFAULT_LOOK.askAtBreak, true)
+}
+
 // starter looks: each merges into a valid look and is recognized by name
 for (const preset of LOOKS) {
   const result = lookSchema.safeParse({ ...DEFAULT_LOOK, ...preset.look })

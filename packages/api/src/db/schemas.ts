@@ -1,5 +1,6 @@
 export * from '@repo/api/db/tables/auth'
 export * from '@repo/api/db/tables/focus-blocks'
+export * from '@repo/api/db/tables/logs'
 export * from '@repo/api/db/tables/plans'
 export * from '@repo/api/db/tables/settings'
 export * from '@repo/api/db/tables/sounds'

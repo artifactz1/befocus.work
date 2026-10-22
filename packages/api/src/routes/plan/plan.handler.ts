@@ -171,6 +171,11 @@ export const putUserTaskLinks: AppRouteHandler<PutUserTaskLinks> = async c => {
         setWhere: eq(taskBlockLinks.userId, user.id),
       })
     if (item.planned !== true) return [upsert]
+    // planning a Later task into a block clears its flag
+    const clearLater = db
+      .update(tasks)
+      .set({ later: false, laterAt: null })
+      .where(and(eq(tasks.userId, user.id), eq(tasks.id, item.taskId)))
     // a task is planned in at most one block
     const unplanOthers = db
       .update(taskBlockLinks)
@@ -183,7 +188,7 @@ export const putUserTaskLinks: AppRouteHandler<PutUserTaskLinks> = async c => {
           ne(taskBlockLinks.blockId, item.blockId),
         ),
       )
-    return [upsert, unplanOthers]
+    return [upsert, unplanOthers, clearLater]
   })
 
   const read = db
