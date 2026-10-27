@@ -41,6 +41,7 @@ export const lookSchema = z
     contrast: z.number().finite().min(0.55).max(1),
     progress: z.enum(PROGRESS_IDS),
     sessionProgress: z.enum(SESSION_PROGRESS_IDS).default('strip'),
+    askAtBreak: z.boolean().default(true),
     density: z.enum(DENSITY_IDS),
     grain: z.number().finite().min(0).max(1),
   })
@@ -65,6 +66,7 @@ export const DEFAULT_LOOK: Look = {
   contrast: 1,
   progress: 'edge',
   sessionProgress: 'strip',
+  askAtBreak: true,
   density: 'comfortable',
   grain: 0.05,
 }
@@ -83,6 +85,7 @@ export function lookEquals(a: Look, b: Look): boolean {
     a.contrast === b.contrast &&
     a.progress === b.progress &&
     a.sessionProgress === b.sessionProgress &&
+    a.askAtBreak === b.askAtBreak &&
     a.density === b.density &&
     a.grain === b.grain
   )

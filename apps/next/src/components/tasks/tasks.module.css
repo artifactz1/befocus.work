@@ -150,6 +150,52 @@
   height: 16px;
 }
 
+.laterGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.laterBox {
+  border-style: dashed;
+  border-color: rgb(255 255 255 / 0.4);
+}
+
+.laterBox[data-state="checked"] {
+  border-style: solid;
+  border-color: var(--user-accent);
+}
+
+.laterDate {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--panel-muted);
+}
+
+.bringBack {
+  flex: none;
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--panel-muted);
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.row:hover .bringBack,
+.row:focus-within .bringBack,
+.bringBack:focus-visible {
+  opacity: 1;
+}
+
+.bringBack:hover {
+  background: var(--panel-soft);
+  color: hsl(var(--foreground));
+}
+
 .add {
   display: flex;
   align-items: center;
@@ -259,6 +305,11 @@ div.add {
   .act {
     opacity: 1;
     width: 44px;
+    height: 44px;
+  }
+
+  .bringBack {
+    opacity: 1;
     height: 44px;
   }
 }

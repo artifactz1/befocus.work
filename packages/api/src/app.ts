@@ -1,5 +1,6 @@
 import blocks from '@repo/api/routes/blocks/blocks.index'
 import index from '@repo/api/routes/index.route'
+import logs from '@repo/api/routes/logs/logs.index'
 import plan from '@repo/api/routes/plan/plan.index'
 import themes from '@repo/api/routes/themes/themes.index'
 import user from '@repo/api/routes/user/user.index'
@@ -11,7 +12,7 @@ const app = createApp()
 
 configureOpenAPI(app)
 
-const routes = [index, user, themes, blocks, plan] as const
+const routes = [index, user, themes, blocks, plan, logs] as const
 
 for (const route of routes) {
   app.route('/', route)

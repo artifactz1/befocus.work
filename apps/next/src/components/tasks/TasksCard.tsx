@@ -11,6 +11,7 @@ import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { usePlanBootstrap, usePlanSync } from '~/hooks/usePlan'
 import { useDeckCard, useDeckStore } from '~/store/useDeckStore'
 import { useTasksStore } from '~/store/useToDoStore'
+import { BreakLogModal } from '../logs/BreakLogModal'
 import records from '../records/records.module.css'
 import ListTab from './ListTab'
 import PlanTab from './PlanTab'
@@ -110,6 +111,7 @@ export default function TasksCard() {
     return (
       <>
         <Announcer />
+        <BreakLogModal />
         <AnimatePresence>
           {isOpen && (
             <motion.section
@@ -138,6 +140,7 @@ export default function TasksCard() {
   return (
     <>
       <Announcer />
+      <BreakLogModal />
       <Drawer
         open={isOpen}
         modal={false}

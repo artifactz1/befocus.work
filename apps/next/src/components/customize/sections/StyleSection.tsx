@@ -1,5 +1,6 @@
 'use client'
 
+import switchStyles from '~/components/settings/session-card.module.css'
 import { DENSITIES, PROGRESS_STYLES, SESSION_PROGRESS } from '~/lib/customize/catalog'
 import { useCustomizeStore } from '~/store/useCustomizeStore'
 import { ControlGroup, PickCard, RangeField, SegmentedControl } from '../controls'
@@ -61,6 +62,33 @@ export function SessionProgressSection() {
       />
       <p style={{ fontSize: 13, lineHeight: 1.4, marginTop: 8, opacity: 0.6 }}>
         You can also tap the progress area on the timer screen.
+      </p>
+    </ControlGroup>
+  )
+}
+
+export function BreakLogSection() {
+  const preview = useCustomizeStore(state => state.preview)
+  const setPreview = useCustomizeStore(state => state.setPreview)
+
+  return (
+    <ControlGroup
+      id='customize-break-log'
+      label='Break log'
+      value={preview.askAtBreak ? 'On' : 'Off'}
+    >
+      <button
+        type='button'
+        role='switch'
+        aria-checked={preview.askAtBreak}
+        className={switchStyles.switch}
+        onClick={() => setPreview('askAtBreak', !preview.askAtBreak)}
+      >
+        <span className={switchStyles.track} aria-hidden />
+        Ask what got done at each break
+      </button>
+      <p style={{ fontSize: 13, lineHeight: 1.4, marginTop: 8, opacity: 0.6 }}>
+        The summary at the end of a session always shows.
       </p>
     </ControlGroup>
   )

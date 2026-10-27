@@ -41,7 +41,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 7.1: Session Settings Start Card** (INSERTED) - Play on a fresh session opens a centered card with capsule steppers, alarm and Start; opt-out switch (5 plans built; migration 0010, signed-in E2E and UAT pending)
 - [x] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded (9/9 plans built; human checks pending, see 08-VERIFICATION.md) (completed 2026-10-21)
 - [x] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (completed 2026-10-21, code)
-- [ ] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary you can export, history and what to improve
+- [x] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary you can export, history and what to improve (13/13 plans built; human_needed: apply migration 0015, signed-in checks, see 10-VERIFICATION.md)
 
 ## Phase Details
 
@@ -714,19 +714,19 @@ notes turn into a real end-of-session summary and a history that shows the user 
 **Plans**: 13 plans in 6 waves (`.planning/phases/BFC-10-session-logs-and-reflection/`)
 
 Plans:
-- [ ] 10-01-PLAN.md - Log contracts, `block_logs` and `session_notes` tables, task `later` / `later_at`, hand-written migration 0015 (LOG-02, LOG-06, LOG-07)
-- [ ] 10-02-PLAN.md - "Ask what got done at each break" setting, /log reachable by guests and signed-in users, keyboard guard (LOG-01, LOG-04)
-- [ ] 10-03-PLAN.md - Account API: block logs, block links, session notes, history, task later flag (LOG-02, LOG-04, LOG-07)
-- [ ] 10-04-PLAN.md - Summary model, done / not done / later fates and export text, test first (LOG-03, LOG-07, LOG-08)
-- [ ] 10-05-PLAN.md - History list and What to improve rules, test first (LOG-04, LOG-05)
-- [ ] 10-06-PLAN.md - Log data layer: guest browser storage and account API behind one hook (LOG-02, LOG-06)
-- [ ] 10-07-PLAN.md - Later flag on the client and the Tasks Later group with Bring back (LOG-07, LOG-06)
-- [ ] 10-08-PLAN.md - Session seams: ended-session snapshot, break prompt trigger, Later cleared on plan (LOG-01, LOG-03)
-- [ ] 10-09-PLAN.md - Break log modal: shared log form, segmented rating, Move to (LOG-01, LOG-02)
-- [ ] 10-10-PLAN.md - Session summary view, done / not done / later list, block rows, Export menu (LOG-03, LOG-07, LOG-08, LOG-02)
-- [ ] 10-11-PLAN.md - Summary takes over the timer area, old completion modal removed, one confetti burst (LOG-03, LOG-07, LOG-02)
-- [ ] 10-12-PLAN.md - What to improve panel: Insights / Charts / Both, shown from 3 sessions (LOG-05)
-- [ ] 10-13-PLAN.md - /log page and footer Log button (LOG-04, LOG-08, LOG-06, LOG-02, LOG-05)
+- [x] 10-01-PLAN.md - Log contracts, `block_logs` and `session_notes` tables, task `later` / `later_at`, hand-written migration 0015 (LOG-02, LOG-06, LOG-07)
+- [x] 10-02-PLAN.md - "Ask what got done at each break" setting, /log reachable by guests and signed-in users, keyboard guard (LOG-01, LOG-04)
+- [x] 10-03-PLAN.md - Account API: block logs, block links, session notes, history, task later flag (LOG-02, LOG-04, LOG-07)
+- [x] 10-04-PLAN.md - Summary model, done / not done / later fates and export text, test first (LOG-03, LOG-07, LOG-08)
+- [x] 10-05-PLAN.md - History list and What to improve rules, test first (LOG-04, LOG-05)
+- [x] 10-06-PLAN.md - Log data layer: guest browser storage and account API behind one hook (LOG-02, LOG-06)
+- [x] 10-07-PLAN.md - Later flag on the client and the Tasks Later group with Bring back (LOG-07, LOG-06)
+- [x] 10-08-PLAN.md - Session seams: ended-session snapshot, break prompt trigger, Later cleared on plan (LOG-01, LOG-03)
+- [x] 10-09-PLAN.md - Break log modal: shared log form, segmented rating, Move to (LOG-01, LOG-02)
+- [x] 10-10-PLAN.md - Session summary view, done / not done / later list, block rows, Export menu (LOG-03, LOG-07, LOG-08, LOG-02)
+- [x] 10-11-PLAN.md - Summary takes over the timer area, old completion modal removed, one confetti burst (LOG-03, LOG-07, LOG-02)
+- [x] 10-12-PLAN.md - What to improve panel: Insights / Charts / Both, shown from 3 sessions (LOG-05)
+- [x] 10-13-PLAN.md - /log page and footer Log button (LOG-04, LOG-08, LOG-06, LOG-02, LOG-05)
 
 **UI hint**: yes
 **Context**: `10-CONTEXT.md` (locked picks), `10-UI-SPEC.md` (design contract), `10-PATTERNS.md`.
@@ -823,7 +823,7 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 7.1. Session Settings Start Card (INSERTED) | 5/5 | Built, human_needed: migration 0010 not applied, signed-in E2E and UAT pending | 2026-10-16 (code) |
 | 8. Focus Blocks and Added Time | 9/9 | Built, human_needed: apply migration 0012, signed-in focus_blocks round trip, real-touch long-press, reduced motion (see 08-VERIFICATION.md) | 2026-10-21 (code) |
 | 9. Tasks and Time Blocks | 11/11 | Built, human_needed: apply migrations 0013 and 0014 (hand-written, never applied), signed-in and API checks (see 09-VERIFICATION.md) | 2026-10-21 (code) |
-| 10. Session Logs and Reflection | 0/13 | Planned, not built: apply migration 0015 before signed-in checks | - |
+| 10. Session Logs and Reflection | 13/13 | Built, human_needed: apply migration 0015 (hand-written, never applied), signed-in and API checks (see 10-VERIFICATION.md) | 2026-10-21 (code) |
 
 ## Requirement Coverage
 

@@ -5,14 +5,12 @@ import AppBackground from '~/components/dashboard/AppBackground'
 import Footer from '~/components/Footer'
 import Header from '~/components/Header'
 import GlobalSoundsPlayer from '~/components/helper/GlobalSoundsPlayer'
-import { SessionCompleteModal } from '~/components/SessionCompleteModal'
-import Timer from '~/components/timer/Timer'
+import { Stage } from '~/components/logs/Stage'
 
 export default function Dashboard() {
   return (
     <div>
       <GlobalSoundsPlayer />
-      <SessionCompleteModal />
       <CommandMenu />
       <AppBackground />
       <motion.main
@@ -22,7 +20,7 @@ export default function Dashboard() {
         transition={{ duration: 1, ease: 'easeOut', delay: 0.25 }}
       >
         <Header />
-        <Timer />
+        <Stage />
         <Footer />
       </motion.main>
     </div>

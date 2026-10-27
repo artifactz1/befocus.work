@@ -5,6 +5,9 @@ export interface Task {
   completed: boolean
   archived: boolean
   createdAt?: string
+  /** Parked for later; `laterAt` is stamped by the server. */
+  later?: boolean
+  laterAt?: string | null
 }
 
 export const TASK_TEXT_MAX = 500
