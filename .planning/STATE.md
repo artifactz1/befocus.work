@@ -175,3 +175,4 @@ Resume file: None
 - 261016-gp: Reconcile ROADMAP progress table and STATE counts with shipped work (.planning/quick/261016-gp-reconcile-progress-views)
 - 261016-rc: Restart confirm styled like the session settings card (.planning/quick/261016-rc-restart-confirm-card-style)
 - 261027-nx: Upgrade Next.js to 16.4.3 so the opennext Cloudflare build passes (.planning/quick/261027-nx-next-16-opennext-deploy)
+- 261028-oc: Fix error 1101 after Next 16 upgrade by bumping @opennextjs/cloudflare to 1.20.14 (.planning/quick/261028-oc-preview-props-1101)
