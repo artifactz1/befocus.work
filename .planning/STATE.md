@@ -174,3 +174,4 @@ Resume file: None
 - 261003-cx: Customize panel as floating inspector, remove light/dark mode (.planning/quick/261003-cx-customize-inspector-no-light-mode)
 - 261016-gp: Reconcile ROADMAP progress table and STATE counts with shipped work (.planning/quick/261016-gp-reconcile-progress-views)
 - 261016-rc: Restart confirm styled like the session settings card (.planning/quick/261016-rc-restart-confirm-card-style)
+- 261027-nx: Upgrade Next.js to 16.4.3 so the opennext Cloudflare build passes (.planning/quick/261027-nx-next-16-opennext-deploy)
