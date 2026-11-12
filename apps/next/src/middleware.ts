@@ -14,7 +14,7 @@ export default async function authMiddleware(request: NextRequest) {
   const isLogRoute = pathName === '/log' || pathName.startsWith('/log/')
 
   // Fetch the session data from the backend. An unreachable backend reads as signed out, so
-  // guest pages (and /log in guest mode) still render instead of throwing.
+  // guest pages still render instead of throwing.
   const session = await betterFetch<Session>(`${env.API_URL}/api/auth/get-session`, {
     baseURL: request.nextUrl.origin,
     headers: {
@@ -24,12 +24,9 @@ export default async function authMiddleware(request: NextRequest) {
     .then(r => r.data)
     .catch(() => null)
 
-  // /log is open to guests and signed-in users. The header only picks the UI mode and is always
-  // overwritten here; the API still enforces auth on every data call.
+  // The log lives in the Focus panel; old /log links open it there, for guests and signed-in users.
   if (isLogRoute) {
-    const headers = new Headers(request.headers)
-    headers.set('x-befocus-mode', session ? 'account' : 'guest')
-    return NextResponse.next({ request: { headers } })
+    return NextResponse.redirect(new URL(`${session ? '/' : '/guest'}?panel=log`, request.url))
   }
 
   // If no session is found, allow auth and password routes

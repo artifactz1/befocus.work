@@ -203,13 +203,15 @@ button.ghostRow:focus-visible {
 
 .blockHead {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 4px 8px;
   min-width: 0;
 }
 
 .blockTitle {
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   font-size: 15px;
   font-weight: 600;

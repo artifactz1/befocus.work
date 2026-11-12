@@ -1,11 +1,6 @@
-/* /log page: shell, history list, states. The summary itself is styled by summary.module.css. */
+/* Log tab of the Focus panel: history list, states. The summary itself is styled by summary.module.css. */
 
-.page {
-  --panel-surface: color-mix(in srgb, var(--bg-solid), #fff 5%);
-  --panel-soft: rgb(255 255 255 / 0.05);
-  --panel-lift: rgb(255 255 255 / 0.08);
-  --panel-hair: rgb(255 255 255 / 0.08);
-  --panel-muted: hsl(var(--muted-foreground));
+.view {
   --cell: color-mix(in srgb, var(--fg) 8%, transparent);
   --cell-break: color-mix(in srgb, var(--fg) 5%, transparent);
   --done-break: color-mix(in srgb, var(--user-accent) 55%, var(--cell));
@@ -18,32 +13,8 @@
   );
   display: flex;
   flex-direction: column;
-  height: 100dvh;
-  padding: 24px 20px 0;
-  background: var(--bg-solid);
-  color: hsl(var(--foreground));
-  font-family: var(--font-app);
-}
-
-.top {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: none;
-}
-
-.title {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-
-.guestTop {
-  margin: 0 0 0 auto;
-  font-size: 13px;
-  color: var(--panel-muted);
+  height: 100%;
+  min-height: 0;
 }
 
 .link {
@@ -72,10 +43,6 @@
   height: 44px;
   background: var(--panel-soft);
   color: hsl(var(--foreground));
-}
-
-.backLabel {
-  display: none;
 }
 
 .ghost,
@@ -126,7 +93,6 @@
   flex: 1;
   flex-direction: column;
   min-height: 0;
-  margin-top: 24px;
 }
 
 .listCol {
@@ -325,30 +291,46 @@
   }
 }
 
+/* Desktop: the panel widens for the log, list left and the picked session right. */
 @media (min-width: 1024px) {
-  .page {
-    padding: 32px 64px 0;
-  }
-
-  .back {
-    width: auto;
-    height: 36px;
-    padding: 0 12px 0 8px;
-    font-size: 15px;
-  }
-
-  .backLabel {
-    display: inline;
-  }
-
   .body {
     display: grid;
-    grid-template-columns: 520px minmax(0, 1fr);
-    gap: 32px;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 24px;
   }
 
   .listCol {
-    mask-image: linear-gradient(transparent, #000 24px, #000 calc(100% - 24px), transparent);
+    mask-image: linear-gradient(#000 calc(100% - 24px), transparent);
+  }
+
+  /* Card widens first (0.45s, tasks.module.css), then list, then the picked session. */
+  .listCol,
+  .detailCol {
+    animation: colIn 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) 0.45s both;
+  }
+
+  .detailCol {
+    animation-delay: 0.6s;
+  }
+
+  /* The empty card stays narrow, so no wait. */
+  .empty {
+    animation: colIn 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both;
+  }
+}
+
+@keyframes colIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .listCol,
+  .detailCol,
+  .empty {
+    animation: none;
   }
 }
 
@@ -386,29 +368,23 @@
 
 /* Phone and tablet: list first, tap swaps to the detail, back swaps again. */
 @media (max-width: 1023.98px) {
-  .page[data-view="detail"] .title,
-  .page[data-view="detail"] .guestTop,
-  .page[data-view="detail"] .backTimer {
-    display: none;
-  }
-
-  .page[data-view="detail"] .topDetail {
+  .view[data-view="detail"] .topDetail {
     display: flex;
   }
 
-  .page[data-view="detail"] .listCol {
+  .view[data-view="detail"] .listCol {
     display: none;
   }
 
-  .page[data-view="detail"] .detailCol {
+  .view[data-view="detail"] .detailCol {
     display: flex;
     flex: 1;
     flex-direction: column;
     animation: slideIn 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
 
-  .page[data-view="detail"] .body {
-    margin-top: 12px;
+  .view[data-view="detail"] .body {
+    margin-top: 8px;
     margin-inline: -20px;
   }
 }
@@ -421,7 +397,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page[data-view="detail"] .detailCol {
+  .view[data-view="detail"] .detailCol {
     animation: none;
   }
 }
@@ -434,7 +410,7 @@
     scrollbar-width: thin;
     scrollbar-color: var(--panel-lift) transparent;
     padding-bottom: 24px;
-    mask-image: linear-gradient(transparent, #000 24px, #000 calc(100% - 24px), transparent);
+    mask-image: linear-gradient(#000 calc(100% - 24px), transparent);
   }
 
   .panel {

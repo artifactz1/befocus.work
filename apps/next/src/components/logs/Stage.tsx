@@ -5,7 +5,6 @@ import type { CarriedTask, TaskFate } from '@repo/types/logs'
 import confetti from 'canvas-confetti'
 import { motion, useReducedMotion } from 'framer-motion'
 import { History } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { useHistory, useLogActions } from '~/hooks/useLogs'
@@ -49,7 +48,6 @@ function LiveSummary({
   records: BlockRecord[]
   celebrate: boolean
 }) {
-  const router = useRouter()
   const reduced = useReducedMotion()
   const sessionId = useTimerStore(s => s.sessionId)
   const resetAll = useTimerStore(s => s.resetAll)
@@ -160,7 +158,7 @@ function LiveSummary({
     busy.current = true
     for (const taskId of pendingPlan.current) {
       const text = tasks.find(t => t.id === taskId)?.text ?? 'a task'
-      toast.error(`Couldn't plan ${text} into the next session. Plan it from Tasks.`)
+      toast.error(`Couldn't plan ${text} into the next session. Plan it from the Plan tab.`)
     }
     pendingPlan.current.clear()
     // A failed save already toasted (10-06); the session still closes.
@@ -176,7 +174,11 @@ function LiveSummary({
     useDeckStore.getState().toggleDeck('tasks')
   }
 
-  const openLog = () => void leave(() => router.push('/log'))
+  const openLog = () =>
+    void leave(() => {
+      closeCustomize()
+      useDeckStore.getState().openDeck('tasks', 'log')
+    })
   const sized = { height: 40, fontSize: 15 }
   const openLogLabel = (
     <>

@@ -178,10 +178,10 @@ export function DoneList({
           {moreLater > 0 &&
             (onOpenTasks ? (
               <button type='button' className={styles.ghostRow} onClick={onOpenTasks}>
-                +{moreLater} more in Tasks
+                +{moreLater} more in your list
               </button>
             ) : (
-              <span className={styles.ghostRow}>+{moreLater} more in Tasks</span>
+              <span className={styles.ghostRow}>+{moreLater} more in your list</span>
             ))}
         </section>
       )}

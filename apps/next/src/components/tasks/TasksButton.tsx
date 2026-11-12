@@ -7,6 +7,9 @@ import { useDeckStore } from '~/store/useDeckStore'
 import { useCustomizeActions } from '../customize/useCustomizeActions'
 import MenuButton from '../helper/MenuButtons'
 
+// The panel holding List, Plan and Log. Its button, heading and close label all read this.
+export const PANEL_NAME = 'Focus'
+
 export default function TasksButton() {
   const isOpen = useDeckStore(s => s.deck === 'tasks')
   const toggleDeck = useDeckStore(s => s.toggleDeck)
@@ -33,7 +36,7 @@ export default function TasksButton() {
       >
         <TooltipTrigger asChild>
           <MenuButton
-            aria-label='Tasks'
+            aria-label={PANEL_NAME}
             aria-expanded={isOpen}
             data-tasks-trigger
             data-active={isOpen || undefined}
@@ -43,7 +46,7 @@ export default function TasksButton() {
           </MenuButton>
         </TooltipTrigger>
         <TooltipContent className='font-bold' side='top' sideOffset={8}>
-          <p>Tasks</p>
+          <p>{PANEL_NAME}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
