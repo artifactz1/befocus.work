@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 10 built (13 plans), PR open, human checks pending
-last_updated: "2026-10-22T04:27:55.909Z"
-last_activity: 2026-10-22 -- Phase 10 built, awaiting review
+stopped_at: Phase 10.1 built (Focus panel with a Log tab), PR open
+last_updated: "2026-11-11T00:00:00.000Z"
+last_activity: 2026-11-11 -- Phase 10.1 built, PR open
 progress:
-  total_phases: 11
+  total_phases: 12
   completed_phases: 7
-  total_plans: 65
-  completed_plans: 64
+  total_plans: 66
+  completed_plans: 65
   percent: 98
 ---
 
@@ -22,16 +22,16 @@ See: .planning/PROJECT.md (updated 2026-09-23)
 
 **Core value:** A user can change how their focus dashboard looks and have that look still be there
 the next time they open it - signed in on any device, or as a guest on the same browser.
-**Current focus:** Phase 10 — session-logs-and-reflection (built, in review; apply migration 0015 before signed-in checks)
+**Current focus:** Phase 10.1 - focus-panel-log-tab (built, PR open; signed-in Log tab check pending)
 
 ## Current Position
 
-Phase: 10 (session-logs-and-reflection) — BUILT, human_needed
-Plan: 13 of 13
-Status: Phase 10 built, PR open for review
-Last activity: 2026-10-22 -- Phase 10 built, awaiting review
+Phase: 10.1 (focus-panel-log-tab) - BUILT, human_needed
+Plan: 1 of 1
+Status: Phase 10.1 built, PR open for review
+Last activity: 2026-11-11 -- Phase 10.1 built, awaiting review
 
-Progress: [██████████] 98% (64 of 65 plans)
+Progress: [██████████] 98% (65 of 66 plans)
 
 ## Performance Metrics
 
@@ -127,6 +127,7 @@ Recent decisions affecting current work:
 - Phase 10 added: Session Logs and Reflection (LOG-01..06), depends on Phases 8 and 9
 - Phase 10 extended with LOG-07 (done / not done / later list) and LOG-08 (export), then planned on 2026-10-21: 13 plans in 6 waves from the Phase 10 board picks
 - Phase 07.1 inserted after Phase 7: Session settings start card and capsule steppers, from the captain's design board pick (D Capsules, P5 center start card with switch)
+- Phase 10.1 inserted after Phase 10: Focus panel (renamed Tasks) with List / Plan / Log tabs, Log widens in place with full screen, Plan shows In this block instead of check marks, from the captain's review board
 
 ### Pending Todos
 

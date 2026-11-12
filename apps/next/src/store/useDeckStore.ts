@@ -6,7 +6,7 @@ import { create } from 'zustand'
 
 export type Deck = 'records' | 'tasks' | null
 type Card = Exclude<Deck, null>
-export type TasksTab = 'list' | 'plan'
+export type TasksTab = 'list' | 'plan' | 'log'
 
 interface DeckState {
   deck: Deck

@@ -42,6 +42,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Focus Blocks and Added Time** - Explicit block end, add time after a focus block, every block recorded (9/9 plans built; human checks pending, see 08-VERIFICATION.md) (completed 2026-10-21)
 - [x] **Phase 9: Tasks and Time Blocks** - Tasks tied to focus blocks, a time-block plan, and live session progress (completed 2026-10-21, code)
 - [x] **Phase 10: Session Logs and Reflection** - Log what you did each break, a real session summary you can export, history and what to improve (13/13 plans built; human_needed: apply migration 0015, signed-in checks, see 10-VERIFICATION.md)
+- [x] **Phase 10.1: Focus Panel with a Log Tab** (INSERTED) - Tasks panel renamed Focus with List / Plan / Log tabs, Log widens in place with full screen, Plan drops check marks for an explicit In this block list (built; signed-in check pending)
 
 ## Phase Details
 
@@ -773,6 +774,24 @@ Design questions for the captain (one Lavish board, before planning):
   6. Export (LOG-08): copy, download and share controls, and the shape of the exported text.
      Notion export is issue #100, not this phase.
 
+### Phase 10.1: Focus Panel with a Log Tab (INSERTED)
+
+**Goal**: Log lives inside the tasks panel instead of its own page, the panel gets a broader name,
+and Plan shows which tasks are in a block without a check mark that reads as "done".
+**Mode:** mvp
+**Depends on**: Phase 10
+**Success Criteria** (what must be TRUE):
+
+  1. The panel is called Focus and has List, Plan and Log tabs; no separate Log button; `/log`
+     still lands on the Log tab.
+  2. On desktop, Log widens the panel in place (with an optional full screen); on phones it is a
+     tab in the bottom sheet.
+  3. In Plan, a task in the open block is shown as "in this block" (no check mark), and adding or
+     moving a task between blocks is one tap.
+
+Built from the captain's review board picks (2026-11-11). See
+`.planning/phases/BFC-10.1-focus-panel-log-tab/10.1-SUMMARY.md`.
+
 ## Open Product Questions (Phases 7-10)
 
 These are the captain's calls. None of them has been guessed; each phase lists the ones it needs
@@ -824,6 +843,7 @@ Phases 8 → 9 → 10 run in order after Phase 3, ahead of Phases 4-6 (Q1, resol
 | 8. Focus Blocks and Added Time | 9/9 | Built, human_needed: apply migration 0012, signed-in focus_blocks round trip, real-touch long-press, reduced motion (see 08-VERIFICATION.md) | 2026-10-21 (code) |
 | 9. Tasks and Time Blocks | 11/11 | Built, human_needed: apply migrations 0013 and 0014 (hand-written, never applied), signed-in and API checks (see 09-VERIFICATION.md) | 2026-10-21 (code) |
 | 10. Session Logs and Reflection | 13/13 | Built, human_needed: apply migration 0015 (hand-written, never applied), signed-in and API checks (see 10-VERIFICATION.md) | 2026-10-21 (code) |
+| 10.1. Focus Panel with a Log Tab (INSERTED) | 1/1 | Built, human_needed: signed-in Log tab check (no API dev vars here) | 2026-11-11 (code) |
 
 ## Requirement Coverage
 

@@ -5,8 +5,8 @@ import type { Task } from '@repo/types/tasks'
 import { Checkbox } from '@repo/ui/checkbox'
 import { cn } from '@repo/ui/lib/utils'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { Check, GripVertical, Minus, Plus } from 'lucide-react'
-import { type DragEvent, useState } from 'react'
+import { Check, ChevronLeft, ChevronRight, GripVertical, Minus, Plus, X } from 'lucide-react'
+import { type DragEvent, useRef, useState } from 'react'
 import { useMediaQuery } from '~/hooks/useMediaQuery'
 import { useNow, usePlanActions, useSessionView } from '~/hooks/usePlan'
 import { useTaskActions } from '~/hooks/useTasks'
@@ -28,60 +28,79 @@ const EASE = [0.2, 0.7, 0.2, 1] as const
 const PX_PER_MINUTE = 2.4
 const DRAG_TYPE = 'application/x-befocus-task'
 
-// One checklist row: checked means planned in this block; checking a task planned elsewhere moves it.
+// Where an open task sits relative to the selected block: in it, unplanned, or in another block (its number).
+type Where = 'here' | 'free' | number
+
+const dragProps = (taskId: string, draggable: boolean) =>
+  draggable
+    ? {
+        draggable: true,
+        onDragStart: (e: DragEvent) => {
+          e.dataTransfer.setData(DRAG_TYPE, taskId)
+          e.dataTransfer.effectAllowed = 'move'
+        },
+      }
+    : {}
+
+// In this block: an accent mark (not a check, which reads as done) and an explicit remove button.
+// Elsewhere: the whole row is one "Add" or "Move here" button.
 function AssignRow({
   task,
+  where,
   blockId,
   blockName,
-  elsewhere,
   draggable,
   onAssign,
 }: {
   task: Task
+  where: Where
   blockId: string
   blockName: string
-  elsewhere: number | null
   draggable: boolean
   onAssign: (taskId: string, blockId: string | null) => void
 }) {
-  const here = useTasksStore(s =>
-    s.links.some(l => l.taskId === task.id && l.blockId === blockId && l.planned),
-  )
-  const hintId = `planned-${task.id}`
+  const grip = draggable && <GripVertical className={styles.grip} aria-hidden='true' />
+  if (where === 'here') {
+    return (
+      <li className={cn(styles.row, styles.assignRow)} data-here {...dragProps(task.id, draggable)}>
+        {grip}
+        <span className={styles.inMark} aria-hidden='true' />
+        <span className={styles.text}>{task.text}</span>
+        <button
+          type='button'
+          className={styles.unassign}
+          aria-label={`Remove ${task.text} from ${blockName}`}
+          onClick={() => onAssign(task.id, null)}
+        >
+          <X aria-hidden='true' />
+        </button>
+      </li>
+    )
+  }
+  const other = typeof where === 'number'
   return (
-    <li
-      className={cn(styles.row, styles.assignRow)}
-      draggable={draggable || undefined}
-      onDragStart={
-        draggable
-          ? e => {
-              e.dataTransfer.setData(DRAG_TYPE, task.id)
-              e.dataTransfer.effectAllowed = 'move'
-            }
-          : undefined
-      }
-    >
-      {draggable && <GripVertical className={styles.grip} aria-hidden='true' />}
-      <Checkbox
-        className={styles.box}
-        checked={here}
-        aria-label={`${task.text}, in ${blockName}`}
-        aria-describedby={elsewhere !== null ? hintId : undefined}
-        onCheckedChange={checked => onAssign(task.id, checked === true ? blockId : null)}
+    <li className={styles.assignItem} {...dragProps(task.id, draggable)}>
+      <button
+        type='button'
+        className={styles.assignBtn}
+        aria-label={
+          other
+            ? `Move ${task.text} from Block ${where} to ${blockName}`
+            : `Add ${task.text} to ${blockName}`
+        }
+        onClick={() => onAssign(task.id, blockId)}
       >
-        <Check aria-hidden='true' />
-      </Checkbox>
-      <span className={styles.text}>{task.text}</span>
-      {elsewhere !== null && (
-        <>
+        {grip}
+        <span className={cn(styles.text, styles.assignText)}>{task.text}</span>
+        {other && (
           <span className={styles.chip} aria-hidden='true'>
-            B{elsewhere}
+            B{where}
           </span>
-          <span id={hintId} className='sr-only'>
-            Planned in Block {elsewhere}. Checking moves it here.
-          </span>
-        </>
-      )}
+        )}
+        <span className={styles.assignAct} aria-hidden='true'>
+          {other ? 'Move here' : 'Add'}
+        </span>
+      </button>
     </li>
   )
 }
@@ -101,53 +120,56 @@ function AssignList({
   const { assignTask } = usePlanActions()
   const { addToBlock } = useTaskActions()
   const focusIds = plan?.blocks.filter(b => b.kind === 'focus').map(b => b.id) ?? []
-  // number of the block each open task is planned in (null = unplanned)
-  const planned = (taskId: string) => {
+  const whereOf = (taskId: string): Where => {
     const link = links.find(l => l.taskId === taskId && l.planned)
+    if (link?.blockId === blockId) return 'here'
     const i = link ? focusIds.indexOf(link.blockId) : -1
-    return i < 0 ? null : { blockId: link?.blockId, number: i + 1 }
+    return i < 0 ? 'free' : i + 1
   }
-  const open = tasks.filter(t => !t.archived && !t.completed)
-  const rank = (t: Task) => {
-    const p = planned(t.id)
-    return p === null ? 1_000 : p.blockId === blockId ? 0 : p.number + 1_000
-  }
-  // this block, then unplanned, then other blocks by index (sort is stable)
-  const ordered = [...open].sort((a, b) => {
-    const ra = rank(a)
-    const rb = rank(b)
-    const bucket = (r: number) => (r === 0 ? 0 : r === 1_000 ? 1 : 2)
-    return bucket(ra) - bucket(rb) || (bucket(ra) === 2 ? ra - rb : 0)
-  })
+  const open = tasks
+    .filter(t => !t.archived && !t.completed)
+    .map(task => ({ task, where: whereOf(task.id) }))
+  const here = open.filter(o => o.where === 'here')
+  // unplanned first, then tasks in other blocks by block number (sort is stable)
+  const rest = open
+    .filter(o => o.where !== 'here')
+    .sort((a, b) => (a.where === 'free' ? 0 : +a.where) - (b.where === 'free' ? 0 : +b.where))
+  const row = ({ task, where }: { task: Task; where: Where }) => (
+    <AssignRow
+      key={task.id}
+      task={task}
+      where={where}
+      blockId={blockId}
+      blockName={name}
+      draggable={draggable}
+      onAssign={assignTask}
+    />
+  )
 
   return (
     <>
-      <fieldset className={styles.checklist}>
-        <legend className='sr-only'>Tasks in {name}</legend>
-        {ordered.length === 0 ? (
-          <p className={styles.noOpen}>No open tasks yet.</p>
+      <section className={styles.assignGroup} aria-label={`In ${name}`}>
+        <h4 className={styles.assignSec}>
+          In {name}
+          <span>{here.length}</span>
+        </h4>
+        {here.length === 0 ? (
+          <p className={styles.noOpen}>
+            {rest.length > 0 ? 'Nothing yet. Add tasks from below.' : 'Nothing yet.'}
+          </p>
         ) : (
-          <ul className={styles.rows}>
-            {ordered.map(t => {
-              const p = planned(t.id)
-              return (
-                <AssignRow
-                  key={t.id}
-                  task={t}
-                  blockId={blockId}
-                  blockName={name}
-                  elsewhere={p && p.blockId !== blockId ? p.number : null}
-                  draggable={draggable}
-                  onAssign={assignTask}
-                />
-              )
-            })}
-          </ul>
+          <ul className={styles.rows}>{here.map(row)}</ul>
         )}
-      </fieldset>
+      </section>
+      {rest.length > 0 && (
+        <section className={styles.assignGroup} aria-label='Your tasks'>
+          <h4 className={styles.assignSec}>Your tasks</h4>
+          <ul className={styles.rows}>{rest.map(row)}</ul>
+        </section>
+      )}
       <AddRow
         empty={false}
-        label={`Add a task to ${name}`}
+        label={`Add a new task to ${name}`}
         onAdd={text => addToBlock(text, blockId)}
       />
     </>
@@ -223,15 +245,7 @@ function CompletionRow({
         task.completed && styles.done,
         isNow && styles.nowRow,
       )}
-      draggable={draggable || undefined}
-      onDragStart={
-        draggable
-          ? e => {
-              e.dataTransfer.setData(DRAG_TYPE, task.id)
-              e.dataTransfer.effectAllowed = 'move'
-            }
-          : undefined
-      }
+      {...dragProps(task.id, draggable)}
     >
       {draggable && <GripVertical className={styles.grip} aria-hidden='true' />}
       <Checkbox
@@ -260,6 +274,46 @@ function CompletionRow({
   )
 }
 
+function BlockNav({
+  ahead,
+  currentId,
+  onGo,
+}: {
+  ahead: { id: string; focusNumber: number | null }[]
+  currentId: string
+  onGo: (id: string) => void
+}) {
+  const i = ahead.findIndex(b => b.id === currentId)
+  const prev = ahead[i - 1]
+  const next = ahead[i + 1]
+  if (!prev && !next) return null
+  return (
+    <nav className={styles.blockNav} aria-label='Blocks'>
+      {prev && (
+        <button
+          type='button'
+          className={styles.navBtn}
+          aria-label={`Go to Block ${prev.focusNumber}`}
+          onClick={() => onGo(prev.id)}
+        >
+          <ChevronLeft aria-hidden='true' />
+        </button>
+      )}
+      {next && (
+        <button
+          type='button'
+          className={cn(styles.navBtn, styles.navNext)}
+          aria-label={`Go to Block ${next.focusNumber}`}
+          onClick={() => onGo(next.id)}
+        >
+          Block {next.focusNumber}
+          <ChevronRight aria-hidden='true' />
+        </button>
+      )}
+    </nav>
+  )
+}
+
 export default function PlanTab() {
   const plan = useTasksStore(s => s.plan)
   const planLoad = useTasksStore(s => s.planLoad)
@@ -268,6 +322,7 @@ export default function PlanTab() {
   const view = useSessionView()
   const [pickedId, setPickedId] = useState<string | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
+  const assignRef = useRef<HTMLDivElement>(null)
   const fine = useMediaQuery('(pointer: fine)')
   const tasks = useTasksStore(s => s.tasks)
   const nowId = useNow().task?.id
@@ -284,6 +339,16 @@ export default function PlanTab() {
     view.blocks.find(b => b.id === id && b.kind === 'focus' && b.state === 'ahead')?.id
   const selectedId = pickable(pickedId) ?? (live ? undefined : focus[0]?.id)
   const atLimit = focus.length >= PLAN_LIMITS.maxFocus
+  // Prev / next step through the blocks that can still be planned.
+  const ahead = view.blocks.filter(b => b.kind === 'focus' && b.state === 'ahead')
+  const goTo = (id: string) => {
+    setPickedId(id)
+    requestAnimationFrame(() =>
+      document
+        .querySelector<HTMLInputElement>(`input[name="plan-block"][value="${id}"]`)
+        ?.focus({ preventScroll: true }),
+    )
+  }
   const taskOf = (id: string) => tasks.find(t => t.id === id)
 
   const hasTask = (e: DragEvent) => e.dataTransfer.types.includes(DRAG_TYPE)
@@ -442,6 +507,7 @@ export default function PlanTab() {
                   type='radio'
                   name='plan-block'
                   className={styles.radio}
+                  value={vb.id}
                   checked={isSelected}
                   onChange={() => setPickedId(vb.id)}
                 />
@@ -464,7 +530,14 @@ export default function PlanTab() {
               <AnimatePresence initial={false}>
                 {isSelected && (
                   <motion.div
+                    ref={assignRef}
                     className={styles.assign}
+                    onAnimationComplete={() =>
+                      assignRef.current?.parentElement?.scrollIntoView({
+                        block: 'nearest',
+                        behavior: reduced ? 'auto' : 'smooth',
+                      })
+                    }
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
@@ -505,6 +578,7 @@ export default function PlanTab() {
                         >
                           Remove block
                         </button>
+                        <BlockNav ahead={ahead} currentId={vb.id} onGo={goTo} />
                       </div>
                     </div>
                   </motion.div>

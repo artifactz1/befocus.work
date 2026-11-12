@@ -2,7 +2,6 @@
 
 import { ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from '~/hooks/useLogs'
 import { useSummaryModel } from '~/hooks/useSummary'
@@ -13,13 +12,13 @@ import {
   splitSessions,
 } from '~/lib/logs/history'
 import { makeFormat } from '~/lib/logs/summary'
+import { useDeckStore } from '~/store/useDeckStore'
+import { useTasksStore } from '~/store/useToDoStore'
 import { ExportMenu } from './ExportMenu'
 import { HistoryList } from './HistoryList'
 import { ImprovePanel } from './ImprovePanel'
 import styles from './log.module.css'
 import { SessionSummary } from './SessionSummary'
-
-const GUEST_NOTE = 'Saved in this browser. Sign in to keep your log on every device.'
 
 function Loading() {
   return (
@@ -50,9 +49,10 @@ function Detail({ mode, session }: { mode: 'account' | 'guest'; session: History
   )
 }
 
-export function LogPage({ mode }: { mode: 'account' | 'guest' }) {
-  const router = useRouter()
-  const home = mode === 'account' ? '/' : '/guest'
+// The Log tab of the Focus panel: history list and the picked session's summary.
+export function LogView() {
+  const mode = useTasksStore(s => s.mode)
+  const closeDeck = useDeckStore(s => s.closeDeck)
   const { history, status, refetch, fetchOlder, hasOlder } = useHistory(mode, null)
   const [now, setNow] = useState<number | null>(null)
   useEffect(() => setNow(Date.now()), [])
@@ -106,49 +106,24 @@ export function LogPage({ mode }: { mode: 'account' | 'guest' }) {
   const empty = !loading && status === 'ready' && sessions.length === 0
 
   return (
-    <main className={styles.page} data-log-page data-view={view} aria-busy={loading || undefined}>
-      <div className={styles.top}>
-        <button
-          type='button'
-          className={`${styles.back} ${styles.backTimer}`}
-          aria-label='Back to timer'
-          onClick={() => router.push(home)}
-        >
+    <div className={styles.view} data-log-view data-view={view} aria-busy={loading || undefined}>
+      <div className={styles.topDetail}>
+        <button type='button' className={styles.back} aria-label='Back to log' onClick={backToList}>
           <ChevronLeft aria-hidden size={16} />
-          <span className={styles.backLabel}>Timer</span>
         </button>
-        <h1 className={styles.title}>Log</h1>
-        <div className={styles.topDetail}>
-          <button
-            type='button'
-            className={styles.back}
-            aria-label='Back to log'
-            onClick={backToList}
-          >
-            <ChevronLeft aria-hidden size={16} />
-          </button>
-          <h2 ref={detailTitle} tabIndex={-1} className={styles.detailTitle}>
-            {selectedDigest && now !== null ? fmt.day(selectedDigest.start, now) : ''}
-          </h2>
-        </div>
-        {mode === 'guest' && (
-          <p className={styles.guestTop}>
-            Saved in this browser ·{' '}
-            <Link href='/sign-in' className={styles.link}>
-              Sign in
-            </Link>
-          </p>
-        )}
+        <h3 ref={detailTitle} tabIndex={-1} className={styles.detailTitle}>
+          {selectedDigest && now !== null ? fmt.day(selectedDigest.start, now) : ''}
+        </h3>
       </div>
       {empty ? (
-        <div className={styles.empty}>
-          <h2 className={styles.emptyTitle}>No sessions yet</h2>
+        <div className={styles.empty} data-log-empty>
+          <h3 className={styles.emptyTitle}>No sessions yet</h3>
           <p className={styles.emptyBody}>
             Finish a focus session and it shows up here with what you got done.
           </p>
-          <Link href={home} className={styles.primary}>
+          <button type='button' className={styles.primary} onClick={closeDeck}>
             Start a session
-          </Link>
+          </button>
         </div>
       ) : (
         <div className={styles.body}>
@@ -175,7 +150,15 @@ export function LogPage({ mode }: { mode: 'account' | 'guest' }) {
                 />
               </>
             )}
-            {mode === 'guest' && <p className={styles.footnote}>{GUEST_NOTE}</p>}
+            {mode === 'guest' && (
+              <p className={styles.footnote}>
+                Saved in this browser.{' '}
+                <Link href='/sign-in' className={styles.link}>
+                  Sign in
+                </Link>{' '}
+                to keep your log on every device.
+              </p>
+            )}
           </div>
           <div className={styles.detailCol}>
             {selected && (
@@ -189,6 +172,6 @@ export function LogPage({ mode }: { mode: 'account' | 'guest' }) {
           </p>
         </div>
       )}
-    </main>
+    </div>
   )
 }
